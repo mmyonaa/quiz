@@ -1,0 +1,214 @@
+---
+import { getCollection } from "astro:content";
+import { AREAS } from "../content.config";
+import "../styles/global.css";
+
+// 문제 은행 전체를 빌드 타임에 굽는다 — 서버 없이 클라이언트 JS만으로 동작.
+const entries = await getCollection("quiz");
+const bank = entries.map((e) => e.data);
+const countByArea = Object.fromEntries(
+  AREAS.map((a) => [a, bank.filter((q) => q.area === a).length]),
+);
+
+// 오답 리뷰의 "관련 글" 링크 — daily.mcp 블로그의 글 상세 URL
+const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>daily.quiz — 정처기 필기 개념 문제</title>
+    <meta
+      name="description"
+      content="정보처리기사 필기 빈출 개념을 4지선다로 풀고, 즉시 채점과 오답 해설을 받는 연습장. daily.mcp 블로그의 개념 글과 연결됩니다."
+    />
+  </head>
+  <body>
+    <header class="top">
+      <span class="brand">daily.quiz</span>
+      <a class="sister" href="https://mmyonaa.github.io/blog/" target="_blank" rel="noopener">daily.mcp →</a>
+    </header>
+
+    <main>
+      {/* ── 1. 설정 화면 ── */}
+      <section id="setup" class="panel">
+        <h1>정처기 필기 연습</h1>
+        <p class="lead">
+          영역을 고르면 문제를 섞어 출제합니다. 제출하면 바로 채점하고,
+          틀린 문제는 해설과 함께 개념 글로 이어집니다.
+        </p>
+        <fieldset class="areas">
+          <legend>영역</legend>
+          <label class="area-opt">
+            <input type="radio" name="area" value="전체" checked />
+            <span>전체 <em>{bank.length}</em></span>
+          </label>
+          {AREAS.map((a) => (
+            <label class="area-opt">
+              <input type="radio" name="area" value={a} />
+              <span>{a} <em>{countByArea[a]}</em></span>
+            </label>
+          ))}
+        </fieldset>
+        <fieldset class="counts">
+          <legend>문제 수</legend>
+          {[5, 10, 15].map((n, i) => (
+            <label class="area-opt">
+              <input type="radio" name="count" value={n} checked={i === 1} />
+              <span>{n}문제</span>
+            </label>
+          ))}
+        </fieldset>
+        <button id="start" class="primary">시작하기</button>
+      </section>
+
+      {/* ── 2. 풀이 화면 ── */}
+      <section id="exam" class="panel" hidden>
+        <div class="exam-head">
+          <span id="progress" class="mono"></span>
+          <span id="exam-area" class="badge"></span>
+        </div>
+        <h2 id="q-text"></h2>
+        <ol id="q-choices" class="choices"></ol>
+        <div class="exam-nav">
+          <button id="next" class="primary" disabled>다음</button>
+        </div>
+      </section>
+
+      {/* ── 3. 결과 화면 ── */}
+      <section id="result" class="panel" hidden>
+        <h1 id="score"></h1>
+        <p id="verdict" class="lead"></p>
+        <div id="review"></div>
+        <div class="exam-nav">
+          <button id="retry" class="primary">다시 풀기</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      문제는 기출 복제가 아닌 자체 제작 문항입니다 · 해설의 개념 글은
+      <a href="https://mmyonaa.github.io/blog/" target="_blank" rel="noopener">daily.mcp</a>에서 발행됩니다
+    </footer>
+
+    {/* 문제 은행 주입 — 빌드 타임 데이터, 런타임 요청 없음 */}
+    <script type="application/json" id="bank" set:html={JSON.stringify(bank)} />
+    <script type="application/json" id="config" set:html={JSON.stringify({ blogPostBase: BLOG_POST_BASE })} />
+
+    <script>
+      type Q = {
+        id: string;
+        area: string;
+        question: string;
+        choices: string[];
+        answer: number;
+        explanation: string;
+        relatedPost: string;
+      };
+
+      const bank: Q[] = JSON.parse(document.getElementById("bank")!.textContent!);
+      const { blogPostBase } = JSON.parse(document.getElementById("config")!.textContent!);
+
+      const $ = <T extends HTMLElement>(sel: string) => document.querySelector(sel) as T;
+      const setup = $("#setup"), exam = $("#exam"), result = $("#result");
+
+      let session: Q[] = [];
+      let picked: number[] = []; // 문항별 사용자 선택
+      let cur = 0;
+
+      // Fisher-Yates 셔플
+      const shuffle = <T,>(arr: T[]): T[] => {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      };
+
+      const renderQuestion = () => {
+        const q = session[cur];
+        $("#progress").textContent = `${cur + 1} / ${session.length}`;
+        $("#exam-area").textContent = q.area;
+        $("#q-text").textContent = q.question;
+        const ol = $("#q-choices");
+        ol.innerHTML = "";
+        q.choices.forEach((c, i) => {
+          const li = document.createElement("li");
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "choice";
+          btn.textContent = c;
+          btn.addEventListener("click", () => {
+            picked[cur] = i;
+            ol.querySelectorAll(".choice").forEach((b) => b.classList.remove("on"));
+            btn.classList.add("on");
+            ($("#next") as HTMLButtonElement).disabled = false;
+          });
+          li.appendChild(btn);
+          ol.appendChild(li);
+        });
+        const next = $("#next") as HTMLButtonElement;
+        next.disabled = picked[cur] === undefined;
+        next.textContent = cur === session.length - 1 ? "제출하고 채점" : "다음";
+      };
+
+      const renderResult = () => {
+        const total = session.length;
+        const correct = session.filter((q, i) => picked[i] === q.answer).length;
+        const pct = Math.round((correct / total) * 100);
+        $("#score").textContent = `${correct} / ${total} (${pct}점)`;
+        $("#verdict").textContent =
+          pct >= 60 ? "합격권입니다. 틀린 문제만 다져두세요." : "아직 위험합니다. 오답 해설과 개념 글을 먼저 읽어보세요.";
+        const review = $("#review");
+        review.innerHTML = "";
+        session.forEach((q, i) => {
+          const wrong = picked[i] !== q.answer;
+          const card = document.createElement("article");
+          card.className = wrong ? "rv wrong" : "rv";
+          card.innerHTML = `
+            <p class="rv-q"><span class="badge">${q.area}</span> ${q.question}</p>
+            <p class="rv-a">${wrong ? `내 답: ${q.choices[picked[i]]}<br/>` : ""}정답: <b>${q.choices[q.answer]}</b></p>
+            <p class="rv-x">${q.explanation}</p>
+            <p class="rv-link"><a href="${blogPostBase}${q.relatedPost}/" target="_blank" rel="noopener">개념 글 다시 읽기 →</a></p>
+          `;
+          review.appendChild(card);
+        });
+        exam.hidden = true;
+        result.hidden = false;
+        window.scrollTo(0, 0);
+      };
+
+      $("#start").addEventListener("click", () => {
+        const area = (document.querySelector('input[name="area"]:checked') as HTMLInputElement).value;
+        const count = Number((document.querySelector('input[name="count"]:checked') as HTMLInputElement).value);
+        const pool = area === "전체" ? bank : bank.filter((q) => q.area === area);
+        session = shuffle(pool).slice(0, count);
+        if (session.length === 0) return;
+        picked = [];
+        cur = 0;
+        setup.hidden = true;
+        result.hidden = true;
+        exam.hidden = false;
+        renderQuestion();
+      });
+
+      $("#next").addEventListener("click", () => {
+        if (cur < session.length - 1) {
+          cur++;
+          renderQuestion();
+        } else {
+          renderResult();
+        }
+      });
+
+      $("#retry").addEventListener("click", () => {
+        result.hidden = true;
+        setup.hidden = false;
+        window.scrollTo(0, 0);
+      });
+    </script>
+  </body>
+</html>

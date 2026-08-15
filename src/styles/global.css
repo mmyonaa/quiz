@@ -1,0 +1,286 @@
+/* daily.quiz — 최소한의 시스템. 문제 풀이에 집중하는 담백한 단일 컬럼. */
+:root {
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --text: #1c1c22;
+  --muted: #6b6b76;
+  --border: #e4e4ea;
+  --accent: #e5484d;
+  --accent-soft: #fdeaea;
+  --ok: #2f9e63;
+  --ok-soft: #e8f6ee;
+  --radius: 10px;
+  font-size: 16px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #131317;
+    --surface: #1b1b21;
+    --text: #ececf1;
+    --muted: #9a9aa5;
+    --border: #2c2c34;
+    --accent: #ff6369;
+    --accent-soft: #3a2225;
+    --ok: #46c47f;
+    --ok-soft: #1d3428;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo",
+    "Noto Sans KR", sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 1.1rem 1.25rem;
+}
+.brand {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.brand::after {
+  content: "";
+  display: inline-block;
+  width: 0.44em;
+  height: 0.44em;
+  margin-left: 0.28em;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.sister {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+.sister:hover {
+  color: var(--accent);
+}
+
+main {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 0 1.25rem 3rem;
+}
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  margin-top: 1rem;
+}
+h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.45rem;
+  letter-spacing: -0.01em;
+}
+.lead {
+  color: var(--muted);
+  margin: 0 0 1.25rem;
+}
+
+/* ── 설정 화면 ── */
+fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0 0 1.25rem;
+}
+legend {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+  padding: 0;
+}
+.areas,
+.counts {
+  display: block;
+}
+.area-opt {
+  display: inline-block;
+  margin: 0 0.4rem 0.4rem 0;
+  cursor: pointer;
+}
+.area-opt input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.area-opt span {
+  display: inline-block;
+  padding: 0.42em 0.9em;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.9rem;
+  background: var(--bg);
+}
+.area-opt em {
+  font-style: normal;
+  color: var(--muted);
+  font-size: 0.8em;
+}
+.area-opt input:checked + span {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.area-opt input:checked + span em {
+  color: inherit;
+}
+.area-opt input:focus-visible + span {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+button.primary {
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  padding: 0.65em 1.6em;
+  cursor: pointer;
+}
+button.primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+button.primary:not(:disabled):hover {
+  filter: brightness(1.06);
+}
+
+/* ── 풀이 화면 ── */
+.exam-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.badge {
+  display: inline-block;
+  padding: 0.15em 0.7em;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+#q-text {
+  margin: 0 0 1.1rem;
+  font-size: 1.1rem;
+  line-height: 1.55;
+}
+.choices {
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+.choice {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  padding: 0.7em 1em;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  min-height: 44px;
+}
+.choice:hover {
+  border-color: var(--accent);
+}
+.choice.on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+.exam-nav {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ── 결과 화면 ── */
+#verdict {
+  margin-bottom: 1.5rem;
+}
+.rv {
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--ok);
+  border-radius: var(--radius);
+  padding: 1rem 1.15rem;
+  margin-bottom: 0.8rem;
+  background: var(--bg);
+}
+.rv.wrong {
+  border-left-color: var(--accent);
+}
+.rv-q {
+  margin: 0 0 0.5rem;
+  font-weight: 600;
+}
+.rv-a {
+  margin: 0 0 0.5rem;
+  font-size: 0.92rem;
+}
+.rv.wrong .rv-a {
+  color: var(--accent);
+}
+.rv .rv-a b {
+  color: var(--ok);
+}
+.rv-x {
+  margin: 0 0 0.5rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+.rv-link {
+  margin: 0;
+  font-size: 0.88rem;
+}
+.rv-link a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.rv-link a:hover {
+  text-decoration: underline;
+}
+
+.foot {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 2.5rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+.foot a {
+  color: inherit;
+}
+
+@media (max-width: 480px) {
+  .panel {
+    padding: 1.25rem;
+  }
+}
