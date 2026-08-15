@@ -20,6 +20,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>daily.quiz — 정처기 필기 개념 문제</title>
+    <link rel="icon" href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/favicon.svg`} type="image/svg+xml" />
     <meta
       name="description"
       content="정보처리기사 필기 빈출 개념을 4지선다로 풀고, 즉시 채점과 오답 해설을 받는 연습장. daily.mcp 블로그의 개념 글과 연결됩니다."
@@ -94,8 +95,8 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
     </footer>
 
     {/* 문제 은행 주입 — 빌드 타임 데이터, 런타임 요청 없음 */}
-    <script type="application/json" id="bank" set:html={JSON.stringify(bank)} />
-    <script type="application/json" id="config" set:html={JSON.stringify({ blogPostBase: BLOG_POST_BASE })} />
+    <script is:inline type="application/json" id="bank" set:html={JSON.stringify(bank)} />
+    <script is:inline type="application/json" id="config" set:html={JSON.stringify({ blogPostBase: BLOG_POST_BASE })} />
 
     <script>
       type Q = {
