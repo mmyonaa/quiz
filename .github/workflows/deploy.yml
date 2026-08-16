@@ -1,11 +1,11 @@
 # Astro를 빌드해 GitHub Pages로 배포한다 (blog 레포와 같은 공식).
 # Pages 소스는 "GitHub Actions" 방식 — 레포를 public으로 전환하고
-# Settings > Pages > Source를 GitHub Actions로 설정하면 main push마다 배포된다.
+# Settings > Pages > Source를 GitHub Actions로 설정한 뒤,
+# 아래 on: 에 push 트리거(branches: [main])를 복구하면 main push마다 배포된다.
+# 현재는 레포가 private라 Pages 배포가 실패하므로 수동 실행만 허용한다.
 name: Deploy to GitHub Pages
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
