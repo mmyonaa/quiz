@@ -231,6 +231,61 @@ button.linklike:hover {
   gap: 0.6rem;
 }
 
+/* ── 모의고사 ── */
+.mock-box {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+.mock-box h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+}
+.mock-desc {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0 0 1rem;
+}
+.timer {
+  color: var(--accent);
+  font-weight: 600;
+}
+.subjects {
+  display: grid;
+  gap: 0.4rem;
+  margin-bottom: 1.5rem;
+}
+.subj {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--ok);
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-size: 0.92rem;
+}
+.subj.fail {
+  border-left-color: var(--accent);
+}
+.subj-area {
+  flex: 1;
+  font-weight: 600;
+}
+.subj-count {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.subj-score {
+  min-width: 5.5em;
+  text-align: right;
+}
+.subj.fail .subj-score {
+  color: var(--accent);
+  font-weight: 600;
+}
+
 /* ── 풀이 화면 ── */
 .exam-head {
   display: flex;

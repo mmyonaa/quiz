@@ -72,17 +72,30 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
             <button id="note-clear" class="linklike">비우기</button>
           </span>
         </div>
+
+        {/* 모의고사 — 실제 필기 형식 모사 */}
+        <div class="mock-box">
+          <h2>모의고사</h2>
+          <p class="mock-desc">
+            실제 필기 형식 그대로 — 영역별 20문항, 총 100문항을 150분 안에 풉니다.
+            과목별 40점 미만이면 과락, 과락 없이 평균 60점 이상이면 합격입니다.
+            문항을 건너뛰고 나중에 돌아올 수 있습니다.
+          </p>
+          <button id="start-mock" class="primary">모의고사 시작</button>
+        </div>
       </section>
 
       {/* ── 2. 풀이 화면 ── */}
       <section id="exam" class="panel" hidden>
         <div class="exam-head">
           <span id="progress" class="mono"></span>
+          <span id="timer" class="mono timer" hidden></span>
           <span id="exam-area" class="badge"></span>
         </div>
         <h2 id="q-text"></h2>
         <ol id="q-choices" class="choices"></ol>
         <div class="exam-nav">
+          <button id="prev" class="ghost" disabled>이전</button>
           <button id="next" class="primary" disabled>다음</button>
         </div>
       </section>
@@ -91,6 +104,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       <section id="result" class="panel" hidden>
         <h1 id="score"></h1>
         <p id="verdict" class="lead"></p>
+        <div id="subjects" class="subjects" hidden></div>
         <div id="review"></div>
         <p id="note-status" class="note-status"></p>
         <div class="exam-nav">
@@ -107,7 +121,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 
     {/* 문제 은행 주입 — 빌드 타임 데이터, 런타임 요청 없음 */}
     <script is:inline type="application/json" id="bank" set:html={JSON.stringify(bank)} />
-    <script is:inline type="application/json" id="config" set:html={JSON.stringify({ blogPostBase: BLOG_POST_BASE })} />
+    <script is:inline type="application/json" id="config" set:html={JSON.stringify({ blogPostBase: BLOG_POST_BASE, areas: AREAS })} />
 
     <script>
       type Q = {
@@ -121,7 +135,10 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       };
 
       const bank: Q[] = JSON.parse(document.getElementById("bank")!.textContent!);
-      const { blogPostBase } = JSON.parse(document.getElementById("config")!.textContent!);
+      const { blogPostBase, areas } = JSON.parse(document.getElementById("config")!.textContent!) as {
+        blogPostBase: string;
+        areas: string[];
+      };
 
       const $ = <T extends HTMLElement>(sel: string) => document.querySelector(sel) as T;
       const setup = $("#setup"), exam = $("#exam"), result = $("#result");
@@ -129,6 +146,35 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       let session: Q[] = [];
       let picked: number[] = []; // 문항별 사용자 선택
       let cur = 0;
+      let mode: "practice" | "mock" = "practice";
+
+      // ── 모의고사 타이머 — 실제 필기 150분 ──
+      const MOCK_MINUTES = 150;
+      const MOCK_PER_AREA = 20;
+      let deadline = 0;
+      let timerId: ReturnType<typeof setInterval> | undefined;
+
+      const stopTimer = () => {
+        if (timerId !== undefined) clearInterval(timerId);
+        timerId = undefined;
+        $("#timer").hidden = true;
+      };
+      const tickTimer = () => {
+        const left = Math.max(0, deadline - Date.now());
+        const s = Math.ceil(left / 1000);
+        const pad = (n: number) => String(n).padStart(2, "0");
+        $("#timer").textContent = `${Math.floor(s / 3600)}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`;
+        if (left <= 0) {
+          stopTimer();
+          renderResult(true); // 시간 종료 — 자동 제출
+        }
+      };
+      const startTimer = () => {
+        deadline = Date.now() + MOCK_MINUTES * 60 * 1000;
+        $("#timer").hidden = false;
+        tickTimer();
+        timerId = setInterval(tickTimer, 1000);
+      };
 
       // ── 오답노트 — localStorage 누적, 서버·계정 없음(기기 로컬 전용) ──
       const NOTE_KEY = "daily.quiz.wrong-note.v1";
@@ -163,9 +209,9 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         $("#retry-note").hidden = count === 0;
       };
 
-      const startSession = (pool: Q[]) => {
-        session = shuffle(pool);
-        if (session.length === 0) return;
+      const startSession = (pool: Q[], reshuffle = true) => {
+        if (pool.length === 0) return;
+        session = reshuffle ? shuffle(pool) : pool;
         picked = [];
         cur = 0;
         setup.hidden = true;
@@ -197,6 +243,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           btn.type = "button";
           btn.className = "choice";
           btn.textContent = c;
+          if (picked[cur] === i) btn.classList.add("on"); // 되돌아온 문항의 선택 복원
           btn.addEventListener("click", () => {
             picked[cur] = i;
             ol.querySelectorAll(".choice").forEach((b) => b.classList.remove("on"));
@@ -206,20 +253,24 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           li.appendChild(btn);
           ol.appendChild(li);
         });
+        ($("#prev") as HTMLButtonElement).disabled = cur === 0;
         const next = $("#next") as HTMLButtonElement;
-        next.disabled = picked[cur] === undefined;
+        // 모의고사는 실제 시험처럼 건너뛰기 허용, 연습 모드는 답해야 진행
+        next.disabled = mode === "practice" && picked[cur] === undefined;
         next.textContent = cur === session.length - 1 ? "제출하고 채점" : "다음";
       };
 
-      const renderResult = () => {
+      const renderResult = (timedOut = false) => {
+        stopTimer();
         const total = session.length;
         const correct = session.filter((q, i) => picked[i] === q.answer).length;
         const pct = Math.round((correct / total) * 100);
 
-        // 오답노트 갱신 — 틀리면 누적, 맞히면(어느 모드든) 노트에서 제거
+        // 오답노트 갱신 — 답하고 틀리면 누적, 맞히면(어느 모드든) 제거. 무응답은 노트에 넣지 않는다.
         const note = loadNote();
         let added = 0, cleared = 0;
         session.forEach((q, i) => {
+          if (picked[i] === undefined) return;
           if (picked[i] !== q.answer) {
             if (!note[q.id]) added++;
             note[q.id] = { n: (note[q.id]?.n ?? 0) + 1, at: Date.now() };
@@ -241,18 +292,57 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
             : `${parts.join(" · ")}${parts.length ? " — " : ""}오답노트에 ${remain}문제 남아 있습니다.`;
         refreshNoteUI();
 
-        $("#score").textContent = `${correct} / ${total} (${pct}점)`;
-        $("#verdict").textContent =
-          pct >= 60 ? "합격권입니다. 틀린 문제만 다져두세요." : "아직 위험합니다. 오답 해설과 개념 글을 먼저 읽어보세요.";
+        const subjects = $("#subjects");
+        if (mode === "mock") {
+          // 과목별 채점 — 40점 미만 과락, 과락 없이 평균 60점 이상 합격
+          const perArea = areas.map((a) => {
+            const qs = session.map((q, i) => ({ q, i })).filter(({ q }) => q.area === a);
+            const ok = qs.filter(({ q, i }) => picked[i] === q.answer).length;
+            const score = qs.length ? Math.round((ok / qs.length) * 100) : 0;
+            return { area: a, ok, total: qs.length, score, fail: score < 40 };
+          });
+          const avg = Math.round(perArea.reduce((s, p) => s + p.score, 0) / perArea.length);
+          const failed = perArea.filter((p) => p.fail);
+          const pass = avg >= 60 && failed.length === 0;
+          $("#score").textContent = `평균 ${avg}점 — ${pass ? "합격" : "불합격"}`;
+          $("#verdict").textContent = [
+            timedOut ? "시간이 종료되어 자동 제출되었습니다." : "",
+            failed.length
+              ? `과락(40점 미만): ${failed.map((p) => p.area).join(", ")}.`
+              : avg >= 60
+                ? "과락 없이 평균 60점을 넘겼습니다."
+                : "과락은 없지만 평균이 60점에 못 미칩니다.",
+            "아래에서 틀린 문항만 복기하세요.",
+          ].filter(Boolean).join(" ");
+          subjects.innerHTML = perArea
+            .map(
+              (p) => `
+              <div class="subj${p.fail ? " fail" : ""}">
+                <span class="subj-area">${p.area}</span>
+                <span class="subj-count mono">${p.ok} / ${p.total}</span>
+                <span class="subj-score">${p.score}점${p.fail ? " · 과락" : ""}</span>
+              </div>`,
+            )
+            .join("");
+          subjects.hidden = false;
+        } else {
+          $("#score").textContent = `${correct} / ${total} (${pct}점)`;
+          $("#verdict").textContent =
+            pct >= 60 ? "합격권입니다. 틀린 문제만 다져두세요." : "아직 위험합니다. 오답 해설과 개념 글을 먼저 읽어보세요.";
+          subjects.hidden = true;
+        }
+
         const review = $("#review");
         review.innerHTML = "";
         session.forEach((q, i) => {
+          const unanswered = picked[i] === undefined;
           const wrong = picked[i] !== q.answer;
+          if (mode === "mock" && !wrong) return; // 모의고사 복기는 틀린 문항만
           const card = document.createElement("article");
           card.className = wrong ? "rv wrong" : "rv";
           card.innerHTML = `
             <p class="rv-q"><span class="badge">${q.area}</span> ${q.question}</p>
-            <p class="rv-a">${wrong ? `내 답: ${q.choices[picked[i]]}<br/>` : ""}정답: <b>${q.choices[q.answer]}</b></p>
+            <p class="rv-a">${wrong ? `내 답: ${unanswered ? "무응답" : q.choices[picked[i]]}<br/>` : ""}정답: <b>${q.choices[q.answer]}</b></p>
             <p class="rv-x">${q.explanation}</p>
             <p class="rv-link"><a href="${blogPostBase}${q.relatedPost}/" target="_blank" rel="noopener">개념 글 다시 읽기 →</a></p>
           `;
@@ -267,13 +357,34 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         const area = (document.querySelector('input[name="area"]:checked') as HTMLInputElement).value;
         const count = Number((document.querySelector('input[name="count"]:checked') as HTMLInputElement).value);
         const pool = area === "전체" ? bank : bank.filter((q) => q.area === area);
+        mode = "practice";
         startSession(shuffle(pool).slice(0, count));
       });
 
+      // 모의고사 — 영역별 20문항을 과목 순서대로 출제(실제 필기 구성), 150분 타이머
+      $("#start-mock").addEventListener("click", () => {
+        const paper = areas.flatMap((a) =>
+          shuffle(bank.filter((q) => q.area === a)).slice(0, MOCK_PER_AREA),
+        );
+        mode = "mock";
+        startSession(paper, false);
+        startTimer();
+      });
+
       // 오답만 다시 풀기 — 설정 화면·결과 화면 양쪽에서 진입
-      const startNoteSession = () => startSession(noteQuestions());
+      const startNoteSession = () => {
+        mode = "practice";
+        startSession(noteQuestions());
+      };
       $("#start-note").addEventListener("click", startNoteSession);
       $("#retry-note").addEventListener("click", startNoteSession);
+
+      $("#prev").addEventListener("click", () => {
+        if (cur > 0) {
+          cur--;
+          renderQuestion();
+        }
+      });
 
       $("#note-clear").addEventListener("click", () => {
         saveNote({});
