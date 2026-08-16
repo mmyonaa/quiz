@@ -29,6 +29,10 @@
 * {
   box-sizing: border-box;
 }
+/* display를 지정한 요소(.note-box 등)에서도 hidden 속성이 항상 이기도록 */
+[hidden] {
+  display: none !important;
+}
 body {
   margin: 0;
   background: var(--bg);
@@ -164,6 +168,67 @@ button.primary:disabled {
 }
 button.primary:not(:disabled):hover {
   filter: brightness(1.06);
+}
+
+/* ── 오답노트 ── */
+.note-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1.25rem;
+  padding: 0.8rem 1rem;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.note-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+button.ghost {
+  appearance: none;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.5em 1.2em;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+}
+button.ghost:hover {
+  background: var(--accent-soft);
+}
+button.linklike {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--muted);
+  cursor: pointer;
+  text-decoration: underline;
+}
+button.linklike:hover {
+  color: var(--accent);
+}
+.note-status {
+  margin: 0.25rem 0 1rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+.note-status:empty {
+  display: none;
+}
+.exam-nav {
+  gap: 0.6rem;
 }
 
 /* ── 풀이 화면 ── */

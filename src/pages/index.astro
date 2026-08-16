@@ -63,6 +63,15 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           ))}
         </fieldset>
         <button id="start" class="primary">시작하기</button>
+
+        {/* 오답노트 — localStorage 누적, 기기 로컬 전용 */}
+        <div id="note-box" class="note-box" hidden>
+          <span id="note-info"></span>
+          <span class="note-actions">
+            <button id="start-note" class="ghost">오답만 다시 풀기</button>
+            <button id="note-clear" class="linklike">비우기</button>
+          </span>
+        </div>
       </section>
 
       {/* ── 2. 풀이 화면 ── */}
@@ -83,7 +92,9 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         <h1 id="score"></h1>
         <p id="verdict" class="lead"></p>
         <div id="review"></div>
+        <p id="note-status" class="note-status"></p>
         <div class="exam-nav">
+          <button id="retry-note" class="ghost" hidden>오답만 다시 풀기</button>
           <button id="retry" class="primary">다시 풀기</button>
         </div>
       </section>
@@ -118,6 +129,50 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       let session: Q[] = [];
       let picked: number[] = []; // 문항별 사용자 선택
       let cur = 0;
+
+      // ── 오답노트 — localStorage 누적, 서버·계정 없음(기기 로컬 전용) ──
+      const NOTE_KEY = "daily.quiz.wrong-note.v1";
+      type Note = Record<string, { n: number; at: number }>; // id → 틀린 횟수, 마지막 오답 시각
+      const bankById = new Map(bank.map((q) => [q.id, q]));
+
+      const loadNote = (): Note => {
+        try {
+          const raw = JSON.parse(localStorage.getItem(NOTE_KEY) ?? "{}") as Note;
+          // 은행에서 빠진(개정·삭제된) 문제는 정리
+          return Object.fromEntries(Object.entries(raw).filter(([id]) => bankById.has(id)));
+        } catch {
+          return {};
+        }
+      };
+      const saveNote = (note: Note) => {
+        try {
+          localStorage.setItem(NOTE_KEY, JSON.stringify(note));
+        } catch {
+          /* 시크릿 모드 등 저장 불가 환경은 조용히 무시 */
+        }
+      };
+
+      const noteQuestions = (): Q[] =>
+        Object.keys(loadNote()).map((id) => bankById.get(id)!);
+
+      const refreshNoteUI = () => {
+        const count = Object.keys(loadNote()).length;
+        const box = $("#note-box");
+        box.hidden = count === 0;
+        if (count > 0) $("#note-info").textContent = `오답노트에 ${count}문제가 쌓여 있습니다.`;
+        $("#retry-note").hidden = count === 0;
+      };
+
+      const startSession = (pool: Q[]) => {
+        session = shuffle(pool);
+        if (session.length === 0) return;
+        picked = [];
+        cur = 0;
+        setup.hidden = true;
+        result.hidden = true;
+        exam.hidden = false;
+        renderQuestion();
+      };
 
       // Fisher-Yates 셔플
       const shuffle = <T,>(arr: T[]): T[] => {
@@ -160,6 +215,32 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         const total = session.length;
         const correct = session.filter((q, i) => picked[i] === q.answer).length;
         const pct = Math.round((correct / total) * 100);
+
+        // 오답노트 갱신 — 틀리면 누적, 맞히면(어느 모드든) 노트에서 제거
+        const note = loadNote();
+        let added = 0, cleared = 0;
+        session.forEach((q, i) => {
+          if (picked[i] !== q.answer) {
+            if (!note[q.id]) added++;
+            note[q.id] = { n: (note[q.id]?.n ?? 0) + 1, at: Date.now() };
+          } else if (note[q.id]) {
+            delete note[q.id];
+            cleared++;
+          }
+        });
+        saveNote(note);
+        const remain = Object.keys(note).length;
+        const parts: string[] = [];
+        if (added) parts.push(`오답 ${added}문제를 오답노트에 담았습니다`);
+        if (cleared) parts.push(`${cleared}문제를 오답노트에서 지웠습니다`);
+        $("#note-status").textContent =
+          remain === 0
+            ? cleared
+              ? "오답노트를 모두 비웠습니다. 깔끔합니다."
+              : ""
+            : `${parts.join(" · ")}${parts.length ? " — " : ""}오답노트에 ${remain}문제 남아 있습니다.`;
+        refreshNoteUI();
+
         $("#score").textContent = `${correct} / ${total} (${pct}점)`;
         $("#verdict").textContent =
           pct >= 60 ? "합격권입니다. 틀린 문제만 다져두세요." : "아직 위험합니다. 오답 해설과 개념 글을 먼저 읽어보세요.";
@@ -186,14 +267,17 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         const area = (document.querySelector('input[name="area"]:checked') as HTMLInputElement).value;
         const count = Number((document.querySelector('input[name="count"]:checked') as HTMLInputElement).value);
         const pool = area === "전체" ? bank : bank.filter((q) => q.area === area);
-        session = shuffle(pool).slice(0, count);
-        if (session.length === 0) return;
-        picked = [];
-        cur = 0;
-        setup.hidden = true;
-        result.hidden = true;
-        exam.hidden = false;
-        renderQuestion();
+        startSession(shuffle(pool).slice(0, count));
+      });
+
+      // 오답만 다시 풀기 — 설정 화면·결과 화면 양쪽에서 진입
+      const startNoteSession = () => startSession(noteQuestions());
+      $("#start-note").addEventListener("click", startNoteSession);
+      $("#retry-note").addEventListener("click", startNoteSession);
+
+      $("#note-clear").addEventListener("click", () => {
+        saveNote({});
+        refreshNoteUI();
       });
 
       $("#next").addEventListener("click", () => {
@@ -210,6 +294,8 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         setup.hidden = false;
         window.scrollTo(0, 0);
       });
+
+      refreshNoteUI();
     </script>
   </body>
 </html>
