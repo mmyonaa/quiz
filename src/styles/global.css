@@ -267,6 +267,8 @@ button.linklike:hover {
   margin-bottom: 1.5rem;
 }
 .subj {
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: center;
   gap: 0.9rem;
@@ -277,8 +279,22 @@ button.linklike:hover {
   background: var(--bg);
   font-size: 0.92rem;
 }
+/* 과목 점수만큼 배경을 채워 한눈에 비교 */
+.subj::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: var(--w, 0%);
+  background: var(--ok-soft);
+}
+.subj > * {
+  position: relative;
+}
 .subj.fail {
   border-left-color: var(--accent);
+}
+.subj.fail::before {
+  background: var(--accent-soft);
 }
 .subj-area {
   flex: 1;
@@ -298,13 +314,116 @@ button.linklike:hover {
 }
 
 /* ── 풀이 화면 ── */
+/* 상단 고정 — 긴 문항에서 스크롤해도 진행률·타이머가 보이도록 */
+.exam-top {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--surface);
+  margin: -1.75rem -1.75rem 1.1rem;
+  padding: 1.1rem 1.75rem 0.85rem;
+  border-radius: var(--radius) var(--radius) 0 0;
+  border-bottom: 1px solid var(--border);
+}
 .exam-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0;
   color: var(--muted);
   font-size: 0.85rem;
+}
+.pbar {
+  height: 4px;
+  margin-top: 0.7rem;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+#pbar-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: width 0.25s ease;
+}
+.timer.low {
+  animation: timer-pulse 1.2s ease-in-out infinite;
+}
+@keyframes timer-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* 문항 팔레트 — 모의고사 OMR 표기 현황 */
+.palette {
+  margin-bottom: 1.1rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.palette summary {
+  cursor: pointer;
+  user-select: none;
+}
+.palette summary:hover {
+  color: var(--text);
+}
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(2.3rem, 1fr));
+  gap: 0.3rem;
+  margin-top: 0.6rem;
+}
+.pal {
+  appearance: none;
+  font: inherit;
+  font-size: 0.78rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  padding: 0.32em 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--muted);
+  cursor: pointer;
+}
+.pal:hover {
+  border-color: var(--accent);
+}
+.pal.done {
+  background: var(--accent-soft);
+  border-color: transparent;
+  color: var(--accent);
+}
+.pal.here {
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* 문항 전환 페이드 */
+#q-body.swap {
+  animation: q-in 0.18s ease;
+}
+@keyframes q-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #q-body.swap {
+    animation: none;
+  }
+  #pbar-fill,
+  #score-fill {
+    transition: none;
+  }
+  .timer.low {
+    animation: none;
+    color: var(--accent);
+  }
 }
 .badge {
   display: inline-block;
@@ -328,6 +447,9 @@ button.linklike:hover {
   gap: 0.55rem;
 }
 .choice {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
   width: 100%;
   text-align: left;
   font: inherit;
@@ -338,9 +460,27 @@ button.linklike:hover {
   color: var(--text);
   cursor: pointer;
   min-height: 44px;
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
 .choice:hover {
   border-color: var(--accent);
+}
+.choice-num {
+  flex: none;
+  width: 1.5em;
+  height: 1.5em;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid var(--muted);
+  border-radius: 50%;
+  font-size: 0.8em;
+  font-weight: 600;
+  color: var(--muted);
+  transition: inherit;
+}
+.choice:hover .choice-num {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 .choice.on {
   border-color: var(--accent);
@@ -348,12 +488,35 @@ button.linklike:hover {
   color: var(--accent);
   font-weight: 600;
 }
+.choice.on .choice-num {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
 .exam-nav {
   display: flex;
   justify-content: flex-end;
 }
 
 /* ── 결과 화면 ── */
+.score-bar {
+  height: 8px;
+  margin: 0.4rem 0 0.9rem;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+#score-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  background: var(--ok);
+  transition: width 0.6s ease;
+}
+#score-fill.fail {
+  background: var(--accent);
+}
 #verdict {
   margin-bottom: 1.5rem;
 }
@@ -410,8 +573,34 @@ button.linklike:hover {
   color: inherit;
 }
 
+/* 키보드 힌트 — 포인터가 있는(=키보드가 있을 법한) 환경에서만 */
+.kbd-hint {
+  display: none;
+  margin: 0.9rem 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+@media (hover: hover) and (pointer: fine) {
+  .kbd-hint {
+    display: block;
+  }
+}
+kbd {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+  padding: 0 0.35em;
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: var(--bg);
+}
+
 @media (max-width: 480px) {
   .panel {
     padding: 1.25rem;
+  }
+  .exam-top {
+    margin: -1.25rem -1.25rem 1rem;
+    padding: 0.9rem 1.25rem 0.75rem;
   }
 }

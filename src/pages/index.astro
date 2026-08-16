@@ -87,23 +87,35 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 
       {/* ── 2. 풀이 화면 ── */}
       <section id="exam" class="panel" hidden>
-        <div class="exam-head">
-          <span id="progress" class="mono"></span>
-          <span id="timer" class="mono timer" hidden></span>
-          <span id="exam-area" class="badge"></span>
+        <div class="exam-top">
+          <div class="exam-head">
+            <span id="progress" class="mono"></span>
+            <span id="timer" class="mono timer" hidden></span>
+            <span id="exam-area" class="badge"></span>
+          </div>
+          <div class="pbar"><i id="pbar-fill"></i></div>
         </div>
-        <h2 id="q-text"></h2>
-        <ol id="q-choices" class="choices"></ol>
+        {/* 모의고사 전용 — OMR처럼 문항 이동·표기 현황 확인 */}
+        <details id="palette" class="palette" hidden>
+          <summary>답안 표기 현황 <span id="palette-count" class="mono"></span></summary>
+          <div id="palette-grid" class="palette-grid"></div>
+        </details>
+        <div id="q-body">
+          <h2 id="q-text"></h2>
+          <ol id="q-choices" class="choices"></ol>
+        </div>
         <div class="exam-nav">
           <button id="quit" class="linklike quit">그만두고 나가기</button>
           <button id="prev" class="ghost" disabled>이전</button>
           <button id="next" class="primary" disabled>다음</button>
         </div>
+        <p class="kbd-hint"><kbd>1</kbd>–<kbd>4</kbd> 선택 · <kbd>←</kbd> <kbd>→</kbd> 이동 · <kbd>Enter</kbd> 다음</p>
       </section>
 
       {/* ── 3. 결과 화면 ── */}
       <section id="result" class="panel" hidden>
         <h1 id="score"></h1>
+        <div class="score-bar"><i id="score-fill"></i></div>
         <p id="elapsed" class="elapsed"></p>
         <p id="verdict" class="lead"></p>
         <div id="subjects" class="subjects" hidden></div>
@@ -176,6 +188,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         if (mode === "mock") {
           const left = Math.max(0, deadline - Date.now());
           $("#timer").textContent = fmtClock(Math.ceil(left / 1000));
+          $("#timer").classList.toggle("low", left <= 10 * 60 * 1000); // 10분 남으면 경고
           if (left <= 0) {
             stopTimer();
             renderResult(true); // 시간 종료 — 자동 제출
@@ -188,6 +201,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         startedAt = Date.now();
         deadline = startedAt + MOCK_MINUTES * 60 * 1000;
         $("#timer").classList.toggle("mock", mode === "mock");
+        $("#timer").classList.remove("low");
         $("#timer").hidden = false;
         tickTimer();
         timerId = setInterval(tickTimer, 1000);
@@ -248,9 +262,45 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         return a;
       };
 
+      const selectChoice = (i: number) => {
+        picked[cur] = i;
+        $("#q-choices")
+          .querySelectorAll(".choice")
+          .forEach((b, j) => b.classList.toggle("on", j === i));
+        ($("#next") as HTMLButtonElement).disabled = false;
+        renderPalette(); // 표기 현황 갱신
+      };
+
+      // 모의고사 전용 문항 팔레트 — 표기/미표기 확인과 임의 이동(OMR 역할)
+      const renderPalette = () => {
+        const pal = $("#palette");
+        if (mode !== "mock") {
+          pal.hidden = true;
+          return;
+        }
+        pal.hidden = false;
+        const answered = picked.filter((p) => p !== undefined).length;
+        $("#palette-count").textContent = `${answered} / ${session.length}`;
+        const grid = $("#palette-grid");
+        grid.innerHTML = "";
+        session.forEach((_, i) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className =
+            "pal" + (picked[i] !== undefined ? " done" : "") + (i === cur ? " here" : "");
+          b.textContent = String(i + 1);
+          b.addEventListener("click", () => {
+            cur = i;
+            renderQuestion();
+          });
+          grid.appendChild(b);
+        });
+      };
+
       const renderQuestion = () => {
         const q = session[cur];
         $("#progress").textContent = `${cur + 1} / ${session.length}`;
+        $("#pbar-fill").style.width = `${((cur + 1) / session.length) * 100}%`;
         $("#exam-area").textContent = q.area;
         $("#q-text").textContent = q.question;
         const ol = $("#q-choices");
@@ -260,14 +310,15 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           const btn = document.createElement("button");
           btn.type = "button";
           btn.className = "choice";
-          btn.textContent = c;
+          const num = document.createElement("span");
+          num.className = "choice-num";
+          num.textContent = String(i + 1);
+          const txt = document.createElement("span");
+          txt.className = "choice-txt";
+          txt.textContent = c;
+          btn.append(num, txt);
           if (picked[cur] === i) btn.classList.add("on"); // 되돌아온 문항의 선택 복원
-          btn.addEventListener("click", () => {
-            picked[cur] = i;
-            ol.querySelectorAll(".choice").forEach((b) => b.classList.remove("on"));
-            btn.classList.add("on");
-            ($("#next") as HTMLButtonElement).disabled = false;
-          });
+          btn.addEventListener("click", () => selectChoice(i));
           li.appendChild(btn);
           ol.appendChild(li);
         });
@@ -276,6 +327,24 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         // 모의고사는 실제 시험처럼 건너뛰기 허용, 연습 모드는 답해야 진행
         next.disabled = mode === "practice" && picked[cur] === undefined;
         next.textContent = cur === session.length - 1 ? "제출하고 채점" : "다음";
+        renderPalette();
+        // 문항 전환 페이드 — 애니메이션 재시작을 위해 리플로 강제
+        const body = $("#q-body");
+        body.classList.remove("swap");
+        void body.offsetWidth;
+        body.classList.add("swap");
+      };
+
+      // 점수 바 — 표시 직후 폭을 채워 트랜지션이 걸리도록 두 프레임 뒤에 적용
+      const setScoreBar = (pct: number, pass: boolean) => {
+        const fill = $("#score-fill");
+        fill.classList.toggle("fail", !pass);
+        fill.style.width = "0%";
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => {
+            fill.style.width = `${pct}%`;
+          }),
+        );
       };
 
       const renderResult = (timedOut = false) => {
@@ -326,6 +395,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           const failed = perArea.filter((p) => p.fail);
           const pass = avg >= 60 && failed.length === 0;
           $("#score").textContent = `평균 ${avg}점 — ${pass ? "합격" : "불합격"}`;
+          setScoreBar(avg, pass);
           $("#verdict").textContent = [
             timedOut ? "시간이 종료되어 자동 제출되었습니다." : "",
             failed.length
@@ -338,7 +408,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           subjects.innerHTML = perArea
             .map(
               (p) => `
-              <div class="subj${p.fail ? " fail" : ""}">
+              <div class="subj${p.fail ? " fail" : ""}" style="--w:${p.score}%">
                 <span class="subj-area">${p.area}</span>
                 <span class="subj-count mono">${p.ok} / ${p.total}</span>
                 <span class="subj-score">${p.score}점${p.fail ? " · 과락" : ""}</span>
@@ -348,6 +418,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           subjects.hidden = false;
         } else {
           $("#score").textContent = `${correct} / ${total} (${pct}점)`;
+          setScoreBar(pct, pct >= 60);
           $("#verdict").textContent =
             pct >= 60 ? "합격권입니다. 틀린 문제만 다져두세요." : "아직 위험합니다. 오답 해설과 개념 글을 먼저 읽어보세요.";
           subjects.hidden = true;
@@ -426,7 +497,30 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           cur++;
           renderQuestion();
         } else {
+          // 모의고사는 건너뛴 문항이 있으면 제출 전에 한 번 확인
+          if (mode === "mock") {
+            const un = session.filter((_, i) => picked[i] === undefined).length;
+            if (un > 0 && !confirm(`무응답 ${un}문항이 있습니다. 지금 제출하고 채점할까요?`)) return;
+          }
           renderResult();
+        }
+      });
+
+      // 키보드 단축키 — 1~4 선택, ←/→ 이동, Enter 다음(버튼 포커스 중엔 기본 동작에 맡김)
+      document.addEventListener("keydown", (e) => {
+        if (exam.hidden || e.metaKey || e.ctrlKey || e.altKey) return;
+        if (e.key >= "1" && e.key <= "4") {
+          selectChoice(Number(e.key) - 1);
+          e.preventDefault();
+        } else if (e.key === "ArrowLeft") {
+          if (cur > 0) {
+            cur--;
+            renderQuestion();
+          }
+        } else if (e.key === "ArrowRight" || e.key === "Enter") {
+          if (e.key === "Enter" && (document.activeElement as HTMLElement | null)?.closest("button, summary, a")) return;
+          const next = $("#next") as HTMLButtonElement;
+          if (!next.disabled) next.click();
         }
       });
 
