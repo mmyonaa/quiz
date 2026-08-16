@@ -95,6 +95,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         <h2 id="q-text"></h2>
         <ol id="q-choices" class="choices"></ol>
         <div class="exam-nav">
+          <button id="quit" class="linklike quit">그만두고 나가기</button>
           <button id="prev" class="ghost" disabled>이전</button>
           <button id="next" class="primary" disabled>다음</button>
         </div>
@@ -103,6 +104,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       {/* ── 3. 결과 화면 ── */}
       <section id="result" class="panel" hidden>
         <h1 id="score"></h1>
+        <p id="elapsed" class="elapsed"></p>
         <p id="verdict" class="lead"></p>
         <div id="subjects" class="subjects" hidden></div>
         <div id="review"></div>
@@ -148,11 +150,22 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       let cur = 0;
       let mode: "practice" | "mock" = "practice";
 
-      // ── 모의고사 타이머 — 실제 필기 150분 ──
+      // ── 타이머 — 모의고사는 150분 카운트다운, 연습은 경과 시간 카운트업 ──
       const MOCK_MINUTES = 150;
       const MOCK_PER_AREA = 20;
+      let startedAt = 0;
       let deadline = 0;
       let timerId: ReturnType<typeof setInterval> | undefined;
+
+      const pad = (n: number) => String(n).padStart(2, "0");
+      const fmtClock = (s: number) =>
+        s >= 3600
+          ? `${Math.floor(s / 3600)}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`
+          : `${Math.floor(s / 60)}:${pad(s % 60)}`;
+      const fmtDuration = (s: number) => {
+        const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+        return h > 0 ? `${h}시간 ${m}분 ${sec}초` : m > 0 ? `${m}분 ${sec}초` : `${sec}초`;
+      };
 
       const stopTimer = () => {
         if (timerId !== undefined) clearInterval(timerId);
@@ -160,17 +173,21 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         $("#timer").hidden = true;
       };
       const tickTimer = () => {
-        const left = Math.max(0, deadline - Date.now());
-        const s = Math.ceil(left / 1000);
-        const pad = (n: number) => String(n).padStart(2, "0");
-        $("#timer").textContent = `${Math.floor(s / 3600)}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`;
-        if (left <= 0) {
-          stopTimer();
-          renderResult(true); // 시간 종료 — 자동 제출
+        if (mode === "mock") {
+          const left = Math.max(0, deadline - Date.now());
+          $("#timer").textContent = fmtClock(Math.ceil(left / 1000));
+          if (left <= 0) {
+            stopTimer();
+            renderResult(true); // 시간 종료 — 자동 제출
+          }
+        } else {
+          $("#timer").textContent = fmtClock(Math.floor((Date.now() - startedAt) / 1000));
         }
       };
       const startTimer = () => {
-        deadline = Date.now() + MOCK_MINUTES * 60 * 1000;
+        startedAt = Date.now();
+        deadline = startedAt + MOCK_MINUTES * 60 * 1000;
+        $("#timer").classList.toggle("mock", mode === "mock");
         $("#timer").hidden = false;
         tickTimer();
         timerId = setInterval(tickTimer, 1000);
@@ -218,6 +235,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         result.hidden = true;
         exam.hidden = false;
         renderQuestion();
+        startTimer(); // 시작 버튼을 누른 순간부터 잰다
       };
 
       // Fisher-Yates 셔플
@@ -262,7 +280,10 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 
       const renderResult = (timedOut = false) => {
         stopTimer();
+        const elapsedSec = Math.max(1, Math.round((Date.now() - startedAt) / 1000));
         const total = session.length;
+        $("#elapsed").textContent =
+          `풀이 시간 ${fmtDuration(elapsedSec)} · 문항당 평균 ${Math.round(elapsedSec / total)}초`;
         const correct = session.filter((q, i) => picked[i] === q.answer).length;
         const pct = Math.round((correct / total) * 100);
 
@@ -368,7 +389,6 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         );
         mode = "mock";
         startSession(paper, false);
-        startTimer();
       });
 
       // 오답만 다시 풀기 — 설정 화면·결과 화면 양쪽에서 진입
@@ -384,6 +404,16 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           cur--;
           renderQuestion();
         }
+      });
+
+      // 풀이 중단 — 기록 없이 설정 화면으로 복귀
+      $("#quit").addEventListener("click", () => {
+        if (!confirm("진행 중인 풀이를 그만둘까요? 지금까지의 답은 저장되지 않습니다.")) return;
+        stopTimer();
+        exam.hidden = true;
+        setup.hidden = false;
+        refreshNoteUI();
+        window.scrollTo(0, 0);
       });
 
       $("#note-clear").addEventListener("click", () => {

@@ -247,8 +247,19 @@ button.linklike:hover {
   margin: 0 0 1rem;
 }
 .timer {
-  color: var(--accent);
+  color: var(--muted);
   font-weight: 600;
+}
+.timer.mock {
+  color: var(--accent);
+}
+.elapsed {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: -0.25rem 0 0.75rem;
+}
+.exam-nav .quit {
+  margin-right: auto;
 }
 .subjects {
   display: grid;
