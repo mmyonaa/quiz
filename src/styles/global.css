@@ -764,6 +764,14 @@ button.linklike:hover {
 .foot a {
   color: inherit;
 }
+.foot-notice {
+  margin: 0 0 0.4rem;
+}
+.foot-copy {
+  margin: 0;
+  font-size: 0.78rem;
+  opacity: 0.8;
+}
 
 /* ── 개념 노트 ── */
 .toc {

@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import { AREAS } from "../content.config";
 import postTitles from "../data/post-titles.json";
 import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
 import "../styles/global.css";
 
 // 개념 노트 — 문제 은행의 해설을 영역별 → 개념 글(주제)별로 모아 읽는 정적 페이지.
@@ -85,9 +86,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       ))}
     </main>
 
-    <footer class="foot">
-      문제는 기출 복제가 아닌 자체 제작 문항입니다 · 해설의 개념 글은
-      <a href="https://mmyonaa.github.io/blog/" target="_blank" rel="noopener">daily.mcp</a>에서 발행됩니다
-    </footer>
+    <SiteFooter />
   </body>
 </html>

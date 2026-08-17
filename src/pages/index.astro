@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import { AREAS } from "../content.config";
 import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
 import "../styles/global.css";
 
 // 문제 은행 전체를 빌드 타임에 굽는다 — 서버 없이 클라이언트 JS만으로 동작.
@@ -131,10 +132,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       </section>
     </main>
 
-    <footer class="foot">
-      문제는 기출 복제가 아닌 자체 제작 문항입니다 · 해설의 개념 글은
-      <a href="https://mmyonaa.github.io/blog/" target="_blank" rel="noopener">daily.mcp</a>에서 발행됩니다
-    </footer>
+    <SiteFooter />
 
     {/* 문제 은행 주입 — 빌드 타임 데이터, 런타임 요청 없음 */}
     <script is:inline type="application/json" id="bank" set:html={JSON.stringify(bank)} />
