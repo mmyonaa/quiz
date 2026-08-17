@@ -1,0 +1,224 @@
+---
+import { getCollection } from "astro:content";
+import AuthBox from "../components/AuthBox.astro";
+import "../styles/global.css";
+
+// 마이페이지 — DB에 쌓인 내 오답 기록·저장 문제를 보는 화면 (#7).
+// 문제 본문·해설은 빌드 타임에 굽고, DB에서는 id·횟수·날짜만 온다.
+const entries = await getCollection("quiz");
+const bank = entries.map((e) => e.data);
+
+const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>daily.quiz — 마이페이지</title>
+    <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
+    <meta name="description" content="내 오답노트와 저장한 문제 — 계정에 영구 보관됩니다." />
+  </head>
+  <body>
+    <header class="top">
+      <a class="brand" href={`${base}/`}>daily.quiz</a>
+      <span class="top-nav">
+        <AuthBox />
+        <a class="sister" href={`${base}/`}>← 문제 풀기</a>
+      </span>
+    </header>
+
+    <main>
+      {/* 비로그인 관문 */}
+      <section id="gate" class="panel" hidden>
+        <h1>마이페이지</h1>
+        <p class="lead">오답 기록과 저장한 문제는 계정에 보관됩니다. 로그인하면 어느 기기에서든 이어서 볼 수 있어요.</p>
+        <button id="gate-login" class="primary" type="button">Google로 로그인</button>
+      </section>
+
+      <section id="my" class="panel" hidden>
+        <h1>마이페이지</h1>
+        <div class="tabs" role="tablist">
+          <button id="tab-wrong" class="tab on" type="button" role="tab">오답노트 <em id="wrong-count"></em></button>
+          <button id="tab-saved" class="tab" type="button" role="tab">저장한 문제 <em id="saved-count"></em></button>
+        </div>
+
+        <div id="pane-wrong">
+          <div class="my-toolbar">
+            <span class="my-hint">채점 때 틀린 문제가 자동으로 쌓입니다.</span>
+            <select id="wrong-sort" class="sort" aria-label="정렬">
+              <option value="recent">최신 순</option>
+              <option value="count">많이 틀린 순</option>
+            </select>
+          </div>
+          <div id="wrong-list"></div>
+          <p id="wrong-empty" class="empty" hidden>아직 오답 기록이 없습니다. 문제를 풀면 틀린 문제가 여기에 쌓여요.</p>
+        </div>
+
+        <div id="pane-saved" hidden>
+          <div class="my-toolbar">
+            <span class="my-hint">풀이 화면에서 ☆를 눌러 저장한 문제입니다.</span>
+          </div>
+          <div id="saved-list"></div>
+          <p id="saved-empty" class="empty" hidden>저장한 문제가 없습니다. 풀이 중 ☆ 버튼으로 담아두세요.</p>
+        </div>
+      </section>
+    </main>
+
+    <script is:inline type="application/json" id="bank" set:html={JSON.stringify(bank)} />
+    <script is:inline type="application/json" id="config" set:html={JSON.stringify({ blogPostBase: BLOG_POST_BASE })} />
+
+    <script>
+      import { supabase } from "../lib/supabase";
+      import { onAuth, authSession, loginWithGoogle } from "../lib/auth";
+
+      type Q = {
+        id: string;
+        area: string;
+        question: string;
+        choices: string[];
+        answer: number;
+        explanation: string;
+        relatedPost: string;
+      };
+      type WrongRow = { question_id: string; chosen: number; answered_at: string };
+      type WrongItem = { q: Q; count: number; lastChosen: number; lastAt: string };
+
+      const bank: Q[] = JSON.parse(document.getElementById("bank")!.textContent!);
+      const { blogPostBase } = JSON.parse(document.getElementById("config")!.textContent!) as { blogPostBase: string };
+      const bankById = new Map(bank.map((q) => [q.id, q]));
+
+      const $ = <T extends HTMLElement>(sel: string) => document.querySelector(sel) as T;
+
+      let wrongs: WrongItem[] = [];
+      let saved: Q[] = [];
+
+      const fmtDate = (iso: string) =>
+        new Date(iso).toLocaleDateString("ko-KR", { year: "numeric", month: "long", day: "numeric" });
+
+      const card = (q: Q, metaHTML: string) => {
+        const el = document.createElement("article");
+        el.className = "rv wrong";
+        el.innerHTML = `
+          <p class="rv-q"><span class="badge">${q.area}</span> ${q.question}</p>
+          ${metaHTML}
+          <p class="rv-a">정답: <b>${q.choices[q.answer]}</b></p>
+          <p class="rv-x">${q.explanation}</p>
+          <p class="rv-link"><a href="${blogPostBase}${q.relatedPost}/" target="_blank" rel="noopener">개념 글 다시 읽기 →</a></p>
+        `;
+        return el;
+      };
+
+      const renderWrongs = () => {
+        const sort = ($("#wrong-sort") as HTMLSelectElement).value;
+        const items = [...wrongs].sort((a, b) =>
+          sort === "count" ? b.count - a.count || b.lastAt.localeCompare(a.lastAt) : b.lastAt.localeCompare(a.lastAt),
+        );
+        $("#wrong-count").textContent = String(items.length);
+        $("#wrong-empty").hidden = items.length > 0;
+        const list = $("#wrong-list");
+        list.innerHTML = "";
+        items.forEach((it) => {
+          const meta = `
+            <p class="rv-meta mono">${it.count}회 틀림 · 마지막 ${fmtDate(it.lastAt)}</p>
+            <p class="rv-a">내 답: ${it.q.choices[it.lastChosen] ?? "?"}</p>`;
+          const el = card(it.q, meta);
+          const del = document.createElement("button");
+          del.type = "button";
+          del.className = "linklike rv-del";
+          del.textContent = "기록 삭제";
+          del.addEventListener("click", async () => {
+            if (!confirm("이 문제의 오답 기록을 모두 삭제할까요?")) return;
+            const { error } = await supabase
+              .from("wrong_answers")
+              .delete()
+              .eq("user_id", authSession()!.user.id)
+              .eq("question_id", it.q.id);
+            if (error) {
+              alert(`삭제에 실패했습니다: ${error.message}`);
+              return;
+            }
+            wrongs = wrongs.filter((w) => w.q.id !== it.q.id);
+            renderWrongs();
+          });
+          el.appendChild(del);
+          list.appendChild(el);
+        });
+      };
+
+      const renderSaved = () => {
+        $("#saved-count").textContent = String(saved.length);
+        $("#saved-empty").hidden = saved.length > 0;
+        const list = $("#saved-list");
+        list.innerHTML = "";
+        saved.forEach((q) => {
+          const el = card(q, "");
+          el.className = "rv"; // 저장 목록은 오답 색을 쓰지 않는다
+          const del = document.createElement("button");
+          del.type = "button";
+          del.className = "linklike rv-del";
+          del.textContent = "저장 해제";
+          del.addEventListener("click", async () => {
+            const { error } = await supabase
+              .from("saved_questions")
+              .delete()
+              .eq("user_id", authSession()!.user.id)
+              .eq("question_id", q.id);
+            if (error) {
+              alert(`해제에 실패했습니다: ${error.message}`);
+              return;
+            }
+            saved = saved.filter((s) => s.id !== q.id);
+            renderSaved();
+          });
+          el.appendChild(del);
+          list.appendChild(el);
+        });
+      };
+
+      const load = async () => {
+        const [w, s] = await Promise.all([
+          supabase.from("wrong_answers").select("question_id, chosen, answered_at").order("answered_at", { ascending: false }),
+          supabase.from("saved_questions").select("question_id, created_at").order("created_at", { ascending: false }),
+        ]);
+        if (w.error || s.error) {
+          alert(`기록을 불러오지 못했습니다: ${(w.error ?? s.error)!.message}`);
+          return;
+        }
+        // question_id로 묶기 — 내림차순이라 첫 등장이 최신 기록
+        const byId = new Map<string, WrongItem>();
+        (w.data as WrongRow[]).forEach((r) => {
+          const q = bankById.get(r.question_id);
+          if (!q) return; // 은행에서 빠진 문제는 표시하지 않는다
+          const it = byId.get(r.question_id);
+          if (it) it.count++;
+          else byId.set(r.question_id, { q, count: 1, lastChosen: r.chosen, lastAt: r.answered_at });
+        });
+        wrongs = [...byId.values()];
+        saved = (s.data as { question_id: string }[]).map((r) => bankById.get(r.question_id)).filter((q): q is Q => !!q);
+        renderWrongs();
+        renderSaved();
+      };
+
+      // 탭 전환
+      const showTab = (tab: "wrong" | "saved") => {
+        $("#tab-wrong").classList.toggle("on", tab === "wrong");
+        $("#tab-saved").classList.toggle("on", tab === "saved");
+        $("#pane-wrong").hidden = tab !== "wrong";
+        $("#pane-saved").hidden = tab !== "saved";
+      };
+      $("#tab-wrong").addEventListener("click", () => showTab("wrong"));
+      $("#tab-saved").addEventListener("click", () => showTab("saved"));
+      $("#wrong-sort").addEventListener("change", renderWrongs);
+      $("#gate-login").addEventListener("click", loginWithGoogle);
+
+      onAuth((s) => {
+        $("#gate").hidden = !!s;
+        $("#my").hidden = !s;
+        if (s) load();
+      });
+    </script>
+  </body>
+</html>

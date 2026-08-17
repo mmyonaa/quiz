@@ -1,0 +1,44 @@
+---
+// 헤더 인증 영역 — 모든 페이지 공용. 로그인 여부에 따라 마이페이지 링크·유저 표시가 바뀐다.
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<span class="nav">
+  <a id="my-link" class="sister" href={`${base}/my/`} hidden>마이페이지</a>
+  <span id="auth-user" class="auth-user" hidden></span>
+  <button id="login" class="ghost auth-btn" type="button" hidden>Google 로그인</button>
+  <button id="dev-login" class="linklike" type="button" hidden>테스트 로그인</button>
+  <button id="logout" class="linklike" type="button" hidden>로그아웃</button>
+</span>
+
+<script>
+  import { onAuth, loginWithGoogle, logout } from "../lib/auth";
+  import { supabase } from "../lib/supabase";
+
+  const el = (id: string) => document.getElementById(id)!;
+
+  onAuth((s) => {
+    el("my-link").hidden = !s;
+    el("auth-user").hidden = !s;
+    el("auth-user").textContent = s ? (s.user.user_metadata?.name ?? s.user.email ?? "") : "";
+    el("login").hidden = !!s;
+    el("dev-login").hidden = !!s || !import.meta.env.DEV;
+    el("logout").hidden = !s;
+  });
+
+  el("login").addEventListener("click", loginWithGoogle);
+  el("logout").addEventListener("click", () => logout());
+
+  // 개발 전용 — Google OAuth 설정 전에도 이메일 테스트 계정으로 전 기능을 검증하기 위한 뒷문.
+  // 프로덕션 빌드에서는 버튼이 hidden으로 남고 이 블록은 트리셰이킹으로 제거된다.
+  if (import.meta.env.DEV) {
+    el("dev-login").addEventListener("click", async () => {
+      const email = prompt("테스트 계정 이메일");
+      if (!email) return;
+      const password = prompt("비밀번호");
+      if (!password) return;
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) alert(`로그인 실패: ${error.message}`);
+    });
+  }
+</script>
