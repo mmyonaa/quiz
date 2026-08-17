@@ -63,6 +63,9 @@ body {
     "Noto Sans KR", sans-serif;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  /* 한국어 어절 단위 줄바꿈 — 단어 중간에서 꺾지 않는다. 긴 영문·URL은 넘침 방지로 예외 허용 */
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 .mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
