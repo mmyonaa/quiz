@@ -1,0 +1,98 @@
+---
+import { getCollection } from "astro:content";
+import { AREAS } from "../content.config";
+import postTitles from "../data/post-titles.json";
+import "../styles/global.css";
+
+// 개념 노트 — 문제 은행의 해설을 영역별 → 개념 글(주제)별로 모아 읽는 정적 페이지.
+// 풀이 없이 개념만 훑고, 각 개념의 원 문항은 '확인 문제'로 접어 복습에 쓴다.
+const entries = await getCollection("quiz");
+const bank = entries.map((e) => e.data);
+
+const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
+const titles: Record<string, string> = postTitles;
+
+// 영역 → 주제(개념 글) → 문항. 주제는 은행 안 등장 순서를 유지한다.
+const byArea = AREAS.map((area) => {
+  const qs = bank.filter((q) => q.area === area);
+  const topics = [...new Set(qs.map((q) => q.relatedPost))].map((post) => ({
+    post,
+    title: titles[post] ?? post.replace(/^\d{4}-\d{2}-\d{2}-/, ""),
+    questions: qs.filter((q) => q.relatedPost === post),
+  }));
+  return { area, count: qs.length, topics };
+});
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>daily.quiz — 개념 노트</title>
+    <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
+    <meta
+      name="description"
+      content="정보처리기사 필기 문제 은행의 해설을 영역별·개념별로 모아 읽는 개념 노트. 각 개념은 확인 문제와 daily.mcp 개념 글로 이어집니다."
+    />
+  </head>
+  <body>
+    <header class="top">
+      <a class="brand" href={`${base}/`}>daily.quiz</a>
+      <span class="top-nav">
+        <a class="sister" href={`${base}/`}>← 문제 풀기</a>
+        <a class="sister" href="https://mmyonaa.github.io/blog/" target="_blank" rel="noopener">daily.mcp →</a>
+      </span>
+    </header>
+
+    <main>
+      <section class="panel">
+        <h1>개념 노트</h1>
+        <p class="lead">
+          문제 은행 {bank.length}문항의 해설을 개념별로 모았습니다.
+          훑어 읽다가 '확인 문제'를 펼쳐 스스로 점검하고, 더 깊게는 개념 글로 이어가세요.
+        </p>
+        <nav class="toc">
+          {byArea.map(({ area, count }) => (
+            <a class="toc-chip" href={`#${area}`}>{area} <em>{count}</em></a>
+          ))}
+        </nav>
+      </section>
+
+      {byArea.map(({ area, topics }) => (
+        <section class="panel" id={area}>
+          <h2 class="area-title">{area}</h2>
+          {topics.map(({ post, title, questions }) => (
+            <div class="topic">
+              <h3 class="topic-title">
+                {title}
+                <a class="topic-link" href={`${BLOG_POST_BASE}${post}/`} target="_blank" rel="noopener">개념 글 →</a>
+              </h3>
+              {questions.map((q) => (
+                <article class="cn">
+                  <p class="cn-x">{q.explanation}</p>
+                  <details class="cn-q">
+                    <summary>확인 문제</summary>
+                    <p class="cn-question">{q.question}</p>
+                    <ol class="cn-choices">
+                      {q.choices.map((c, i) => (
+                        <li class={i === q.answer ? "ans" : ""}>{c}</li>
+                      ))}
+                    </ol>
+                  </details>
+                </article>
+              ))}
+            </div>
+          ))}
+        </section>
+      ))}
+    </main>
+
+    <footer class="foot">
+      문제는 기출 복제가 아닌 자체 제작 문항입니다 · 해설의 개념 글은
+      <a href="https://mmyonaa.github.io/blog/" target="_blank" rel="noopener">daily.mcp</a>에서 발행됩니다
+    </footer>
+  </body>
+</html>

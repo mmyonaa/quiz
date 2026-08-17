@@ -1,0 +1,20 @@
+{
+  "2026-07-17-coupling-cohesion": "결합도와 응집도 — 좋은 모듈의 두 잣대",
+  "2026-07-17-db-normalization": "데이터베이스 정규화 — 1NF부터 BCNF까지",
+  "2026-07-17-osi-7-layers": "OSI 7계층 한눈에 정리",
+  "2026-07-17-process-vs-thread": "프로세스 vs 스레드",
+  "2026-07-18-security-cia": "정보보안 3요소 — 기밀성·무결성·가용성",
+  "2026-07-18-transaction-acid": "트랜잭션과 ACID 원칙",
+  "2026-07-22-deadlock-conditions": "교착상태(데드락)의 4가지 조건",
+  "2026-07-22-tcp-vs-udp": "TCP vs UDP — 무엇이 다른가",
+  "2026-07-23-symmetric-asymmetric": "대칭키 vs 비대칭키 암호화",
+  "2026-07-29-blackbox-whitebox": "블랙박스 테스트 vs 화이트박스 테스트",
+  "2026-07-29-db-index": "인덱스는 어떻게 조회를 빠르게 하나",
+  "2026-08-05-ip-subnetting": "IP 주소와 서브넷팅 기초",
+  "2026-08-10-page-replacement": "페이지 교체 알고리즘 — FIFO와 LRU",
+  "2026-08-11-hash-digital-signature": "해시 함수와 전자서명",
+  "2026-08-14-db-keys": "키의 종류 — 기본키·후보키·슈퍼키·외래키",
+  "2026-08-15-access-control": "접근통제 모델 — DAC·MAC·RBAC",
+  "2026-08-15-cpu-scheduling": "CPU 스케줄링 — 선점 vs 비선점",
+  "2026-08-15-design-patterns-overview": "디자인 패턴 개요 — 생성·구조·행위"
+}

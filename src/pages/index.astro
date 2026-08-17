@@ -29,7 +29,10 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
   <body>
     <header class="top">
       <span class="brand">daily.quiz</span>
-      <a class="sister" href="https://mmyonaa.github.io/blog/" target="_blank" rel="noopener">daily.mcp →</a>
+      <span class="top-nav">
+        <a class="sister" href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/notes/`}>개념 노트</a>
+        <a class="sister" href="https://mmyonaa.github.io/blog/" target="_blank" rel="noopener">daily.mcp →</a>
+      </span>
     </header>
 
     <main>
@@ -39,6 +42,8 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         <p class="lead">
           영역을 고르면 문제를 섞어 출제합니다. 제출하면 바로 채점하고,
           틀린 문제는 해설과 함께 개념 글로 이어집니다.
+          풀기 전에 개념부터 훑고 싶다면
+          <a class="lead-link" href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/notes/`}>개념 노트</a>를 펴 보세요.
         </p>
         <fieldset class="areas">
           <legend>영역</legend>
