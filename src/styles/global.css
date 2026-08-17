@@ -1,4 +1,5 @@
 /* daily.quiz — 최소한의 시스템. 문제 풀이에 집중하는 담백한 단일 컬럼. */
+/* 테마 — 기본은 시스템 설정, 헤더 토글로 고정하면 data-theme가 우선한다 */
 :root {
   --bg: #fafafa;
   --surface: #ffffff;
@@ -11,9 +12,10 @@
   --ok-soft: #e8f6ee;
   --radius: 10px;
   font-size: 16px;
+  color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #131317;
     --surface: #1b1b21;
     --text: #ececf1;
@@ -23,7 +25,20 @@
     --accent-soft: #3a2225;
     --ok: #46c47f;
     --ok-soft: #1d3428;
+    color-scheme: dark;
   }
+}
+:root[data-theme="dark"] {
+  --bg: #131317;
+  --surface: #1b1b21;
+  --text: #ececf1;
+  --muted: #9a9aa5;
+  --border: #2c2c34;
+  --accent: #ff6369;
+  --accent-soft: #3a2225;
+  --ok: #46c47f;
+  --ok-soft: #1d3428;
+  color-scheme: dark;
 }
 
 * {
@@ -32,6 +47,13 @@
 /* display를 지정한 요소(.note-box 등)에서도 hidden 속성이 항상 이기도록 */
 [hidden] {
   display: none !important;
+}
+html,
+body {
+  /* 모바일 드로어(translateX로 화면 밖 대기)가 가로 스크롤을 만들지 않도록.
+     clip은 스크롤 컨테이너를 만들지 않아 sticky 헤더에 영향이 없다(미지원 브라우저는 hidden). */
+  overflow-x: hidden;
+  overflow-x: clip;
 }
 body {
   margin: 0;
@@ -108,6 +130,34 @@ a.brand {
   height: 1rem;
   background: var(--border);
 }
+.top-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 0.3rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+.icon-btn:hover {
+  color: var(--accent);
+}
+/* 테마 버튼 — 라이트에선 달(→다크), 다크에선 해(→라이트) */
+#theme-toggle .ic-sun {
+  display: none;
+}
+#theme-toggle.dark .ic-sun {
+  display: block;
+}
+#theme-toggle.dark .ic-moon {
+  display: none;
+}
 .nav-toggle,
 .nav-close,
 .nav-backdrop {
@@ -117,13 +167,7 @@ a.brand {
 @media (max-width: 720px) {
   .nav-toggle {
     display: inline-flex;
-    align-items: center;
-    appearance: none;
-    border: 0;
-    background: none;
-    padding: 0.3rem;
     color: var(--text);
-    cursor: pointer;
   }
   .nav-backdrop {
     display: block;

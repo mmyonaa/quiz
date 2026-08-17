@@ -11,30 +11,49 @@ const links = [
 ];
 ---
 
+{/* 저장된 테마를 첫 페인트 전에 적용 — 다크 사용자의 흰 화면 번쩍임 방지 */}
+<script is:inline>
+  try {
+    var t = localStorage.getItem("daily.quiz.theme");
+    if (t === "dark" || t === "light") document.documentElement.dataset.theme = t;
+  } catch (e) {}
+</script>
+
 <header class="top">
   <a class="brand" href={`${base}/`}>daily.quiz</a>
-  <button
-    id="nav-toggle"
-    class="nav-toggle"
-    type="button"
-    aria-label="메뉴 열기"
-    aria-expanded="false"
-    aria-controls="site-nav"
-  >
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-      <path d="M4 7h16M4 12h16M4 17h16"></path>
-    </svg>
-  </button>
+  <span class="top-actions">
+    <nav id="site-nav" class="site-nav" aria-label="사이트 메뉴">
+      <button id="nav-close" class="nav-close" type="button" aria-label="메뉴 닫기">×</button>
+      {links.map((l) => (
+        <a class="nav-link" href={l.href} aria-current={current === l.key ? "page" : undefined}>{l.label}</a>
+      ))}
+      <span class="nav-sep" aria-hidden="true"></span>
+      <AuthBox />
+      <a class="nav-link" href="https://mmyonaa.github.io/blog/" target="_blank" rel="noopener">daily.mcp →</a>
+    </nav>
+    <button id="theme-toggle" class="icon-btn" type="button" aria-label="테마 전환">
+      <svg class="ic-moon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+      </svg>
+      <svg class="ic-sun" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+      </svg>
+    </button>
+    <button
+      id="nav-toggle"
+      class="nav-toggle icon-btn"
+      type="button"
+      aria-label="메뉴 열기"
+      aria-expanded="false"
+      aria-controls="site-nav"
+    >
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M4 7h16M4 12h16M4 17h16"></path>
+      </svg>
+    </button>
+  </span>
   <div id="nav-backdrop" class="nav-backdrop"></div>
-  <nav id="site-nav" class="site-nav" aria-label="사이트 메뉴">
-    <button id="nav-close" class="nav-close" type="button" aria-label="메뉴 닫기">×</button>
-    {links.map((l) => (
-      <a class="nav-link" href={l.href} aria-current={current === l.key ? "page" : undefined}>{l.label}</a>
-    ))}
-    <span class="nav-sep" aria-hidden="true"></span>
-    <AuthBox />
-    <a class="nav-link" href="https://mmyonaa.github.io/blog/" target="_blank" rel="noopener">daily.mcp →</a>
-  </nav>
 </header>
 
 <script>
@@ -59,4 +78,29 @@ const links = [
   nav.addEventListener("click", (e) => {
     if ((e.target as HTMLElement).closest("a")) setOpen(false);
   });
+
+  // ── 테마 토글 — 기본은 시스템, 누르면 반대 테마로 고정하고 저장 ──
+  const THEME_KEY = "daily.quiz.theme";
+  const themeBtn = document.getElementById("theme-toggle")!;
+  const effectiveTheme = () =>
+    document.documentElement.dataset.theme ??
+    (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const paintThemeBtn = () => {
+    const dark = effectiveTheme() === "dark";
+    themeBtn.classList.toggle("dark", dark);
+    themeBtn.setAttribute("aria-label", dark ? "라이트 모드로 전환" : "다크 모드로 전환");
+  };
+  themeBtn.addEventListener("click", () => {
+    const next = effectiveTheme() === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = next;
+    try {
+      localStorage.setItem(THEME_KEY, next);
+    } catch {
+      /* 저장 불가 환경이면 이 페이지에서만 적용 */
+    }
+    paintThemeBtn();
+  });
+  // 시스템 테마를 따르는 동안엔 시스템 변경도 아이콘에 반영
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", paintThemeBtn);
+  paintThemeBtn();
 </script>
