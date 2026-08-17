@@ -803,7 +803,7 @@ button.linklike:hover {
   align-items: baseline;
   justify-content: space-between;
   gap: 0.75rem;
-  margin: 0 0 0.6rem;
+  margin: 0 0 0.35rem;
   font-size: 1rem;
 }
 .topic-link {
@@ -816,17 +816,18 @@ button.linklike:hover {
 .topic-link:hover {
   text-decoration: underline;
 }
+/* 개념 항목 카드 — 좌측 색상 보더 없이 담백한 면 카드 */
 .cn {
   border: 1px solid var(--border);
-  border-left: 4px solid var(--accent);
   border-radius: var(--radius);
   padding: 0.85rem 1.05rem;
   margin-bottom: 0.6rem;
   background: var(--bg);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
 }
 .cn-x {
   margin: 0;
-  font-size: 0.93rem;
+  font-size: 0.95rem;
 }
 .cn-q {
   margin-top: 0.55rem;
@@ -839,6 +840,11 @@ button.linklike:hover {
 }
 .cn-q summary:hover {
   color: var(--accent);
+}
+/* 펼친 확인 문제는 구분선으로만 분리 — 박스 중첩을 더 늘리지 않는다 */
+.cn-q[open] {
+  border-top: 1px dashed var(--border);
+  padding-top: 0.6rem;
 }
 .cn-question {
   margin: 0.6rem 0 0.5rem;
