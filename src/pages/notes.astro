@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import { AREAS } from "../content.config";
 import postTitles from "../data/post-titles.json";
+import SiteHeader from "../components/SiteHeader.astro";
 import "../styles/global.css";
 
 // 개념 노트 — 문제 은행의 해설을 영역별 → 개념 글(주제)별로 모아 읽는 정적 페이지.
@@ -39,13 +40,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     />
   </head>
   <body>
-    <header class="top">
-      <a class="brand" href={`${base}/`}>daily.quiz</a>
-      <span class="top-nav">
-        <a class="sister" href={`${base}/`}>← 문제 풀기</a>
-        <a class="sister" href="https://mmyonaa.github.io/blog/" target="_blank" rel="noopener">daily.mcp →</a>
-      </span>
-    </header>
+    <SiteHeader current="notes" />
 
     <main>
       <section class="panel">

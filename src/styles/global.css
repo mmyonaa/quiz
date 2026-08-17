@@ -76,14 +76,143 @@ body {
 .sister:hover {
   color: var(--accent);
 }
-.top-nav {
-  display: inline-flex;
-  align-items: center;
-  gap: 1rem;
-}
 a.brand {
   color: inherit;
   text-decoration: none;
+}
+
+/* ── 사이트 메뉴 — 데스크톱 인라인, 모바일 드로어 ── */
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+/* AuthBox 래퍼를 투명하게 — 내부 항목이 메뉴 레이아웃에 직접 흐르도록 */
+.site-nav .nav {
+  display: contents;
+}
+.nav-link {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+.nav-link:hover {
+  color: var(--accent);
+}
+.nav-link[aria-current="page"] {
+  color: var(--accent);
+  font-weight: 700;
+}
+.nav-sep {
+  width: 1px;
+  height: 1rem;
+  background: var(--border);
+}
+.nav-toggle,
+.nav-close,
+.nav-backdrop {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    appearance: none;
+    border: 0;
+    background: none;
+    padding: 0.3rem;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .nav-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 19;
+    background: rgb(0 0 0 / 0.42);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  .nav-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .site-nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    width: min(78vw, 17rem);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.2rem;
+    padding: 3.4rem 1.4rem 1.5rem;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    transform: translateX(100%);
+    transition: transform 0.22s ease;
+    overflow-y: auto;
+  }
+  .site-nav.open {
+    transform: none;
+    box-shadow: -12px 0 32px rgb(0 0 0 / 0.15);
+  }
+  .nav-close {
+    display: block;
+    position: absolute;
+    top: 0.65rem;
+    right: 0.9rem;
+    appearance: none;
+    border: 0;
+    background: none;
+    padding: 0.2rem 0.4rem;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .nav-close:hover {
+    color: var(--text);
+  }
+  .site-nav .nav-link,
+  .site-nav .sister,
+  .site-nav .auth-user,
+  .site-nav .linklike {
+    font-size: 1rem;
+    padding: 0.55rem 0.25rem;
+  }
+  .site-nav .linklike {
+    text-align: left;
+    text-decoration: none;
+  }
+  .site-nav .auth-user {
+    max-width: none;
+    color: var(--muted);
+    font-size: 0.85rem;
+    padding-bottom: 0.15rem;
+  }
+  .site-nav .auth-btn {
+    margin: 0.35rem 0;
+    padding: 0.55em 1.2em;
+    font-size: 0.9rem;
+  }
+  .nav-sep {
+    width: auto;
+    height: 1px;
+    margin: 0.5rem 0;
+  }
+  body.nav-locked {
+    overflow: hidden;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-nav,
+  .nav-backdrop {
+    transition: none;
+  }
 }
 .lead-link {
   color: var(--accent);

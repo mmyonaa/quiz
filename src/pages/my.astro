@@ -1,6 +1,6 @@
 ---
 import { getCollection } from "astro:content";
-import AuthBox from "../components/AuthBox.astro";
+import SiteHeader from "../components/SiteHeader.astro";
 import "../styles/global.css";
 
 // 마이페이지 — DB에 쌓인 내 오답 기록·저장 문제를 보는 화면 (#7).
@@ -22,13 +22,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     <meta name="description" content="내 오답노트와 저장한 문제 — 계정에 영구 보관됩니다." />
   </head>
   <body>
-    <header class="top">
-      <a class="brand" href={`${base}/`}>daily.quiz</a>
-      <span class="top-nav">
-        <AuthBox />
-        <a class="sister" href={`${base}/`}>← 문제 풀기</a>
-      </span>
-    </header>
+    <SiteHeader current="my" />
 
     <main>
       {/* 비로그인 관문 */}
