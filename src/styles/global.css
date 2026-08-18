@@ -786,8 +786,8 @@ button.linklike:hover {
   display: none;
 }
 @media (min-width: 1100px) {
-  /* 셸 폭 안에서 좌측 목차 + 본문 2컬럼 — 본문 오른쪽 끝은 헤더와 정렬 */
-  main.notes-main {
+  /* 셸 폭 안에서 좌측 목차 + 본문 2컬럼 — 개념 노트·마이페이지 공용 */
+  main.side-layout {
     display: grid;
     grid-template-columns: 11rem minmax(0, 1fr);
     gap: 1.5rem;
@@ -829,9 +829,19 @@ button.linklike:hover {
     color: var(--accent);
     font-weight: 600;
   }
-  /* 사이드 목차가 있으면 상단 칩은 중복이라 숨긴다 */
-  .notes-body .toc {
+  /* 사이드 목차가 있으면 상단 칩·탭은 중복이라 숨긴다 */
+  .side-body .toc,
+  .side-body .tabs {
     display: none;
+  }
+  /* 버튼형 사이드 항목(마이페이지 탭 전환용) — 링크와 같은 모양으로 */
+  button.side-link {
+    appearance: none;
+    border: 0;
+    background: none;
+    font: inherit;
+    width: 100%;
+    cursor: pointer;
   }
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -1086,10 +1096,10 @@ select.sort {
   font-size: 0.8rem;
   color: var(--muted);
 }
+/* 삭제·해제 버튼 — 본문과 겹치지 않게 카드 하단 오른쪽에 정적 배치 */
 .rv-del {
-  position: absolute;
-  top: 0.9rem;
-  right: 0.9rem;
+  display: block;
+  margin: 0.6rem 0 0 auto;
 }
 .empty {
   color: var(--muted);

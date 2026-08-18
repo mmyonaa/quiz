@@ -43,7 +43,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   <body>
     <SiteHeader current="notes" />
 
-    <main class="notes-main">
+    <main class="side-layout">
       {/* 넓은 화면 전용 — 좌측 고정 목차. 좁은 화면은 상단 칩(.toc)이 담당 */}
       <aside class="side-toc" aria-label="영역 바로가기">
         <span class="side-toc-title">영역</span>
@@ -52,7 +52,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         ))}
       </aside>
 
-      <div class="notes-body">
+      <div class="side-body">
       <section class="panel">
         <h1>개념 노트</h1>
         <p class="lead">

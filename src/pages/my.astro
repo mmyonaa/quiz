@@ -24,7 +24,16 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   <body>
     <SiteHeader current="my" />
 
-    <main>
+    <main class="side-layout">
+      {/* 넓은 화면 전용 — 좌측 보관함 메뉴(개념 노트의 사이드 목차와 같은 자리). 좁으면 상단 탭 */}
+      <aside id="side-menu" class="side-toc" aria-label="보관함 메뉴" hidden>
+        <span class="side-toc-title">보관함</span>
+        <button id="side-wrong" class="side-link on" type="button">오답노트 <em data-count="wrong"></em></button>
+        <button id="side-saved" class="side-link" type="button">저장한 문제 <em data-count="saved"></em></button>
+        <button id="side-notes" class="side-link" type="button">저장한 개념 <em data-count="notes"></em></button>
+      </aside>
+
+      <div class="side-body">
       {/* 비로그인 관문 */}
       <section id="gate" class="panel" hidden>
         <h1>마이페이지</h1>
@@ -35,9 +44,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       <section id="my" class="panel" hidden>
         <h1>마이페이지</h1>
         <div class="tabs" role="tablist">
-          <button id="tab-wrong" class="tab on" type="button" role="tab">오답노트 <em id="wrong-count"></em></button>
-          <button id="tab-saved" class="tab" type="button" role="tab">저장한 문제 <em id="saved-count"></em></button>
-          <button id="tab-notes" class="tab" type="button" role="tab">저장한 개념 <em id="notes-count"></em></button>
+          <button id="tab-wrong" class="tab on" type="button" role="tab">오답노트 <em data-count="wrong"></em></button>
+          <button id="tab-saved" class="tab" type="button" role="tab">저장한 문제 <em data-count="saved"></em></button>
+          <button id="tab-notes" class="tab" type="button" role="tab">저장한 개념 <em data-count="notes"></em></button>
         </div>
 
         <div id="pane-wrong">
@@ -68,6 +77,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
           <p id="notes-empty" class="empty" hidden>저장한 개념이 없습니다. 개념 노트에서 ☆ 버튼으로 담아두세요.</p>
         </div>
       </section>
+      </div>
     </main>
 
     <script is:inline type="application/json" id="bank" set:html={JSON.stringify(bank)} />
@@ -94,6 +104,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       const bankById = new Map(bank.map((q) => [q.id, q]));
 
       const $ = <T extends HTMLElement>(sel: string) => document.querySelector(sel) as T;
+      // 상단 탭·사이드 메뉴 양쪽의 건수 표시를 한 번에 갱신
+      const setCount = (key: string, n: number) =>
+        document.querySelectorAll(`[data-count="${key}"]`).forEach((el) => (el.textContent = String(n)));
 
       let wrongs: WrongItem[] = [];
       let saved: Q[] = [];
@@ -120,7 +133,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         const items = [...wrongs].sort((a, b) =>
           sort === "count" ? b.count - a.count || b.lastAt.localeCompare(a.lastAt) : b.lastAt.localeCompare(a.lastAt),
         );
-        $("#wrong-count").textContent = String(items.length);
+        setCount("wrong", items.length);
         $("#wrong-empty").hidden = items.length > 0;
         const list = $("#wrong-list");
         list.innerHTML = "";
@@ -153,7 +166,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       };
 
       const renderSaved = () => {
-        $("#saved-count").textContent = String(saved.length);
+        setCount("saved", saved.length);
         $("#saved-empty").hidden = saved.length > 0;
         const list = $("#saved-list");
         list.innerHTML = "";
@@ -184,7 +197,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
       // 저장한 개념 — 개념 노트처럼 해설을 앞세워 렌더
       const renderNotes = () => {
-        $("#notes-count").textContent = String(notes.length);
+        setCount("notes", notes.length);
         $("#notes-empty").hidden = notes.length > 0;
         const list = $("#notes-list");
         list.innerHTML = "";
@@ -248,21 +261,26 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         renderSaved();
       };
 
-      // 탭 전환
+      // 탭 전환 — 상단 탭과 좌측 사이드 메뉴가 같은 상태를 공유한다
       const TABS = ["wrong", "saved", "notes"] as const;
       const showTab = (tab: (typeof TABS)[number]) => {
         TABS.forEach((t) => {
           $(`#tab-${t}`).classList.toggle("on", t === tab);
+          $(`#side-${t}`).classList.toggle("on", t === tab);
           $(`#pane-${t}`).hidden = t !== tab;
         });
       };
-      TABS.forEach((t) => $(`#tab-${t}`).addEventListener("click", () => showTab(t)));
+      TABS.forEach((t) => {
+        $(`#tab-${t}`).addEventListener("click", () => showTab(t));
+        $(`#side-${t}`).addEventListener("click", () => showTab(t));
+      });
       $("#wrong-sort").addEventListener("change", renderWrongs);
       $("#gate-login").addEventListener("click", loginWithGoogle);
 
       onAuth((s) => {
         $("#gate").hidden = !!s;
         $("#my").hidden = !s;
+        $("#side-menu").hidden = !s; // 비로그인 관문에서는 사이드 메뉴도 숨긴다
         if (s) load();
       });
     </script>
