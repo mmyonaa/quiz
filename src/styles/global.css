@@ -889,12 +889,26 @@ button.linklike:hover {
 }
 /* 개념 항목 카드 — 좌측 색상 보더 없이 담백한 면 카드 */
 .cn {
+  position: relative;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 0.85rem 1.05rem;
+  padding: 0.85rem 2.4rem 0.85rem 1.05rem; /* 우측은 저장 별 자리 */
   margin-bottom: 0.6rem;
   background: var(--bg);
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+}
+.cn-save {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.65rem;
+}
+/* 마이페이지 '저장한 개념' 카드 — 해설이 본문이므로 강조 보더 없이 */
+.rv.note {
+  border-left: 1px solid var(--border);
+}
+.rv.note .rv-x {
+  color: var(--text);
+  font-size: 0.95rem;
 }
 .cn-x {
   margin: 0;

@@ -31,3 +31,18 @@ create policy "own rows only" on saved_questions
 
 create policy "own rows only" on wrong_answers
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+-- ── 2026-08-18 추가분 — 기존 DB에는 아래 블록만 골라 실행 ──────────────
+
+-- 저장(북마크)한 개념 — 개념 노트의 해설 카드 단위. 문제와 별개 컬렉션.
+create table saved_notes (
+  user_id     uuid not null references auth.users (id) on delete cascade,
+  question_id text not null,
+  created_at  timestamptz not null default now(),
+  primary key (user_id, question_id)
+);
+
+alter table saved_notes enable row level security;
+
+create policy "own rows only" on saved_notes
+  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);

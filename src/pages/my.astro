@@ -37,6 +37,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         <div class="tabs" role="tablist">
           <button id="tab-wrong" class="tab on" type="button" role="tab">오답노트 <em id="wrong-count"></em></button>
           <button id="tab-saved" class="tab" type="button" role="tab">저장한 문제 <em id="saved-count"></em></button>
+          <button id="tab-notes" class="tab" type="button" role="tab">저장한 개념 <em id="notes-count"></em></button>
         </div>
 
         <div id="pane-wrong">
@@ -57,6 +58,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
           </div>
           <div id="saved-list"></div>
           <p id="saved-empty" class="empty" hidden>저장한 문제가 없습니다. 풀이 중 ☆ 버튼으로 담아두세요.</p>
+        </div>
+
+        <div id="pane-notes" hidden>
+          <div class="my-toolbar">
+            <span class="my-hint">개념 노트에서 ☆를 눌러 저장한 개념입니다.</span>
+          </div>
+          <div id="notes-list"></div>
+          <p id="notes-empty" class="empty" hidden>저장한 개념이 없습니다. 개념 노트에서 ☆ 버튼으로 담아두세요.</p>
         </div>
       </section>
     </main>
@@ -88,6 +97,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
       let wrongs: WrongItem[] = [];
       let saved: Q[] = [];
+      let notes: Q[] = [];
 
       const fmtDate = (iso: string) =>
         new Date(iso).toLocaleDateString("ko-KR", { year: "numeric", month: "long", day: "numeric" });
@@ -172,15 +182,57 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         });
       };
 
+      // 저장한 개념 — 개념 노트처럼 해설을 앞세워 렌더
+      const renderNotes = () => {
+        $("#notes-count").textContent = String(notes.length);
+        $("#notes-empty").hidden = notes.length > 0;
+        const list = $("#notes-list");
+        list.innerHTML = "";
+        notes.forEach((q) => {
+          const el = document.createElement("article");
+          el.className = "rv note";
+          el.innerHTML = `
+            <p class="rv-x"><span class="badge">${q.area}</span> ${q.explanation}</p>
+            <p class="rv-link"><a href="${blogPostBase}${q.relatedPost}/" target="_blank" rel="noopener">개념 글 다시 읽기 →</a></p>
+          `;
+          const del = document.createElement("button");
+          del.type = "button";
+          del.className = "linklike rv-del";
+          del.textContent = "저장 해제";
+          del.addEventListener("click", async () => {
+            const { error } = await supabase
+              .from("saved_notes")
+              .delete()
+              .eq("user_id", authSession()!.user.id)
+              .eq("question_id", q.id);
+            if (error) {
+              alert(`해제에 실패했습니다: ${error.message}`);
+              return;
+            }
+            notes = notes.filter((x) => x.id !== q.id);
+            renderNotes();
+          });
+          el.appendChild(del);
+          list.appendChild(el);
+        });
+      };
+
       const load = async () => {
-        const [w, s] = await Promise.all([
+        const [w, s, n] = await Promise.all([
           supabase.from("wrong_answers").select("question_id, chosen, answered_at").order("answered_at", { ascending: false }),
           supabase.from("saved_questions").select("question_id, created_at").order("created_at", { ascending: false }),
+          supabase.from("saved_notes").select("question_id, created_at").order("created_at", { ascending: false }),
         ]);
         if (w.error || s.error) {
           alert(`기록을 불러오지 못했습니다: ${(w.error ?? s.error)!.message}`);
           return;
         }
+        // saved_notes는 스키마 추가분 — 미적용 DB에서도 나머지 탭은 동작해야 한다
+        if (n.error) console.error("저장한 개념 조회 실패:", n.error.message);
+        notes = n.error
+          ? []
+          : (n.data as { question_id: string }[]).map((r) => bankById.get(r.question_id)).filter((q): q is Q => !!q);
+        renderNotes();
         // question_id로 묶기 — 내림차순이라 첫 등장이 최신 기록
         const byId = new Map<string, WrongItem>();
         (w.data as WrongRow[]).forEach((r) => {
@@ -197,14 +249,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       };
 
       // 탭 전환
-      const showTab = (tab: "wrong" | "saved") => {
-        $("#tab-wrong").classList.toggle("on", tab === "wrong");
-        $("#tab-saved").classList.toggle("on", tab === "saved");
-        $("#pane-wrong").hidden = tab !== "wrong";
-        $("#pane-saved").hidden = tab !== "saved";
+      const TABS = ["wrong", "saved", "notes"] as const;
+      const showTab = (tab: (typeof TABS)[number]) => {
+        TABS.forEach((t) => {
+          $(`#tab-${t}`).classList.toggle("on", t === tab);
+          $(`#pane-${t}`).hidden = t !== tab;
+        });
       };
-      $("#tab-wrong").addEventListener("click", () => showTab("wrong"));
-      $("#tab-saved").addEventListener("click", () => showTab("saved"));
+      TABS.forEach((t) => $(`#tab-${t}`).addEventListener("click", () => showTab(t)));
       $("#wrong-sort").addEventListener("change", renderWrongs);
       $("#gate-login").addEventListener("click", loginWithGoogle);
 

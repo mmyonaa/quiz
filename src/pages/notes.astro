@@ -76,7 +76,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
                 <a class="topic-link" href={`${BLOG_POST_BASE}${post}/`} target="_blank" rel="noopener">개념 글 →</a>
               </h3>
               {questions.map((q) => (
-                <article class="cn">
+                <article class="cn" data-id={q.id}>
+                  <button class="save-star cn-save" type="button" title="이 개념 저장" aria-label="이 개념 저장">☆</button>
                   <p class="cn-x">{q.explanation}</p>
                   <details class="cn-q">
                     <summary>확인 문제</summary>
@@ -97,6 +98,59 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     </main>
 
     <script>
+      import { supabase } from "../lib/supabase";
+      import { onAuth, authSession, requireLogin } from "../lib/auth";
+
+      // ── 개념 저장(북마크) — saved_notes 테이블, 해설 카드(문항 id) 단위 ──
+      let savedNotes = new Set<string>();
+      const stars = [...document.querySelectorAll<HTMLButtonElement>(".cn-save")];
+      const idOf = (b: HTMLElement) => (b.closest(".cn") as HTMLElement).dataset.id!;
+
+      const paintStars = () => {
+        stars.forEach((b) => {
+          const on = savedNotes.has(idOf(b));
+          b.textContent = on ? "★" : "☆";
+          b.classList.toggle("on", on);
+        });
+      };
+
+      onAuth(async (s) => {
+        if (!s) {
+          savedNotes = new Set();
+          paintStars();
+          return;
+        }
+        const { data, error } = await supabase.from("saved_notes").select("question_id");
+        if (error) {
+          // 테이블 미적용 등 — 노트 읽기는 계속되어야 하므로 조용히 로그만
+          console.error("저장한 개념 조회 실패:", error.message);
+          return;
+        }
+        savedNotes = new Set((data ?? []).map((r: { question_id: string }) => r.question_id));
+        paintStars();
+      });
+
+      stars.forEach((b) =>
+        b.addEventListener("click", async () => {
+          if (!requireLogin()) return;
+          const id = idOf(b);
+          const uid = authSession()!.user.id;
+          const wasSaved = savedNotes.has(id);
+          if (wasSaved) savedNotes.delete(id);
+          else savedNotes.add(id);
+          paintStars(); // 낙관적 반영, 실패 시 되돌림
+          const { error } = wasSaved
+            ? await supabase.from("saved_notes").delete().eq("user_id", uid).eq("question_id", id)
+            : await supabase.from("saved_notes").upsert({ user_id: uid, question_id: id });
+          if (error) {
+            if (wasSaved) savedNotes.add(id);
+            else savedNotes.delete(id);
+            paintStars();
+            alert(`저장에 실패했습니다: ${error.message}`);
+          }
+        }),
+      );
+
       // 스크롤스파이 — 화면 상단을 지난 마지막 영역을 사이드 목차에 하이라이트
       const links = [...document.querySelectorAll<HTMLAnchorElement>(".side-link")];
       const sections = [...document.querySelectorAll<HTMLElement>("section[id]")];
