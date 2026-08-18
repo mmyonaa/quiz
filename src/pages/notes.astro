@@ -43,7 +43,16 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   <body>
     <SiteHeader current="notes" />
 
-    <main>
+    <main class="notes-main">
+      {/* 넓은 화면 전용 — 좌측 고정 목차. 좁은 화면은 상단 칩(.toc)이 담당 */}
+      <aside class="side-toc" aria-label="영역 바로가기">
+        <span class="side-toc-title">영역</span>
+        {byArea.map(({ area, count }) => (
+          <a class="side-link" href={`#${area}`} data-area={area}>{area} <em>{count}</em></a>
+        ))}
+      </aside>
+
+      <div class="notes-body">
       <section class="panel">
         <h1>개념 노트</h1>
         <p class="lead">
@@ -84,7 +93,35 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
           ))}
         </section>
       ))}
+      </div>
     </main>
+
+    <script>
+      // 스크롤스파이 — 화면 상단을 지난 마지막 영역을 사이드 목차에 하이라이트
+      const links = [...document.querySelectorAll<HTMLAnchorElement>(".side-link")];
+      const sections = [...document.querySelectorAll<HTMLElement>("section[id]")];
+      if (links.length && sections.length) {
+        const byArea = new Map(links.map((a) => [a.dataset.area, a]));
+        let ticking = false;
+        const spy = () => {
+          ticking = false;
+          let cur = sections[0].id;
+          for (const s of sections) if (s.getBoundingClientRect().top <= 120) cur = s.id;
+          links.forEach((a) => a.classList.toggle("on", a === byArea.get(cur)));
+        };
+        document.addEventListener(
+          "scroll",
+          () => {
+            if (!ticking) {
+              ticking = true;
+              requestAnimationFrame(spy);
+            }
+          },
+          { passive: true },
+        );
+        spy();
+      }
+    </script>
 
     <SiteFooter />
   </body>
