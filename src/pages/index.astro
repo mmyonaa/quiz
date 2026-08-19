@@ -150,7 +150,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       };
 
       import { supabase } from "../lib/supabase";
-      import { onAuth, authSession, requireLogin } from "../lib/auth";
+      import { onAuth, authSession, requireLogin, errorText } from "../lib/auth";
 
       const bank: Q[] = JSON.parse(document.getElementById("bank")!.textContent!);
       const { blogPostBase, areas } = JSON.parse(document.getElementById("config")!.textContent!) as {
@@ -231,7 +231,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           if (wasSaved) savedIds.add(qid);
           else savedIds.delete(qid);
           updateSaveStar();
-          alert(`저장에 실패했습니다: ${error.message}`);
+          alert(errorText("저장에 실패했습니다", error));
         }
         return savedIds.has(qid);
       };

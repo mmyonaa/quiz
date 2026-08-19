@@ -85,7 +85,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
     <script>
       import { supabase } from "../lib/supabase";
-      import { onAuth, authSession, loginWithGoogle } from "../lib/auth";
+      import { onAuth, authSession, loginWithGoogle, errorText } from "../lib/auth";
 
       type Q = {
         id: string;
@@ -154,7 +154,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
               .eq("user_id", authSession()!.user.id)
               .eq("question_id", it.q.id);
             if (error) {
-              alert(`삭제에 실패했습니다: ${error.message}`);
+              alert(errorText("삭제에 실패했습니다", error));
               return;
             }
             wrongs = wrongs.filter((w) => w.q.id !== it.q.id);
@@ -184,7 +184,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
               .eq("user_id", authSession()!.user.id)
               .eq("question_id", q.id);
             if (error) {
-              alert(`해제에 실패했습니다: ${error.message}`);
+              alert(errorText("해제에 실패했습니다", error));
               return;
             }
             saved = saved.filter((s) => s.id !== q.id);
@@ -219,7 +219,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
               .eq("user_id", authSession()!.user.id)
               .eq("question_id", q.id);
             if (error) {
-              alert(`해제에 실패했습니다: ${error.message}`);
+              alert(errorText("해제에 실패했습니다", error));
               return;
             }
             notes = notes.filter((x) => x.id !== q.id);
@@ -237,7 +237,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
           supabase.from("saved_notes").select("question_id, created_at").order("created_at", { ascending: false }),
         ]);
         if (w.error || s.error) {
-          alert(`기록을 불러오지 못했습니다: ${(w.error ?? s.error)!.message}`);
+          alert(errorText("기록을 불러오지 못했습니다", (w.error ?? s.error)!));
           return;
         }
         // saved_notes는 스키마 추가분 — 미적용 DB에서도 나머지 탭은 동작해야 한다

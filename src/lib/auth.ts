@@ -45,3 +45,14 @@ export const requireLogin = (): boolean => {
   if (confirm("로그인이 필요한 기능입니다. Google로 로그인할까요?")) loginWithGoogle();
   return false;
 };
+
+/**
+ * DB 요청 실패를 사용자에게 보여줄 문구로 바꾼다.
+ * 세션 만료·인증 문제(JWT 만료 PGRST301, RLS 거부 42501 — 이 앱의 정책상
+ * 로그인 유저의 본인 행 접근은 항상 통과하므로 42501은 곧 토큰 문제다)면
+ * 원인 코드 대신 재로그인 안내를 띄운다.
+ */
+export const errorText = (prefix: string, e: { message: string; code?: string }): string =>
+  e.code === "PGRST301" || e.code === "42501" || /jwt|expired|token/i.test(e.message)
+    ? "세션이 만료됐습니다. 다시 로그인해주세요."
+    : `${prefix}: ${e.message}`;
