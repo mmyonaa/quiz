@@ -1,6 +1,6 @@
 ---
 import { getCollection } from "astro:content";
-import { AREAS } from "../content.config";
+import { AREAS, DIFFICULTIES } from "../content.config";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import "../styles/global.css";
@@ -10,6 +10,9 @@ const entries = await getCollection("quiz");
 const bank = entries.map((e) => e.data);
 const countByArea = Object.fromEntries(
   AREAS.map((a) => [a, bank.filter((q) => q.area === a).length]),
+);
+const countByDiff = Object.fromEntries(
+  DIFFICULTIES.map((d) => [d, bank.filter((q) => q.difficulty === d).length]),
 );
 
 // 오답 리뷰의 "관련 글" 링크 — daily.mcp 블로그의 글 상세 URL
@@ -54,6 +57,19 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
             </label>
           ))}
         </fieldset>
+        <fieldset class="diffs">
+          <legend>난이도</legend>
+          <label class="area-opt">
+            <input type="radio" name="diff" value="전체" checked />
+            <span>전체</span>
+          </label>
+          {DIFFICULTIES.map((d) => (
+            <label class="area-opt">
+              <input type="radio" name="diff" value={d} />
+              <span>{d} <em>{countByDiff[d]}</em></span>
+            </label>
+          ))}
+        </fieldset>
         <fieldset class="counts">
           <legend>문제 수</legend>
           {[5, 10, 15].map((n, i) => (
@@ -94,6 +110,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
             <span id="timer" class="mono timer" hidden></span>
             <span class="exam-tools">
               <button id="save-q" class="save-star" type="button" title="이 문제 저장" aria-label="이 문제 저장">☆</button>
+              <span id="exam-diff" class="badge diff"></span>
               <span id="exam-area" class="badge"></span>
             </span>
           </div>
@@ -142,6 +159,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       type Q = {
         id: string;
         area: string;
+        difficulty: string;
         question: string;
         choices: string[];
         answer: number;
@@ -377,6 +395,8 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         $("#progress").textContent = `${cur + 1} / ${session.length}`;
         $("#pbar-fill").style.width = `${((cur + 1) / session.length) * 100}%`;
         $("#exam-area").textContent = q.area;
+        $("#exam-diff").textContent = q.difficulty;
+        $("#exam-diff").dataset.level = q.difficulty;
         $("#q-text").textContent = q.question;
         const ol = $("#q-choices");
         ol.innerHTML = "";
@@ -511,7 +531,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           const card = document.createElement("article");
           card.className = wrong ? "rv wrong" : "rv";
           card.innerHTML = `
-            <p class="rv-q"><span class="badge">${q.area}</span> ${q.question}</p>
+            <p class="rv-q"><span class="badge">${q.area}</span> <span class="badge diff" data-level="${q.difficulty}">${q.difficulty}</span> ${q.question}</p>
             <p class="rv-a">${wrong ? `내 답: ${unanswered ? "무응답" : q.choices[picked[i]]}<br/>` : ""}정답: <b>${q.choices[q.answer]}</b></p>
             <p class="rv-x">${q.explanation}</p>
             ${q.relatedPost ? `<p class="rv-link"><a href="${blogPostBase}${q.relatedPost}/" target="_blank" rel="noopener">개념 글 다시 읽기 →</a></p>` : ""}
@@ -537,8 +557,15 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 
       $("#start").addEventListener("click", () => {
         const area = (document.querySelector('input[name="area"]:checked') as HTMLInputElement).value;
+        const diff = (document.querySelector('input[name="diff"]:checked') as HTMLInputElement).value;
         const count = Number((document.querySelector('input[name="count"]:checked') as HTMLInputElement).value);
-        const pool = area === "전체" ? bank : bank.filter((q) => q.area === area);
+        const pool = bank
+          .filter((q) => area === "전체" || q.area === area)
+          .filter((q) => diff === "전체" || q.difficulty === diff);
+        if (pool.length === 0) {
+          alert("선택한 영역·난이도 조합에 해당하는 문항이 아직 없습니다.");
+          return;
+        }
         mode = "practice";
         startSession(shuffle(pool).slice(0, count));
       });

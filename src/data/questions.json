@@ -2,6 +2,7 @@
   {
     "id": "os-scheduling-preemptive",
     "area": "운영체제",
+    "difficulty": "중",
     "question": "다음 중 비선점(non-preemptive) 스케줄링 알고리즘으로만 짝지어진 것은?",
     "choices": [
       "FCFS, SJF, HRN",
@@ -16,6 +17,7 @@
   {
     "id": "os-scheduling-hrn",
     "area": "운영체제",
+    "difficulty": "상",
     "question": "HRN 스케줄링에서 대기 시간 20, 서비스(실행) 시간 5인 프로세스의 우선순위 값은?",
     "choices": [
       "4",
@@ -30,6 +32,7 @@
   {
     "id": "os-deadlock-conditions",
     "area": "운영체제",
+    "difficulty": "중",
     "question": "교착상태(deadlock) 발생의 4가지 필요조건에 해당하지 않는 것은?",
     "choices": [
       "상호 배제",
@@ -44,6 +47,7 @@
   {
     "id": "os-process-thread-share",
     "area": "운영체제",
+    "difficulty": "중",
     "question": "같은 프로세스에 속한 스레드들이 공유하지 않는 것은?",
     "choices": [
       "코드 영역",
@@ -58,6 +62,7 @@
   {
     "id": "os-page-replacement-lru",
     "area": "운영체제",
+    "difficulty": "하",
     "question": "페이지 교체 알고리즘 중 '가장 오랫동안 사용되지 않은 페이지'를 교체 대상으로 고르는 것은?",
     "choices": [
       "FIFO",
@@ -72,6 +77,7 @@
   {
     "id": "net-osi-transport",
     "area": "네트워크",
+    "difficulty": "하",
     "question": "OSI 7계층에서 종단 간(end-to-end) 신뢰성 있는 데이터 전송을 담당하며, TCP와 UDP가 동작하는 계층은?",
     "choices": [
       "네트워크 계층",
@@ -86,6 +92,7 @@
   {
     "id": "net-tcp-udp-diff",
     "area": "네트워크",
+    "difficulty": "중",
     "question": "TCP와 UDP에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "TCP는 3-way handshake로 연결을 설정한다",
@@ -100,6 +107,7 @@
   {
     "id": "net-subnet-hosts",
     "area": "네트워크",
+    "difficulty": "상",
     "question": "서브넷 마스크가 /26인 네트워크에서 실제 할당 가능한 호스트 수는?",
     "choices": [
       "64",
@@ -114,6 +122,7 @@
   {
     "id": "net-class-b",
     "area": "네트워크",
+    "difficulty": "중",
     "question": "IPv4 클래스풀 주소 체계에서 첫 옥텟이 130인 주소의 클래스와 기본 서브넷 마스크는?",
     "choices": [
       "A 클래스, 255.0.0.0",
@@ -128,6 +137,7 @@
   {
     "id": "db-normalization-2nf",
     "area": "데이터베이스",
+    "difficulty": "중",
     "question": "제2정규형(2NF)의 조건으로 옳은 것은?",
     "choices": [
       "모든 속성이 원자값을 가진다",
@@ -142,6 +152,7 @@
   {
     "id": "db-acid-isolation",
     "area": "데이터베이스",
+    "difficulty": "하",
     "question": "트랜잭션의 ACID 성질 중, 실행 중인 트랜잭션의 중간 결과에 다른 트랜잭션이 접근할 수 없다는 성질은?",
     "choices": [
       "원자성(Atomicity)",
@@ -156,6 +167,7 @@
   {
     "id": "db-index-btree",
     "area": "데이터베이스",
+    "difficulty": "중",
     "question": "데이터베이스 인덱스에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "B-tree 인덱스는 범위 검색에 활용할 수 있다",
@@ -170,6 +182,7 @@
   {
     "id": "db-candidate-key",
     "area": "데이터베이스",
+    "difficulty": "중",
     "question": "키의 종류에 대한 설명으로 옳은 것은?",
     "choices": [
       "후보키는 유일성만 만족하면 되고 최소성은 불필요하다",
@@ -184,6 +197,7 @@
   {
     "id": "db-anomaly",
     "area": "데이터베이스",
+    "difficulty": "하",
     "question": "정규화를 하지 않았을 때 발생하는 이상(anomaly) 현상이 아닌 것은?",
     "choices": [
       "삽입 이상",
@@ -198,6 +212,7 @@
   {
     "id": "se-coupling-best",
     "area": "소프트웨어공학",
+    "difficulty": "중",
     "question": "모듈 간 결합도가 낮은 것부터 높은 것 순으로 나열할 때 가장 낮은(바람직한) 결합도는?",
     "choices": [
       "내용 결합도",
@@ -212,6 +227,7 @@
   {
     "id": "se-blackbox-technique",
     "area": "소프트웨어공학",
+    "difficulty": "중",
     "question": "다음 중 블랙박스 테스트 기법이 아닌 것은?",
     "choices": [
       "동등 분할",
@@ -226,6 +242,7 @@
   {
     "id": "se-pattern-creational",
     "area": "소프트웨어공학",
+    "difficulty": "중",
     "question": "GoF 디자인 패턴 중 생성(Creational) 패턴이 아닌 것은?",
     "choices": [
       "Singleton",
@@ -240,6 +257,7 @@
   {
     "id": "se-pattern-observer",
     "area": "소프트웨어공학",
+    "difficulty": "하",
     "question": "한 객체의 상태가 변하면 그 객체에 의존하는 다른 객체들에게 자동으로 알림이 가서 갱신되도록 하는 디자인 패턴은?",
     "choices": [
       "Strategy",
@@ -254,6 +272,7 @@
   {
     "id": "se-cohesion-best",
     "area": "소프트웨어공학",
+    "difficulty": "하",
     "question": "모듈 응집도 중 가장 높은(바람직한) 것은?",
     "choices": [
       "기능적 응집도",
@@ -268,6 +287,7 @@
   {
     "id": "sec-cia-integrity",
     "area": "정보보안",
+    "difficulty": "하",
     "question": "정보보안 3요소 중 '인가되지 않은 방식으로 데이터가 변경되지 않아야 한다'는 성질은?",
     "choices": [
       "기밀성",
@@ -282,6 +302,7 @@
   {
     "id": "sec-symmetric-feature",
     "area": "정보보안",
+    "difficulty": "중",
     "question": "대칭키 암호화에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "암호화와 복호화에 같은 키를 사용한다",
@@ -296,6 +317,7 @@
   {
     "id": "sec-hash-property",
     "area": "정보보안",
+    "difficulty": "중",
     "question": "암호학적 해시 함수의 성질로 옳지 않은 것은?",
     "choices": [
       "입력 길이와 무관하게 고정 길이 출력을 낸다",
@@ -310,6 +332,7 @@
   {
     "id": "sec-access-mac",
     "area": "정보보안",
+    "difficulty": "하",
     "question": "주체와 객체에 보안 등급을 부여하고 시스템이 등급 비교로 접근을 강제하는 접근통제 모델은?",
     "choices": [
       "DAC",
@@ -324,6 +347,7 @@
   {
     "id": "sec-blp-rule",
     "area": "정보보안",
+    "difficulty": "상",
     "question": "Bell-LaPadula(BLP) 모델의 접근 규칙으로 옳은 것은?",
     "choices": [
       "No Read Up, No Write Down",
@@ -338,6 +362,7 @@
   {
     "id": "sec-digital-signature",
     "area": "정보보안",
+    "difficulty": "중",
     "question": "전자서명에서 서명 생성과 검증에 사용하는 키의 조합으로 옳은 것은?",
     "choices": [
       "서명: 송신자의 공개키, 검증: 송신자의 개인키",
@@ -352,6 +377,7 @@
   {
     "id": "os-rr-quantum",
     "area": "운영체제",
+    "difficulty": "중",
     "question": "라운드 로빈(RR) 스케줄링에서 타임 퀀텀(시간 할당량)을 매우 크게 잡으면 어떤 알고리즘과 비슷하게 동작하는가?",
     "choices": [
       "SJF",
@@ -366,6 +392,7 @@
   {
     "id": "os-srt-relation",
     "area": "운영체제",
+    "difficulty": "하",
     "question": "SJF(Shortest Job First)의 선점형 버전에 해당하는 스케줄링 알고리즘은?",
     "choices": [
       "RR",
@@ -380,6 +407,7 @@
   {
     "id": "os-fcfs-avg-wait",
     "area": "운영체제",
+    "difficulty": "상",
     "question": "실행 시간이 P1=24ms, P2=3ms, P3=3ms인 프로세스가 이 순서로 동시에 도착했다. FCFS 스케줄링의 평균 대기 시간은?",
     "choices": [
       "10ms",
@@ -394,6 +422,7 @@
   {
     "id": "os-aging-purpose",
     "area": "운영체제",
+    "difficulty": "하",
     "question": "기다린 시간에 비례해 프로세스의 우선순위를 높여 주는 에이징(aging) 기법이 해결하려는 문제는?",
     "choices": [
       "기아(starvation)",
@@ -408,6 +437,7 @@
   {
     "id": "os-deadlock-prevent-circular",
     "area": "운영체제",
+    "difficulty": "중",
     "question": "모든 자원에 번호를 매기고 오름차순으로만 요청하게 하는 교착상태 예방 기법이 부정하는 조건은?",
     "choices": [
       "상호 배제",
@@ -422,6 +452,7 @@
   {
     "id": "os-banker-avoidance",
     "area": "운영체제",
+    "difficulty": "하",
     "question": "은행원 알고리즘(Banker's Algorithm)은 교착상태 처리 방법 중 어느 갈래에 속하는가?",
     "choices": [
       "예방(Prevention)",
@@ -436,6 +467,7 @@
   {
     "id": "os-deadlock-recovery",
     "area": "운영체제",
+    "difficulty": "중",
     "question": "교착상태가 탐지된 뒤의 회복(Recovery) 방법으로 옳게 짝지어진 것은?",
     "choices": [
       "프로세스 강제 종료, 자원 선점",
@@ -450,6 +482,7 @@
   {
     "id": "os-deadlock-all-conditions",
     "area": "운영체제",
+    "difficulty": "중",
     "question": "교착상태 발생 조건에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "4가지 필요조건이 동시에 모두 성립해야 발생한다",
@@ -464,6 +497,7 @@
   {
     "id": "os-fifo-belady",
     "area": "운영체제",
+    "difficulty": "중",
     "question": "프레임 수를 늘렸는데 오히려 페이지 폴트가 증가하는 Belady's Anomaly가 나타날 수 있는 페이지 교체 알고리즘은?",
     "choices": [
       "LRU",
@@ -478,6 +512,7 @@
   {
     "id": "os-opt-algorithm",
     "area": "운영체제",
+    "difficulty": "하",
     "question": "'앞으로 가장 오랫동안 사용되지 않을 페이지'를 교체하는, 이론상 최적이지만 실현 불가능한 알고리즘은?",
     "choices": [
       "OPT",
@@ -492,6 +527,7 @@
   {
     "id": "os-clock-second-chance",
     "area": "운영체제",
+    "difficulty": "하",
     "question": "참조 비트를 이용해 LRU를 근사 구현하는 페이지 교체 알고리즘은?",
     "choices": [
       "FIFO",
@@ -506,6 +542,7 @@
   {
     "id": "os-page-fault-fifo-count",
     "area": "운영체제",
+    "difficulty": "상",
     "question": "페이지 참조열이 1, 2, 3, 1, 2, 4이고 프레임이 3개일 때, FIFO 교체에서 발생하는 페이지 폴트 횟수는? (초기 프레임은 비어 있음)",
     "choices": [
       "3회",
@@ -520,6 +557,7 @@
   {
     "id": "os-thread-lwp",
     "area": "운영체제",
+    "difficulty": "하",
     "question": "'경량 프로세스(LWP, Light Weight Process)'라는 표현이 가리키는 것은?",
     "choices": [
       "프로세스",
@@ -534,6 +572,7 @@
   {
     "id": "os-multithread-adv",
     "area": "운영체제",
+    "difficulty": "중",
     "question": "멀티스레드의 장점에 해당하지 않는 것은?",
     "choices": [
       "응답성이 좋아진다",
@@ -548,6 +587,7 @@
   {
     "id": "os-thread-shared",
     "area": "운영체제",
+    "difficulty": "중",
     "question": "같은 프로세스에 속한 스레드들이 공유하는 자원으로만 묶인 것은?",
     "choices": [
       "코드 영역, 데이터 영역, 힙",
@@ -562,6 +602,7 @@
   {
     "id": "net-pdu-network",
     "area": "네트워크",
+    "difficulty": "하",
     "question": "OSI 7계층에서 네트워크 계층의 PDU(프로토콜 데이터 단위)를 부르는 이름은?",
     "choices": [
       "세그먼트",
@@ -576,6 +617,7 @@
   {
     "id": "net-encapsulation",
     "area": "네트워크",
+    "difficulty": "중",
     "question": "캡슐화(encapsulation)에 대한 설명으로 옳은 것은?",
     "choices": [
       "송신 시 데이터가 상위 계층에서 하위 계층으로 내려가며 각 층의 헤더가 덧붙는다",
@@ -590,6 +632,7 @@
   {
     "id": "net-router-layer",
     "area": "네트워크",
+    "difficulty": "하",
     "question": "IP 주소를 보고 경로를 결정하는 라우터가 동작하는 OSI 계층은?",
     "choices": [
       "데이터링크 계층",
@@ -604,6 +647,7 @@
   {
     "id": "net-mac-changes",
     "area": "네트워크",
+    "difficulty": "중",
     "question": "종단 간 통신에서 패킷이 라우터를 하나 지날 때마다 바뀌는 주소는?",
     "choices": [
       "MAC 주소",
@@ -618,6 +662,7 @@
   {
     "id": "net-presentation-layer",
     "area": "네트워크",
+    "difficulty": "하",
     "question": "문자 인코딩, 암호화, 압축처럼 데이터의 표현 방식을 다루는 OSI 계층은?",
     "choices": [
       "응용 계층",
@@ -632,6 +677,7 @@
   {
     "id": "net-session-layer",
     "area": "네트워크",
+    "difficulty": "하",
     "question": "통신의 시작·유지·종료를 관리하고 동기화 지점을 잡는 OSI 계층은?",
     "choices": [
       "전송 계층",
@@ -646,6 +692,7 @@
   {
     "id": "net-3way-handshake",
     "area": "네트워크",
+    "difficulty": "하",
     "question": "TCP 3-way handshake의 올바른 순서는?",
     "choices": [
       "SYN → ACK → SYN+ACK",
@@ -660,6 +707,7 @@
   {
     "id": "net-flow-vs-congestion",
     "area": "네트워크",
+    "difficulty": "중",
     "question": "TCP의 흐름 제어와 혼잡 제어에 대한 설명으로 옳은 것은?",
     "choices": [
       "흐름 제어는 수신 측의 처리 능력을, 혼잡 제어는 네트워크 전체의 부하를 고려한다",
@@ -674,6 +722,7 @@
   {
     "id": "net-dns-udp",
     "area": "네트워크",
+    "difficulty": "하",
     "question": "DNS 질의가 기본적으로 사용하는 전송 계층 프로토콜은?",
     "choices": [
       "TCP",
@@ -688,6 +737,7 @@
   {
     "id": "net-udp-header",
     "area": "네트워크",
+    "difficulty": "하",
     "question": "UDP 기본 헤더의 크기는?",
     "choices": [
       "8바이트",
@@ -702,6 +752,7 @@
   {
     "id": "net-realtime-udp",
     "area": "네트워크",
+    "difficulty": "하",
     "question": "실시간 스트리밍이나 인터넷 전화(VoIP)에 UDP가 적합한 이유로 옳은 것은?",
     "choices": [
       "연결 설정과 재전송이 없어 지연이 적기 때문",
@@ -716,6 +767,7 @@
   {
     "id": "net-cidr-convert",
     "area": "네트워크",
+    "difficulty": "상",
     "question": "서브넷 마스크 255.255.240.0을 CIDR 표기로 바꾸면?",
     "choices": [
       "/18",
@@ -730,6 +782,7 @@
   {
     "id": "net-subnet-count",
     "area": "네트워크",
+    "difficulty": "상",
     "question": "C 클래스 네트워크에서 호스트부 비트 2개를 빌려 서브네팅하면 만들어지는 서브넷 수는?",
     "choices": [
       "2개",
@@ -744,6 +797,7 @@
   {
     "id": "net-hosts-50",
     "area": "네트워크",
+    "difficulty": "상",
     "question": "한 서브넷에 호스트 50대를 수용해야 할 때 사용할 수 있는 가장 작은 서브넷(가장 긴 프리픽스)은?",
     "choices": [
       "/25",
@@ -758,6 +812,7 @@
   {
     "id": "net-loopback",
     "area": "네트워크",
+    "difficulty": "하",
     "question": "IP 주소 127.0.0.1이 가리키는 것은?",
     "choices": [
       "브로드캐스트 주소",
@@ -772,6 +827,7 @@
   {
     "id": "net-broadcast-addr",
     "area": "네트워크",
+    "difficulty": "하",
     "question": "호스트부 비트가 모두 1인 IP 주소가 의미하는 것은?",
     "choices": [
       "네트워크 주소",
@@ -786,6 +842,7 @@
   {
     "id": "db-1nf-atomic",
     "area": "데이터베이스",
+    "difficulty": "하",
     "question": "제1정규형(1NF)의 조건으로 옳은 것은?",
     "choices": [
       "부분 함수 종속을 제거했다",
@@ -800,6 +857,7 @@
   {
     "id": "db-3nf-transitive",
     "area": "데이터베이스",
+    "difficulty": "중",
     "question": "제3정규형(3NF)이 제2정규형에 더해 제거하는 종속은? (예: 과목 → 교수 → 교수연구실)",
     "choices": [
       "부분 함수 종속",
@@ -814,6 +872,7 @@
   {
     "id": "db-bcnf-determinant",
     "area": "데이터베이스",
+    "difficulty": "상",
     "question": "BCNF(Boyce-Codd 정규형)의 조건으로 옳은 것은?",
     "choices": [
       "모든 속성이 원자값을 가진다",
@@ -828,6 +887,7 @@
   {
     "id": "db-denormalization",
     "area": "데이터베이스",
+    "difficulty": "하",
     "question": "조회 성능을 높이기 위해 의도적으로 데이터 중복을 허용하며 정규화를 거꾸로 적용하는 것은?",
     "choices": [
       "정규화",
@@ -842,6 +902,7 @@
   {
     "id": "db-insert-anomaly-case",
     "area": "데이터베이스",
+    "difficulty": "하",
     "question": "수강 테이블에서 '아직 수강생이 없는 새 과목을 등록하려면 학번을 억지로 채워야 하는' 문제는 어떤 이상 현상인가?",
     "choices": [
       "삽입 이상",
@@ -856,6 +917,7 @@
   {
     "id": "db-tx-aborted",
     "area": "데이터베이스",
+    "difficulty": "중",
     "question": "트랜잭션이 롤백을 마치고 실행 이전 상태로 되돌아간 상태를 부르는 이름은?",
     "choices": [
       "실패(Failed)",
@@ -870,6 +932,7 @@
   {
     "id": "db-durability-redo",
     "area": "데이터베이스",
+    "difficulty": "중",
     "question": "ACID 중 지속성(Durability)을 구현하는 대표 수단은?",
     "choices": [
       "Redo 로그",
@@ -884,6 +947,7 @@
   {
     "id": "db-dirty-read-def",
     "area": "데이터베이스",
+    "difficulty": "하",
     "question": "다른 트랜잭션이 아직 커밋하지 않은 값을 읽어 버리는 이상 현상은?",
     "choices": [
       "Non-Repeatable Read",
@@ -898,6 +962,7 @@
   {
     "id": "db-repeatable-read-phantom",
     "area": "데이터베이스",
+    "difficulty": "상",
     "question": "격리 수준 Repeatable Read에서 여전히 발생할 수 있는 이상 현상은?",
     "choices": [
       "Dirty Read",
@@ -912,6 +977,7 @@
   {
     "id": "db-phantom-diff",
     "area": "데이터베이스",
+    "difficulty": "중",
     "question": "Non-Repeatable Read와 Phantom Read의 차이로 옳은 것은?",
     "choices": [
       "전자는 UPDATE로 행의 값이, 후자는 INSERT로 행의 개수가 달라진 것이다",
@@ -926,6 +992,7 @@
   {
     "id": "db-consistency-def",
     "area": "데이터베이스",
+    "difficulty": "하",
     "question": "'트랜잭션 전후로 데이터베이스에 정의된 제약조건이 계속 만족되어야 한다'는 ACID 성질은?",
     "choices": [
       "원자성(Atomicity)",
@@ -940,6 +1007,7 @@
   {
     "id": "db-clustered-limit",
     "area": "데이터베이스",
+    "difficulty": "하",
     "question": "테이블의 물리적 저장 순서 자체를 결정하는 클러스터드 인덱스는 한 테이블에 몇 개까지 만들 수 있는가?",
     "choices": [
       "제한 없음",
@@ -954,6 +1022,7 @@
   {
     "id": "db-hash-index-range",
     "area": "데이터베이스",
+    "difficulty": "중",
     "question": "해시 인덱스에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "등호(=) 검색에 적합하다",
@@ -968,6 +1037,7 @@
   {
     "id": "db-pk-auto-index",
     "area": "데이터베이스",
+    "difficulty": "하",
     "question": "기본키(Primary Key)와 인덱스의 관계에 대한 설명으로 옳은 것은?",
     "choices": [
       "기본키에는 인덱스를 만들 수 없다",
@@ -982,6 +1052,7 @@
   {
     "id": "db-fk-rule",
     "area": "데이터베이스",
+    "difficulty": "중",
     "question": "외래키(Foreign Key)에 대한 설명으로 옳은 것은?",
     "choices": [
       "참조하는 속성과 데이터 타입은 같아야 하지만 속성명은 달라도 된다",
@@ -996,6 +1067,7 @@
   {
     "id": "se-coupling-worst",
     "area": "소프트웨어공학",
+    "difficulty": "하",
     "question": "한 모듈이 다른 모듈의 내부를 직접 건드리는, 가장 높고 나쁜 결합도는?",
     "choices": [
       "공통 결합도",
@@ -1010,6 +1082,7 @@
   {
     "id": "se-control-coupling",
     "area": "소프트웨어공학",
+    "difficulty": "하",
     "question": "호출부가 플래그 값을 넘겨 상대 모듈의 내부 처리 흐름을 조종하는 결합도는? (예: render(true))",
     "choices": [
       "자료 결합도",
@@ -1024,6 +1097,7 @@
   {
     "id": "se-common-coupling",
     "area": "소프트웨어공학",
+    "difficulty": "하",
     "question": "여러 모듈이 하나의 전역 데이터를 함께 읽고 쓰는 결합도는?",
     "choices": [
       "공통 결합도",
@@ -1038,6 +1112,7 @@
   {
     "id": "se-temporal-cohesion",
     "area": "소프트웨어공학",
+    "difficulty": "중",
     "question": "'초기화 모듈'처럼 서로 관련 없는 작업들이 특정 시점에 함께 실행된다는 이유만으로 묶인 응집도는?",
     "choices": [
       "절차적 응집도",
@@ -1052,6 +1127,7 @@
   {
     "id": "se-design-goal",
     "area": "소프트웨어공학",
+    "difficulty": "하",
     "question": "좋은 모듈 설계가 지향하는 결합도·응집도의 방향으로 옳은 것은?",
     "choices": [
       "높은 결합도, 높은 응집도",
@@ -1066,6 +1142,7 @@
   {
     "id": "se-equivalence",
     "area": "소프트웨어공학",
+    "difficulty": "하",
     "question": "입력을 같은 결과가 나올 그룹으로 나누고 그룹마다 대표값 하나씩만 테스트하는 블랙박스 기법은?",
     "choices": [
       "경계값 분석",
@@ -1080,6 +1157,7 @@
   {
     "id": "se-boundary-cases",
     "area": "소프트웨어공학",
+    "difficulty": "중",
     "question": "유효 입력 범위가 1~100일 때 경계값 분석으로 고르는 전형적인 테스트 케이스는?",
     "choices": [
       "0, 1, 100, 101",
@@ -1094,6 +1172,7 @@
   {
     "id": "se-coverage-order",
     "area": "소프트웨어공학",
+    "difficulty": "중",
     "question": "화이트박스 테스트 커버리지를 약한 것부터 강한 것 순으로 나열한 것은?",
     "choices": [
       "구문 → 분기 → 경로",
@@ -1108,6 +1187,7 @@
   {
     "id": "se-whitebox-unit",
     "area": "소프트웨어공학",
+    "difficulty": "하",
     "question": "소스 코드 구조를 들여다보는 화이트박스 테스트가 주로 쓰이는 테스트 단계는?",
     "choices": [
       "인수 테스트",
@@ -1122,6 +1202,7 @@
   {
     "id": "se-error-guessing",
     "area": "소프트웨어공학",
+    "difficulty": "하",
     "question": "경험상 개발자가 자주 틀리는 지점(빈 입력, null 등)을 감으로 찍어 보완하는 블랙박스 기법은?",
     "choices": [
       "오류 예측",
@@ -1136,6 +1217,7 @@
   {
     "id": "se-structural-not",
     "area": "소프트웨어공학",
+    "difficulty": "중",
     "question": "GoF 디자인 패턴 중 구조(Structural) 패턴이 아닌 것은?",
     "choices": [
       "Adapter",
@@ -1150,6 +1232,7 @@
   {
     "id": "se-singleton",
     "area": "소프트웨어공학",
+    "difficulty": "하",
     "question": "클래스의 인스턴스가 하나만 만들어지도록 보장하고 전역 접근점을 제공하는 패턴은?",
     "choices": [
       "Prototype",
@@ -1164,6 +1247,7 @@
   {
     "id": "se-strategy",
     "area": "소프트웨어공학",
+    "difficulty": "하",
     "question": "알고리즘 군을 각각 캡슐화해 실행 중에 갈아 끼울 수 있게 하는 디자인 패턴은?",
     "choices": [
       "Observer",
@@ -1178,6 +1262,7 @@
   {
     "id": "se-abstract-factory",
     "area": "소프트웨어공학",
+    "difficulty": "중",
     "question": "서로 관련된 객체들의 '제품군'을 묶어서 생성하는 인터페이스를 제공하는 패턴은?",
     "choices": [
       "Factory Method",
@@ -1192,6 +1277,7 @@
   {
     "id": "se-decorator-purpose",
     "area": "소프트웨어공학",
+    "difficulty": "중",
     "question": "기존 객체를 감싸 실행 중에 동적으로 기능을 덧붙이는 디자인 패턴은?",
     "choices": [
       "Proxy",
@@ -1206,6 +1292,7 @@
   {
     "id": "sec-ransomware",
     "area": "정보보안",
+    "difficulty": "중",
     "question": "랜섬웨어가 파일을 암호화해 열 수 없게 만들었을 때, 본질적으로 침해된 보안 요소는?",
     "choices": [
       "기밀성",
@@ -1220,6 +1307,7 @@
   {
     "id": "sec-sniffing",
     "area": "정보보안",
+    "difficulty": "하",
     "question": "공격자가 평문 패킷을 도청(스니핑)해 내용을 훔쳐봤다면 침해된 보안 요소는?",
     "choices": [
       "기밀성",
@@ -1234,6 +1322,7 @@
   {
     "id": "sec-availability-tech",
     "area": "정보보안",
+    "difficulty": "중",
     "question": "다음 중 가용성(Availability)을 확보하는 대응 기술이 아닌 것은?",
     "choices": [
       "이중화(Redundancy)",
@@ -1248,6 +1337,7 @@
   {
     "id": "sec-cia-tradeoff",
     "area": "정보보안",
+    "difficulty": "중",
     "question": "인증 단계를 늘려 기밀성을 강화했을 때 흔히 함께 저하되는 보안 요소는?",
     "choices": [
       "무결성",
@@ -1262,6 +1352,7 @@
   {
     "id": "sec-sym-key-count",
     "area": "정보보안",
+    "difficulty": "상",
     "question": "10명이 서로 대칭키 암호로 통신하려면 필요한 키의 총 개수는?",
     "choices": [
       "10개",
@@ -1276,6 +1367,7 @@
   {
     "id": "sec-asym-key-count",
     "area": "정보보안",
+    "difficulty": "상",
     "question": "n명이 비대칭키(공개키) 암호로 통신할 때 필요한 키의 총 개수는?",
     "choices": [
       "n개",
@@ -1290,6 +1382,7 @@
   {
     "id": "sec-asym-not",
     "area": "정보보안",
+    "difficulty": "하",
     "question": "다음 중 비대칭키(공개키) 암호 알고리즘이 아닌 것은?",
     "choices": [
       "RSA",
@@ -1304,6 +1397,7 @@
   {
     "id": "sec-hybrid-reason",
     "area": "정보보안",
+    "difficulty": "중",
     "question": "실무에서 비대칭키로 대칭키를 전달한 뒤 본문은 대칭키로 암호화하는 하이브리드 방식을 쓰는 이유는?",
     "choices": [
       "대칭키의 빠른 속도와 비대칭키의 안전한 키 분배를 함께 얻기 위해",
@@ -1318,6 +1412,7 @@
   {
     "id": "sec-avalanche",
     "area": "정보보안",
+    "difficulty": "하",
     "question": "입력이 1비트만 바뀌어도 해시 출력이 크게 달라지는 암호학적 해시 함수의 성질은?",
     "choices": [
       "일방향성",
@@ -1332,6 +1427,7 @@
   {
     "id": "sec-weak-hash",
     "area": "정보보안",
+    "difficulty": "하",
     "question": "충돌 공격에 취약해 더 이상 권장되지 않는 해시 알고리즘으로 짝지어진 것은?",
     "choices": [
       "SHA-256, SHA-512",
@@ -1346,6 +1442,7 @@
   {
     "id": "sec-signature-not-provide",
     "area": "정보보안",
+    "difficulty": "중",
     "question": "전자서명이 제공하는 보안 서비스가 아닌 것은?",
     "choices": [
       "무결성",
@@ -1360,6 +1457,7 @@
   {
     "id": "sec-dac",
     "area": "정보보안",
+    "difficulty": "하",
     "question": "자원의 소유자가 자기 재량으로 다른 사용자에게 접근 권한을 부여하는 접근통제 모델은?",
     "choices": [
       "MAC",
@@ -1374,6 +1472,7 @@
   {
     "id": "sec-rbac",
     "area": "정보보안",
+    "difficulty": "하",
     "question": "사용자 개인이 아니라 '역할'에 권한을 부여하고, 사용자는 역할을 통해 권한을 얻는 접근통제 모델은?",
     "choices": [
       "DAC",
@@ -1388,6 +1487,7 @@
   {
     "id": "sec-least-privilege",
     "area": "정보보안",
+    "difficulty": "하",
     "question": "사용자에게 업무 수행에 필요한 최소한의 권한만 부여해야 한다는 접근통제의 기본 원칙은?",
     "choices": [
       "직무 분리",
@@ -1402,6 +1502,7 @@
   {
     "id": "db-sql-ddl-not",
     "area": "데이터베이스",
+    "difficulty": "하",
     "question": "다음 SQL 명령어 중 DDL(데이터 정의어)에 속하지 않는 것은?",
     "choices": [
       "CREATE",
@@ -1416,6 +1517,7 @@
   {
     "id": "db-sql-truncate",
     "area": "데이터베이스",
+    "difficulty": "중",
     "question": "TRUNCATE 명령에 대한 설명으로 옳은 것은?",
     "choices": [
       "WHERE 절로 특정 행만 골라 지울 수 있다",
@@ -1430,6 +1532,7 @@
   {
     "id": "db-sql-delete-family",
     "area": "데이터베이스",
+    "difficulty": "중",
     "question": "WHERE 절로 조건에 맞는 행만 삭제할 수 있고, COMMIT 전이라면 ROLLBACK으로 되돌릴 수 있는 명령은?",
     "choices": [
       "DELETE",
@@ -1444,6 +1547,7 @@
   {
     "id": "db-sql-dcl-grant",
     "area": "데이터베이스",
+    "difficulty": "하",
     "question": "DCL(데이터 제어어)에 대한 설명으로 옳은 것은?",
     "choices": [
       "GRANT는 권한을 회수하고 REVOKE는 권한을 부여한다",
@@ -1458,6 +1562,7 @@
   {
     "id": "db-sql-fullname",
     "area": "데이터베이스",
+    "difficulty": "하",
     "question": "SQL 명령어 분류의 영문 풀네임 연결이 옳지 않은 것은?",
     "choices": [
       "DDL — Data Definition Language",
@@ -1472,6 +1577,7 @@
   {
     "id": "db-sql-tcl",
     "area": "데이터베이스",
+    "difficulty": "중",
     "question": "COMMIT, ROLLBACK, SAVEPOINT가 속하는 SQL 명령어 분류는? (보기에 해당 분류가 있는 경우)",
     "choices": [
       "DDL",
@@ -1486,6 +1592,7 @@
   {
     "id": "db-sql-alter-update",
     "area": "데이터베이스",
+    "difficulty": "중",
     "question": "student 테이블에 email 열을 추가하는 'ALTER TABLE student ADD email VARCHAR(50)'과, 행의 이름 값을 바꾸는 'UPDATE student SET name=...'의 분류로 옳은 것은?",
     "choices": [
       "둘 다 DML이다",
@@ -1500,6 +1607,7 @@
   {
     "id": "db-ra-select-project",
     "area": "데이터베이스",
+    "difficulty": "중",
     "question": "관계대수 연산자에 대한 설명으로 옳은 것은?",
     "choices": [
       "select(σ)는 조건을 만족하는 행을, project(π)는 지정한 열을 골라낸다",
@@ -1514,6 +1622,7 @@
   {
     "id": "db-ra-project-dup",
     "area": "데이터베이스",
+    "difficulty": "중",
     "question": "관계대수의 project(π) 연산 결과에 대한 설명으로 옳은 것은?",
     "choices": [
       "중복된 행이 있으면 제거된다",
@@ -1528,6 +1637,7 @@
   {
     "id": "db-ra-union-compat",
     "area": "데이터베이스",
+    "difficulty": "중",
     "question": "두 관계에 합집합(∪)·차집합(−)·교집합(∩)을 적용하기 위한 합병 가능(union-compatible) 조건은?",
     "choices": [
       "두 관계의 기본키가 같아야 한다",
@@ -1542,6 +1652,7 @@
   {
     "id": "db-ra-natural-join",
     "area": "데이터베이스",
+    "difficulty": "중",
     "question": "동등 조인(equi-join)과 자연 조인(natural join)의 차이로 옳은 것은?",
     "choices": [
       "자연 조인은 중복되는 공통 속성 열을 하나만 남긴다",
@@ -1556,6 +1667,7 @@
   {
     "id": "db-ra-procedural",
     "area": "데이터베이스",
+    "difficulty": "하",
     "question": "관계대수와 관계해석에 대한 설명으로 옳은 것은?",
     "choices": [
       "관계대수는 절차적 언어, 관계해석은 비절차적(선언적) 언어다",
@@ -1570,6 +1682,7 @@
   {
     "id": "net-http-class",
     "area": "네트워크",
+    "difficulty": "하",
     "question": "HTTP 상태 코드의 첫 자리 숫자별 의미로 옳지 않은 것은?",
     "choices": [
       "2xx — 요청이 정상 처리됨",
@@ -1584,6 +1697,7 @@
   {
     "id": "net-http-401-403",
     "area": "네트워크",
+    "difficulty": "중",
     "question": "로그인은 되어 있지만 해당 자원에 접근할 권한이 없는 사용자의 요청에 적합한 HTTP 상태 코드는?",
     "choices": [
       "400 Bad Request",
@@ -1598,6 +1712,7 @@
   {
     "id": "net-http-301-302",
     "area": "네트워크",
+    "difficulty": "중",
     "question": "301 Moved Permanently와 302 Found의 차이로 옳은 것은?",
     "choices": [
       "301은 영구 이동이라 이후 새 URI를 기준으로 삼아도 되고, 302는 임시 이동이라 원래 URI를 계속 써야 한다",
@@ -1612,6 +1727,7 @@
   {
     "id": "net-http-5xx",
     "area": "네트워크",
+    "difficulty": "중",
     "question": "게이트웨이(프록시)가 백엔드 서버의 응답을 제한 시간 안에 받지 못했을 때 반환하는 상태 코드는?",
     "choices": [
       "500",
@@ -1626,6 +1742,7 @@
   {
     "id": "net-http-2xx",
     "area": "네트워크",
+    "difficulty": "하",
     "question": "HTTP 2xx 상태 코드에 대한 연결이 옳지 않은 것은?",
     "choices": [
       "200 OK — 요청이 정상 처리됨",
@@ -1640,6 +1757,7 @@
   {
     "id": "se-waterfall-order",
     "area": "소프트웨어공학",
+    "difficulty": "하",
     "question": "폭포수(Waterfall) 모델의 단계를 올바른 순서로 나열한 것은?",
     "choices": [
       "요구사항 분석 → 설계 → 구현 → 테스트 → 유지보수",
@@ -1654,6 +1772,7 @@
   {
     "id": "se-waterfall-weak",
     "area": "소프트웨어공학",
+    "difficulty": "중",
     "question": "폭포수 모델의 특징으로 옳지 않은 것은?",
     "choices": [
       "각 단계가 끝나야 다음 단계로 넘어간다",
@@ -1668,6 +1787,7 @@
   {
     "id": "se-spiral-risk",
     "area": "소프트웨어공학",
+    "difficulty": "하",
     "question": "Boehm이 제안했으며, 반복(iteration)마다 위험 분석(risk analysis)을 수행하는 개발 모델은?",
     "choices": [
       "폭포수 모델",
@@ -1682,6 +1802,7 @@
   {
     "id": "se-spiral-order",
     "area": "소프트웨어공학",
+    "difficulty": "중",
     "question": "나선형 모델이 반복하는 네 활동의 올바른 순서는?",
     "choices": [
       "계획 수립 → 위험 분석 → 개발 → 고객 평가",
@@ -1696,6 +1817,7 @@
   {
     "id": "se-agile-manifesto",
     "area": "소프트웨어공학",
+    "difficulty": "중",
     "question": "애자일 선언(Agile Manifesto)의 네 가치로 옳은 것은?",
     "choices": [
       "포괄적 문서보다 동작하는 소프트웨어를",
@@ -1710,6 +1832,7 @@
   {
     "id": "se-scrum-xp",
     "area": "소프트웨어공학",
+    "difficulty": "중",
     "question": "애자일 방법론의 요소와 소속 연결이 옳지 않은 것은?",
     "choices": [
       "스프린트 — Scrum",
@@ -1724,6 +1847,7 @@
   {
     "id": "se-req-nonfunctional",
     "area": "소프트웨어공학",
+    "difficulty": "중",
     "question": "다음 중 비기능(non-functional) 요구사항에 해당하는 것은?",
     "choices": [
       "회원 가입 시 이메일 인증을 거쳐야 한다",
@@ -1737,6 +1861,7 @@
   {
     "id": "se-uml-usecase",
     "area": "소프트웨어공학",
+    "difficulty": "하",
     "question": "액터(actor)와 시스템이 제공하는 기능 간의 관계를 사용자 관점에서 표현하는 UML 다이어그램은?",
     "choices": [
       "클래스 다이어그램",
@@ -1750,6 +1875,7 @@
   {
     "id": "se-uml-sequence",
     "area": "소프트웨어공학",
+    "difficulty": "하",
     "question": "객체들 사이에 주고받는 메시지를 시간의 흐름에 따라 표현하는 UML 다이어그램은?",
     "choices": [
       "시퀀스 다이어그램",
@@ -1763,6 +1889,7 @@
   {
     "id": "se-uml-structural",
     "area": "소프트웨어공학",
+    "difficulty": "중",
     "question": "UML 다이어그램 중 구조(정적) 다이어그램이 아닌 것은?",
     "choices": [
       "클래스 다이어그램",
@@ -1776,6 +1903,7 @@
   {
     "id": "se-solid-srp",
     "area": "소프트웨어공학",
+    "difficulty": "하",
     "question": "객체지향 설계 원칙(SOLID) 중 '하나의 클래스는 변경 이유가 하나뿐이어야 한다'는 원칙은?",
     "choices": [
       "단일 책임 원칙(SRP)",
@@ -1789,6 +1917,7 @@
   {
     "id": "se-solid-ocp",
     "area": "소프트웨어공학",
+    "difficulty": "하",
     "question": "'확장에는 열려 있고 수정에는 닫혀 있어야 한다'는 객체지향 설계 원칙은?",
     "choices": [
       "인터페이스 분리 원칙(ISP)",
@@ -1802,6 +1931,7 @@
   {
     "id": "se-test-stub-driver",
     "area": "소프트웨어공학",
+    "difficulty": "중",
     "question": "통합 테스트에서 사용하는 테스트 스텁(stub)과 드라이버(driver)에 대한 설명으로 옳은 것은?",
     "choices": [
       "하향식 통합은 스텁을, 상향식 통합은 드라이버를 사용한다",
@@ -1816,6 +1946,7 @@
   {
     "id": "se-test-topdown",
     "area": "소프트웨어공학",
+    "difficulty": "중",
     "question": "하향식(top-down) 통합 테스트의 특징으로 옳은 것은?",
     "choices": [
       "상위 모듈부터 통합하며 미완성 하위 모듈은 스텁으로 대체한다",
@@ -1830,6 +1961,7 @@
   {
     "id": "se-scm-activity",
     "area": "소프트웨어공학",
+    "difficulty": "중",
     "question": "소프트웨어 형상관리(SCM)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "소스 코드·문서 등 산출물의 변경을 체계적으로 통제한다",
@@ -1843,6 +1975,7 @@
   {
     "id": "se-scm-baseline",
     "area": "소프트웨어공학",
+    "difficulty": "하",
     "question": "형상관리에서 공식적으로 검토·승인되어 이후 변경 시 정식 통제 절차를 거쳐야 하는 기준점을 부르는 용어는?",
     "choices": [
       "브랜치",
@@ -1856,6 +1989,7 @@
   {
     "id": "sec-dos-target",
     "area": "정보보안",
+    "difficulty": "하",
     "question": "대량의 트래픽이나 요청으로 시스템 자원을 고갈시켜 정상 사용자가 서비스를 이용하지 못하게 하는 공격은?",
     "choices": [
       "스니핑",
@@ -1870,6 +2004,7 @@
   {
     "id": "sec-ddos-botnet",
     "area": "정보보안",
+    "difficulty": "하",
     "question": "DDoS 공격에 대한 설명으로 옳은 것은?",
     "choices": [
       "단일 컴퓨터에서만 공격 트래픽을 보낸다",
@@ -1884,6 +2019,7 @@
   {
     "id": "sec-sniff-vs-spoof",
     "area": "정보보안",
+    "difficulty": "중",
     "question": "스니핑(sniffing)과 스푸핑(spoofing)의 구분으로 옳은 것은?",
     "choices": [
       "스니핑은 트래픽을 몰래 엿듣는 수동적 공격, 스푸핑은 신원을 속이는 능동적 공격이다",
@@ -1897,6 +2033,7 @@
   {
     "id": "sec-syn-flood",
     "area": "정보보안",
+    "difficulty": "중",
     "question": "TCP 3-way handshake에서 SYN만 대량으로 보내고 ACK을 보내지 않아, 서버의 연결 대기 큐를 가득 채우는 공격은?",
     "choices": [
       "SYN 플러딩",
@@ -1911,6 +2048,7 @@
   {
     "id": "sec-session-hijack",
     "area": "정보보안",
+    "difficulty": "하",
     "question": "이미 인증을 마친 사용자의 세션(세션 ID 등)을 가로채, 로그인 없이 그 사용자 행세를 하는 공격은?",
     "choices": [
       "무차별 대입 공격",
@@ -1924,6 +2062,7 @@
   {
     "id": "sec-firewall-limit",
     "area": "정보보안",
+    "difficulty": "중",
     "question": "방화벽(firewall)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "정책(규칙)에 따라 트래픽을 허용하거나 차단한다",
@@ -1937,6 +2076,7 @@
   {
     "id": "sec-ids-vs-ips",
     "area": "정보보안",
+    "difficulty": "하",
     "question": "IDS와 IPS의 차이로 옳은 것은?",
     "choices": [
       "IDS는 침입을 탐지해 경보하고, IPS는 탐지 즉시 차단까지 수행한다",
@@ -1950,6 +2090,7 @@
   {
     "id": "sec-mitm",
     "area": "정보보안",
+    "difficulty": "하",
     "question": "통신하는 두 당사자 사이에 몰래 끼어들어 내용을 엿보거나 변조하는 중간자(MITM) 공격의 대응 기술로 가장 적절한 것은?",
     "choices": [
       "통신 구간 암호화(TLS 등)와 상대 인증",

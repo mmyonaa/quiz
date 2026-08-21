@@ -628,6 +628,22 @@ button.linklike:hover {
   font-size: 0.78rem;
   font-weight: 600;
 }
+/* 난이도 뱃지 — 하=안정색, 중=중립, 상=강조색 */
+.badge.diff {
+  background: var(--bg);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.badge.diff[data-level="하"] {
+  color: var(--ok);
+  border-color: var(--ok);
+  background: var(--ok-soft);
+}
+.badge.diff[data-level="상"] {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
 #q-text {
   margin: 0 0 1.1rem;
   font-size: 1.1rem;

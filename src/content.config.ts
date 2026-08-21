@@ -8,12 +8,17 @@ import { file } from "astro/loaders";
  */
 export const AREAS = ["운영체제", "네트워크", "데이터베이스", "소프트웨어공학", "정보보안"] as const;
 
+/** 난이도 단계 — 하(정의·단순 매칭), 중(유사 개념 구분·함정), 상(계산·다단계 추론) */
+export const DIFFICULTIES = ["하", "중", "상"] as const;
+
 const quiz = defineCollection({
   loader: file("src/data/questions.json"),
   schema: z
     .object({
       id: z.string().regex(/^[a-z0-9-]+$/, "id는 영문 kebab-case"),
       area: z.enum(AREAS),
+      /** 난이도 — 필수 필드라 라벨 누락 문항은 빌드가 잡는다 */
+      difficulty: z.enum(DIFFICULTIES),
       question: z.string().min(10),
       /** 4지선다 고정 — 정처기 필기 형식 */
       choices: z.array(z.string().min(1)).length(4),
