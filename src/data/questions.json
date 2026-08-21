@@ -2409,5 +2409,585 @@
     "answer": 0,
     "explanation": "큰 문제를 쪼갰을 때 같은 부분 문제가 반복 등장하고(겹치는 부분 문제), 부분 문제의 답을 조합하면 전체의 답이 되어야(최적 부분 구조) DP가 성립한다. 피보나치·계단 오르기(dp[i]=dp[i-1]+dp[i-2])가 전형적 예다.",
     "relatedPost": "2026-08-06-dp-intro"
+  },
+  {
+    "id": "se-cocomo-basis",
+    "area": "소프트웨어공학",
+    "difficulty": "하",
+    "question": "COCOMO 모형이 소프트웨어 개발 비용을 산정할 때 기준으로 삼는 것은?",
+    "choices": [
+      "기능의 개수",
+      "테스트 케이스 수",
+      "원시 코드 라인 수(LOC)",
+      "개발자 수"
+    ],
+    "answer": 2,
+    "explanation": "COCOMO(COnstructive COst MOdel)는 예상 원시 코드 라인 수(LOC)를 기반으로 노력(man-month)과 기간을 산정하는 모형이다. 기능의 수와 복잡도를 기준으로 하는 기능 점수(FP) 방식과 대비해 출제된다."
+  },
+  {
+    "id": "se-cocomo-types",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "question": "COCOMO의 프로젝트 유형 중 5만 라인 이하의 소규모이며 잘 이해된 응용을 소규모 팀이 개발하는 유형은?",
+    "choices": [
+      "Semi-detached(반분리형)",
+      "Embedded(내장형)",
+      "Spiral(나선형)",
+      "Organic(유기적)"
+    ],
+    "answer": 3,
+    "explanation": "COCOMO는 규모·제약에 따라 Organic(소규모·5만 라인 이하), Semi-detached(중간 규모·30만 라인 이하), Embedded(하드웨어 제약이 강한 대규모)로 나뉜다. Spiral은 개발 모델이지 COCOMO 유형이 아니다."
+  },
+  {
+    "id": "se-fp-basis",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "question": "기능 점수(FP, Function Point) 산정 방식에 대한 설명으로 옳은 것은?",
+    "choices": [
+      "개발 기간만으로 비용을 계산한다",
+      "테스트 커버리지 비율로 규모를 잰다",
+      "입출력·파일·인터페이스 등 기능의 수와 복잡도로 규모를 잰다",
+      "원시 코드 라인 수를 세어 규모를 잰다"
+    ],
+    "answer": 2,
+    "explanation": "FP는 외부 입력·출력·조회, 내부 논리 파일, 외부 인터페이스의 개수에 가중치를 곱해 규모를 산정한다. 코드가 없어도 요구사항만으로 산정할 수 있다는 것이 LOC 기반(COCOMO)과의 핵심 차이다."
+  },
+  {
+    "id": "se-delphi",
+    "area": "소프트웨어공학",
+    "difficulty": "하",
+    "question": "여러 전문가가 익명으로 산정치를 내고 조정자를 통해 반복 조율하여 합의에 도달하는 비용 산정 기법은?",
+    "choices": [
+      "COCOMO",
+      "기능 점수",
+      "Putnam 모형",
+      "델파이 기법"
+    ],
+    "answer": 3,
+    "explanation": "델파이 기법은 전문가 판단 기반의 하향식 산정 기법으로, 익명성과 반복 조율로 특정인의 영향력을 줄여 합의를 만든다. COCOMO·Putnam·FP는 수학적 모형 기반의 상향식·산정식 기법이다."
+  },
+  {
+    "id": "se-loc-estimate",
+    "area": "소프트웨어공학",
+    "difficulty": "상",
+    "question": "LOC 3점 추정에서 낙관치 2,000라인, 중간치 5,000라인, 비관치 8,000라인일 때 예측치는? (가중 평균: (낙관 + 4×중간 + 비관) / 6)",
+    "choices": [
+      "4,000라인",
+      "5,000라인",
+      "5,500라인",
+      "6,000라인"
+    ],
+    "answer": 1,
+    "explanation": "(2000 + 4×5000 + 8000) / 6 = 30000 / 6 = 5000라인. 중간치에 4배 가중치를 주는 베타 분포 기반 공식으로, PERT의 3점 추정과 같은 형태다. 공식 대입 계산 문제로 반복 출제된다."
+  },
+  {
+    "id": "se-cpm",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "question": "CPM(Critical Path Method)에서 임계 경로(critical path)가 의미하는 것은?",
+    "choices": [
+      "비용이 가장 많이 드는 작업의 목록이다",
+      "인력이 가장 많이 투입되는 경로다",
+      "모든 경로 중 소요 기간이 가장 긴 경로로, 프로젝트 최소 완료 기간을 결정한다",
+      "모든 경로 중 소요 기간이 가장 짧은 경로다"
+    ],
+    "answer": 2,
+    "explanation": "임계 경로는 시작부터 끝까지의 경로 중 가장 오래 걸리는 경로다. 이 경로의 작업이 하루 지연되면 프로젝트 전체가 하루 지연되므로, '가장 긴 경로 = 최소 완료 기간'이라는 역설적 표현이 핵심이다."
+  },
+  {
+    "id": "se-pert",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "question": "PERT 일정 관리 기법의 특징으로 옳은 것은?",
+    "choices": [
+      "작업 기간을 단일 확정값으로만 다룬다",
+      "비용 산정 전용 기법이라 일정과 무관하다",
+      "간트 차트의 다른 이름이다",
+      "낙관치·기대치·비관치의 3점 추정으로 작업 기간을 확률적으로 예측한다"
+    ],
+    "answer": 3,
+    "explanation": "PERT는 경험이 없는 신규 프로젝트처럼 기간이 불확실할 때 낙관·기대·비관 세 추정치로 확률적 일정을 계산한다. 확정적 기간을 쓰는 CPM과 '확률적 vs 확정적'으로 대비해 출제된다."
+  },
+  {
+    "id": "se-cmmi-levels",
+    "area": "소프트웨어공학",
+    "difficulty": "상",
+    "question": "CMMI 성숙도 5단계에서 '조직 표준 프로세스가 정의되어 프로젝트가 이를 따르는' 단계는?",
+    "choices": [
+      "2단계(관리됨)",
+      "3단계(정의됨)",
+      "4단계(정량적 관리됨)",
+      "5단계(최적화됨)"
+    ],
+    "answer": 1,
+    "explanation": "CMMI는 초기(1) → 관리됨(2) → 정의됨(3) → 정량적 관리됨(4) → 최적화됨(5) 순이다. 조직 차원의 표준 프로세스 확립이 3단계, 정량적(통계적) 통제가 4단계, 지속적 개선이 5단계라는 구분을 묻는다."
+  },
+  {
+    "id": "se-req-process",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "question": "요구공학의 요구사항 개발 프로세스를 올바른 순서로 나열한 것은?",
+    "choices": [
+      "분석 → 도출 → 확인 → 명세",
+      "도출 → 명세 → 확인 → 분석",
+      "도출 → 분석 → 명세 → 확인",
+      "명세 → 도출 → 분석 → 확인"
+    ],
+    "answer": 2,
+    "explanation": "이해관계자에게서 요구를 끌어내고(도출), 충돌·중복을 정리해(분석), 문서로 기록하고(명세), 완전성·일관성을 검토한다(확인). 도출이 항상 처음, 확인이 항상 마지막이라는 것만 잡아도 순서 문제가 풀린다."
+  },
+  {
+    "id": "se-req-elicitation",
+    "area": "소프트웨어공학",
+    "difficulty": "하",
+    "question": "다음 중 요구사항 도출(elicitation) 기법에 해당하지 않는 것은?",
+    "choices": [
+      "인터뷰",
+      "브레인스토밍",
+      "프로토타이핑",
+      "회귀 테스트"
+    ],
+    "answer": 3,
+    "explanation": "인터뷰·브레인스토밍·설문·워크숍·프로토타이핑(초기 모형으로 요구 확인)은 요구를 끌어내는 도출 기법이다. 회귀 테스트는 수정 후 기존 기능이 깨지지 않았는지 확인하는 테스트 활동으로 요구공학과 무관하다."
+  },
+  {
+    "id": "se-middleware-mom",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "question": "미들웨어 유형 중 비동기 메시지 전달 방식으로 온라인 업무보다 이기종 분산 시스템 연계에 주로 쓰이는 것은?",
+    "choices": [
+      "RPC",
+      "MOM",
+      "TP 모니터",
+      "ORB"
+    ],
+    "answer": 1,
+    "explanation": "MOM(Message Oriented Middleware)은 메시지 큐 기반 비동기 통신 미들웨어다. RPC는 원격 프로시저 호출(동기), TP 모니터는 트랜잭션 처리 감시, ORB는 CORBA 계열 객체 요청 브로커로, 유형-설명 매칭 문제가 단골이다."
+  },
+  {
+    "id": "se-eai-hub",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "question": "EAI 구축 유형 중 허브 시스템을 두고 모든 애플리케이션 연동을 중앙 집중형으로 처리하는 방식은?",
+    "choices": [
+      "Point-to-Point",
+      "Hub & Spoke",
+      "Message Bus",
+      "Hybrid"
+    ],
+    "answer": 1,
+    "explanation": "Hub & Spoke는 중앙 허브가 모든 연동을 중개해 관리가 쉽지만 허브 장애 시 전체가 영향을 받는다. Point-to-Point는 1:1 직접 연결, Message Bus는 미들웨어(버스) 공유, Hybrid는 그룹 내 허브·그룹 간 버스 혼합이다."
+  },
+  {
+    "id": "net-rip-feature",
+    "area": "네트워크",
+    "difficulty": "중",
+    "question": "라우팅 프로토콜 RIP에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "거리 벡터(distance vector) 알고리즘을 사용한다",
+      "홉(hop) 수를 경로 선택 기준으로 삼는다",
+      "최대 홉 수는 15로 제한된다",
+      "링크 상태 정보를 모든 라우터에 플러딩한다"
+    ],
+    "answer": 3,
+    "explanation": "링크 상태 정보를 플러딩하는 것은 OSPF(링크 상태 방식)다. RIP는 이웃 라우터와 거리(홉 수) 정보를 주고받는 거리 벡터 방식으로, 15홉 제한 때문에 소규모 네트워크에 쓰인다(16홉 = 도달 불가).",
+    "relatedPost": "2026-07-17-osi-7-layers"
+  },
+  {
+    "id": "net-ospf-feature",
+    "area": "네트워크",
+    "difficulty": "중",
+    "question": "링크 상태(link state) 알고리즘을 사용하며 다익스트라 최단 경로 계산으로 라우팅하는 프로토콜은?",
+    "choices": [
+      "RIP",
+      "OSPF",
+      "ARP",
+      "DHCP"
+    ],
+    "answer": 1,
+    "explanation": "OSPF는 각 라우터가 네트워크 전체 토폴로지를 파악해 다익스트라 알고리즘으로 최단 경로를 계산하는 링크 상태 프로토콜로, 대규모 네트워크에 적합하다. ARP는 주소 변환, DHCP는 IP 자동 할당 프로토콜이다.",
+    "relatedPost": "2026-07-17-osi-7-layers"
+  },
+  {
+    "id": "net-ipv6",
+    "area": "네트워크",
+    "difficulty": "하",
+    "question": "IPv6에 대한 설명으로 옳은 것은?",
+    "choices": [
+      "주소 길이가 128비트다",
+      "주소 길이가 64비트다",
+      "IPv4보다 주소 공간이 작다",
+      "점(.)으로 구분한 10진수로 표기한다"
+    ],
+    "answer": 0,
+    "explanation": "IPv6는 IPv4의 주소 고갈을 해결하기 위한 128비트 주소 체계로, 콜론(:)으로 구분한 16진수 8개 그룹으로 표기한다. 32비트·점 표기 10진수는 IPv4의 특징이다.",
+    "relatedPost": "2026-08-05-ip-subnetting"
+  },
+  {
+    "id": "net-sdn",
+    "area": "네트워크",
+    "difficulty": "중",
+    "question": "SDN(Software Defined Networking)의 핵심 개념으로 옳은 것은?",
+    "choices": [
+      "모든 네트워크 장비를 물리적으로 통합한다",
+      "라우팅을 각 장비의 하드웨어에 더 강하게 결합한다",
+      "무선 네트워크 전용 보안 프로토콜이다",
+      "제어 평면과 데이터 평면을 분리해 네트워크를 소프트웨어로 중앙 제어한다"
+    ],
+    "answer": 3,
+    "explanation": "SDN은 경로 결정 로직(제어 평면)을 장비에서 분리해 중앙 컨트롤러 소프트웨어가 담당하게 하고, 장비는 전달(데이터 평면)만 맡는다. 네트워크 구성을 프로그래밍하듯 바꿀 수 있게 하는 신기술 용어 단골이다."
+  },
+  {
+    "id": "net-dhcp",
+    "area": "네트워크",
+    "difficulty": "하",
+    "question": "네트워크에 접속한 호스트에게 IP 주소를 자동으로 할당해 주는 프로토콜은?",
+    "choices": [
+      "DNS",
+      "DHCP",
+      "SMTP",
+      "SNMP"
+    ],
+    "answer": 1,
+    "explanation": "DHCP(Dynamic Host Configuration Protocol)는 IP 주소·서브넷 마스크·게이트웨이 등을 임대(lease) 방식으로 자동 할당한다. DNS는 도메인-IP 변환, SMTP는 메일 전송, SNMP는 네트워크 장비 관리 프로토콜이다.",
+    "relatedPost": "2026-08-05-ip-subnetting"
+  },
+  {
+    "id": "net-nat",
+    "area": "네트워크",
+    "difficulty": "중",
+    "question": "사설 IP 주소를 공인 IP 주소로 변환해 내부 네트워크가 인터넷과 통신하게 하는 기술은?",
+    "choices": [
+      "CIDR",
+      "MAC 필터링",
+      "NAT",
+      "VLAN"
+    ],
+    "answer": 2,
+    "explanation": "NAT(Network Address Translation)는 내부의 사설 IP를 경계 라우터에서 공인 IP로 바꿔 통신시킨다. 공인 IP 부족을 완화하고 내부 구조를 감추는 부수 효과가 있다. VLAN은 논리적 LAN 분할, CIDR는 클래스 없는 주소 할당 표기다.",
+    "relatedPost": "2026-08-05-ip-subnetting"
+  },
+  {
+    "id": "os-vm-container",
+    "area": "운영체제",
+    "difficulty": "중",
+    "question": "가상머신(VM)과 컨테이너의 차이로 옳은 것은?",
+    "choices": [
+      "컨테이너마다 별도의 게스트 OS 전체를 설치해야 한다",
+      "가상머신은 커널을 공유하므로 컨테이너보다 가볍다",
+      "둘은 완전히 같은 기술의 다른 이름이다",
+      "컨테이너는 호스트 OS의 커널을 공유해 가상머신보다 가볍고 기동이 빠르다"
+    ],
+    "answer": 3,
+    "explanation": "가상머신은 하이퍼바이저 위에 게스트 OS를 통째로 올리지만, 컨테이너(도커 등)는 호스트 커널을 공유하고 프로세스를 격리만 하므로 가볍고 빠르다. '커널 공유 여부'가 두 기술을 가르는 기준이다."
+  },
+  {
+    "id": "os-cloud-models",
+    "area": "운영체제",
+    "difficulty": "중",
+    "question": "클라우드 서비스 모델 중 개발·실행 환경(플랫폼)을 제공하여 사용자가 애플리케이션 개발에만 집중하게 하는 것은?",
+    "choices": [
+      "IaaS",
+      "PaaS",
+      "SaaS",
+      "DaaS"
+    ],
+    "answer": 1,
+    "explanation": "IaaS는 서버·스토리지 등 인프라를, PaaS는 OS·런타임·개발 플랫폼까지를, SaaS는 완성된 소프트웨어 자체를 서비스로 제공한다. '무엇까지 제공자가 관리하나'의 층위로 구분하는 매칭 문제가 단골이다."
+  },
+  {
+    "id": "os-thrashing",
+    "area": "운영체제",
+    "difficulty": "중",
+    "question": "프로세스가 실제 작업보다 페이지 교체에 더 많은 시간을 쓰며 시스템 처리량이 급락하는 현상은?",
+    "choices": [
+      "교착상태(deadlock)",
+      "인터럽트(interrupt)",
+      "스래싱(thrashing)",
+      "기아(starvation)"
+    ],
+    "answer": 2,
+    "explanation": "스래싱은 다중 프로그래밍 정도가 과해 프레임이 부족해지면 페이지 폴트가 연쇄적으로 일어나며 CPU가 교체 작업만 하게 되는 현상이다. 워킹셋 유지, 페이지 폴트 빈도 조절, 다중 프로그래밍 정도 낮추기로 대응한다.",
+    "relatedPost": "2026-08-10-page-replacement"
+  },
+  {
+    "id": "os-working-set",
+    "area": "운영체제",
+    "difficulty": "하",
+    "question": "프로세스가 일정 시간 동안 자주 참조하는 페이지들의 집합을 메모리에 유지해 스래싱을 방지하는 기법은?",
+    "choices": [
+      "타임 퀀텀",
+      "세마포어",
+      "스풀링",
+      "워킹셋(working set)"
+    ],
+    "answer": 3,
+    "explanation": "워킹셋은 지역성(locality)에 근거해 최근 참조 페이지 집합을 통째로 메모리에 두는 기법이다. 워킹셋이 다 들어갈 프레임을 보장하면 페이지 폴트가 급감해 스래싱을 막을 수 있다.",
+    "relatedPost": "2026-08-10-page-replacement"
+  },
+  {
+    "id": "os-paging-segmentation",
+    "area": "운영체제",
+    "difficulty": "중",
+    "question": "페이징과 세그먼테이션의 차이로 옳은 것은?",
+    "choices": [
+      "둘 다 반드시 같은 크기로만 나눈다",
+      "세그먼테이션은 내부 단편화가, 페이징은 외부 단편화가 발생한다",
+      "페이징은 고정 크기로, 세그먼테이션은 논리적 단위의 가변 크기로 나눈다",
+      "페이징은 가변 크기로, 세그먼테이션은 고정 크기로 나눈다"
+    ],
+    "answer": 2,
+    "explanation": "페이징은 물리적으로 같은 크기의 페이지로 잘라 내부 단편화가 생기고, 세그먼테이션은 코드·데이터·스택 같은 논리 단위의 가변 크기로 잘라 외부 단편화가 생긴다. 크기 방식과 단편화 종류를 교차시킨 함정에 주의한다.",
+    "relatedPost": "2026-08-10-page-replacement"
+  },
+  {
+    "id": "prog-tree-inorder",
+    "area": "프로그래밍",
+    "difficulty": "상",
+    "question": "다음 이진 트리를 중위 순회(inorder)할 때 방문 순서는?",
+    "code": "        A\n      /   \\\n     B     C\n    / \\\n   D   E",
+    "choices": [
+      "A B D E C",
+      "D B E A C",
+      "D E B C A",
+      "A B C D E"
+    ],
+    "answer": 1,
+    "explanation": "중위 순회는 왼쪽 서브트리 → 루트 → 오른쪽 서브트리 순이다. B의 왼쪽 D, B, B의 오른쪽 E를 마친 뒤 루트 A, 마지막으로 C — D B E A C. 전위(루트 먼저)·후위(루트 마지막)와의 순서 차이가 핵심이다."
+  },
+  {
+    "id": "prog-tree-preorder",
+    "area": "프로그래밍",
+    "difficulty": "중",
+    "question": "다음 이진 트리를 전위 순회(preorder)할 때 방문 순서는?",
+    "code": "        A\n      /   \\\n     B     C\n    / \\\n   D   E",
+    "choices": [
+      "D B E A C",
+      "D E B C A",
+      "C A E B D",
+      "A B D E C"
+    ],
+    "answer": 3,
+    "explanation": "전위 순회는 루트 → 왼쪽 → 오른쪽 순이다. A를 먼저 방문하고 왼쪽 서브트리(B → D → E), 마지막으로 C — A B D E C. 같은 트리의 중위(D B E A C)·후위(D E B C A) 결과와 묶어 비교해 두면 소거가 쉽다."
+  },
+  {
+    "id": "prog-full-binary-nodes",
+    "area": "프로그래밍",
+    "difficulty": "중",
+    "question": "깊이(레벨) k인 포화 이진 트리(full binary tree)의 전체 노드 수는? (루트 레벨 = 1)",
+    "choices": [
+      "2^(k-1)",
+      "k²",
+      "2^k - 1",
+      "2^k"
+    ],
+    "answer": 2,
+    "explanation": "레벨 i의 노드 수는 2^(i-1)개이고, 레벨 1부터 k까지 합하면 2^k - 1이다. 예를 들어 깊이 3이면 1+2+4 = 7 = 2³-1. 레벨별 최대 노드 수(2^(i-1))와 함께 공식 문제로 나온다."
+  },
+  {
+    "id": "prog-quicksort-complexity",
+    "area": "프로그래밍",
+    "difficulty": "중",
+    "question": "퀵 정렬의 시간복잡도로 옳게 짝지어진 것은?",
+    "choices": [
+      "평균 O(n²), 최악 O(n log n)",
+      "평균과 최악 모두 O(n log n)",
+      "평균과 최악 모두 O(n²)",
+      "평균 O(n log n), 최악 O(n²)"
+    ],
+    "answer": 3,
+    "explanation": "퀵 정렬은 피벗으로 분할하며 평균 O(n log n)이지만, 이미 정렬된 배열에 끝값 피벗을 쓰는 최악의 경우 분할이 한쪽으로 쏠려 O(n²)가 된다. 최악까지 O(n log n)을 보장하는 것은 병합·힙 정렬이다.",
+    "relatedPost": "2026-07-23-big-o-notation"
+  },
+  {
+    "id": "prog-bubble-pass",
+    "area": "프로그래밍",
+    "difficulty": "상",
+    "question": "배열 [5, 3, 4, 1]에 버블 정렬(오름차순, 인접 교환)을 적용할 때 1회전(pass) 후의 배열은?",
+    "choices": [
+      "[3, 5, 4, 1]",
+      "[5, 3, 4, 1]",
+      "[3, 4, 1, 5]",
+      "[1, 3, 4, 5]"
+    ],
+    "answer": 2,
+    "explanation": "1회전: (5,3)교환 → [3,5,4,1], (5,4)교환 → [3,4,5,1], (5,1)교환 → [3,4,1,5]. 한 회전이 끝나면 가장 큰 값이 맨 뒤로 밀려난다. 'n회전 후 배열 상태'를 묻는 계산 문제가 반복 출제된다."
+  },
+  {
+    "id": "prog-selection-sort",
+    "area": "프로그래밍",
+    "difficulty": "하",
+    "question": "매 회전마다 남은 원소 중 최솟값을 찾아 앞쪽과 교환하는 정렬 알고리즘은?",
+    "choices": [
+      "버블 정렬",
+      "삽입 정렬",
+      "병합 정렬",
+      "선택 정렬"
+    ],
+    "answer": 3,
+    "explanation": "선택 정렬은 최솟값을 '선택'해 맨 앞과 교환하기를 반복한다(교환 횟수 최대 n-1회로 적음). 버블은 인접 교환 반복, 삽입은 정렬된 부분에 끼워 넣기, 병합은 반씩 나눠 합치는 분할 정복이다."
+  },
+  {
+    "id": "prog-infix-postfix",
+    "area": "프로그래밍",
+    "difficulty": "상",
+    "question": "중위 표기식 A + B * C를 후위 표기식(postfix)으로 바꾸면?",
+    "choices": [
+      "A B + C *",
+      "* + A B C",
+      "A B * C +",
+      "A B C * +"
+    ],
+    "answer": 3,
+    "explanation": "우선순위가 높은 B * C를 먼저 후위로 바꾸면 B C *, 그다음 A + (BC*)를 바꾸면 A B C * +. 연산자가 피연산자 뒤에 오는 후위 표기는 스택 계산과 짝을 이루며, 괄호로 묶어 안쪽부터 변환하면 실수가 없다.",
+    "relatedPost": "2026-08-18-stack-queue-basics"
+  },
+  {
+    "id": "sec-auth-factors",
+    "area": "정보보안",
+    "difficulty": "중",
+    "question": "다중 요소 인증(MFA)의 인증 요소 분류와 예시가 옳게 짝지어진 것은?",
+    "choices": [
+      "지식 기반 — OTP 토큰, 소유 기반 — 지문, 생체 기반 — 비밀번호",
+      "세 분류 모두 비밀번호의 다른 이름이다",
+      "지식 기반 — 비밀번호, 소유 기반 — OTP 토큰, 생체 기반 — 지문",
+      "지식 기반 — 지문, 소유 기반 — 비밀번호, 생체 기반 — OTP 토큰"
+    ],
+    "answer": 2,
+    "explanation": "인증 요소는 아는 것(지식: 비밀번호·PIN), 가진 것(소유: OTP·스마트카드), 그 자체인 것(생체: 지문·홍채)으로 나뉜다. MFA는 서로 다른 분류의 요소 둘 이상을 결합해야 하며, 같은 분류 둘(비밀번호+PIN)은 MFA가 아니다."
+  },
+  {
+    "id": "sec-zero-trust",
+    "area": "정보보안",
+    "difficulty": "하",
+    "question": "'내부망이라도 아무것도 신뢰하지 않고 모든 접근을 항상 검증한다'는 보안 모델은?",
+    "choices": [
+      "DMZ",
+      "허니팟",
+      "샌드박스",
+      "제로 트러스트"
+    ],
+    "answer": 3,
+    "explanation": "제로 트러스트(Zero Trust)는 경계 안은 믿는다는 전통적 경계 보안과 달리, 위치와 무관하게 모든 요청을 인증·인가·검증한다. DMZ는 내외부 사이 완충 구역, 허니팟은 공격자 유인용 미끼 시스템, 샌드박스는 격리 실행 환경이다."
+  },
+  {
+    "id": "sec-vpn",
+    "area": "정보보안",
+    "difficulty": "하",
+    "question": "공중망(인터넷) 위에 암호화된 터널을 만들어 사설망처럼 안전하게 통신하게 하는 기술은?",
+    "choices": [
+      "NAC",
+      "DLP",
+      "VPN",
+      "VLAN"
+    ],
+    "answer": 2,
+    "explanation": "VPN(Virtual Private Network)은 터널링과 암호화로 공중망에서 전용선처럼 안전한 통신로를 만든다. VLAN은 스위치의 논리적 LAN 분할, NAC는 네트워크 접근 통제, DLP는 내부 정보 유출 방지 솔루션이다.",
+    "relatedPost": "2026-07-23-symmetric-asymmetric"
+  },
+  {
+    "id": "sec-sql-injection",
+    "area": "정보보안",
+    "difficulty": "중",
+    "question": "SQL 인젝션 공격의 가장 효과적인 대응 방법은?",
+    "choices": [
+      "데이터베이스 백업 주기를 늘린다",
+      "네트워크 대역폭을 늘린다",
+      "비밀번호를 주기적으로 변경한다",
+      "매개변수화된 쿼리(준비된 문장)를 사용하고 입력값을 검증한다"
+    ],
+    "answer": 3,
+    "explanation": "SQL 인젝션은 입력값이 쿼리 구조를 바꾸는 공격이므로, 값과 구조를 분리하는 매개변수화 쿼리(prepared statement)와 입력 검증이 근본 대응이다. 백업·대역폭·비밀번호 정책은 이 공격의 주입 경로와 무관하다.",
+    "relatedPost": "2026-08-15-access-control"
+  },
+  {
+    "id": "sec-secure-coding",
+    "area": "정보보안",
+    "difficulty": "중",
+    "question": "시큐어 코딩(secure coding)에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "개발 단계부터 보안 취약점을 예방하는 코딩 원칙이다",
+      "입력 데이터 검증과 출력값 처리가 핵심 항목이다",
+      "SQL 인젝션·XSS 같은 취약점을 줄이는 데 효과적이다",
+      "배포 이후 침해 사고 대응만을 다루는 활동이다"
+    ],
+    "answer": 3,
+    "explanation": "시큐어 코딩은 사고가 난 뒤의 대응이 아니라 구현 단계에서 취약점을 만들지 않는 예방 활동이다. 입력 검증, 보안 기능(인증·암호화) 올바른 사용, 에러 처리, 캡슐화 등이 점검 항목으로 출제된다.",
+    "relatedPost": "2026-08-15-access-control"
+  },
+  {
+    "id": "db-view-feature",
+    "area": "데이터베이스",
+    "difficulty": "중",
+    "question": "뷰(View)에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "하나 이상의 테이블에서 유도되는 가상 테이블이다",
+      "데이터를 물리적으로 저장하지 않는다",
+      "뷰를 통해 기반 테이블의 일부만 보여 보안에 활용할 수 있다",
+      "뷰 자체에 독립적인 인덱스를 자유롭게 만들 수 있다"
+    ],
+    "answer": 3,
+    "explanation": "뷰는 정의(쿼리)만 저장되는 가상 테이블이라 자체 데이터도, 독립적인 인덱스도 갖지 않는 것이 원칙이다. 필요한 열만 노출해 보안·편의성을 높이고, 기반 테이블이 바뀌면 뷰 결과도 따라 바뀐다.",
+    "relatedPost": "2026-08-18-sql-ddl-dml-dcl"
+  },
+  {
+    "id": "db-groupby-having",
+    "area": "데이터베이스",
+    "difficulty": "중",
+    "question": "SQL에서 GROUP BY로 묶은 그룹에 조건을 걸어 걸러낼 때 사용하는 절은?",
+    "choices": [
+      "WHERE",
+      "HAVING",
+      "ORDER BY",
+      "DISTINCT"
+    ],
+    "answer": 1,
+    "explanation": "WHERE는 그룹화 전에 개별 행을 거르고, HAVING은 그룹화 후에 집계 결과(COUNT, AVG 등)에 조건을 건다. 'AVG(점수) >= 80인 학과만'처럼 집계 함수 조건은 HAVING에만 쓸 수 있다는 구분이 핵심이다.",
+    "relatedPost": "2026-08-18-sql-ddl-dml-dcl"
+  },
+  {
+    "id": "db-left-join",
+    "area": "데이터베이스",
+    "difficulty": "중",
+    "question": "LEFT OUTER JOIN의 결과로 옳은 것은?",
+    "choices": [
+      "오른쪽 테이블의 모든 행을 남기고 왼쪽 매칭 없는 행은 버린다",
+      "두 테이블의 모든 행 조합을 만든다",
+      "왼쪽 테이블의 모든 행을 남기고, 오른쪽에 매칭이 없으면 NULL로 채운다",
+      "양쪽 테이블에 모두 매칭되는 행만 남긴다"
+    ],
+    "answer": 2,
+    "explanation": "LEFT OUTER JOIN은 왼쪽을 기준으로 삼아 매칭이 없어도 왼쪽 행을 버리지 않고 오른쪽 열을 NULL로 채운다. 매칭만 남기는 것은 INNER JOIN, 모든 조합은 CROSS JOIN(카티션 프로덕트)이다.",
+    "relatedPost": "2026-08-21-relational-algebra"
+  },
+  {
+    "id": "db-count-null",
+    "area": "데이터베이스",
+    "difficulty": "상",
+    "question": "집계 함수 COUNT(*)와 COUNT(컬럼명)의 차이로 옳은 것은?",
+    "choices": [
+      "둘은 항상 같은 값을 반환한다",
+      "COUNT(컬럼명)가 NULL인 행까지 모두 센다",
+      "COUNT(*)는 중복 행을 제거하고 센다",
+      "COUNT(*)는 NULL 포함 전체 행 수, COUNT(컬럼명)는 그 컬럼이 NULL이 아닌 행 수를 센다"
+    ],
+    "answer": 3,
+    "explanation": "COUNT(*)는 행 자체를 세므로 NULL 여부와 무관하고, COUNT(컬럼명)는 해당 컬럼이 NULL인 행을 제외한다. NULL이 섞인 표를 주고 두 결과의 차이를 묻는 계산형 함정이 자주 나온다. 중복 제거는 COUNT(DISTINCT 컬럼)다.",
+    "relatedPost": "2026-08-18-sql-ddl-dml-dcl"
+  },
+  {
+    "id": "db-sql-distinct",
+    "area": "데이터베이스",
+    "difficulty": "하",
+    "question": "SELECT 결과에서 중복된 행을 제거하는 SQL 키워드는?",
+    "choices": [
+      "GROUP",
+      "REMOVE",
+      "DISTINCT",
+      "UNIQUE"
+    ],
+    "answer": 2,
+    "explanation": "SELECT DISTINCT 컬럼 형태로 쓰면 결과에서 중복 행이 제거된다. UNIQUE는 제약조건(중복 값 입력 방지)에 쓰는 키워드라 조회 절에는 쓰지 않는다는 구분이 함정으로 나온다.",
+    "relatedPost": "2026-08-18-sql-ddl-dml-dcl"
   }
 ]
