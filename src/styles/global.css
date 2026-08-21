@@ -910,6 +910,52 @@ button.linklike:hover {
 .toc-chip.on em {
   color: inherit;
 }
+/* 주제 바로가기·난이도 필터 등 — 데스크톱에서도 유지되는 칩 행(.toc는 사이드 목차가 대체) */
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+}
+button.toc-chip {
+  appearance: none;
+  font: inherit;
+  cursor: pointer;
+}
+.note-tools {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.note-tools .linklike {
+  flex: none;
+  padding: 0.4rem 0;
+}
+.topic {
+  scroll-margin-top: 0.8rem;
+}
+/* 모바일 — 칩을 한 줄 가로 스크롤로(3줄씩 쌓여 첫 화면을 밀어내지 않게) */
+@media (max-width: 720px) {
+  .toc,
+  .chip-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 0.15rem;
+  }
+  .toc::-webkit-scrollbar,
+  .chip-row::-webkit-scrollbar {
+    display: none;
+  }
+  .toc .toc-chip,
+  .chip-row .toc-chip {
+    flex: none;
+    white-space: nowrap;
+    padding: 0.5em 1em; /* 터치 타깃 보강 */
+  }
+}
 
 /* 개념 노트 목차 — 영역 카드 */
 .area-cards {
@@ -950,11 +996,48 @@ button.linklike:hover {
   font-size: 0.85rem;
 }
 
-/* 최상단/최하단 이동 버튼 — 화면 우하단 고정 */
+/* 읽기 진행률 — 화면 최상단 얇은 바(개념 노트 상세) */
+.read-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 18; /* 모바일 드로어(19~20) 아래 */
+  pointer-events: none;
+}
+#read-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+}
+
+/* 토스트 — 저장 등 짧은 피드백 */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(1.4rem + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: 25;
+  max-width: calc(100vw - 2rem);
+  padding: 0.6em 1.15em;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.88rem;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.18);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 최상단/최하단 이동 버튼 — 화면 우하단 고정(iOS 홈바 회피) */
 .scroll-nav {
   position: fixed;
   right: 1.1rem;
-  bottom: 1.2rem;
+  bottom: calc(1.2rem + env(safe-area-inset-bottom, 0px));
   z-index: 15; /* 모바일 드로어(19~20)보다는 아래 */
   display: flex;
   flex-direction: column;
@@ -978,22 +1061,39 @@ button.linklike:hover {
   border-color: var(--accent);
 }
 
-/* 영역 상세 하단 — 이전/다음 영역 이동 */
+/* 영역 상세 하단 — 이전/다음 영역 이동(넓은 터치 타깃의 버튼 카드) */
 .area-nav {
   display: flex;
-  justify-content: space-between;
-  gap: 1rem;
+  gap: 0.75rem;
   margin-top: 1.5rem;
-  padding-top: 1rem;
+  padding-top: 1.25rem;
   border-top: 1px solid var(--border);
-  font-size: 0.92rem;
+  font-size: 0.95rem;
 }
 .area-nav a {
-  color: var(--accent);
+  flex: 1;
+  display: block;
+  min-height: 3rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  font-weight: 600;
   text-decoration: none;
 }
+.area-nav a small {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+.area-nav a.next {
+  text-align: right;
+}
 .area-nav a:hover {
-  text-decoration: underline;
+  border-color: var(--accent);
+  color: var(--accent);
 }
 .area-title {
   margin: 0 0 1rem;
@@ -1026,18 +1126,22 @@ button.linklike:hover {
 }
 /* 개념 항목 카드 — 좌측 색상 보더 없이 담백한 면 카드 */
 .cn {
-  position: relative;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 0.85rem 2.4rem 0.85rem 1.05rem; /* 우측은 저장 별 자리 */
+  padding: 0.85rem 1.05rem;
   margin-bottom: 0.6rem;
   background: var(--bg);
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
 }
+/* 저장 별 — float로 첫 줄만 비켜가게 하고, 히트 영역은 44px 이상 확보 */
 .cn-save {
-  position: absolute;
-  top: 0.7rem;
-  right: 0.65rem;
+  float: right;
+  width: 2.75rem;
+  height: 2.75rem;
+  display: grid;
+  place-items: center;
+  margin: -0.5rem -0.6rem 0 0.35rem;
+  font-size: 1.15rem;
 }
 /* 마이페이지 '저장한 개념' 카드 — 해설이 본문이므로 강조 보더 없이 */
 .rv.note {
@@ -1052,13 +1156,30 @@ button.linklike:hover {
   font-size: 0.95rem;
 }
 .cn-q {
-  margin-top: 0.55rem;
+  margin-top: 0.35rem;
   font-size: 0.9rem;
 }
+/* summary — 행 전체가 44px급 터치 타깃, 커스텀 화살표(flex가 기본 마커를 지움) */
 .cn-q summary {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.6rem;
+  list-style: none;
   cursor: pointer;
   user-select: none;
   color: var(--muted);
+}
+.cn-q summary::-webkit-details-marker {
+  display: none;
+}
+.cn-q summary::before {
+  content: "▶";
+  font-size: 0.62em;
+  transition: transform 0.15s ease;
+}
+.cn-q[open] summary::before {
+  transform: rotate(90deg);
 }
 .cn-q summary:hover {
   color: var(--accent);
@@ -1077,9 +1198,39 @@ button.linklike:hover {
   padding-left: 1.4rem;
   color: var(--muted);
 }
-.cn-choices .ans {
+/* 선지 — 정답은 가린 채 시작, 탭해서 자기 점검 */
+.cn-choice {
+  appearance: none;
+  display: block;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0.4em 0.55em;
+  margin: 0.1rem 0;
+  color: inherit;
+  cursor: pointer;
+}
+.cn-choices:not(.done) .cn-choice:hover {
+  border-color: var(--border);
+  color: var(--text);
+}
+.cn-choices.done .cn-choice {
+  cursor: default;
+}
+.cn-choices li.ans,
+.cn-choices li.ans .cn-choice {
   color: var(--ok);
   font-weight: 600;
+}
+.cn-choices li.bad,
+.cn-choices li.bad .cn-choice {
+  color: var(--accent);
+}
+.cn-reveal {
+  margin-top: 0.35rem;
 }
 
 /* 키보드 힌트 — 포인터가 있는(=키보드가 있을 법한) 환경에서만 */

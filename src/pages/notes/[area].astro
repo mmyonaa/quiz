@@ -1,6 +1,6 @@
 ---
 import { getCollection } from "astro:content";
-import { AREAS, AREA_SLUGS } from "../../content.config";
+import { AREAS, AREA_SLUGS, DIFFICULTIES } from "../../content.config";
 import postTitles from "../../data/post-titles.json";
 import SiteHeader from "../../components/SiteHeader.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
@@ -29,6 +29,7 @@ const topics = [...new Set(qs.map((q) => q.relatedPost ?? ""))]
   }));
 
 const countByArea = Object.fromEntries(AREAS.map((a) => [a, bank.filter((q) => q.area === a).length]));
+const countByDiff = Object.fromEntries(DIFFICULTIES.map((d) => [d, qs.filter((q) => q.difficulty === d).length]));
 const idx = AREAS.indexOf(area);
 const prevArea = idx > 0 ? AREAS[idx - 1] : null;
 const nextArea = idx < AREAS.length - 1 ? AREAS[idx + 1] : null;
@@ -41,7 +42,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 <html lang="ko">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>daily.quiz — 개념 노트 · {area}</title>
     <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
     <meta
@@ -51,6 +52,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   </head>
   <body>
     <SiteHeader current="notes" />
+
+    {/* 읽기 진행률 — 화면 최상단 얇은 바 */}
+    <div class="read-progress" aria-hidden="true"><i id="read-fill"></i></div>
 
     <main class="side-layout">
       {/* 넓은 화면 전용 — 좌측 영역 메뉴, 현재 영역 하이라이트 */}
@@ -73,19 +77,35 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
             <a class="lead-link" href={`${base}/notes/`}>개념 노트</a> 안의 {area} 영역 —
             해설 {qs.length}문항을 {topics.length}개 주제로 모았습니다.
           </p>
-          {/* 좁은 화면 전용 — 영역 이동 칩 */}
-          <nav class="toc">
+          {/* 좁은 화면 전용 — 영역 이동 칩(한 줄 가로 스크롤) */}
+          <nav class="toc" aria-label="영역 이동">
             {AREAS.map((a) => (
               <a class={`toc-chip${a === area ? " on" : ""}`} href={`${base}/notes/${AREA_SLUGS[a]}/`}>
                 {a} <em>{countByArea[a]}</em>
               </a>
             ))}
           </nav>
+          {/* 주제 바로가기 — 데스크톱·모바일 공용 */}
+          <nav class="chip-row" aria-label="주제 바로가기">
+            {topics.map(({ title }, i) => (
+              <a class="toc-chip" href={`#t${i}`}>{title}</a>
+            ))}
+          </nav>
+          {/* 난이도 필터 + 모두 펼치기 */}
+          <div class="note-tools">
+            <div class="chip-row" role="group" aria-label="난이도 필터">
+              <button class="toc-chip diff-chip on" type="button" data-diff="전체">전체 <em>{qs.length}</em></button>
+              {DIFFICULTIES.map((d) => (
+                <button class="toc-chip diff-chip" type="button" data-diff={d}>{d} <em>{countByDiff[d]}</em></button>
+              ))}
+            </div>
+            <button id="toggle-all" class="linklike" type="button">모두 펼치기</button>
+          </div>
         </section>
 
         <section class="panel">
-          {topics.map(({ post, title, questions }) => (
-            <div class="topic">
+          {topics.map(({ post, title, questions }, i) => (
+            <div class="topic" id={`t${i}`}>
               <h3 class="topic-title">
                 {title}
                 {post && (
@@ -93,18 +113,20 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
                 )}
               </h3>
               {questions.map((q) => (
-                <article class="cn" data-id={q.id}>
+                <article class="cn" data-id={q.id} data-diff={q.difficulty}>
                   <button class="save-star cn-save" type="button" title="이 개념 저장" aria-label="이 개념 저장">☆</button>
                   <p class="cn-x">{q.explanation}</p>
                   <details class="cn-q">
                     <summary>확인 문제 <span class="badge diff" data-level={q.difficulty}>{q.difficulty}</span></summary>
                     <p class="cn-question">{q.question}</p>
                     {q.code && <pre class="q-code mono">{q.code}</pre>}
-                    <ol class="cn-choices">
-                      {q.choices.map((c, i) => (
-                        <li class={i === q.answer ? "ans" : ""}>{c}</li>
+                    {/* 정답은 가려져 있다 — 선지를 골라 자기 점검하거나 '정답만 보기' */}
+                    <ol class="cn-choices" data-answer={q.answer}>
+                      {q.choices.map((c) => (
+                        <li><button type="button" class="cn-choice">{c}</button></li>
                       ))}
                     </ol>
+                    <button type="button" class="linklike cn-reveal">정답만 보기</button>
                   </details>
                 </article>
               ))}
@@ -114,23 +136,39 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
           {/* 이전/다음 영역 이동 */}
           <nav class="area-nav">
             {prevArea ? (
-              <a href={`${base}/notes/${AREA_SLUGS[prevArea]}/`}>← {prevArea}</a>
+              <a href={`${base}/notes/${AREA_SLUGS[prevArea]}/`}><small>이전 영역</small>← {prevArea}</a>
             ) : (
-              <a href={`${base}/notes/`}>← 전체 영역</a>
+              <a href={`${base}/notes/`}><small>목차</small>← 전체 영역</a>
             )}
             {nextArea ? (
-              <a href={`${base}/notes/${AREA_SLUGS[nextArea]}/`}>{nextArea} →</a>
+              <a class="next" href={`${base}/notes/${AREA_SLUGS[nextArea]}/`}><small>다음 영역</small>{nextArea} →</a>
             ) : (
-              <a href={`${base}/notes/`}>전체 영역 →</a>
+              <a class="next" href={`${base}/notes/`}><small>목차</small>전체 영역 →</a>
             )}
           </nav>
         </section>
       </div>
     </main>
 
+    <div id="toast" class="toast" hidden></div>
+
     <script>
       import { supabase } from "../../lib/supabase";
       import { onAuth, authSession, requireLogin, errorText } from "../../lib/auth";
+
+      const $ = <T extends HTMLElement>(sel: string) => document.querySelector(sel) as T;
+
+      // ── 토스트 — 저장 피드백 ──
+      let toastTimer: ReturnType<typeof setTimeout> | undefined;
+      const toast = (msg: string) => {
+        const t = $("#toast");
+        t.textContent = msg;
+        t.hidden = false;
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          t.hidden = true;
+        }, 2200);
+      };
 
       // ── 개념 저장(북마크) — saved_notes 테이블, 해설 카드(문항 id) 단위 ──
       let savedNotes = new Set<string>();
@@ -178,9 +216,89 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
             else savedNotes.delete(id);
             paintStars();
             alert(errorText("저장에 실패했습니다", error));
+            return;
           }
+          toast(wasSaved ? "저장을 해제했습니다" : "저장했습니다 · 마이페이지에 모아둡니다");
         }),
       );
+
+      // ── 확인 문제 — 정답은 가린 채 시작, 선지 선택 또는 '정답만 보기'로 공개 ──
+      document.querySelectorAll<HTMLOListElement>(".cn-choices").forEach((ol) => {
+        const answer = Number(ol.dataset.answer);
+        const revealBtn = ol.parentElement!.querySelector<HTMLElement>(".cn-reveal");
+        const reveal = (chosen: number | null) => {
+          if (ol.classList.contains("done")) return;
+          ol.classList.add("done");
+          [...ol.children].forEach((li, i) => {
+            li.classList.toggle("ans", i === answer);
+            if (chosen !== null && chosen !== answer && i === chosen) li.classList.add("bad");
+          });
+          if (revealBtn) revealBtn.hidden = true;
+        };
+        [...ol.querySelectorAll<HTMLButtonElement>(".cn-choice")].forEach((b, i) =>
+          b.addEventListener("click", () => reveal(i)),
+        );
+        revealBtn?.addEventListener("click", () => reveal(null));
+      });
+
+      // ── 난이도 필터 — 카드 숨김, 빈 주제는 통째로 숨김 ──
+      const diffChips = [...document.querySelectorAll<HTMLButtonElement>(".diff-chip")];
+      const cards = [...document.querySelectorAll<HTMLElement>(".cn")];
+      const topicEls = [...document.querySelectorAll<HTMLElement>(".topic")];
+      diffChips.forEach((chip) =>
+        chip.addEventListener("click", () => {
+          const d = chip.dataset.diff!;
+          diffChips.forEach((c) => c.classList.toggle("on", c === chip));
+          cards.forEach((c) => (c.hidden = d !== "전체" && c.dataset.diff !== d));
+          topicEls.forEach((t) => (t.hidden = ![...t.querySelectorAll<HTMLElement>(".cn")].some((c) => !c.hidden)));
+        }),
+      );
+
+      // ── 모두 펼치기/접기 ──
+      const toggleAll = $("#toggle-all") as HTMLButtonElement;
+      let allOpen = false;
+      toggleAll.addEventListener("click", () => {
+        allOpen = !allOpen;
+        document.querySelectorAll<HTMLDetailsElement>(".cn-q").forEach((d) => (d.open = allOpen));
+        toggleAll.textContent = allOpen ? "모두 접기" : "모두 펼치기";
+      });
+
+      // ── 읽기 진행률 + 읽던 위치 저장/복원 ──
+      const fill = $("#read-fill");
+      const POS_KEY = `daily.quiz.notes-pos.${location.pathname}`;
+      const onReadScroll = () => {
+        const max = document.documentElement.scrollHeight - innerHeight;
+        fill.style.width = max > 0 ? `${(scrollY / max) * 100}%` : "0%";
+        try {
+          localStorage.setItem(POS_KEY, String(Math.round(scrollY)));
+        } catch {
+          /* 저장 불가 환경 무시 */
+        }
+      };
+      let rTicking = false;
+      document.addEventListener(
+        "scroll",
+        () => {
+          if (!rTicking) {
+            rTicking = true;
+            requestAnimationFrame(() => {
+              rTicking = false;
+              onReadScroll();
+            });
+          }
+        },
+        { passive: true },
+      );
+      // 앵커 진입이 아니면 읽던 위치로 복원
+      if (!location.hash) {
+        try {
+          const saved = Number(localStorage.getItem(POS_KEY) ?? 0);
+          if (saved > 300) scrollTo({ top: saved, behavior: "instant" as ScrollBehavior });
+        } catch {
+          /* ignore */
+        }
+      }
+      onReadScroll();
     </script>
 
     <SiteFooter />
