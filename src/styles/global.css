@@ -277,10 +277,11 @@ main {
   padding: 0 1.25rem 3rem;
 }
 .panel {
+  --pad: 1.75rem; /* 칩 행 블리드 등에서 참조하는 패널 안쪽 여백 */
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1.75rem;
+  padding: var(--pad);
   margin-top: 1rem;
 }
 h1 {
@@ -936,14 +937,21 @@ button.toc-chip {
 .topic {
   scroll-margin-top: 0.8rem;
 }
-/* 모바일 — 칩을 한 줄 가로 스크롤로(3줄씩 쌓여 첫 화면을 밀어내지 않게) */
+/* 모바일 — 칩을 한 줄 가로 스크롤로(3줄씩 쌓여 첫 화면을 밀어내지 않게).
+   패널 가장자리까지 블리드시키고 우측 페이드로 '더 있음'을 시각화한다. */
 @media (max-width: 720px) {
   .toc,
   .chip-row {
     flex-wrap: nowrap;
     overflow-x: auto;
     scrollbar-width: none;
+    margin-left: calc(var(--pad, 1.25rem) * -1);
+    margin-right: calc(var(--pad, 1.25rem) * -1);
+    padding-left: var(--pad, 1.25rem);
+    padding-right: var(--pad, 1.25rem);
     padding-bottom: 0.15rem;
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 30px), transparent);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 30px), transparent);
   }
   .toc::-webkit-scrollbar,
   .chip-row::-webkit-scrollbar {
@@ -1257,7 +1265,7 @@ kbd {
 
 @media (max-width: 480px) {
   .panel {
-    padding: 1.25rem;
+    --pad: 1.25rem;
   }
   .exam-top {
     margin: -1.25rem -1.25rem 1rem;
