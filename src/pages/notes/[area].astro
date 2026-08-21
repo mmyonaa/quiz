@@ -97,8 +97,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
                   <button class="save-star cn-save" type="button" title="이 개념 저장" aria-label="이 개념 저장">☆</button>
                   <p class="cn-x">{q.explanation}</p>
                   <details class="cn-q">
-                    <summary>확인 문제</summary>
+                    <summary>확인 문제 <span class="badge diff" data-level={q.difficulty}>{q.difficulty}</span></summary>
                     <p class="cn-question">{q.question}</p>
+                    {q.code && <pre class="q-code mono">{q.code}</pre>}
                     <ol class="cn-choices">
                       {q.choices.map((c, i) => (
                         <li class={i === q.answer ? "ans" : ""}>{c}</li>

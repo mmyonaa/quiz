@@ -90,11 +90,13 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       type Q = {
         id: string;
         area: string;
+        difficulty: string;
         question: string;
+        code?: string;
         choices: string[];
         answer: number;
         explanation: string;
-        relatedPost: string;
+        relatedPost?: string; // 선택 — 글이 아직 없는 문항은 링크 없이 렌더
       };
       type WrongRow = { question_id: string; chosen: number; answered_at: string };
       type WrongItem = { q: Q; count: number; lastChosen: number; lastAt: string };
@@ -118,12 +120,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       const card = (q: Q, metaHTML: string) => {
         const el = document.createElement("article");
         el.className = "rv wrong";
+        const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         el.innerHTML = `
-          <p class="rv-q"><span class="badge">${q.area}</span> ${q.question}</p>
+          <p class="rv-q"><span class="badge">${q.area}</span> <span class="badge diff" data-level="${q.difficulty}">${q.difficulty}</span> ${q.question}</p>
+          ${q.code ? `<pre class="q-code mono">${esc(q.code)}</pre>` : ""}
           ${metaHTML}
           <p class="rv-a">정답: <b>${q.choices[q.answer]}</b></p>
           <p class="rv-x">${q.explanation}</p>
-          <p class="rv-link"><a href="${blogPostBase}${q.relatedPost}/" target="_blank" rel="noopener">개념 글 다시 읽기 →</a></p>
+          ${q.relatedPost ? `<p class="rv-link"><a href="${blogPostBase}${q.relatedPost}/" target="_blank" rel="noopener">개념 글 다시 읽기 →</a></p>` : ""}
         `;
         return el;
       };

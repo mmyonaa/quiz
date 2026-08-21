@@ -6,7 +6,7 @@ import { file } from "astro/loaders";
  * 스키마 위반 문제는 빌드가 실패하므로, 깨진 문제가 사이트에 실리지 않는다.
  * 문제는 기출 복제가 아니라 daily.mcp 정처기 글 기반의 자체 제작 문항이다.
  */
-export const AREAS = ["운영체제", "네트워크", "데이터베이스", "소프트웨어공학", "정보보안"] as const;
+export const AREAS = ["운영체제", "네트워크", "데이터베이스", "소프트웨어공학", "정보보안", "프로그래밍"] as const;
 
 /** 난이도 단계 — 하(정의·단순 매칭), 중(유사 개념 구분·함정), 상(계산·다단계 추론) */
 export const DIFFICULTIES = ["하", "중", "상"] as const;
@@ -18,6 +18,7 @@ export const AREA_SLUGS: Record<(typeof AREAS)[number], string> = {
   데이터베이스: "database",
   소프트웨어공학: "software",
   정보보안: "security",
+  프로그래밍: "programming",
 };
 
 const quiz = defineCollection({
@@ -29,6 +30,8 @@ const quiz = defineCollection({
       /** 난이도 — 필수 필드라 라벨 누락 문항은 빌드가 잡는다 */
       difficulty: z.enum(DIFFICULTIES),
       question: z.string().min(10),
+      /** 코드 해석 문항의 코드 블록 — 고정폭 <pre>로 렌더 (프로그래밍 영역용, 선택) */
+      code: z.string().optional(),
       /** 4지선다 고정 — 정처기 필기 형식 */
       choices: z.array(z.string().min(1)).length(4),
       /** 정답 선지 인덱스(0~3) */

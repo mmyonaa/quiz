@@ -628,6 +628,24 @@ button.linklike:hover {
   font-size: 0.78rem;
   font-weight: 600;
 }
+/* 코드 해석 문항의 코드 블록 — 프로그래밍 영역 */
+.q-code {
+  margin: -0.3rem 0 1.1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-size: 0.85rem;
+  line-height: 1.55;
+  overflow-x: auto;
+  white-space: pre;
+}
+.cn-q .q-code,
+.rv .q-code {
+  margin: 0.2rem 0 0.7rem;
+  background: var(--surface);
+}
+
 /* 난이도 뱃지 — 하=안정색, 중=중립, 상=강조색 */
 .badge.diff {
   background: var(--bg);

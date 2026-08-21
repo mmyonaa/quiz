@@ -94,7 +94,8 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         <div class="mock-box">
           <h2>모의고사</h2>
           <p class="mock-desc">
-            실제 필기 형식 그대로 — 영역별 20문항, 총 100문항을 150분 안에 풉니다.
+            실제 필기 형식 그대로 — 총 100문항을 150분 안에 풉니다. 영역 배분은
+            실제 출제 비중을 반영합니다(DB·소프트웨어공학 20, 나머지 영역 15).
             과목별 40점 미만이면 과락, 과락 없이 평균 60점 이상이면 합격입니다.
             문항을 건너뛰고 나중에 돌아올 수 있습니다.
           </p>
@@ -123,6 +124,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         </details>
         <div id="q-body">
           <h2 id="q-text"></h2>
+          <pre id="q-code" class="q-code mono" hidden></pre>
           <ol id="q-choices" class="choices"></ol>
         </div>
         <div class="exam-nav">
@@ -161,6 +163,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         area: string;
         difficulty: string;
         question: string;
+        code?: string; // 코드 해석 문항의 코드 블록
         choices: string[];
         answer: number;
         explanation: string;
@@ -177,6 +180,8 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       };
 
       const $ = <T extends HTMLElement>(sel: string) => document.querySelector(sel) as T;
+      // innerHTML 템플릿에 끼워 넣는 코드 블록용 — C 코드의 <, & 등이 태그로 해석되지 않게
+      const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
       const setup = $("#setup"), exam = $("#exam"), result = $("#result");
 
       let session: Q[] = [];
@@ -186,7 +191,15 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 
       // ── 타이머 — 모의고사는 150분 카운트다운, 연습은 경과 시간 카운트업 ──
       const MOCK_MINUTES = 150;
-      const MOCK_PER_AREA = 20;
+      // 영역별 출제 수 — 합계 100문항(실제 필기 분량). 문항 비중이 큰 DB·소공에 20, 나머지 15
+      const MOCK_QUOTA: Record<string, number> = {
+        운영체제: 15,
+        네트워크: 15,
+        데이터베이스: 20,
+        소프트웨어공학: 20,
+        정보보안: 15,
+        프로그래밍: 15,
+      };
       let startedAt = 0;
       let deadline = 0;
       let timerId: ReturnType<typeof setInterval> | undefined;
@@ -398,6 +411,9 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         $("#exam-diff").textContent = q.difficulty;
         $("#exam-diff").dataset.level = q.difficulty;
         $("#q-text").textContent = q.question;
+        const codeEl = $("#q-code");
+        codeEl.hidden = !q.code;
+        codeEl.textContent = q.code ?? "";
         const ol = $("#q-choices");
         ol.innerHTML = "";
         q.choices.forEach((c, i) => {
@@ -532,6 +548,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           card.className = wrong ? "rv wrong" : "rv";
           card.innerHTML = `
             <p class="rv-q"><span class="badge">${q.area}</span> <span class="badge diff" data-level="${q.difficulty}">${q.difficulty}</span> ${q.question}</p>
+            ${q.code ? `<pre class="q-code mono">${esc(q.code)}</pre>` : ""}
             <p class="rv-a">${wrong ? `내 답: ${unanswered ? "무응답" : q.choices[picked[i]]}<br/>` : ""}정답: <b>${q.choices[q.answer]}</b></p>
             <p class="rv-x">${q.explanation}</p>
             ${q.relatedPost ? `<p class="rv-link"><a href="${blogPostBase}${q.relatedPost}/" target="_blank" rel="noopener">개념 글 다시 읽기 →</a></p>` : ""}
@@ -570,10 +587,10 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         startSession(shuffle(pool).slice(0, count));
       });
 
-      // 모의고사 — 영역별 20문항을 과목 순서대로 출제(실제 필기 구성), 150분 타이머
+      // 모의고사 — 영역 배분(MOCK_QUOTA, 합계 100문항)대로 과목 순서 출제, 150분 타이머
       $("#start-mock").addEventListener("click", () => {
         const paper = areas.flatMap((a) =>
-          shuffle(bank.filter((q) => q.area === a)).slice(0, MOCK_PER_AREA),
+          shuffle(bank.filter((q) => q.area === a)).slice(0, MOCK_QUOTA[a] ?? 0),
         );
         mode = "mock";
         startSession(paper, false);
