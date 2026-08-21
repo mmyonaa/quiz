@@ -1398,5 +1398,567 @@
     "answer": 1,
     "explanation": "최소 권한 원칙(least privilege)은 계정이 탈취되어도 피해 범위를 좁히는 접근통제 전반의 기본 원칙이다. 지문 속 '필요한 최소한만'이라는 표현이 나오면 이 원칙을 고르면 된다.",
     "relatedPost": "2026-08-15-access-control"
+  },
+  {
+    "id": "db-sql-ddl-not",
+    "area": "데이터베이스",
+    "question": "다음 SQL 명령어 중 DDL(데이터 정의어)에 속하지 않는 것은?",
+    "choices": [
+      "CREATE",
+      "ALTER",
+      "TRUNCATE",
+      "UPDATE"
+    ],
+    "answer": 3,
+    "explanation": "UPDATE는 행의 값을 바꾸는 DML이다. 기준은 하나 — 구조(스키마)를 만지면 DDL, 데이터(행)를 만지면 DML, 권한을 만지면 DCL. TRUNCATE는 행을 지우는 것 같지만 구조 연산으로 취급되는 DDL이라는 점이 함정이다.",
+    "relatedPost": "2026-08-18-sql-ddl-dml-dcl"
+  },
+  {
+    "id": "db-sql-truncate",
+    "area": "데이터베이스",
+    "question": "TRUNCATE 명령에 대한 설명으로 옳은 것은?",
+    "choices": [
+      "WHERE 절로 특정 행만 골라 지울 수 있다",
+      "DML이므로 COMMIT 전에 ROLLBACK할 수 있다",
+      "테이블 구조는 남기고 전체 행을 즉시 삭제하며 롤백할 수 없다",
+      "테이블 자체를 삭제해 구조도 사라진다"
+    ],
+    "answer": 2,
+    "explanation": "TRUNCATE는 DDL이라 실행 즉시 반영되고 롤백이 안 되며, 구조만 남기고 전체 행을 지운다. 골라 지우고 롤백 가능한 것은 DELETE(DML), 테이블 자체를 없애는 것은 DROP이다. 'TRUNCATE는 DML이다'는 단골 오답 보기다.",
+    "relatedPost": "2026-08-18-sql-ddl-dml-dcl"
+  },
+  {
+    "id": "db-sql-delete-family",
+    "area": "데이터베이스",
+    "question": "WHERE 절로 조건에 맞는 행만 삭제할 수 있고, COMMIT 전이라면 ROLLBACK으로 되돌릴 수 있는 명령은?",
+    "choices": [
+      "DELETE",
+      "TRUNCATE",
+      "DROP",
+      "REVOKE"
+    ],
+    "answer": 0,
+    "explanation": "DELETE는 행 단위로 지우는 DML이라 트랜잭션의 대상이 되어 롤백이 가능하다. TRUNCATE는 전체 행을 즉시 지우는 DDL(롤백 불가), DROP은 테이블 자체를 삭제, REVOKE는 권한을 회수하는 DCL이다.",
+    "relatedPost": "2026-08-18-sql-ddl-dml-dcl"
+  },
+  {
+    "id": "db-sql-dcl-grant",
+    "area": "데이터베이스",
+    "question": "DCL(데이터 제어어)에 대한 설명으로 옳은 것은?",
+    "choices": [
+      "GRANT는 권한을 회수하고 REVOKE는 권한을 부여한다",
+      "GRANT는 권한을 부여하고 REVOKE는 권한을 회수한다",
+      "SELECT와 INSERT가 DCL에 속한다",
+      "CREATE와 DROP이 DCL에 속한다"
+    ],
+    "answer": 1,
+    "explanation": "권한을 주는 것이 GRANT, 뺏는 것이 REVOKE이며 둘이 DCL의 대표 명령이다. 두 명령의 방향을 바꿔 서술한 보기가 단골 함정이다. SELECT·INSERT는 DML, CREATE·DROP은 DDL이다.",
+    "relatedPost": "2026-08-18-sql-ddl-dml-dcl"
+  },
+  {
+    "id": "db-sql-fullname",
+    "area": "데이터베이스",
+    "question": "SQL 명령어 분류의 영문 풀네임 연결이 옳지 않은 것은?",
+    "choices": [
+      "DDL — Data Definition Language",
+      "DML — Data Manipulation Language",
+      "DCL — Data Control Language",
+      "DML — Data Modeling Language"
+    ],
+    "answer": 3,
+    "explanation": "DML은 Data Manipulation(조작) Language다. 이름 자체가 분류 기준을 말해 준다 — Definition은 구조 정의, Manipulation은 데이터 조작, Control은 권한 제어. Modeling이라는 분류는 존재하지 않는다.",
+    "relatedPost": "2026-08-18-sql-ddl-dml-dcl"
+  },
+  {
+    "id": "db-sql-tcl",
+    "area": "데이터베이스",
+    "question": "COMMIT, ROLLBACK, SAVEPOINT가 속하는 SQL 명령어 분류는? (보기에 해당 분류가 있는 경우)",
+    "choices": [
+      "DDL",
+      "DML",
+      "TCL",
+      "DQL"
+    ],
+    "answer": 2,
+    "explanation": "트랜잭션을 확정·취소·중간 저장하는 명령은 트랜잭션 제어어(TCL)로 묶는 분류가 일반적이다. 교재에 따라 DCL에 포함시키기도 하므로, 보기에 TCL이 있으면 TCL을, 없으면 DCL을 고르는 것이 요령이다.",
+    "relatedPost": "2026-08-18-sql-ddl-dml-dcl"
+  },
+  {
+    "id": "db-sql-alter-update",
+    "area": "데이터베이스",
+    "question": "student 테이블에 email 열을 추가하는 'ALTER TABLE student ADD email VARCHAR(50)'과, 행의 이름 값을 바꾸는 'UPDATE student SET name=...'의 분류로 옳은 것은?",
+    "choices": [
+      "둘 다 DML이다",
+      "ALTER는 DDL, UPDATE는 DML이다",
+      "ALTER는 DML, UPDATE는 DDL이다",
+      "둘 다 DDL이다"
+    ],
+    "answer": 1,
+    "explanation": "둘 다 '변경'이지만 대상이 다르다. 열을 추가하거나 타입을 바꾸는 것은 구조 변경이라 DDL(ALTER), 행에 든 값을 바꾸는 것은 데이터 변경이라 DML(UPDATE)이다. '변경'이라는 말로 묶어 헷갈리게 하는 단골 문제다.",
+    "relatedPost": "2026-08-18-sql-ddl-dml-dcl"
+  },
+  {
+    "id": "db-ra-select-project",
+    "area": "데이터베이스",
+    "question": "관계대수 연산자에 대한 설명으로 옳은 것은?",
+    "choices": [
+      "select(σ)는 조건을 만족하는 행을, project(π)는 지정한 열을 골라낸다",
+      "select(σ)는 열을, project(π)는 행을 골라낸다",
+      "select(σ)는 SQL의 SELECT 절에 대응한다",
+      "project(π)는 SQL의 WHERE 절에 대응한다"
+    ],
+    "answer": 0,
+    "explanation": "σ는 가로로 행(튜플)을 자르고 π는 세로로 열(속성)을 자른다. SQL로 옮기면 σ가 WHERE 절, π가 SELECT 절에 대응한다 — SQL의 SELECT라는 이름이 관계대수의 project에 해당한다는 점이 자주 걸리는 함정이다.",
+    "relatedPost": "2026-08-21-relational-algebra"
+  },
+  {
+    "id": "db-ra-project-dup",
+    "area": "데이터베이스",
+    "question": "관계대수의 project(π) 연산 결과에 대한 설명으로 옳은 것은?",
+    "choices": [
+      "중복된 행이 있으면 제거된다",
+      "중복된 행이 그대로 유지된다",
+      "행 수가 항상 원본과 같다",
+      "조건을 만족하는 행만 남는다"
+    ],
+    "answer": 0,
+    "explanation": "관계(릴레이션)는 중복 튜플을 허용하지 않으므로 π로 열을 뽑은 결과에서 중복 행은 제거된다. 조건을 만족하는 행을 남기는 것은 select(σ)의 역할이다.",
+    "relatedPost": "2026-08-21-relational-algebra"
+  },
+  {
+    "id": "db-ra-union-compat",
+    "area": "데이터베이스",
+    "question": "두 관계에 합집합(∪)·차집합(−)·교집합(∩)을 적용하기 위한 합병 가능(union-compatible) 조건은?",
+    "choices": [
+      "두 관계의 기본키가 같아야 한다",
+      "두 관계의 속성 수와 대응 속성의 도메인이 같아야 한다",
+      "두 관계의 행 수가 같아야 한다",
+      "두 관계가 같은 테이블에서 나와야 한다"
+    ],
+    "answer": 1,
+    "explanation": "집합 연산은 행끼리 합치고 빼는 것이므로 속성 수가 같고 대응하는 속성의 도메인이 같아야 성립한다. 이 조건이 없으면 연산 자체가 불가능하다는 점이 오답 보기로 자주 나온다.",
+    "relatedPost": "2026-08-21-relational-algebra"
+  },
+  {
+    "id": "db-ra-natural-join",
+    "area": "데이터베이스",
+    "question": "동등 조인(equi-join)과 자연 조인(natural join)의 차이로 옳은 것은?",
+    "choices": [
+      "자연 조인은 중복되는 공통 속성 열을 하나만 남긴다",
+      "동등 조인은 등호 이외의 비교 연산자를 쓴다",
+      "자연 조인은 두 관계의 모든 행 조합을 만든다",
+      "동등 조인은 공통 속성 열을 모두 제거한다"
+    ],
+    "answer": 0,
+    "explanation": "자연 조인은 동등 조인 결과에서 중복되는 공통 속성을 하나로 합쳐 제거한 것이다. 등호(=)만 쓰면 동등 조인, 임의 비교 연산자(>, < 등)를 쓰면 세타 조인이며, 모든 행 조합을 만드는 것은 카티션 프로덕트(×)다.",
+    "relatedPost": "2026-08-21-relational-algebra"
+  },
+  {
+    "id": "db-ra-procedural",
+    "area": "데이터베이스",
+    "question": "관계대수와 관계해석에 대한 설명으로 옳은 것은?",
+    "choices": [
+      "관계대수는 절차적 언어, 관계해석은 비절차적(선언적) 언어다",
+      "관계대수는 비절차적 언어, 관계해석은 절차적 언어다",
+      "둘 다 절차적 언어다",
+      "둘 다 비절차적 언어다"
+    ],
+    "answer": 0,
+    "explanation": "관계대수는 어떤 연산을 어떤 순서로 적용할지 명시하는 절차적 언어이고, 관계해석은 원하는 결과의 조건만 기술하는 비절차적 언어다. SQL은 선언적 문법(관계해석에 가까움)을 쓰지만 내부적으로 관계대수 연산으로 변환되어 실행된다.",
+    "relatedPost": "2026-08-21-relational-algebra"
+  },
+  {
+    "id": "net-http-class",
+    "area": "네트워크",
+    "question": "HTTP 상태 코드의 첫 자리 숫자별 의미로 옳지 않은 것은?",
+    "choices": [
+      "2xx — 요청이 정상 처리됨",
+      "3xx — 완료하려면 다른 URI로 추가 이동이 필요함",
+      "4xx — 서버 내부 문제로 처리에 실패함",
+      "5xx — 요청은 유효했지만 서버가 처리에 실패함"
+    ],
+    "answer": 2,
+    "explanation": "4xx는 요청 자체에 문제가 있는 클라이언트 오류이고, 서버 쪽 실패는 5xx다. 4xx와 5xx를 가르는 기준은 원인이 요청을 보낸 쪽에 있느냐 받은 쪽에 있느냐이며, 이 구분이 기본 출제 유형이다.",
+    "relatedPost": "2026-08-17-http-status-codes"
+  },
+  {
+    "id": "net-http-401-403",
+    "area": "네트워크",
+    "question": "로그인은 되어 있지만 해당 자원에 접근할 권한이 없는 사용자의 요청에 적합한 HTTP 상태 코드는?",
+    "choices": [
+      "400 Bad Request",
+      "401 Unauthorized",
+      "403 Forbidden",
+      "404 Not Found"
+    ],
+    "answer": 2,
+    "explanation": "401은 '누군지 모르겠다'(인증 실패), 403은 '누군지는 알겠는데 이건 못 준다'(인가 실패)다. 로그인 자체가 안 됐으면 401, 로그인됐는데 권한이 없어 막히면 403 — 인증과 인가의 구분이 이 문제의 핵심이다.",
+    "relatedPost": "2026-08-17-http-status-codes"
+  },
+  {
+    "id": "net-http-301-302",
+    "area": "네트워크",
+    "question": "301 Moved Permanently와 302 Found의 차이로 옳은 것은?",
+    "choices": [
+      "301은 영구 이동이라 이후 새 URI를 기준으로 삼아도 되고, 302는 임시 이동이라 원래 URI를 계속 써야 한다",
+      "301은 임시 이동, 302는 영구 이동이다",
+      "둘 다 캐시가 유효하다는 의미다",
+      "둘 다 서버 오류를 뜻한다"
+    ],
+    "answer": 0,
+    "explanation": "301은 리소스가 영구히 옮겨져 새 URI가 기준이 되고, 302는 이번만 다른 곳을 보라는 임시 이동이다. 캐시 유효는 304 Not Modified, 서버 오류는 5xx 계열이다. 영구 vs 임시의 의미 차이가 반복 출제된다.",
+    "relatedPost": "2026-08-17-http-status-codes"
+  },
+  {
+    "id": "net-http-5xx",
+    "area": "네트워크",
+    "question": "게이트웨이(프록시)가 백엔드 서버의 응답을 제한 시간 안에 받지 못했을 때 반환하는 상태 코드는?",
+    "choices": [
+      "500",
+      "502",
+      "503",
+      "504"
+    ],
+    "answer": 3,
+    "explanation": "504 Gateway Timeout은 백엔드 응답을 시간 안에 못 받은 경우다. 502 Bad Gateway는 백엔드가 잘못된 응답을 줬을 때, 503 Service Unavailable은 서버가 일시적으로 요청을 받을 수 없을 때, 500은 서버 내부 원인 불명 오류다.",
+    "relatedPost": "2026-08-17-http-status-codes"
+  },
+  {
+    "id": "net-http-2xx",
+    "area": "네트워크",
+    "question": "HTTP 2xx 상태 코드에 대한 연결이 옳지 않은 것은?",
+    "choices": [
+      "200 OK — 요청이 정상 처리됨",
+      "201 Created — POST로 새 리소스가 생성됨",
+      "204 No Content — 성공했지만 응답 본문이 없음",
+      "204 No Content — 요청한 리소스를 찾을 수 없음"
+    ],
+    "answer": 3,
+    "explanation": "리소스를 찾을 수 없는 것은 404 Not Found(4xx 클라이언트 오류)다. 204는 성공했지만 돌려줄 본문이 없는 경우로 DELETE 응답에 흔하다. 201은 생성 성공을 뜻해 POST와 짝으로 출제된다.",
+    "relatedPost": "2026-08-17-http-status-codes"
+  },
+  {
+    "id": "se-waterfall-order",
+    "area": "소프트웨어공학",
+    "question": "폭포수(Waterfall) 모델의 단계를 올바른 순서로 나열한 것은?",
+    "choices": [
+      "요구사항 분석 → 설계 → 구현 → 테스트 → 유지보수",
+      "설계 → 요구사항 분석 → 구현 → 테스트 → 유지보수",
+      "요구사항 분석 → 구현 → 설계 → 테스트 → 유지보수",
+      "구현 → 설계 → 요구사항 분석 → 유지보수 → 테스트"
+    ],
+    "answer": 0,
+    "explanation": "폭포수 모델은 요구사항 분석 → 설계 → 구현 → 테스트 → 유지보수를 한 방향으로 밟는다. 분석이 설계보다 먼저라는 것만 확실히 잡아도 순서 배열 문제의 절반은 풀린다.",
+    "relatedPost": "2026-08-18-dev-methodology"
+  },
+  {
+    "id": "se-waterfall-weak",
+    "area": "소프트웨어공학",
+    "question": "폭포수 모델의 특징으로 옳지 않은 것은?",
+    "choices": [
+      "각 단계가 끝나야 다음 단계로 넘어간다",
+      "단계마다 산출물(문서)이 명확해 관리가 쉽다",
+      "요구사항 변경에 유연하게 대응할 수 있다",
+      "문제가 후반 테스트 단계에야 드러나기 쉽다"
+    ],
+    "answer": 2,
+    "explanation": "폭포수는 앞 단계로 되돌아가기 어려워 요구사항 변경에 취약한 것이 대표 단점이다. 요구사항이 처음부터 확실한 프로젝트에 맞고, 변화 대응은 애자일의 강점이다.",
+    "relatedPost": "2026-08-18-dev-methodology"
+  },
+  {
+    "id": "se-spiral-risk",
+    "area": "소프트웨어공학",
+    "question": "Boehm이 제안했으며, 반복(iteration)마다 위험 분석(risk analysis)을 수행하는 개발 모델은?",
+    "choices": [
+      "폭포수 모델",
+      "나선형 모델",
+      "프로토타입 모델",
+      "V 모델"
+    ],
+    "answer": 1,
+    "explanation": "나선형(Spiral) 모델의 핵심 식별자는 위험 분석 단계의 존재다. 문제 지문에 '위험 분석'이나 'Boehm'이 보이면 나선형을 고른다. 대규모·고위험 프로젝트에 적합하지만 반복마다 비용이 들고 관리가 복잡하다.",
+    "relatedPost": "2026-08-18-dev-methodology"
+  },
+  {
+    "id": "se-spiral-order",
+    "area": "소프트웨어공학",
+    "question": "나선형 모델이 반복하는 네 활동의 올바른 순서는?",
+    "choices": [
+      "계획 수립 → 위험 분석 → 개발 → 고객 평가",
+      "위험 분석 → 계획 수립 → 고객 평가 → 개발",
+      "개발 → 계획 수립 → 위험 분석 → 고객 평가",
+      "계획 수립 → 개발 → 위험 분석 → 고객 평가"
+    ],
+    "answer": 0,
+    "explanation": "나선형은 계획 수립 → 위험 분석 → 개발 → 고객 평가를 나선처럼 반복하며 점진적으로 시스템을 완성한다. 위험 분석이 개발보다 앞에 온다는 점이 순서 문제의 포인트다.",
+    "relatedPost": "2026-08-18-dev-methodology"
+  },
+  {
+    "id": "se-agile-manifesto",
+    "area": "소프트웨어공학",
+    "question": "애자일 선언(Agile Manifesto)의 네 가치로 옳은 것은?",
+    "choices": [
+      "포괄적 문서보다 동작하는 소프트웨어를",
+      "동작하는 소프트웨어보다 포괄적 문서를",
+      "고객과의 협력보다 계약 협상을",
+      "변화에 대응하기보다 계획을 따르기를"
+    ],
+    "answer": 0,
+    "explanation": "애자일은 공정과 도구보다 개인과 상호작용을, 포괄적 문서보다 동작하는 소프트웨어를, 계약 협상보다 고객과의 협력을, 계획보다 변화 대응을 앞세운다. '무엇보다 무엇을'의 방향을 뒤집어 내는 함정이 흔하다.",
+    "relatedPost": "2026-08-18-dev-methodology"
+  },
+  {
+    "id": "se-scrum-xp",
+    "area": "소프트웨어공학",
+    "question": "애자일 방법론의 요소와 소속 연결이 옳지 않은 것은?",
+    "choices": [
+      "스프린트 — Scrum",
+      "제품 백로그 — Scrum",
+      "짝 프로그래밍 — XP",
+      "위험 분석 — XP"
+    ],
+    "answer": 3,
+    "explanation": "위험 분석은 나선형 모델의 요소다. Scrum은 스프린트라는 고정 주기와 제품 백로그·데일리 미팅을, XP는 짝 프로그래밍·테스트 주도 개발·짧은 릴리스를 실천 기법으로 쓴다. 요소를 섞어 놓고 소속을 구분하게 하는 유형이다.",
+    "relatedPost": "2026-08-18-dev-methodology"
+  },
+  {
+    "id": "se-req-nonfunctional",
+    "area": "소프트웨어공학",
+    "question": "다음 중 비기능(non-functional) 요구사항에 해당하는 것은?",
+    "choices": [
+      "회원 가입 시 이메일 인증을 거쳐야 한다",
+      "관리자는 게시글을 삭제할 수 있어야 한다",
+      "검색 결과는 3초 이내에 표시되어야 한다",
+      "주문 취소 시 환불이 자동 처리되어야 한다"
+    ],
+    "answer": 2,
+    "explanation": "기능 요구사항은 시스템이 '무엇을 해야 하는가'(기능·동작)이고, 비기능 요구사항은 성능·보안·가용성·품질처럼 '어떻게 동작해야 하는가'의 제약이다. 응답 시간 3초는 성능 제약이므로 비기능 요구사항이다."
+  },
+  {
+    "id": "se-uml-usecase",
+    "area": "소프트웨어공학",
+    "question": "액터(actor)와 시스템이 제공하는 기능 간의 관계를 사용자 관점에서 표현하는 UML 다이어그램은?",
+    "choices": [
+      "클래스 다이어그램",
+      "유스케이스 다이어그램",
+      "시퀀스 다이어그램",
+      "배치 다이어그램"
+    ],
+    "answer": 1,
+    "explanation": "유스케이스 다이어그램은 액터(사용자·외부 시스템)와 시스템 기능(유스케이스)의 관계를 사용자 관점에서 그린다. 요구사항 분석 단계에서 시스템의 범위와 기능을 파악하는 데 쓰이는 대표 다이어그램이다."
+  },
+  {
+    "id": "se-uml-sequence",
+    "area": "소프트웨어공학",
+    "question": "객체들 사이에 주고받는 메시지를 시간의 흐름에 따라 표현하는 UML 다이어그램은?",
+    "choices": [
+      "시퀀스 다이어그램",
+      "클래스 다이어그램",
+      "컴포넌트 다이어그램",
+      "유스케이스 다이어그램"
+    ],
+    "answer": 0,
+    "explanation": "시퀀스 다이어그램은 세로축을 시간으로 삼아 객체 간 메시지 교환 순서를 표현하는 행위(동적) 다이어그램이다. 클래스·컴포넌트 다이어그램은 시스템의 정적 구조를 그리는 구조 다이어그램이다."
+  },
+  {
+    "id": "se-uml-structural",
+    "area": "소프트웨어공학",
+    "question": "UML 다이어그램 중 구조(정적) 다이어그램이 아닌 것은?",
+    "choices": [
+      "클래스 다이어그램",
+      "컴포넌트 다이어그램",
+      "배치 다이어그램",
+      "시퀀스 다이어그램"
+    ],
+    "answer": 3,
+    "explanation": "시퀀스 다이어그램은 시간에 따른 상호작용을 그리는 행위(동적) 다이어그램이다. 구조 다이어그램에는 클래스·객체·컴포넌트·배치·패키지 다이어그램이, 행위 다이어그램에는 유스케이스·시퀀스·활동·상태 다이어그램이 속한다."
+  },
+  {
+    "id": "se-solid-srp",
+    "area": "소프트웨어공학",
+    "question": "객체지향 설계 원칙(SOLID) 중 '하나의 클래스는 변경 이유가 하나뿐이어야 한다'는 원칙은?",
+    "choices": [
+      "단일 책임 원칙(SRP)",
+      "개방-폐쇄 원칙(OCP)",
+      "리스코프 치환 원칙(LSP)",
+      "의존 역전 원칙(DIP)"
+    ],
+    "answer": 0,
+    "explanation": "단일 책임 원칙(Single Responsibility)은 클래스가 하나의 책임만 가져 변경 이유가 하나여야 한다는 원칙이다. 모듈 설계의 '높은 응집도'와 같은 방향의 원칙으로, 책임이 많을수록 수정의 파급이 커진다."
+  },
+  {
+    "id": "se-solid-ocp",
+    "area": "소프트웨어공학",
+    "question": "'확장에는 열려 있고 수정에는 닫혀 있어야 한다'는 객체지향 설계 원칙은?",
+    "choices": [
+      "인터페이스 분리 원칙(ISP)",
+      "개방-폐쇄 원칙(OCP)",
+      "단일 책임 원칙(SRP)",
+      "리스코프 치환 원칙(LSP)"
+    ],
+    "answer": 1,
+    "explanation": "개방-폐쇄 원칙(Open-Closed)은 기존 코드를 고치지 않고(수정에 닫힘) 새 기능을 덧붙일 수 있어야(확장에 열림) 한다는 원칙이다. 인터페이스·추상화에 의존하게 설계하면 구현체 추가만으로 기능이 확장된다."
+  },
+  {
+    "id": "se-test-stub-driver",
+    "area": "소프트웨어공학",
+    "question": "통합 테스트에서 사용하는 테스트 스텁(stub)과 드라이버(driver)에 대한 설명으로 옳은 것은?",
+    "choices": [
+      "하향식 통합은 스텁을, 상향식 통합은 드라이버를 사용한다",
+      "하향식 통합은 드라이버를, 상향식 통합은 스텁을 사용한다",
+      "스텁과 드라이버는 모두 완성된 모듈을 대체할 수 없다",
+      "스텁은 상위 모듈을, 드라이버는 하위 모듈을 흉내 낸다"
+    ],
+    "answer": 0,
+    "explanation": "하향식은 상위부터 통합하므로 아직 없는 하위 모듈을 흉내 내는 스텁이 필요하고, 상향식은 하위부터 통합하므로 상위에서 호출해 주는 드라이버가 필요하다. '스텁은 하위 대역, 드라이버는 상위 대역'으로 기억한다.",
+    "relatedPost": "2026-07-29-blackbox-whitebox"
+  },
+  {
+    "id": "se-test-topdown",
+    "area": "소프트웨어공학",
+    "question": "하향식(top-down) 통합 테스트의 특징으로 옳은 것은?",
+    "choices": [
+      "상위 모듈부터 통합하며 미완성 하위 모듈은 스텁으로 대체한다",
+      "하위 모듈부터 통합하며 상위 모듈은 드라이버로 대체한다",
+      "모든 모듈을 한 번에 통합해 시험한다",
+      "테스트 케이스 없이 코드 검토만 수행한다"
+    ],
+    "answer": 0,
+    "explanation": "하향식 통합은 제어 구조의 위(주 모듈)부터 아래로 내려가며 통합하고, 아직 완성되지 않은 하위 모듈 자리는 스텁이 채운다. 모든 모듈을 한 번에 합치는 방식은 빅뱅 통합이라 부른다.",
+    "relatedPost": "2026-07-29-blackbox-whitebox"
+  },
+  {
+    "id": "se-scm-activity",
+    "area": "소프트웨어공학",
+    "question": "소프트웨어 형상관리(SCM)에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "소스 코드·문서 등 산출물의 변경을 체계적으로 통제한다",
+      "형상 식별·형상 통제·형상 감사·형상 기록이 주요 활동이다",
+      "Git, SVN이 대표적인 형상관리 도구다",
+      "개발이 끝난 뒤 배포 단계에서만 적용한다"
+    ],
+    "answer": 3,
+    "explanation": "형상관리는 개발 전 과정에 걸쳐 산출물의 변경 이력을 관리하는 활동이지, 배포 단계에만 하는 일이 아니다. 식별(관리 대상 정의)·통제(변경 승인)·감사(무결성 확인)·기록(이력 보고)의 네 활동을 묶어 기억한다."
+  },
+  {
+    "id": "se-scm-baseline",
+    "area": "소프트웨어공학",
+    "question": "형상관리에서 공식적으로 검토·승인되어 이후 변경 시 정식 통제 절차를 거쳐야 하는 기준점을 부르는 용어는?",
+    "choices": [
+      "브랜치",
+      "베이스라인(기준선)",
+      "리포지터리",
+      "패치"
+    ],
+    "answer": 1,
+    "explanation": "베이스라인은 특정 시점에 공식 승인된 형상으로, 이후의 모든 변경은 이 기준선 대비로 통제된다. 개발 도중 마음대로 고치는 작업본과 달리, 베이스라인 변경에는 정식 변경 통제 절차가 필요하다."
+  },
+  {
+    "id": "sec-dos-target",
+    "area": "정보보안",
+    "question": "대량의 트래픽이나 요청으로 시스템 자원을 고갈시켜 정상 사용자가 서비스를 이용하지 못하게 하는 공격은?",
+    "choices": [
+      "스니핑",
+      "DoS 공격",
+      "SQL 인젝션",
+      "무차별 대입 공격"
+    ],
+    "answer": 1,
+    "explanation": "DoS(Denial of Service)는 서비스 거부 공격으로, 침해되는 보안 요소는 가용성이다. 스니핑은 도청(기밀성 침해), SQL 인젝션은 입력 검증 취약점 공격, 무차별 대입은 암호를 전수 시도하는 공격이다.",
+    "relatedPost": "2026-07-18-security-cia"
+  },
+  {
+    "id": "sec-ddos-botnet",
+    "area": "정보보안",
+    "question": "DDoS 공격에 대한 설명으로 옳은 것은?",
+    "choices": [
+      "단일 컴퓨터에서만 공격 트래픽을 보낸다",
+      "악성코드에 감염된 다수의 좀비 PC(봇넷)가 분산 공격한다",
+      "데이터를 몰래 훔쳐보는 수동적 공격이다",
+      "암호화 키를 탈취하는 공격이다"
+    ],
+    "answer": 1,
+    "explanation": "DDoS(분산 서비스 거부)는 공격자가 장악한 다수의 좀비 PC로 이뤄진 봇넷이 동시에 트래픽을 보내는 공격이다. 분산이라 출발지 차단이 어렵다. 몰래 훔쳐보는 수동적 공격은 스니핑이다.",
+    "relatedPost": "2026-07-18-security-cia"
+  },
+  {
+    "id": "sec-sniff-vs-spoof",
+    "area": "정보보안",
+    "question": "스니핑(sniffing)과 스푸핑(spoofing)의 구분으로 옳은 것은?",
+    "choices": [
+      "스니핑은 트래픽을 몰래 엿듣는 수동적 공격, 스푸핑은 신원을 속이는 능동적 공격이다",
+      "스니핑은 신원을 속이는 공격, 스푸핑은 엿듣는 공격이다",
+      "둘 다 서비스 거부를 일으키는 공격이다",
+      "둘 다 물리적 침입 공격이다"
+    ],
+    "answer": 0,
+    "explanation": "스니핑은 네트워크를 지나는 패킷을 몰래 들여다보는 수동적 공격(도청)이고, 스푸핑은 IP·ARP·DNS 등에서 자신을 다른 주체로 위장하는 능동적 공격이다. '엿듣기 vs 속이기'로 구분한다."
+  },
+  {
+    "id": "sec-syn-flood",
+    "area": "정보보안",
+    "question": "TCP 3-way handshake에서 SYN만 대량으로 보내고 ACK을 보내지 않아, 서버의 연결 대기 큐를 가득 채우는 공격은?",
+    "choices": [
+      "SYN 플러딩",
+      "ARP 스푸핑",
+      "세션 하이재킹",
+      "피싱"
+    ],
+    "answer": 0,
+    "explanation": "SYN 플러딩은 반쯤 열린(half-open) 연결을 대량으로 만들어 서버 자원을 고갈시키는 DoS 공격이다. TCP 연결 설정 절차(SYN → SYN+ACK → ACK)를 악용한다는 점에서 3-way handshake와 짝지어 출제된다.",
+    "relatedPost": "2026-07-22-tcp-vs-udp"
+  },
+  {
+    "id": "sec-session-hijack",
+    "area": "정보보안",
+    "question": "이미 인증을 마친 사용자의 세션(세션 ID 등)을 가로채, 로그인 없이 그 사용자 행세를 하는 공격은?",
+    "choices": [
+      "무차별 대입 공격",
+      "세션 하이재킹",
+      "랜섬웨어",
+      "포트 스캐닝"
+    ],
+    "answer": 1,
+    "explanation": "세션 하이재킹은 인증 이후의 세션 토큰을 탈취해 인증 절차를 우회하는 공격이다. 비밀번호를 몰라도 세션만 가로채면 되므로, 세션 토큰 보호(HTTPS·만료·재발급)가 대응책이 된다."
+  },
+  {
+    "id": "sec-firewall-limit",
+    "area": "정보보안",
+    "question": "방화벽(firewall)에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "정책(규칙)에 따라 트래픽을 허용하거나 차단한다",
+      "네트워크 경계에 설치되어 내·외부 트래픽을 통제한다",
+      "내부 사용자에 의한 공격까지 모두 막아 준다",
+      "IP 주소·포트 기반으로 접근을 제어할 수 있다"
+    ],
+    "answer": 2,
+    "explanation": "방화벽은 경계를 지나는 트래픽을 정책으로 통제하는 장비라, 경계를 지나지 않는 내부자 공격이나 정책상 허용된 트래픽에 숨은 공격은 막지 못한다. 이 한계 때문에 IDS/IPS 등과 겹겹이 배치한다."
+  },
+  {
+    "id": "sec-ids-vs-ips",
+    "area": "정보보안",
+    "question": "IDS와 IPS의 차이로 옳은 것은?",
+    "choices": [
+      "IDS는 침입을 탐지해 경보하고, IPS는 탐지 즉시 차단까지 수행한다",
+      "IDS는 차단까지 하고, IPS는 탐지만 한다",
+      "둘 다 암호화를 담당하는 장비다",
+      "둘 다 물리 보안 장비다"
+    ],
+    "answer": 0,
+    "explanation": "IDS(침입 탐지 시스템)는 이상 징후를 탐지해 알리는 데서 멈추고, IPS(침입 방지 시스템)는 트래픽 경로에 인라인으로 놓여 탐지한 공격을 실시간 차단한다. 'Detection = 탐지, Prevention = 차단'으로 이름과 역할을 짝짓는다."
+  },
+  {
+    "id": "sec-mitm",
+    "area": "정보보안",
+    "question": "통신하는 두 당사자 사이에 몰래 끼어들어 내용을 엿보거나 변조하는 중간자(MITM) 공격의 대응 기술로 가장 적절한 것은?",
+    "choices": [
+      "통신 구간 암호화(TLS 등)와 상대 인증",
+      "디스크 조각 모음",
+      "로드 밸런싱",
+      "데이터베이스 정규화"
+    ],
+    "answer": 0,
+    "explanation": "중간자 공격은 기밀성과 무결성을 동시에 위협하므로, 구간 암호화로 내용을 보호하고 인증서로 상대를 확인하는 것이 기본 대응이다. 공개 Wi-Fi의 ARP 스푸핑이 전형적인 진입 경로다.",
+    "relatedPost": "2026-07-23-symmetric-asymmetric"
   }
 ]
