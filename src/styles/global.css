@@ -884,6 +884,99 @@ button.linklike:hover {
   border-color: var(--accent);
   color: var(--accent);
 }
+.toc-chip.on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.toc-chip.on em {
+  color: inherit;
+}
+
+/* 개념 노트 목차 — 영역 카드 */
+.area-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0.8rem;
+}
+.area-card {
+  display: block;
+  padding: 1.05rem 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+.area-card:hover {
+  border-color: var(--accent);
+}
+.area-card h2 {
+  margin: 0 0 0.3rem;
+  font-size: 1.05rem;
+}
+.area-card h2 em {
+  font-style: normal;
+  font-size: 0.8em;
+  font-weight: 400;
+  color: var(--muted);
+}
+.area-card:hover h2 {
+  color: var(--accent);
+}
+.ac-meta {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* 최상단/최하단 이동 버튼 — 화면 우하단 고정 */
+.scroll-nav {
+  position: fixed;
+  right: 1.1rem;
+  bottom: 1.2rem;
+  z-index: 15; /* 모바일 드로어(19~20)보다는 아래 */
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.scroll-btn {
+  appearance: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.12);
+}
+.scroll-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* 영역 상세 하단 — 이전/다음 영역 이동 */
+.area-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.92rem;
+}
+.area-nav a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.area-nav a:hover {
+  text-decoration: underline;
+}
 .area-title {
   margin: 0 0 1rem;
   font-size: 1.2rem;

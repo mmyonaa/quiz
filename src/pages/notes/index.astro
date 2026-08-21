@@ -1,0 +1,83 @@
+---
+import { getCollection } from "astro:content";
+import { AREAS, AREA_SLUGS } from "../../content.config";
+import postTitles from "../../data/post-titles.json";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import "../../styles/global.css";
+
+// 개념 노트 목차 — 영역별 상세 페이지(/notes/<slug>/)로 이어지는 관문.
+// 본문이 계속 늘어나므로 한 페이지에 다 싣지 않고 영역 단위로 라우팅을 나눈다.
+const entries = await getCollection("quiz");
+const bank = entries.map((e) => e.data);
+const titles: Record<string, string> = postTitles;
+
+const areas = AREAS.map((area) => {
+  const qs = bank.filter((q) => q.area === area);
+  const topics = [...new Set(qs.map((q) => q.relatedPost ?? ""))];
+  const preview = topics
+    .filter(Boolean)
+    .slice(0, 3)
+    .map((p) => titles[p] ?? p.replace(/^\d{4}-\d{2}-\d{2}-/, ""));
+  return { area, slug: AREA_SLUGS[area], count: qs.length, topicCount: topics.length, preview };
+});
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>daily.quiz — 개념 노트</title>
+    <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
+    <meta
+      name="description"
+      content="정보처리기사 필기 문제 은행의 해설을 영역별·개념별로 모아 읽는 개념 노트. 각 개념은 확인 문제와 daily.mcp 개념 글로 이어집니다."
+    />
+  </head>
+  <body>
+    <SiteHeader current="notes" />
+
+    <main class="side-layout">
+      {/* 넓은 화면 전용 — 좌측 영역 메뉴. 목차 페이지에서는 '전체'가 현재 위치 */}
+      <aside class="side-toc" aria-label="영역 바로가기">
+        <span class="side-toc-title">영역</span>
+        <a class="side-link on" href={`${base}/notes/`}>전체 <em>{bank.length}</em></a>
+        {areas.map(({ area, slug, count }) => (
+          <a class="side-link" href={`${base}/notes/${slug}/`}>{area} <em>{count}</em></a>
+        ))}
+      </aside>
+
+      <div class="side-body">
+        <section class="panel">
+          <h1>개념 노트</h1>
+          <p class="lead">
+            문제 은행 {bank.length}문항의 해설을 영역별·개념별로 모았습니다.
+            영역을 골라 들어가서 훑어 읽다가 '확인 문제'를 펼쳐 스스로 점검하고,
+            더 깊게는 개념 글로 이어가세요.
+          </p>
+          <div class="area-cards">
+            {areas.map(({ area, slug, count, topicCount, preview }) => (
+              <a class="area-card" href={`${base}/notes/${slug}/`}>
+                <h2>{area} <em>{count}문항</em></h2>
+                <p class="ac-meta">
+                  {topicCount}개 주제{preview.length > 0 && ` — ${preview.join(" · ")}${topicCount > preview.length ? " …" : ""}`}
+                </p>
+              </a>
+            ))}
+          </div>
+        </section>
+      </div>
+    </main>
+
+    {/* 예전 단일 페이지 시절의 #영역 앵커 링크 호환 — 영역 상세로 보낸다 */}
+    <script is:inline define:vars={{ slugMap: AREA_SLUGS, base }}>
+      const area = decodeURIComponent(location.hash.slice(1));
+      if (slugMap[area]) location.replace(`${base}/notes/${slugMap[area]}/`);
+    </script>
+
+    <SiteFooter />
+  </body>
+</html>

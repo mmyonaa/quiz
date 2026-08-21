@@ -1,33 +1,39 @@
 ---
 import { getCollection } from "astro:content";
-import { AREAS } from "../content.config";
-import postTitles from "../data/post-titles.json";
-import SiteHeader from "../components/SiteHeader.astro";
-import SiteFooter from "../components/SiteFooter.astro";
-import "../styles/global.css";
+import { AREAS, AREA_SLUGS } from "../../content.config";
+import postTitles from "../../data/post-titles.json";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import "../../styles/global.css";
 
-// 개념 노트 — 문제 은행의 해설을 영역별 → 개념 글(주제)별로 모아 읽는 정적 페이지.
-// 풀이 없이 개념만 훑고, 각 개념의 원 문항은 '확인 문제'로 접어 복습에 쓴다.
+// 개념 노트 영역 상세 — 한 영역의 해설을 개념 글(주제)별로 읽는 페이지.
+// URL은 한글 인코딩을 피해 영문 슬러그(/notes/os/ 등)를 쓴다.
+export function getStaticPaths() {
+  return AREAS.map((area) => ({ params: { area: AREA_SLUGS[area] }, props: { area } }));
+}
+
+const { area } = Astro.props as { area: (typeof AREAS)[number] };
+
 const entries = await getCollection("quiz");
 const bank = entries.map((e) => e.data);
-
-const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 const titles: Record<string, string> = postTitles;
 
-// 영역 → 주제(개념 글) → 문항. 주제는 은행 안 등장 순서를 유지한다.
-// relatedPost가 없는 문항은 영역 끝의 '개념 글 준비 중' 그룹으로 모은다.
-const byArea = AREAS.map((area) => {
-  const qs = bank.filter((q) => q.area === area);
-  const topics = [...new Set(qs.map((q) => q.relatedPost ?? ""))]
-    .sort((a, b) => (a === "" ? 1 : b === "" ? -1 : 0))
-    .map((post) => ({
-      post: post || null,
-      title: post ? (titles[post] ?? post.replace(/^\d{4}-\d{2}-\d{2}-/, "")) : "개념 글 준비 중",
-      questions: qs.filter((q) => (q.relatedPost ?? "") === post),
-    }));
-  return { area, count: qs.length, topics };
-});
+const qs = bank.filter((q) => q.area === area);
+// 주제는 은행 안 등장 순서 유지, relatedPost 없는 문항은 끝의 '개념 글 준비 중' 그룹으로.
+const topics = [...new Set(qs.map((q) => q.relatedPost ?? ""))]
+  .sort((a, b) => (a === "" ? 1 : b === "" ? -1 : 0))
+  .map((post) => ({
+    post: post || null,
+    title: post ? (titles[post] ?? post.replace(/^\d{4}-\d{2}-\d{2}-/, "")) : "개념 글 준비 중",
+    questions: qs.filter((q) => (q.relatedPost ?? "") === post),
+  }));
 
+const countByArea = Object.fromEntries(AREAS.map((a) => [a, bank.filter((q) => q.area === a).length]));
+const idx = AREAS.indexOf(area);
+const prevArea = idx > 0 ? AREAS[idx - 1] : null;
+const nextArea = idx < AREAS.length - 1 ? AREAS[idx + 1] : null;
+
+const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 
@@ -36,42 +42,48 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>daily.quiz — 개념 노트</title>
+    <title>daily.quiz — 개념 노트 · {area}</title>
     <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
     <meta
       name="description"
-      content="정보처리기사 필기 문제 은행의 해설을 영역별·개념별로 모아 읽는 개념 노트. 각 개념은 확인 문제와 daily.mcp 개념 글로 이어집니다."
+      content={`정보처리기사 필기 ${area} 영역의 개념 노트 — 해설 ${qs.length}문항을 개념별로 모아 읽고 확인 문제로 점검합니다.`}
     />
   </head>
   <body>
     <SiteHeader current="notes" />
 
     <main class="side-layout">
-      {/* 넓은 화면 전용 — 좌측 고정 목차. 좁은 화면은 상단 칩(.toc)이 담당 */}
+      {/* 넓은 화면 전용 — 좌측 영역 메뉴, 현재 영역 하이라이트 */}
       <aside class="side-toc" aria-label="영역 바로가기">
         <span class="side-toc-title">영역</span>
-        {byArea.map(({ area, count }) => (
-          <a class="side-link" href={`#${area}`} data-area={area}>{area} <em>{count}</em></a>
+        <a class="side-link" href={`${base}/notes/`}>전체 <em>{bank.length}</em></a>
+        {AREAS.map((a) => (
+          <a
+            class={`side-link${a === area ? " on" : ""}`}
+            href={`${base}/notes/${AREA_SLUGS[a]}/`}
+            aria-current={a === area ? "page" : undefined}
+          >{a} <em>{countByArea[a]}</em></a>
         ))}
       </aside>
 
       <div class="side-body">
-      <section class="panel">
-        <h1>개념 노트</h1>
-        <p class="lead">
-          문제 은행 {bank.length}문항의 해설을 개념별로 모았습니다.
-          훑어 읽다가 '확인 문제'를 펼쳐 스스로 점검하고, 더 깊게는 개념 글로 이어가세요.
-        </p>
-        <nav class="toc">
-          {byArea.map(({ area, count }) => (
-            <a class="toc-chip" href={`#${area}`}>{area} <em>{count}</em></a>
-          ))}
-        </nav>
-      </section>
+        <section class="panel">
+          <h1>{area}</h1>
+          <p class="lead">
+            <a class="lead-link" href={`${base}/notes/`}>개념 노트</a> 안의 {area} 영역 —
+            해설 {qs.length}문항을 {topics.length}개 주제로 모았습니다.
+          </p>
+          {/* 좁은 화면 전용 — 영역 이동 칩 */}
+          <nav class="toc">
+            {AREAS.map((a) => (
+              <a class={`toc-chip${a === area ? " on" : ""}`} href={`${base}/notes/${AREA_SLUGS[a]}/`}>
+                {a} <em>{countByArea[a]}</em>
+              </a>
+            ))}
+          </nav>
+        </section>
 
-      {byArea.map(({ area, topics }) => (
-        <section class="panel" id={area}>
-          <h2 class="area-title">{area}</h2>
+        <section class="panel">
           {topics.map(({ post, title, questions }) => (
             <div class="topic">
               <h3 class="topic-title">
@@ -97,14 +109,27 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
               ))}
             </div>
           ))}
+
+          {/* 이전/다음 영역 이동 */}
+          <nav class="area-nav">
+            {prevArea ? (
+              <a href={`${base}/notes/${AREA_SLUGS[prevArea]}/`}>← {prevArea}</a>
+            ) : (
+              <a href={`${base}/notes/`}>← 전체 영역</a>
+            )}
+            {nextArea ? (
+              <a href={`${base}/notes/${AREA_SLUGS[nextArea]}/`}>{nextArea} →</a>
+            ) : (
+              <a href={`${base}/notes/`}>전체 영역 →</a>
+            )}
+          </nav>
         </section>
-      ))}
       </div>
     </main>
 
     <script>
-      import { supabase } from "../lib/supabase";
-      import { onAuth, authSession, requireLogin, errorText } from "../lib/auth";
+      import { supabase } from "../../lib/supabase";
+      import { onAuth, authSession, requireLogin, errorText } from "../../lib/auth";
 
       // ── 개념 저장(북마크) — saved_notes 테이블, 해설 카드(문항 id) 단위 ──
       let savedNotes = new Set<string>();
@@ -155,31 +180,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
           }
         }),
       );
-
-      // 스크롤스파이 — 화면 상단을 지난 마지막 영역을 사이드 목차에 하이라이트
-      const links = [...document.querySelectorAll<HTMLAnchorElement>(".side-link")];
-      const sections = [...document.querySelectorAll<HTMLElement>("section[id]")];
-      if (links.length && sections.length) {
-        const byArea = new Map(links.map((a) => [a.dataset.area, a]));
-        let ticking = false;
-        const spy = () => {
-          ticking = false;
-          let cur = sections[0].id;
-          for (const s of sections) if (s.getBoundingClientRect().top <= 120) cur = s.id;
-          links.forEach((a) => a.classList.toggle("on", a === byArea.get(cur)));
-        };
-        document.addEventListener(
-          "scroll",
-          () => {
-            if (!ticking) {
-              ticking = true;
-              requestAnimationFrame(spy);
-            }
-          },
-          { passive: true },
-        );
-        spy();
-      }
     </script>
 
     <SiteFooter />

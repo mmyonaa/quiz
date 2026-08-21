@@ -11,6 +11,15 @@ export const AREAS = ["운영체제", "네트워크", "데이터베이스", "소
 /** 난이도 단계 — 하(정의·단순 매칭), 중(유사 개념 구분·함정), 상(계산·다단계 추론) */
 export const DIFFICULTIES = ["하", "중", "상"] as const;
 
+/** 영역별 URL 슬러그 — 개념 노트 상세 라우팅(/notes/<slug>/)에 쓴다 */
+export const AREA_SLUGS: Record<(typeof AREAS)[number], string> = {
+  운영체제: "os",
+  네트워크: "network",
+  데이터베이스: "database",
+  소프트웨어공학: "software",
+  정보보안: "security",
+};
+
 const quiz = defineCollection({
   loader: file("src/data/questions.json"),
   schema: z

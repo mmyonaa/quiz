@@ -56,6 +56,20 @@ const links = [
   <div id="nav-backdrop" class="nav-backdrop"></div>
 </header>
 
+{/* 최상단/최하단 이동 — 긴 페이지(개념 노트 등) UX용, 짧은 페이지에선 자동 숨김 */}
+<div class="scroll-nav">
+  <button id="to-top" class="scroll-btn" type="button" aria-label="맨 위로" hidden>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 19V5M5 12l7-7 7 7"></path>
+    </svg>
+  </button>
+  <button id="to-bottom" class="scroll-btn" type="button" aria-label="맨 아래로" hidden>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 5v14M5 12l7 7 7-7"></path>
+    </svg>
+  </button>
+</div>
+
 <script>
   const toggle = document.getElementById("nav-toggle")!;
   const nav = document.getElementById("site-nav")!;
@@ -103,4 +117,30 @@ const links = [
   // 시스템 테마를 따르는 동안엔 시스템 변경도 아이콘에 반영
   matchMedia("(prefers-color-scheme: dark)").addEventListener("change", paintThemeBtn);
   paintThemeBtn();
+
+  // ── 최상단/최하단 이동 버튼 — 스크롤 위치에 따라 표시 ──
+  const toTop = document.getElementById("to-top")!;
+  const toBottom = document.getElementById("to-bottom")!;
+  const updateScrollBtns = () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const y = scrollY;
+    // 한 화면 이내로 짧은 페이지에서는 아예 보이지 않는다
+    toTop.hidden = max < 300 || y < 200;
+    toBottom.hidden = max < 300 || max - y < 200;
+  };
+  toTop.addEventListener("click", () => scrollTo({ top: 0 }));
+  toBottom.addEventListener("click", () => scrollTo({ top: document.documentElement.scrollHeight }));
+  let sTicking = false;
+  const onScrollBtns = () => {
+    if (!sTicking) {
+      sTicking = true;
+      requestAnimationFrame(() => {
+        sTicking = false;
+        updateScrollBtns();
+      });
+    }
+  };
+  document.addEventListener("scroll", onScrollBtns, { passive: true });
+  window.addEventListener("resize", onScrollBtns, { passive: true });
+  updateScrollBtns();
 </script>
