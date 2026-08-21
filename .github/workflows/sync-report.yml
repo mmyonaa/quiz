@@ -1,0 +1,50 @@
+# 주간 블로그 싱크 리포트 — daily.mcp 글의 변경을 감지해 이슈로 보고한다.
+# ① 죽은 relatedPost(글 삭제·이동) ② 문항이 참조하는 글의 개정(재검토 필요)
+# ③ 정처기 글인데 문항이 없는 커버리지 갭(문항 제작 후보).
+# 보고 후 sync-state.json을 갱신·커밋하므로 같은 변경은 한 번만 보고된다.
+name: Weekly blog sync report
+
+on:
+  schedule:
+    - cron: "0 22 * * 0" # 매주 월요일 07:00 KST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run sync report
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/blog-sync.mjs --report > report.md
+      - name: Create issue if findings exist
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if grep -q "^NO_FINDINGS$" report.md; then
+            echo "보고할 변경 없음"
+          else
+            gh issue create \
+              --title "주간 블로그 싱크 리포트 $(date +%Y-%m-%d)" \
+              --body-file report.md \
+              --repo "$GITHUB_REPOSITORY"
+          fi
+      - name: Commit updated sync state
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/sync-state.json
+          if git diff --cached --quiet; then
+            echo "상태 변경 없음"
+          else
+            git commit -m "chore: sync-state 갱신 — 주간 블로그 싱크 리포트"
+            git push
+          fi

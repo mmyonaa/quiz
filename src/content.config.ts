@@ -20,8 +20,12 @@ const quiz = defineCollection({
       /** 정답 선지 인덱스(0~3) */
       answer: z.number().int().min(0).max(3),
       explanation: z.string().min(20, "해설은 오답 학습의 핵심 — 20자 이상"),
-      /** 개념을 다룬 daily.mcp 글의 파일 id(날짜 포함). 오답 리뷰에서 링크로 렌더 */
-      relatedPost: z.string().regex(/^\d{4}-\d{2}-\d{2}-[a-z0-9-]+$/),
+      /**
+       * 개념을 다룬 daily.mcp 글의 파일 id(날짜 포함). 오답 리뷰에서 링크로 렌더.
+       * 선택 필드 — 시험 커버리지가 블로그 발행 속도에 묶이지 않도록, 글이 없는 주제는
+       * 문항을 먼저 만들고 글 발행 시 링크를 채운다. 실존 검증은 prebuild(blog-sync --check)가 맡는다.
+       */
+      relatedPost: z.string().regex(/^\d{4}-\d{2}-\d{2}-[a-z0-9-]+$/).optional(),
     })
     .strict(),
 });

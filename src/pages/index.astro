@@ -146,7 +146,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         choices: string[];
         answer: number;
         explanation: string;
-        relatedPost: string;
+        relatedPost?: string; // 선택 — 글이 아직 없는 문항은 해설로 완결
       };
 
       import { supabase } from "../lib/supabase";
@@ -514,7 +514,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
             <p class="rv-q"><span class="badge">${q.area}</span> ${q.question}</p>
             <p class="rv-a">${wrong ? `내 답: ${unanswered ? "무응답" : q.choices[picked[i]]}<br/>` : ""}정답: <b>${q.choices[q.answer]}</b></p>
             <p class="rv-x">${q.explanation}</p>
-            <p class="rv-link"><a href="${blogPostBase}${q.relatedPost}/" target="_blank" rel="noopener">개념 글 다시 읽기 →</a></p>
+            ${q.relatedPost ? `<p class="rv-link"><a href="${blogPostBase}${q.relatedPost}/" target="_blank" rel="noopener">개념 글 다시 읽기 →</a></p>` : ""}
           `;
           // 복기 카드에서도 문제 저장 토글 (#5)
           const star = document.createElement("button");

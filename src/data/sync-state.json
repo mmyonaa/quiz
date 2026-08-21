@@ -1,0 +1,344 @@
+{
+  "posts": {
+    "2026-07-15-mcp-3-primitives": {
+      "sha": "ee317b08d3f4d0bfbafc610f803a4e610a06bdbf",
+      "section": "mcp"
+    },
+    "2026-07-15-mcp-transport-stdio-vs-http": {
+      "sha": "4344dc2a194240ee325e48fc4f8245c3b5003438",
+      "section": "mcp"
+    },
+    "2026-07-15-typescript-nodenext-js-extension": {
+      "sha": "57b93eb9d87d6f30ae50eb55a21ebae5166145da",
+      "section": "web"
+    },
+    "2026-07-15-what-is-mcp": {
+      "sha": "66bb1f941bf8a77027f5f04c0d9652b4fc95d5bc",
+      "section": "mcp"
+    },
+    "2026-07-16-astro-content-collection": {
+      "sha": "9d0adf6fb4261499a4c293bf43d56ac407ab94a3",
+      "section": "web"
+    },
+    "2026-07-16-files-git-vs-db": {
+      "sha": "18a130cf37bb2f9bed709da50b357058c1116c6f",
+      "section": "web"
+    },
+    "2026-07-16-first-stdio-mcp-server": {
+      "sha": "94ba96db625def1cc4f3b32bb5294c4b6a31815d",
+      "section": "mcp"
+    },
+    "2026-07-16-mcp-stdout-stderr": {
+      "sha": "4e6f814550c985c42d99bc88787250d759dc2cc4",
+      "section": "mcp"
+    },
+    "2026-07-17-coupling-cohesion": {
+      "sha": "f936c6e8261a0ffa680f27d49c2e01fd5dc3b57b",
+      "section": "jeongcheogi"
+    },
+    "2026-07-17-db-normalization": {
+      "sha": "bcbe55b8c4b5fdede3a0948b238adc64c9f7a23f",
+      "section": "jeongcheogi"
+    },
+    "2026-07-17-osi-7-layers": {
+      "sha": "762481ca18a989e5d84d65f2ccd5ab287d31be51",
+      "section": "jeongcheogi"
+    },
+    "2026-07-17-process-vs-thread": {
+      "sha": "e99d6d8f2d45c383a1e2703cfbfb9ad474127cff",
+      "section": "jeongcheogi"
+    },
+    "2026-07-17-resources-context": {
+      "sha": "3cfef98ed92efc643e9ee598c569834f5132df05",
+      "section": "mcp"
+    },
+    "2026-07-17-zod-input-schema": {
+      "sha": "791bc86c86d24847efecda842d9438c466ec5f14",
+      "section": "mcp"
+    },
+    "2026-07-18-astro-island-architecture": {
+      "sha": "28baf9bdaa7a4f64219dc982d64930a11171c803",
+      "section": "web"
+    },
+    "2026-07-18-security-cia": {
+      "sha": "1771888da467ed08f99ba03ec8b3bb4fee10b1d5",
+      "section": "jeongcheogi"
+    },
+    "2026-07-18-transaction-acid": {
+      "sha": "309d247619d406c5a80bab11ab21d0c0aff8d7df",
+      "section": "jeongcheogi"
+    },
+    "2026-07-18-zod-parse-dont-validate": {
+      "sha": "c6d8d9eb0862d6769a111cf74d89cfba569c9bdf",
+      "section": "web"
+    },
+    "2026-07-19-mcp-security-incidents-2026": {
+      "sha": "482f8c1ce7f22e4d00f48dda05c5d63b3b26848e",
+      "section": "security"
+    },
+    "2026-07-19-security-digest-2026-07-19": {
+      "sha": "4bee132c79fc88c7a3537a5e7ddb91593bc4fe28",
+      "section": "security"
+    },
+    "2026-07-20-astro-rss-feed": {
+      "sha": "6e142e7e8051de8e8e881e3f1516bd7d29ee7efa",
+      "section": "web"
+    },
+    "2026-07-20-c-pointer-array-problems": {
+      "sha": "1169cef26da48a3385cb7afb9cd7a0ae61c15045",
+      "section": "jeongcheogi"
+    },
+    "2026-07-20-claude-code-client-and-agent": {
+      "sha": "aac756563630bacd033306b1979720b3cc2356f8",
+      "section": "mcp"
+    },
+    "2026-07-20-java-inheritance-overriding-problems": {
+      "sha": "b80da5e90eed872d9337d72a9b5995b8d3fbf66d",
+      "section": "jeongcheogi"
+    },
+    "2026-07-20-mcp-vs-agent-vs-orchestrator": {
+      "sha": "e6df270a99ef67847523cc941ad389e71dd7bc9f",
+      "section": "mcp"
+    },
+    "2026-07-20-prompts-workflow": {
+      "sha": "8895b2c55e39c6ae15df2e820f4d267e82cc2d9f",
+      "section": "mcp"
+    },
+    "2026-07-20-python-slicing-datastructure-problems": {
+      "sha": "de0f3997ea421150c9b447fd34405d325e518976",
+      "section": "jeongcheogi"
+    },
+    "2026-07-20-ssr-vs-csr-vs-ssg": {
+      "sha": "7c542480e4f178d73b0f4402d35d79f457d59b7c",
+      "section": "web"
+    },
+    "2026-07-20-what-is-ai-harness": {
+      "sha": "41e842770ada57307ff890a943608ea1d2462240",
+      "section": "mcp"
+    },
+    "2026-07-20-what-is-ssg-astro": {
+      "sha": "4e2f45588b1af8b0044c6da11fb82103672c858e",
+      "section": "web"
+    },
+    "2026-07-21-vite-ssg-prerendering": {
+      "sha": "a59a42bdf2fdba0e6a73cc668ab681676a1a4cbe",
+      "section": "web"
+    },
+    "2026-07-22-deadlock-conditions": {
+      "sha": "7964457cb952a97d6d5d58bfa4d1d68ec99b195c",
+      "section": "jeongcheogi"
+    },
+    "2026-07-22-tcp-vs-udp": {
+      "sha": "d4e58f132e90e1ed1b62b84f6b5d05bd923bf1ea",
+      "section": "jeongcheogi"
+    },
+    "2026-07-23-big-o-notation": {
+      "sha": "e0ec0ade7175abcec6f5c8d1a204aac06a4b93b9",
+      "section": "algo"
+    },
+    "2026-07-23-binary-search": {
+      "sha": "0d193a88a34758559e638e9cd4a275bcc4713708",
+      "section": "algo"
+    },
+    "2026-07-23-claude-billing-error": {
+      "sha": "34b4c07398752a2029891d28a9b46f4f5db3a71f",
+      "section": "security"
+    },
+    "2026-07-23-nginx-https-lets-encrypt": {
+      "sha": "25d565ad4f95f700865f68fa03578fb4459ef1fc",
+      "section": "web"
+    },
+    "2026-07-23-pm2-zero-downtime-reload": {
+      "sha": "62eaf49c00a45c27d09b5c0c3b792682819758b2",
+      "section": "web"
+    },
+    "2026-07-23-ponytail-lazy-agent-ruleset": {
+      "sha": "bd54dd16045a096965c4bdd0ed42e5bfc657412b",
+      "section": "mcp"
+    },
+    "2026-07-23-symmetric-asymmetric": {
+      "sha": "efe31fd082ef6b36311986fffc9f3afbf957b210",
+      "section": "jeongcheogi"
+    },
+    "2026-07-23-url-slug": {
+      "sha": "42267804a63a37175e817cf89480e01f7830e357",
+      "section": "web"
+    },
+    "2026-07-23-what-is-nginx": {
+      "sha": "b6df04190e0030fe257958b068c435995252ad35",
+      "section": "web"
+    },
+    "2026-07-23-what-is-pm2": {
+      "sha": "5039c065bcaa5cf3f3f45d3a1599f834817326b8",
+      "section": "web"
+    },
+    "2026-07-26-astro-css-scoped-styles": {
+      "sha": "bfa8484d24a00ac92d882c0bf3f0b5fbc4dacfa0",
+      "section": "web"
+    },
+    "2026-07-26-claude-code-skills-progressive-disclosure": {
+      "sha": "e39faab8aa4d8584a1906deb3fb3ef8ae97d61d3",
+      "section": "mcp"
+    },
+    "2026-07-26-dev-blog-platform-comparison": {
+      "sha": "632c8c41e974bf2e9c98a4413a92b06b329a30d5",
+      "section": "web"
+    },
+    "2026-07-26-self-built-blog-vs-velog": {
+      "sha": "c2fe83ea271ac369bf92d4f3e5efea3201800396",
+      "section": "web"
+    },
+    "2026-07-26-tool-description-design": {
+      "sha": "deb85d2bed906f3227937154da42d55fa78c34f2",
+      "section": "mcp"
+    },
+    "2026-07-27-github-actions-cron": {
+      "sha": "43276d084be724fbcf06a9b65a86094e75272d84",
+      "section": "mcp"
+    },
+    "2026-07-28-mcp-error-handling": {
+      "sha": "27e830f76e0a0791bb027b2f5d2836f3e78d30ee",
+      "section": "mcp"
+    },
+    "2026-07-29-blackbox-whitebox": {
+      "sha": "eaba0132d341b31ee935c65e82066adb869885fb",
+      "section": "jeongcheogi"
+    },
+    "2026-07-29-db-index": {
+      "sha": "3e342f5d5ff1c8ecb9b3c7d300be2017ba1f47c3",
+      "section": "jeongcheogi"
+    },
+    "2026-07-29-subscription-vs-api-cost": {
+      "sha": "c311f9789d17e7ce8aebf86acf20c07faf2f9bad",
+      "section": "mcp"
+    },
+    "2026-07-31-mcp-vs-function-calling": {
+      "sha": "f99ae517723e1030eb2ccc5560ed6dfeb81ffdab",
+      "section": "mcp"
+    },
+    "2026-08-02-bfs-dfs": {
+      "sha": "6db97e2d6193fec29371dc0528c320aa33eb6ad2",
+      "section": "algo"
+    },
+    "2026-08-02-claude-code-testing": {
+      "sha": "e4cd19c28a83707562c1398dd71bb83358490efe",
+      "section": "mcp"
+    },
+    "2026-08-02-mcp-vs-a2a": {
+      "sha": "9d6bc64a1ab28bd10f571342019416ea1f5481b7",
+      "section": "mcp"
+    },
+    "2026-08-05-ip-subnetting": {
+      "sha": "85a47e761a1c5bc2ddc1da936059dee292764bd5",
+      "section": "jeongcheogi"
+    },
+    "2026-08-06-dp-intro": {
+      "sha": "92fa4177698dbd695d7837e6fc1645f6cd44024f",
+      "section": "algo"
+    },
+    "2026-08-10-agent-sdk-orchestrator": {
+      "sha": "93c3cf95d078c9f7bca19d51743a37421fb789d1",
+      "section": "mcp"
+    },
+    "2026-08-10-langflow-rce-cve-2026-9198": {
+      "sha": "8de57390b653deb7271dff2a5fa7fc84a1b7b7db",
+      "section": "security"
+    },
+    "2026-08-10-page-replacement": {
+      "sha": "bd3dd11b8e9a5ea87a199443365c517e48bbd0b1",
+      "section": "jeongcheogi"
+    },
+    "2026-08-11-hash-digital-signature": {
+      "sha": "a37651ec057cbe79e5187e474cf2a5f034afeebc",
+      "section": "jeongcheogi"
+    },
+    "2026-08-12-mcp-tool-command-injection": {
+      "sha": "1b6818b27f43bd84c2912105ad52e6f4e97ad0c0",
+      "section": "security"
+    },
+    "2026-08-13-mcp-sampling": {
+      "sha": "eb1d7db8e84e80b9d311387c532627b56433336a",
+      "section": "mcp"
+    },
+    "2026-08-14-db-keys": {
+      "sha": "5c5aa2ec5fbe54d647a2f66ee765a9db7e438594",
+      "section": "jeongcheogi"
+    },
+    "2026-08-15-access-control": {
+      "sha": "0418f88ee6a08518ac61fd0c153ac0632ff95a5a",
+      "section": "jeongcheogi"
+    },
+    "2026-08-15-cpu-scheduling": {
+      "sha": "8f04447fd9bf8e953e292f8b75db98a72fce9ad7",
+      "section": "jeongcheogi"
+    },
+    "2026-08-15-design-patterns-overview": {
+      "sha": "dcded82533f1b0cd1f2bd06b9473682516c83fee",
+      "section": "jeongcheogi"
+    },
+    "2026-08-15-json-ld-rich-snippet": {
+      "sha": "557cf9c0e8026eb9f66076a26f2ded44cc266e04",
+      "section": "web"
+    },
+    "2026-08-15-mcp-tool-ssrf": {
+      "sha": "8ed896e937f0edf54ac927a4629c6f5e47b15cfd",
+      "section": "security"
+    },
+    "2026-08-15-react2shell-rsc-rce": {
+      "sha": "bff66149b7447eb97f606d83e5640567171e158e",
+      "section": "security"
+    },
+    "2026-08-15-ssg-relative-time-client": {
+      "sha": "44b422f62e0d30eda9d1d40cc6a385c1f1c16dd4",
+      "section": "web"
+    },
+    "2026-08-15-time-series-metrics-vs-logs": {
+      "sha": "e441334bc3733e3b7a5472506c0bba1c924aaf3b",
+      "section": "web"
+    },
+    "2026-08-16-mcp-2026-07-28-stateless-spec": {
+      "sha": "469854e8a14efbd22beb52608ee2a0afc9f16d63",
+      "section": "mcp"
+    },
+    "2026-08-16-mcp-tool-annotations": {
+      "sha": "72666078655be4e72c769ace6ad7e797f9f49fe3",
+      "section": "mcp"
+    },
+    "2026-08-16-postgres-rls-supabase": {
+      "sha": "dca1c9b7dfbb63d4550d32f059006d0640969205",
+      "section": "web"
+    },
+    "2026-08-17-http-status-codes": {
+      "sha": "ce6715be601747df73ed5d3744e46416f2522c0b",
+      "section": "jeongcheogi"
+    },
+    "2026-08-18-dev-methodology": {
+      "sha": "7b090e6f106a28ee453bec335170fc19529d8aff",
+      "section": "jeongcheogi"
+    },
+    "2026-08-18-ghostapproval-symlink-ai-coding-agents": {
+      "sha": "e421a6d1dfefad923c2de73a8d5f907f8f76aa7b",
+      "section": "security"
+    },
+    "2026-08-18-sql-ddl-dml-dcl": {
+      "sha": "e0b229353c1a8a6aa7e1cc6d7ed861f66b88d8e3",
+      "section": "jeongcheogi"
+    },
+    "2026-08-18-stack-queue-basics": {
+      "sha": "f1b9715e58eee96677327b40fa6d8df26fc116bd",
+      "section": "jeongcheogi"
+    },
+    "2026-08-19-mcp-apps-interactive-ui": {
+      "sha": "d2ddcf70530879025fc9b4dd5cab08dd1843a950",
+      "section": "mcp"
+    },
+    "2026-08-20-mcp-elicitation-server-user-input": {
+      "sha": "d7d0852a72b582fad638e5820684329d47ee84ee",
+      "section": "mcp"
+    },
+    "2026-08-21-relational-algebra": {
+      "sha": "f1c1b7a19f86540bff505553193a2d16b8ecd969",
+      "section": "jeongcheogi"
+    }
+  }
+}

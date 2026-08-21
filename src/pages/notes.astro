@@ -15,13 +15,16 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 const titles: Record<string, string> = postTitles;
 
 // 영역 → 주제(개념 글) → 문항. 주제는 은행 안 등장 순서를 유지한다.
+// relatedPost가 없는 문항은 영역 끝의 '개념 글 준비 중' 그룹으로 모은다.
 const byArea = AREAS.map((area) => {
   const qs = bank.filter((q) => q.area === area);
-  const topics = [...new Set(qs.map((q) => q.relatedPost))].map((post) => ({
-    post,
-    title: titles[post] ?? post.replace(/^\d{4}-\d{2}-\d{2}-/, ""),
-    questions: qs.filter((q) => q.relatedPost === post),
-  }));
+  const topics = [...new Set(qs.map((q) => q.relatedPost ?? ""))]
+    .sort((a, b) => (a === "" ? 1 : b === "" ? -1 : 0))
+    .map((post) => ({
+      post: post || null,
+      title: post ? (titles[post] ?? post.replace(/^\d{4}-\d{2}-\d{2}-/, "")) : "개념 글 준비 중",
+      questions: qs.filter((q) => (q.relatedPost ?? "") === post),
+    }));
   return { area, count: qs.length, topics };
 });
 
@@ -73,7 +76,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
             <div class="topic">
               <h3 class="topic-title">
                 {title}
-                <a class="topic-link" href={`${BLOG_POST_BASE}${post}/`} target="_blank" rel="noopener">개념 글 →</a>
+                {post && (
+                  <a class="topic-link" href={`${BLOG_POST_BASE}${post}/`} target="_blank" rel="noopener">개념 글 →</a>
+                )}
               </h3>
               {questions.map((q) => (
                 <article class="cn" data-id={q.id}>
