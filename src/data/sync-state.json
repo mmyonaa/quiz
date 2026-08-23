@@ -339,6 +339,14 @@
     "2026-08-21-relational-algebra": {
       "sha": "f1c1b7a19f86540bff505553193a2d16b8ecd969",
       "section": "jeongcheogi"
+    },
+    "2026-08-22-libssh2-cve-2026-55200": {
+      "sha": "f074f93b48c8c7a9e42707d48b051604cbae40d8",
+      "section": "security"
+    },
+    "2026-08-23-dns-aid-mcp-agent-discovery": {
+      "sha": "910a00dde54883060182d32946192c20fa1d11d1",
+      "section": "mcp"
     }
   }
 }
