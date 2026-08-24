@@ -12,6 +12,7 @@ import { dirname, join } from "node:path";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const QUESTIONS = join(root, "src/data/questions.json");
 const TITLES = join(root, "src/data/post-titles.json");
+const TOPIC_NOTES = join(root, "src/data/topic-notes.json");
 const STATE = join(root, "src/data/sync-state.json");
 
 const RSS_URL = "https://mmyonaa.github.io/blog/rss.xml";
@@ -140,6 +141,19 @@ const report = async () => {
   if (gaps.length) {
     lines.push("## 커버리지 갭 — 정처기 글인데 문항이 없음 (문항 제작 후보)", "");
     for (const id of gaps) lines.push(`- \`${id}\``);
+    lines.push("");
+  }
+  // 개념 노트 도입부 갭 — 문항이 참조하는 주제인데 topic-notes.json에 도입부가 없음
+  let introOf = {};
+  try {
+    introOf = JSON.parse(readFileSync(TOPIC_NOTES, "utf8"));
+  } catch {
+    /* 파일 없음 — 전 주제가 갭으로 잡힌다 */
+  }
+  const noIntro = [...refs.keys()].filter((id) => !introOf[id]);
+  if (noIntro.length) {
+    lines.push("## 도입부 갭 — 개념 노트에 도입부가 없는 주제 (topic-notes.json 작성 후보)", "");
+    for (const id of noIntro) lines.push(`- \`${id}\` (문항 ${refs.get(id)}개)`);
     lines.push("");
   }
 

@@ -1132,6 +1132,17 @@ button.toc-chip {
 .topic-link:hover {
   text-decoration: underline;
 }
+/* 개념 도입부 — 주제의 자족적 정의. 카드들과 구분되는 인용풍 문단 */
+.topic-intro {
+  margin: 0 0 0.75rem;
+  padding: 0.7rem 0.95rem;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text);
+  background: var(--surface);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
 /* 개념 항목 카드 — 좌측 색상 보더 없이 담백한 면 카드 */
 .cn {
   border: 1px solid var(--border);

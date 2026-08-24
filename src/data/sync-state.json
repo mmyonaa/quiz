@@ -347,6 +347,10 @@
     "2026-08-23-dns-aid-mcp-agent-discovery": {
       "sha": "910a00dde54883060182d32946192c20fa1d11d1",
       "section": "mcp"
+    },
+    "2026-08-24-mcp-logging-capability": {
+      "sha": "2bbc303341485e3e46be41a00a44d3d2a136b6c8",
+      "section": "mcp"
     }
   }
 }

@@ -83,5 +83,8 @@
   "2026-08-18-stack-queue-basics": "스택과 큐 — LIFO와 FIFO",
   "2026-08-19-mcp-apps-interactive-ui": "MCP 도구가 텍스트 대신 화면을 그린다 — MCP Apps 뜯어보기",
   "2026-08-20-mcp-elicitation-server-user-input": "MCP Elicitation — 도구 실행 중 서버가 사람에게 되묻는 법",
-  "2026-08-21-relational-algebra": "관계대수 — SQL 뒤에 숨은 연산자들"
+  "2026-08-21-relational-algebra": "관계대수 — SQL 뒤에 숨은 연산자들",
+  "2026-08-22-libssh2-cve-2026-55200": "라이브러리가 아니라 curl이 뚫린다 — libssh2 치명적 원격코드실행 (CVE-2026-55200)",
+  "2026-08-23-dns-aid-mcp-agent-discovery": "에이전트가 서로를 어떻게 찾나 — DNS를 디렉터리로 쓰는 DNS-AID",
+  "2026-08-24-mcp-logging-capability": "MCP 로깅 capability — 서버가 클라이언트에게 실어 보내는 구조화된 로그"
 }
