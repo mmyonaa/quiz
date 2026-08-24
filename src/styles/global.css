@@ -937,10 +937,10 @@ button.toc-chip {
 .topic {
   scroll-margin-top: 0.8rem;
 }
-/* 모바일 — 칩을 한 줄 가로 스크롤로(3줄씩 쌓여 첫 화면을 밀어내지 않게).
-   패널 가장자리까지 블리드시키고 우측 페이드로 '더 있음'을 시각화한다. */
+/* 모바일 — 영역 칩(.toc)은 개수가 적으니 줄 바꿈, 주제 칩(.chip-row)만 한 줄
+   가로 스크롤(긴 제목이 여러 줄 쌓여 첫 화면을 밀어내지 않게).
+   스크롤 행은 패널 가장자리까지 블리드시키고 우측 페이드로 '더 있음'을 시각화한다. */
 @media (max-width: 720px) {
-  .toc,
   .chip-row {
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -953,14 +953,18 @@ button.toc-chip {
     -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 30px), transparent);
     mask-image: linear-gradient(90deg, #000 calc(100% - 30px), transparent);
   }
-  .toc::-webkit-scrollbar,
   .chip-row::-webkit-scrollbar {
     display: none;
   }
-  .toc .toc-chip,
   .chip-row .toc-chip {
     flex: none;
     white-space: nowrap;
+  }
+  .toc {
+    margin-top: 0.6rem;
+  }
+  .toc .toc-chip,
+  .chip-row .toc-chip {
     padding: 0.5em 1em; /* 터치 타깃 보강 */
   }
 }
