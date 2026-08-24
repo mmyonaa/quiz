@@ -911,7 +911,29 @@ button.linklike:hover {
 .toc-chip.on em {
   color: inherit;
 }
-/* 주제 바로가기·난이도 필터 등 — 데스크톱에서도 유지되는 칩 행(.toc는 사이드 목차가 대체) */
+/* 주제 바로가기 — 알약 칩(영역 이동·난이도 필터)과 구분되는 해시 링크풍 목차 */
+.topic-jumps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1rem;
+  margin-top: 0.7rem;
+}
+.topic-jump {
+  padding: 0.3em 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+  text-decoration: none;
+}
+.topic-jump::before {
+  content: "#";
+  margin-right: 0.25em;
+  color: var(--accent);
+  opacity: 0.7;
+}
+.topic-jump:hover {
+  color: var(--accent);
+}
+/* 난이도 필터 등 — 데스크톱에서도 유지되는 칩 행(.toc는 사이드 목차가 대체) */
 .chip-row {
   display: flex;
   flex-wrap: wrap;
@@ -937,29 +959,8 @@ button.toc-chip {
 .topic {
   scroll-margin-top: 0.8rem;
 }
-/* 모바일 — 영역 칩(.toc)은 개수가 적으니 줄 바꿈, 주제 칩(.chip-row)만 한 줄
-   가로 스크롤(긴 제목이 여러 줄 쌓여 첫 화면을 밀어내지 않게).
-   스크롤 행은 패널 가장자리까지 블리드시키고 우측 페이드로 '더 있음'을 시각화한다. */
+/* 모바일 — 칩 행은 모두 줄 바꿈(가로 스크롤 없음) */
 @media (max-width: 720px) {
-  .chip-row {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    scrollbar-width: none;
-    margin-left: calc(var(--pad, 1.25rem) * -1);
-    margin-right: calc(var(--pad, 1.25rem) * -1);
-    padding-left: var(--pad, 1.25rem);
-    padding-right: var(--pad, 1.25rem);
-    padding-bottom: 0.15rem;
-    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 30px), transparent);
-    mask-image: linear-gradient(90deg, #000 calc(100% - 30px), transparent);
-  }
-  .chip-row::-webkit-scrollbar {
-    display: none;
-  }
-  .chip-row .toc-chip {
-    flex: none;
-    white-space: nowrap;
-  }
   .toc {
     margin-top: 0.6rem;
   }
