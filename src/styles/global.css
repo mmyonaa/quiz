@@ -845,6 +845,11 @@ button.linklike:hover {
     grid-template-columns: 11rem minmax(0, 1fr);
     gap: 1.5rem;
   }
+  /* 사이드 목차가 hidden이면(비로그인 마이페이지) 그리드에서 빠져 본문이 1열로
+     밀려든다 — 본문 열을 못 박아 어느 상태에서도 폭이 흔들리지 않게 한다. */
+  main.side-layout > .side-body {
+    grid-column: 2;
+  }
   .side-toc {
     display: block;
     align-self: start;
@@ -930,11 +935,44 @@ button.linklike:hover {
   color: inherit;
 }
 /* 주제 바로가기 — 알약 칩(영역 이동·난이도 필터)과 구분되는 해시 링크풍 목차 */
+.topic-jumps-box {
+  margin-top: 0.7rem;
+}
+.topic-jumps-box > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.6rem;
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+.topic-jumps-box > summary::-webkit-details-marker {
+  display: none;
+}
+.topic-jumps-box > summary::before {
+  content: "▶";
+  font-size: 0.62em;
+  transition: transform 0.15s ease;
+}
+.topic-jumps-box[open] > summary::before {
+  transform: rotate(90deg);
+}
+.topic-jumps-box > summary:hover {
+  color: var(--accent);
+}
 .topic-jumps {
   display: flex;
   flex-wrap: wrap;
   gap: 0 1rem;
-  margin-top: 0.7rem;
+}
+/* 넓은 화면에선 접기 UI 자체가 불필요 — 여는 것은 인라인 스크립트가 맡는다 */
+@media (min-width: 1100px) {
+  .topic-jumps-box > summary {
+    display: none;
+  }
 }
 .topic-jump {
   padding: 0.3em 0;
@@ -975,7 +1013,7 @@ button.toc-chip {
   padding: 0.4rem 0;
 }
 .topic {
-  scroll-margin-top: 0.8rem;
+  scroll-margin-top: 1.2rem;
 }
 /* 모바일 — 칩 행은 모두 줄 바꿈(가로 스크롤 없음) */
 @media (max-width: 720px) {
@@ -1142,7 +1180,14 @@ button.toc-chip {
   align-items: baseline;
   justify-content: space-between;
   gap: 0.75rem;
+  /* 스크롤 중에도 현재 주제가 남아 있게 — 패널 배경을 깔아 본문이 비쳐 보이지 않게 한다 */
+  position: sticky;
+  top: 0;
+  z-index: 4;
   margin: 0 0 0.35rem;
+  padding: 0.55rem 0 0.4rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
   font-size: 1rem;
 }
 .topic-link {
@@ -1155,12 +1200,18 @@ button.toc-chip {
 .topic-link:hover {
   text-decoration: underline;
 }
+/* 개념 노트 읽기 열 — 한 줄이 45자를 넘으면 눈이 다음 줄 첫머리를 놓친다.
+   본문 요소마다 거는 대신 열 자체를 묶어 카드·도입부·제목이 같은 폭을 공유하게 한다. */
+.side-body.reading {
+  max-width: 42rem;
+}
+
 /* 개념 도입부 — 주제의 자족적 정의. 카드들과 구분되는 인용풍 문단 */
 .topic-intro {
   margin: 0 0 0.75rem;
   padding: 0.7rem 0.95rem;
-  font-size: 0.95rem;
-  line-height: 1.7;
+  font-size: 1rem;
+  line-height: 1.78;
   color: var(--text);
   background: var(--surface);
   border-left: 3px solid var(--accent);
@@ -1195,7 +1246,8 @@ button.toc-chip {
 }
 .cn-x {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  line-height: 1.75;
 }
 .cn-q {
   margin-top: 0.35rem;
@@ -1233,6 +1285,8 @@ button.toc-chip {
 }
 .cn-question {
   margin: 0.6rem 0 0.5rem;
+  font-size: 0.98rem;
+  line-height: 1.7;
   font-weight: 600;
 }
 .cn-choices {

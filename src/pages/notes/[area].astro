@@ -62,7 +62,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         ))}
       </aside>
 
-      <div class="side-body">
+      <div class="side-body reading">
         <section class="panel">
           <h1>{area}</h1>
           <p class="lead">
@@ -78,11 +78,22 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
             ))}
           </nav>
           {/* 주제 바로가기 — 데스크톱·모바일 공용. 영역·필터 칩과 혼동되지 않게 해시 링크풍 */}
-          <nav class="topic-jumps" aria-label="주제 바로가기">
-            {topics.map(({ title }, i) => (
-              <a class="topic-jump" href={`#t${i}`}>{title}</a>
-            ))}
-          </nav>
+          <details class="topic-jumps-box">
+            <summary>주제 {topics.length}개 바로가기</summary>
+            <nav class="topic-jumps" aria-label="주제 바로가기">
+              {topics.map(({ title }, i) => (
+                <a class="topic-jump" href={`#t${i}`}>{title}</a>
+              ))}
+            </nav>
+          </details>
+          {/* 넓은 화면은 펼친 채로, 좁은 화면은 접은 채로 — 주제가 20개를 넘으면
+              세로 목록이 첫 화면을 통째로 먹는다. 파싱 중 실행해 깜빡임을 막는다. */}
+          <script is:inline>
+            (function () {
+              var d = document.currentScript.previousElementSibling;
+              d.open = matchMedia("(min-width: 1100px)").matches;
+            })();
+          </script>
           {/* 난이도 필터 + 모두 펼치기 */}
           <div class="note-tools">
             <div class="chip-row" role="group" aria-label="난이도 필터">
