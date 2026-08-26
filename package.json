@@ -1,6 +1,6 @@
 {
   "name": "quiz",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "private": true,
   "type": "module",
   "description": "daily.quiz — 정처기 필기 개념 문제를 풀고 채점·해설받는 정적 사이트. daily.mcp 블로그의 자매 프로젝트",

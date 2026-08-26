@@ -6,6 +6,20 @@ daily.quiz의 버전별 변경 기록. [Keep a Changelog](https://keepachangelog
 - 버전의 기준은 `package.json`의 `version`이며, 릴리스마다 git 태그(`v1.0.0` 형식)를 붙인다.
 - 일감 단위 기록은 [GitHub Project](https://github.com/users/mmyonaa/projects/6)와 이슈에 남긴다.
 
+## [1.3.0] - 2026-08-27
+
+기출의 발문 형식에 맞춰 부정형 비중을 끌어올린 릴리스.
+
+### 변경
+
+- **부정형 발문 25% → 43%** — 긍정형 60문항을 부정형으로 재작성했다. 선지를 '참 3 + 거짓 1'로 다시 쓰고 정답 인덱스와 해설을 함께 갱신했으며, `id`·영역·난이도·주제는 보존해 저장한 문제와 오답노트의 참조가 끊기지 않게 했다. 거짓 선지는 두 개념의 정의를 맞바꾸거나 방향·순서를 뒤집는 방식으로 만들고, 나머지 참 선지 3개의 사실 여부를 전수 확인했다.
+- **주제별 부정형 상한 50%** — 한 주제의 문항이 전부 부정형이 되지 않도록 배분했다.
+- **발문 표현 분산** — 틀린 것 67 · 옳지 않은 36 · 가장 거리가 먼 14 · 해당하지 않는 13 · 아닌 것 13 · 적절하지 않은 4.
+
+### 수정
+
+- **정답 위치 편향 해소** — 부정형 문항의 정답이 4번에 46% 몰려 있어 내용을 몰라도 찍어서 맞힐 여지가 있었다. 선지 위치만 맞바꿔 재균형했다(38/34/36/41). 해설이 선지 번호를 언급하는 4문항과 숫자가 오름차순으로 놓인 선지는 제외했고, 정답으로 지목된 선지의 '내용'이 그대로인지 단언으로 검증했다.
+
 ## [1.2.0] - 2026-08-26
 
 2022년 4월 필기 기출(해설집)을 대조해 개념 범위와 출제 형식을 맞춘 릴리스.
@@ -84,6 +98,7 @@ daily.quiz의 버전별 변경 기록. [Keep a Changelog](https://keepachangelog
 - GitHub Pages 자동 배포 — main push 트리거(`deploy.yml`), Supabase 키는 Actions 시크릿으로 주입
 - 블로그 동기화 도구(`scripts/blog-sync.mjs`) — prebuild 링크 검증·제목 자동화(`--check`), 죽은 링크·글 개정·커버리지 갭·도입부 갭 주간 리포트(`--report`)
 
+[1.3.0]: https://github.com/mmyonaa/quiz/releases/tag/v1.3.0
 [1.2.0]: https://github.com/mmyonaa/quiz/releases/tag/v1.2.0
 [1.1.0]: https://github.com/mmyonaa/quiz/releases/tag/v1.1.0
 [1.0.0]: https://github.com/mmyonaa/quiz/releases/tag/v1.0.0
