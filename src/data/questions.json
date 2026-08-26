@@ -94,7 +94,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "tcp-udp",
-    "question": "TCP와 UDP에 대한 설명으로 옳지 않은 것은?",
+    "question": "TCP와 UDP에 대한 설명으로 틀린 것은?",
     "choices": [
       "TCP는 3-way handshake로 연결을 설정한다",
       "UDP는 비연결형으로 헤더가 단순하고 빠르다",
@@ -169,7 +169,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "db-index",
-    "question": "데이터베이스 인덱스에 대한 설명으로 옳지 않은 것은?",
+    "question": "데이터베이스 인덱스에 대한 설명으로 틀린 것은?",
     "choices": [
       "B-tree 인덱스는 범위 검색에 활용할 수 있다",
       "인덱스는 조회 성능을 높이지만 쓰기 성능은 떨어뜨릴 수 있다",
@@ -304,7 +304,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "symmetric-asymmetric",
-    "question": "대칭키 암호화에 대한 설명으로 옳지 않은 것은?",
+    "question": "대칭키 암호화에 대한 설명으로 틀린 것은?",
     "choices": [
       "암호화와 복호화에 같은 키를 사용한다",
       "비대칭키 방식보다 암·복호화 속도가 빠르다",
@@ -319,7 +319,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "hash-digital-signature",
-    "question": "암호학적 해시 함수의 성질로 옳지 않은 것은?",
+    "question": "암호학적 해시 함수의 성질로 틀린 것은?",
     "choices": [
       "입력 길이와 무관하게 고정 길이 출력을 낸다",
       "해시값에서 원본 입력을 복원하기 어렵다",
@@ -484,7 +484,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "deadlock",
-    "question": "교착상태 발생 조건에 대한 설명으로 옳지 않은 것은?",
+    "question": "교착상태 발생 조건에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "4가지 필요조건이 동시에 모두 성립해야 발생한다",
       "조건 중 하나라도 깨지면 교착상태는 발생하지 않는다",
@@ -1024,7 +1024,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "db-index",
-    "question": "해시 인덱스에 대한 설명으로 옳지 않은 것은?",
+    "question": "해시 인덱스에 대한 설명으로 틀린 것은?",
     "choices": [
       "등호(=) 검색에 적합하다",
       "BETWEEN 같은 범위 검색에 적합하다",
@@ -1564,7 +1564,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "sql-command-types",
-    "question": "SQL 명령어 분류의 영문 풀네임 연결이 옳지 않은 것은?",
+    "question": "SQL 명령어 분류의 영문 풀네임 연결이 틀린 것은?",
     "choices": [
       "DDL — Data Definition Language",
       "DML — Data Manipulation Language",
@@ -1684,7 +1684,7 @@
     "area": "네트워크",
     "difficulty": "하",
     "topic": "http-status-codes",
-    "question": "HTTP 상태 코드의 첫 자리 숫자별 의미로 옳지 않은 것은?",
+    "question": "HTTP 상태 코드의 첫 자리 숫자별 의미로 틀린 것은?",
     "choices": [
       "2xx — 요청이 정상 처리됨",
       "3xx — 완료하려면 다른 URI로 추가 이동이 필요함",
@@ -1834,7 +1834,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "dev-methodology",
-    "question": "애자일 방법론의 요소와 소속 연결이 옳지 않은 것은?",
+    "question": "애자일 방법론의 요소와 소속 연결이 틀린 것은?",
     "choices": [
       "스프린트 — Scrum",
       "제품 백로그 — Scrum",
@@ -1969,7 +1969,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "configuration-management",
-    "question": "소프트웨어 형상관리(SCM)에 대한 설명으로 옳지 않은 것은?",
+    "question": "소프트웨어 형상관리(SCM)에 대한 설명으로 틀린 것은?",
     "choices": [
       "소스 코드·문서 등 산출물의 변경을 체계적으로 통제한다",
       "형상 식별·형상 통제·형상 감사·형상 기록이 주요 활동이다",
@@ -2607,7 +2607,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "routing-sdn",
-    "question": "라우팅 프로토콜 RIP에 대한 설명으로 옳지 않은 것은?",
+    "question": "라우팅 프로토콜 RIP에 대한 설명으로 틀린 것은?",
     "choices": [
       "거리 벡터(distance vector) 알고리즘을 사용한다",
       "홉(hop) 수를 경로 선택 기준으로 삼는다",
@@ -2939,7 +2939,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "secure-coding",
-    "question": "시큐어 코딩(secure coding)에 대한 설명으로 옳지 않은 것은?",
+    "question": "시큐어 코딩(secure coding)에 대한 설명으로 틀린 것은?",
     "choices": [
       "개발 단계부터 보안 취약점을 예방하는 코딩 원칙이다",
       "입력 데이터 검증과 출력값 처리가 핵심 항목이다",
@@ -2954,7 +2954,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "sql-query-basics",
-    "question": "뷰(View)에 대한 설명으로 옳지 않은 것은?",
+    "question": "뷰(View)에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "하나 이상의 테이블에서 유도되는 가상 테이블이다",
       "데이터를 물리적으로 저장하지 않는다",
@@ -3029,7 +3029,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "ui-design",
-    "question": "UI 설계 원칙과 설명의 연결이 옳지 않은 것은?",
+    "question": "UI 설계 원칙과 설명의 연결이 틀린 것은?",
     "choices": [
       "직관성 — 누구나 쉽게 이해하고 사용할 수 있어야 한다",
       "유효성 — 사용자의 목적을 정확하게 달성해야 한다",
@@ -3329,7 +3329,7 @@
     "area": "프로그래밍",
     "difficulty": "하",
     "topic": "json-ajax",
-    "question": "JSON에 대한 설명으로 옳지 않은 것은?",
+    "question": "JSON에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "속성-값 쌍으로 데이터를 표현하는 경량 교환 형식이다",
       "사람이 읽고 쓰기 쉬운 텍스트 기반 형식이다",
@@ -3419,7 +3419,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "disk-file-system",
-    "question": "파일의 디스크 블록 할당 방식에 대한 설명으로 옳지 않은 것은?",
+    "question": "파일의 디스크 블록 할당 방식에 대한 설명으로 틀린 것은?",
     "choices": [
       "연속 할당은 직접 접근이 빠르지만 파일이 커지면 옮겨야 하고 외부 단편화가 생긴다",
       "연결 할당은 각 블록이 다음 블록의 주소를 가지므로 외부 단편화가 없다",
@@ -3539,7 +3539,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "hashing",
-    "question": "해시 테이블의 적재율(load factor)에 대한 설명으로 옳지 않은 것은?",
+    "question": "해시 테이블의 적재율(load factor)에 대한 설명으로 틀린 것은?",
     "choices": [
       "저장된 원소 수를 테이블 크기로 나눈 값이다",
       "적재율이 높아질수록 충돌 확률이 커져 평균 탐색 시간이 길어진다",
@@ -3646,7 +3646,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "exception-language-types",
-    "question": "컴파일러와 인터프리터의 비교로 옳지 않은 것은?",
+    "question": "컴파일러와 인터프리터의 비교로 틀린 것은?",
     "choices": [
       "컴파일러는 소스 코드 전체를 목적 코드로 한 번에 번역한 뒤 실행한다",
       "인터프리터는 소스 코드를 한 줄씩 해석하며 즉시 실행한다",
@@ -3706,7 +3706,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "architecture-patterns",
-    "question": "계층화(Layered) 아키텍처 패턴의 특징으로 옳지 않은 것은?",
+    "question": "계층화(Layered) 아키텍처 패턴의 특징으로 틀린 것은?",
     "choices": [
       "각 계층은 자신의 바로 아래 계층이 제공하는 서비스만 사용하도록 제한하는 것이 원칙이다",
       "계층 단위로 책임이 나뉘어 있어 한 계층의 내부 구현을 바꿔도 다른 계층에 미치는 영향이 작다",
@@ -3721,7 +3721,7 @@
     "area": "소프트웨어공학",
     "difficulty": "상",
     "topic": "architecture-patterns",
-    "question": "아키텍처 패턴과 그 설명을 짝지은 것으로 옳지 않은 것은?",
+    "question": "아키텍처 패턴과 그 설명을 짝지은 것으로 틀린 것은?",
     "choices": [
       "클라이언트-서버 — 서비스를 제공하는 서버와 요청하는 클라이언트로 역할을 나누고, 서버는 다수 클라이언트의 요청을 대기한다",
       "브로커 — 분산된 컴포넌트의 위치를 감춘 채 클라이언트의 요청을 알맞은 서버 컴포넌트로 중개한다",
@@ -3796,7 +3796,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "code-review-quality",
-    "question": "클린 코드 원칙과 코드 스멜에 대한 설명으로 옳지 않은 것은?",
+    "question": "클린 코드 원칙과 코드 스멜에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "이름만 보고도 역할을 알 수 있도록 변수·함수의 이름을 의미 있게 짓는다",
       "하나의 함수가 한 가지 일만 하도록 작게 유지해 이해와 재사용을 쉽게 한다",
@@ -3826,7 +3826,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "emerging-tech",
-    "question": "블록체인의 구조와 특성에 대한 설명으로 옳지 않은 것은?",
+    "question": "블록체인의 구조와 특성에 대한 설명으로 틀린 것은?",
     "choices": [
       "각 블록이 직전 블록의 해시값을 담고 있어 과거 블록을 고치면 이후 블록의 해시가 모두 어긋난다",
       "거래 원장을 한 곳에 모아두지 않고 참여 노드들이 나눠 보관하며 합의 알고리즘으로 동기화한다",
