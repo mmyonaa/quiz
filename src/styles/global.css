@@ -1208,14 +1208,14 @@ button.toc-chip {
   margin-bottom: 0;
 }
 .topic-intro {
-  margin: 0 0 0.75rem;
-  padding: 0.7rem 0.95rem;
+  /* 장식 없이 제목 바로 아래 흐르는 리드 문단 — 좌측 색 보더는 가로 공간을 먹고
+     모바일에서 눈에 거슬려 걷어냈다. 아래 카드들이 박스라 위계는 그것으로 갈린다. */
+  margin: 0 0 1.1rem;
+  padding: 0 0 1rem;
+  border-bottom: 1px solid var(--border);
   font-size: 1rem;
   line-height: 1.78;
   color: var(--text);
-  background: var(--surface);
-  border-left: 3px solid var(--accent);
-  border-radius: 0 var(--radius) var(--radius) 0;
 }
 /* 개념 항목 카드 — 좌측 색상 보더 없이 담백한 면 카드 */
 .cn {
