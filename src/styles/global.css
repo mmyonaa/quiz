@@ -1200,13 +1200,13 @@ button.toc-chip {
 .topic-link:hover {
   text-decoration: underline;
 }
-/* 개념 노트 읽기 열 — 한 줄이 45자를 넘으면 눈이 다음 줄 첫머리를 놓친다.
-   본문 요소마다 거는 대신 열 자체를 묶어 카드·도입부·제목이 같은 폭을 공유하게 한다. */
-.side-body.reading {
-  max-width: 42rem;
-}
-
 /* 개념 도입부 — 주제의 자족적 정의. 카드들과 구분되는 인용풍 문단 */
+.topic-intro > p {
+  margin: 0 0 0.85em;
+}
+.topic-intro > p:last-child {
+  margin-bottom: 0;
+}
 .topic-intro {
   margin: 0 0 0.75rem;
   padding: 0.7rem 0.95rem;
