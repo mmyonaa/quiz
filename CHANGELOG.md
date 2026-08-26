@@ -6,6 +6,24 @@ daily.quiz의 버전별 변경 기록. [Keep a Changelog](https://keepachangelog
 - 버전의 기준은 `package.json`의 `version`이며, 릴리스마다 git 태그(`v1.0.0` 형식)를 붙인다.
 - 일감 단위 기록은 [GitHub Project](https://github.com/users/mmyonaa/projects/6)와 이슈에 남긴다.
 
+## [1.5.0] - 2026-08-27
+
+큐넷 공식 출제기준과 전수 대조해 커버리지 사각지대를 메운 릴리스.
+
+### 추가
+
+- **신규 8주제 50문항** (은행 395 → 445, 주제 81 → 89) — 인터페이스 설계, 인터페이스 구현과 검증, 고급 SQL(서브쿼리·윈도우 함수·ROLLUP/CUBE), 물리 데이터베이스 설계, 데이터 전환과 정제, SW 개발 보안(Secure SDLC와 취약점 7분류), 개발환경 구축, 현행 시스템 분석.
+
+### 변경
+
+- **대조 방식을 표본에서 전수로** — 그동안은 기출 시험지 2회분을 표본 삼아 갭을 찾았으나, 이번에는 큐넷 공식 출제기준(HWP 원본)의 세부항목 47개를 89개 주제 도입부와 하나씩 대조했다. 결과는 완전 미커버 9건, 얕은 커버리지 18건. 특히 **2과목 「인터페이스 구현」과 3과목 「데이터 전환」이 주요항목 단위로 통째 비어 있었다** — 과목당 20문항 기준으로 각각 3~4문항씩 나오는 자리다.
+- **기존 22주제 도입부 보강** — CASE 도구, 감성공학과 ISO 9241, 연계 방식과 데이터 명세화, 소스코드 품질분석 도구와 순환복잡도, 테스트 원리 4가지와 결함관리 프로세스, 프로그램 디버깅, 협업도구, IPC, APM, 옵티마이저와 실행계획, DB 이중화, DB 암호화 4방식, API와 REST·SOAP, 서버 개발 프레임워크, 라이브러리와 데이터 입출력, SPICE·ISO 12207·전자정부 표준프레임워크, CBD 방법론, 보안 아키텍처와 ISO 27001·Secure OS, DW·데이터마이닝·OLAP, 환경변수, 서브쿼리, 논리 모델 품질검증.
+
+### 참고
+
+- 대조 기준은 2023~2025년판 출제기준이다. 2026년판은 큐넷이 HWP 첨부에서 리포트 뷰어로 서비스 방식을 바꿔 본문을 추출하지 못했다. 유효기간이 1년뿐이라 실질 개정보다는 연장·경미 수정으로 보이나 확인하지는 못했다.
+- 출제기준에 없는데 다루고 있는 주제로 `http-status-codes`(5문항)가 확인됐다. 실무에는 유용하나 시험 대비로는 비중이 과하다.
+
 ## [1.4.0] - 2026-08-27
 
 실제 시험 과목을 계층으로 얹고, 2022년 3월 기출을 대조해 개념을 보강한 릴리스.
@@ -119,6 +137,7 @@ daily.quiz의 버전별 변경 기록. [Keep a Changelog](https://keepachangelog
 - GitHub Pages 자동 배포 — main push 트리거(`deploy.yml`), Supabase 키는 Actions 시크릿으로 주입
 - 블로그 동기화 도구(`scripts/blog-sync.mjs`) — prebuild 링크 검증·제목 자동화(`--check`), 죽은 링크·글 개정·커버리지 갭·도입부 갭 주간 리포트(`--report`)
 
+[1.5.0]: https://github.com/mmyonaa/quiz/releases/tag/v1.5.0
 [1.4.0]: https://github.com/mmyonaa/quiz/releases/tag/v1.4.0
 [1.3.0]: https://github.com/mmyonaa/quiz/releases/tag/v1.3.0
 [1.2.0]: https://github.com/mmyonaa/quiz/releases/tag/v1.2.0
