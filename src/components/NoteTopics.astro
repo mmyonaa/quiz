@@ -27,9 +27,16 @@ const { topics, blogPostBase } = Astro.props as {
         )}
       </h3>
       {/* 개념 도입부 — 문제 전제 없이 읽히는 자족적 정의·핵심 정리.
-          topic-notes.json에서 빈 줄로 나눈 문단을 그대로 <p>로 편다. */}
+          topic-notes.json의 빈 줄이 문단 경계다. "- "로 시작하는 덩어리는 목록으로 편다 —
+          "A는 …, B는 …, C는 …" 식 열거는 산문보다 목록이 훨씬 빨리 읽힌다. */}
       <div class="topic-intro">
-        {intro.split("\n\n").map((para) => <p>{para}</p>)}
+        {intro.split("\n\n").map((block) =>
+          block.startsWith("- ") ? (
+            <ul>{block.split("\n").map((li) => <li>{li.slice(2)}</li>)}</ul>
+          ) : (
+            <p>{block}</p>
+          ),
+        )}
       </div>
       {questions.map((q) => (
         <article class="cn" data-id={q.id} data-diff={q.difficulty}>

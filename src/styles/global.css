@@ -1201,11 +1201,25 @@ button.toc-chip {
   text-decoration: underline;
 }
 /* 개념 도입부 — 주제의 자족적 정의. 카드들과 구분되는 인용풍 문단 */
-.topic-intro > p {
+.topic-intro > p,
+.topic-intro > ul {
   margin: 0 0 0.85em;
 }
-.topic-intro > p:last-child {
+.topic-intro > :last-child {
   margin-bottom: 0;
+}
+/* 열거 목록 — 항목 앞머리의 용어가 눈에 걸리도록 들여쓰기는 얕게, 항목 간 숨은 넉넉히 */
+.topic-intro > ul {
+  padding-left: 1.15em;
+}
+.topic-intro li {
+  margin-bottom: 0.35em;
+}
+.topic-intro li:last-child {
+  margin-bottom: 0;
+}
+.topic-intro li::marker {
+  color: var(--muted);
 }
 .topic-intro {
   /* 장식 없이 제목 바로 아래 흐르는 리드 문단 — 좌측 색 보더는 가로 공간을 먹고
