@@ -6,6 +6,27 @@ daily.quiz의 버전별 변경 기록. [Keep a Changelog](https://keepachangelog
 - 버전의 기준은 `package.json`의 `version`이며, 릴리스마다 git 태그(`v1.0.0` 형식)를 붙인다.
 - 일감 단위 기록은 [GitHub Project](https://github.com/users/mmyonaa/projects/6)와 이슈에 남긴다.
 
+## [1.4.0] - 2026-08-27
+
+실제 시험 과목을 계층으로 얹고, 2022년 3월 기출을 대조해 개념을 보강한 릴리스.
+
+### 추가
+
+- **시험 과목 계층** — 정처기 필기의 5과목(소프트웨어 설계·소프트웨어 개발·데이터베이스 구축·프로그래밍 언어 활용·정보시스템 구축 관리)을 영역 위 계층으로 얹었다. 과목과 영역은 다대다여서(소프트웨어공학은 1·2·5과목에, 프로그래밍은 2·4과목에 걸치고, 운영체제·네트워크는 둘 다 4과목에 들어간다) 과목을 영역이 아니라 주제(topic)에 붙였다. 81개 주제를 전수 매핑하고 스키마에서 검증한다.
+- **과목별 개념 노트** `/notes/s/<slug>` 5개 신설. 목차에는 '시험 과목' 카드가 영역 위에 놓이고, 과목마다 주제 수와 걸쳐 있는 영역을 함께 보여준다.
+- **문제 풀이에 과목 선택** — 과목과 영역을 하나의 선택 그룹으로 통합해 어느 쪽으로든 범위를 좁힐 수 있다.
+- **신규 7주제 45문항** (은행 350 → 395, 주제 74 → 81) — 상호배제와 프로세스 동기화(74주제 중 유일하게 비어 있던 영역), 리눅스 시스템 관리, 스토리지와 고가용성, 소프트웨어 재공학과 재사용, 구조적 분석·설계 표기법, E-R 모델과 표기법, 무선·근거리 통신 보안 위협.
+
+### 변경
+
+- **모의고사가 실제 시험 구조와 일치** — 임의의 영역 배분(15/15/20/20/15/15)에서 5과목 × 20문항으로 바꿨고, 과락 판정도 영역이 아니라 과목 기준으로 교정했다.
+- **기존 30주제 도입부 보강** — ISO 25000(SQuaRE)·FTR 지침, WBS, 객체지향 분석 방법론, 언어 선정 기준, 파일 조직법, 4NF·5NF, 관계해석 정량자, CREATE TABLE 제약조건·DROP CASCADE, UNION/UNION ALL, 병행제어·2PL, 스크럼 마스터·테일러링, 계층별 프로토콜, ICMP·ARP, IPv6 심화, FAT vs NTFS, 그리고 C 비트·시프트 연산자와 우선순위, C 2차원 배열·배열 포인터, Python 반복문·딕셔너리 접근, Java 배열 참조 전달.
+- **GitHub Actions 액션 업그레이드** — checkout v7, setup-node v7, upload-pages-artifact v5, deploy-pages v5로 올려 Node 20 deprecated 경고를 없앴다.
+
+### 내부
+
+- 영역 페이지와 과목 페이지가 공유하는 본문 마크업·스크립트를 `NoteTopics` 컴포넌트로 추출했다(`[area].astro` 11.4KB → 4.7KB).
+
 ## [1.3.0] - 2026-08-27
 
 기출의 발문 형식에 맞춰 부정형 비중을 끌어올린 릴리스.
@@ -98,6 +119,7 @@ daily.quiz의 버전별 변경 기록. [Keep a Changelog](https://keepachangelog
 - GitHub Pages 자동 배포 — main push 트리거(`deploy.yml`), Supabase 키는 Actions 시크릿으로 주입
 - 블로그 동기화 도구(`scripts/blog-sync.mjs`) — prebuild 링크 검증·제목 자동화(`--check`), 죽은 링크·글 개정·커버리지 갭·도입부 갭 주간 리포트(`--report`)
 
+[1.4.0]: https://github.com/mmyonaa/quiz/releases/tag/v1.4.0
 [1.3.0]: https://github.com/mmyonaa/quiz/releases/tag/v1.3.0
 [1.2.0]: https://github.com/mmyonaa/quiz/releases/tag/v1.2.0
 [1.1.0]: https://github.com/mmyonaa/quiz/releases/tag/v1.1.0
