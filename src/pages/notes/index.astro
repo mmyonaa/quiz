@@ -1,25 +1,23 @@
 ---
-import { getCollection } from "astro:content";
 import { AREAS, AREA_SLUGS } from "../../content.config";
-import postTitles from "../../data/post-titles.json";
+import { loadBank, topicsOf } from "../../lib/bank";
 import SiteHeader from "../../components/SiteHeader.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
 import "../../styles/global.css";
 
 // 개념 노트 목차 — 영역별 상세 페이지(/notes/<slug>/)로 이어지는 관문.
 // 본문이 계속 늘어나므로 한 페이지에 다 싣지 않고 영역 단위로 라우팅을 나눈다.
-const entries = await getCollection("quiz");
-const bank = entries.map((e) => e.data);
-const titles: Record<string, string> = postTitles;
+const bank = await loadBank();
 
 const areas = AREAS.map((area) => {
-  const qs = bank.filter((q) => q.area === area);
-  const topics = [...new Set(qs.map((q) => q.relatedPost ?? ""))];
-  const preview = topics
-    .filter(Boolean)
-    .slice(0, 3)
-    .map((p) => titles[p] ?? p.replace(/^\d{4}-\d{2}-\d{2}-/, ""));
-  return { area, slug: AREA_SLUGS[area], count: qs.length, topicCount: topics.length, preview };
+  const topics = topicsOf(area);
+  return {
+    area,
+    slug: AREA_SLUGS[area],
+    count: bank.filter((q) => q.area === area).length,
+    topicCount: topics.length,
+    preview: topics.slice(0, 3).map((t) => t.title),
+  };
 });
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");

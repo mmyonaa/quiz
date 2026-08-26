@@ -1,8 +1,6 @@
 ---
-import { getCollection } from "astro:content";
 import { AREAS, AREA_SLUGS, DIFFICULTIES } from "../../content.config";
-import postTitles from "../../data/post-titles.json";
-import topicNotes from "../../data/topic-notes.json";
+import { loadBank, topicsOf } from "../../lib/bank";
 import SiteHeader from "../../components/SiteHeader.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
 import "../../styles/global.css";
@@ -15,21 +13,11 @@ export function getStaticPaths() {
 
 const { area } = Astro.props as { area: (typeof AREAS)[number] };
 
-const entries = await getCollection("quiz");
-const bank = entries.map((e) => e.data);
-const titles: Record<string, string> = postTitles;
-const intros: Record<string, string> = topicNotes;
+const bank = await loadBank();
 
 const qs = bank.filter((q) => q.area === area);
-// 주제는 은행 안 등장 순서 유지, relatedPost 없는 문항은 끝의 '개념 글 준비 중' 그룹으로.
-const topics = [...new Set(qs.map((q) => q.relatedPost ?? ""))]
-  .sort((a, b) => (a === "" ? 1 : b === "" ? -1 : 0))
-  .map((post) => ({
-    post: post || null,
-    title: post ? (titles[post] ?? post.replace(/^\d{4}-\d{2}-\d{2}-/, "")) : "개념 글 준비 중",
-    intro: post ? (intros[post] ?? null) : null,
-    questions: qs.filter((q) => (q.relatedPost ?? "") === post),
-  }));
+// 주제 순서는 topic-notes.json의 정의 순서(기초 → 심화)를 따른다.
+const topics = topicsOf(area).map((t) => ({ ...t, questions: qs.filter((q) => q.topic === t.key) }));
 
 const countByArea = Object.fromEntries(AREAS.map((a) => [a, bank.filter((q) => q.area === a).length]));
 const countByDiff = Object.fromEntries(DIFFICULTIES.map((d) => [d, qs.filter((q) => q.difficulty === d).length]));
@@ -116,7 +104,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
                 )}
               </h3>
               {/* 개념 도입부 — 문제 전제 없이 읽히는 자족적 정의·핵심 정리 */}
-              {intro && <p class="topic-intro">{intro}</p>}
+              <p class="topic-intro">{intro}</p>
               {questions.map((q) => (
                 <article class="cn" data-id={q.id} data-diff={q.difficulty}>
                   <button class="save-star cn-save" type="button" title="이 개념 저장" aria-label="이 개념 저장">☆</button>
@@ -155,25 +143,12 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       </div>
     </main>
 
-    <div id="toast" class="toast" hidden></div>
-
     <script>
       import { supabase } from "../../lib/supabase";
       import { onAuth, authSession, requireLogin, errorText } from "../../lib/auth";
+      import { toast } from "../../lib/toast";
 
       const $ = <T extends HTMLElement>(sel: string) => document.querySelector(sel) as T;
-
-      // ── 토스트 — 저장 피드백 ──
-      let toastTimer: ReturnType<typeof setTimeout> | undefined;
-      const toast = (msg: string) => {
-        const t = $("#toast");
-        t.textContent = msg;
-        t.hidden = false;
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => {
-          t.hidden = true;
-        }, 2200);
-      };
 
       // ── 개념 저장(북마크) — saved_notes 테이블, 해설 카드(문항 id) 단위 ──
       let savedNotes = new Set<string>();

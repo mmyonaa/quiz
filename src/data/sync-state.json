@@ -351,6 +351,10 @@
     "2026-08-24-mcp-logging-capability": {
       "sha": "2bbc303341485e3e46be41a00a44d3d2a136b6c8",
       "section": "mcp"
+    },
+    "2026-08-25-sorting-algorithms-comparison": {
+      "sha": "8fc512ab746de5b7863a618f8bb393adfa4eb10c",
+      "section": "jeongcheogi"
     }
   }
 }

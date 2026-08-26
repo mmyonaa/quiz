@@ -1,12 +1,11 @@
 ---
-import { getCollection } from "astro:content";
+import { loadBank } from "../lib/bank";
 import SiteHeader from "../components/SiteHeader.astro";
 import "../styles/global.css";
 
 // 마이페이지 — DB에 쌓인 내 오답 기록·저장 문제를 보는 화면 (#7).
 // 문제 본문·해설은 빌드 타임에 굽고, DB에서는 id·횟수·날짜만 온다.
-const entries = await getCollection("quiz");
-const bank = entries.map((e) => e.data);
+const bank = await loadBank();
 
 const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");

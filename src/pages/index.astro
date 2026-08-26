@@ -1,13 +1,12 @@
 ---
-import { getCollection } from "astro:content";
 import { AREAS, DIFFICULTIES } from "../content.config";
+import { loadBank } from "../lib/bank";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import "../styles/global.css";
 
 // 문제 은행 전체를 빌드 타임에 굽는다 — 서버 없이 클라이언트 JS만으로 동작.
-const entries = await getCollection("quiz");
-const bank = entries.map((e) => e.data);
+const bank = await loadBank();
 const countByArea = Object.fromEntries(
   AREAS.map((a) => [a, bank.filter((q) => q.area === a).length]),
 );

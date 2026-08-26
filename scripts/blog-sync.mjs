@@ -44,11 +44,14 @@ const fetchPosts = async () => {
   return posts;
 };
 
+/** 글 id → 그 글에 연결된 문항 수. 연결은 주제(topic-notes.json)가 갖는다. */
 const questionRefs = () => {
   const bank = JSON.parse(readFileSync(QUESTIONS, "utf8"));
-  const refs = new Map(); // 글 id → 참조하는 문항 수
+  const topics = JSON.parse(readFileSync(TOPIC_NOTES, "utf8"));
+  const refs = new Map();
   for (const q of bank) {
-    if (q.relatedPost) refs.set(q.relatedPost, (refs.get(q.relatedPost) ?? 0) + 1);
+    const post = topics[q.topic]?.post;
+    if (post) refs.set(post, (refs.get(post) ?? 0) + 1);
   }
   return refs;
 };
@@ -143,17 +146,16 @@ const report = async () => {
     for (const id of gaps) lines.push(`- \`${id}\``);
     lines.push("");
   }
-  // 개념 노트 도입부 갭 — 문항이 참조하는 주제인데 topic-notes.json에 도입부가 없음
-  let introOf = {};
-  try {
-    introOf = JSON.parse(readFileSync(TOPIC_NOTES, "utf8"));
-  } catch {
-    /* 파일 없음 — 전 주제가 갭으로 잡힌다 */
-  }
-  const noIntro = [...refs.keys()].filter((id) => !introOf[id]);
-  if (noIntro.length) {
-    lines.push("## 도입부 갭 — 개념 노트에 도입부가 없는 주제 (topic-notes.json 작성 후보)", "");
-    for (const id of noIntro) lines.push(`- \`${id}\` (문항 ${refs.get(id)}개)`);
+  // 글 연결 갭 — 도입부만 있고 아직 개념 글이 없는 주제(글감 후보).
+  // 도입부 자체의 누락은 스키마(z.enum)와 topic-notes.json 구조가 이미 막는다.
+  const topics = JSON.parse(readFileSync(TOPIC_NOTES, "utf8"));
+  const bank = JSON.parse(readFileSync(QUESTIONS, "utf8"));
+  const noPost = Object.entries(topics)
+    .filter(([, t]) => !t.post)
+    .map(([key, t]) => [key, t, bank.filter((q) => q.topic === key).length]);
+  if (noPost.length) {
+    lines.push("## 글 연결 갭 — 개념 글이 아직 없는 주제 (블로그 글감 후보)", "");
+    for (const [key, t, n] of noPost) lines.push(`- \`${key}\` — ${t.title} (${t.area}, 문항 ${n}개)`);
     lines.push("");
   }
 
