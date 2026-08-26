@@ -6,6 +6,22 @@ daily.quiz의 버전별 변경 기록. [Keep a Changelog](https://keepachangelog
 - 버전의 기준은 `package.json`의 `version`이며, 릴리스마다 git 태그(`v1.0.0` 형식)를 붙인다.
 - 일감 단위 기록은 [GitHub Project](https://github.com/users/mmyonaa/projects/6)와 이슈에 남긴다.
 
+## [1.2.0] - 2026-08-26
+
+2022년 4월 필기 기출(해설집)을 대조해 개념 범위와 출제 형식을 맞춘 릴리스.
+기출 문항은 복제하지 않고, 어떤 개념이 나오는지와 어떤 형식으로 묻는지만 참고했다.
+
+### 추가
+
+- **신규 12주제 + 기존 주제 보강 90문항** (은행 260 → 350, 주제 62 → 74) — 객체지향 기본 개념, 제품 소프트웨어 패키징과 DRM, 릴레이션의 구조와 무결성, 데이터베이스 설계 단계, 분산 데이터베이스, UNIX 운영체제, IP 프로토콜 헤더·전달 특성, 네트워크 토폴로지와 구성 장비, C 연산자와 제어문, Java 기본 문법, 악성코드 유형, 보안 위협 분류와 취약점 관리.
+- **박스 제시문 도입** — `code` 필드를 코드 전용에서 제시문 블록으로 넓혀, 코드와 `[실행결과]`를 함께 주는 역방향 문항, `[조건]`과 `[SQL문]`의 빈칸 채우기, 표 데이터, 특징 불릿을 주고 용어를 고르게 하는 유형을 지원한다.
+- **난이도 '상' 비중 13% → 19%** — 디스크 헤드 이동, 메모리 배치, 해시 충돌, IP 헤더 계산, 생산성 산정, 코드 추적 등 계산·추론형을 전수 검산해 추가했다.
+
+### 변경
+
+- **기존 17주제 도입부 보강** — 사용자/커널 수준 스레드, 모듈화, AAA와 인증 5유형, 명명된 공격 기법(Ping of Death·Smurf·Land·Teardrop·Piggyback), TCP Wrapper, HSM, IGP/EGP/AS, 생산성 산정식, 간트 차트 대 PERT, 유스케이스 관계 4종, UI 지침 확장·VUI·피드백, 버전 관리 도구, 통합 테스트의 깊이/넓이 우선과 스텁·드라이버 방향, xUnit 계열, IDE 기능, Python 자료형 분류, 구조체와 주소 계산.
+- **부정형 발문 17% → 25%** — 기출은 약 50%가 부정형이고 표현도 "틀린 것은?"·"~이 아닌 것은?"·"가장 거리가 먼 것은?"으로 나뉘는데, 기존에는 "옳지 않은 것은?" 한 표현에 몰려 있었다. 표현을 분산하고 신규 문항의 49%를 부정형으로 작성했다.
+
 ## [1.1.0] - 2026-08-26
 
 개념 노트를 "해설 모음"에서 "개념부터 읽는 노트"로 바꾼 릴리스.
@@ -68,5 +84,6 @@ daily.quiz의 버전별 변경 기록. [Keep a Changelog](https://keepachangelog
 - GitHub Pages 자동 배포 — main push 트리거(`deploy.yml`), Supabase 키는 Actions 시크릿으로 주입
 - 블로그 동기화 도구(`scripts/blog-sync.mjs`) — prebuild 링크 검증·제목 자동화(`--check`), 죽은 링크·글 개정·커버리지 갭·도입부 갭 주간 리포트(`--report`)
 
+[1.2.0]: https://github.com/mmyonaa/quiz/releases/tag/v1.2.0
 [1.1.0]: https://github.com/mmyonaa/quiz/releases/tag/v1.1.0
 [1.0.0]: https://github.com/mmyonaa/quiz/releases/tag/v1.0.0
