@@ -9,6 +9,28 @@ import topicNotes from "./data/topic-notes.json";
  */
 export const AREAS = ["운영체제", "네트워크", "데이터베이스", "소프트웨어공학", "정보보안", "프로그래밍"] as const;
 
+/**
+ * 시험 과목 — 실제 정처기 필기의 5과목. 과목당 20문항, 과목별 40점 미만이면 과락.
+ * 영역과는 다대다다(소프트웨어공학은 1·2·5과목에, 프로그래밍은 2·4과목에 걸친다).
+ * 그래서 과목은 영역이 아니라 주제(topic)에 붙는다.
+ */
+export const SUBJECTS = [
+  "소프트웨어 설계",
+  "소프트웨어 개발",
+  "데이터베이스 구축",
+  "프로그래밍 언어 활용",
+  "정보시스템 구축 관리",
+] as const;
+
+/** 과목별 URL 슬러그 — 개념 노트 과목 라우팅(/notes/s/<slug>/)에 쓴다 */
+export const SUBJECT_SLUGS: Record<(typeof SUBJECTS)[number], string> = {
+  "소프트웨어 설계": "design",
+  "소프트웨어 개발": "dev",
+  "데이터베이스 구축": "database",
+  "프로그래밍 언어 활용": "language",
+  "정보시스템 구축 관리": "management",
+};
+
 /** 난이도 단계 — 하(정의·단순 매칭), 중(유사 개념 구분·함정), 상(계산·다단계 추론) */
 export const DIFFICULTIES = ["하", "중", "상"] as const;
 
@@ -27,9 +49,21 @@ export const AREA_SLUGS: Record<(typeof AREAS)[number], string> = {
  * 정의는 src/data/topic-notes.json 하나에 모인다(제목·도입부·연결 글).
  * 블로그 글(post)은 주제의 선택적 속성 — 글이 없는 주제도 도입부로 완결된다.
  */
-export type Topic = { area: (typeof AREAS)[number]; title: string; intro: string; post?: string };
+export type Topic = {
+  subject: (typeof SUBJECTS)[number];
+  area: (typeof AREAS)[number];
+  title: string;
+  intro: string;
+  post?: string;
+};
 export const TOPICS: Record<string, Topic> = topicNotes;
 const TOPIC_KEYS = Object.keys(TOPICS) as [string, ...string[]];
+
+/** 주제 정의가 깨지면(과목·영역 오타) 빌드에서 잡는다 */
+for (const [key, t] of Object.entries(TOPICS)) {
+  if (!SUBJECTS.includes(t.subject)) throw new Error(`주제 ${key}의 subject가 잘못됨: ${t.subject}`);
+  if (!AREAS.includes(t.area)) throw new Error(`주제 ${key}의 area가 잘못됨: ${t.area}`);
+}
 
 const quiz = defineCollection({
   loader: file("src/data/questions.json"),

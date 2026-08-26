@@ -1,0 +1,119 @@
+---
+import { SUBJECTS, SUBJECT_SLUGS, DIFFICULTIES } from "../../../content.config";
+import { loadBank, topicsOfSubject, areasOfSubject } from "../../../lib/bank";
+import NoteTopics from "../../../components/NoteTopics.astro";
+import SiteHeader from "../../../components/SiteHeader.astro";
+import SiteFooter from "../../../components/SiteFooter.astro";
+import "../../../styles/global.css";
+
+// 개념 노트 과목 상세 — 실제 시험 과목 단위로 읽는 페이지.
+// 영역 페이지(/notes/<area>/)와 본문은 같고 묶는 축만 다르다(NoteTopics 공용).
+export function getStaticPaths() {
+  return SUBJECTS.map((subject) => ({ params: { subject: SUBJECT_SLUGS[subject] }, props: { subject } }));
+}
+
+const { subject } = Astro.props as { subject: (typeof SUBJECTS)[number] };
+
+const bank = await loadBank();
+const qs = bank.filter((q) => q.subject === subject);
+const topics = topicsOfSubject(subject).map((t) => ({ ...t, questions: qs.filter((q) => q.topic === t.key) }));
+
+const countBySubject = Object.fromEntries(SUBJECTS.map((s) => [s, bank.filter((q) => q.subject === s).length]));
+const countByDiff = Object.fromEntries(DIFFICULTIES.map((d) => [d, qs.filter((q) => q.difficulty === d).length]));
+const no = SUBJECTS.indexOf(subject) + 1;
+const prev = no > 1 ? SUBJECTS[no - 2] : null;
+const next = no < SUBJECTS.length ? SUBJECTS[no] : null;
+
+const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>daily.quiz — 개념 노트 · {no}과목 {subject}</title>
+    <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
+    <meta
+      name="description"
+      content={`정보처리기사 필기 ${no}과목 ${subject}의 개념 노트 — 해설 ${qs.length}문항을 개념별로 모아 읽고 확인 문제로 점검합니다.`}
+    />
+  </head>
+  <body>
+    <SiteHeader current="notes" />
+
+    {/* 읽기 진행률 — 화면 최상단 얇은 바 */}
+    <div class="read-progress" aria-hidden="true"><i id="read-fill"></i></div>
+
+    <main class="side-layout">
+      {/* 넓은 화면 전용 — 좌측 과목 메뉴, 현재 과목 하이라이트 */}
+      <aside class="side-toc" aria-label="과목 바로가기">
+        <span class="side-toc-title">시험 과목</span>
+        <a class="side-link" href={`${base}/notes/`}>전체 <em>{bank.length}</em></a>
+        {SUBJECTS.map((s, i) => (
+          <a
+            class={`side-link${s === subject ? " on" : ""}`}
+            href={`${base}/notes/s/${SUBJECT_SLUGS[s]}/`}
+            aria-current={s === subject ? "page" : undefined}
+          >{i + 1}. {s} <em>{countBySubject[s]}</em></a>
+        ))}
+      </aside>
+
+      <div class="side-body">
+        <section class="panel">
+          <h1><span class="subj-no">{no}과목</span> {subject}</h1>
+          <p class="lead">
+            <a class="lead-link" href={`${base}/notes/`}>개념 노트</a> 안의 {no}과목 —
+            해설 {qs.length}문항을 {topics.length}개 주제로 모았습니다.
+            영역으로는 {areasOfSubject(subject).join(" · ")}에 걸쳐 있습니다.
+          </p>
+          {/* 좁은 화면 전용 — 과목 이동 칩 */}
+          <nav class="toc" aria-label="과목 이동">
+            {SUBJECTS.map((s, i) => (
+              <a class={`toc-chip${s === subject ? " on" : ""}`} href={`${base}/notes/s/${SUBJECT_SLUGS[s]}/`}>
+                {i + 1}과목 <em>{countBySubject[s]}</em>
+              </a>
+            ))}
+          </nav>
+          {/* 주제 바로가기 */}
+          <nav class="topic-jumps" aria-label="주제 바로가기">
+            {topics.map(({ title }, i) => (
+              <a class="topic-jump" href={`#t${i}`}>{title}</a>
+            ))}
+          </nav>
+          {/* 난이도 필터 + 모두 펼치기 */}
+          <div class="note-tools">
+            <div class="chip-row" role="group" aria-label="난이도 필터">
+              <button class="toc-chip diff-chip on" type="button" data-diff="전체">전체 <em>{qs.length}</em></button>
+              {DIFFICULTIES.map((d) => (
+                <button class="toc-chip diff-chip" type="button" data-diff={d}>{d} <em>{countByDiff[d]}</em></button>
+              ))}
+            </div>
+            <button id="toggle-all" class="linklike" type="button">모두 펼치기</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <NoteTopics topics={topics} blogPostBase={BLOG_POST_BASE} />
+
+          {/* 이전/다음 과목 이동 */}
+          <nav class="area-nav">
+            {prev ? (
+              <a href={`${base}/notes/s/${SUBJECT_SLUGS[prev]}/`}><small>이전 과목</small>← {no - 1}과목</a>
+            ) : (
+              <a href={`${base}/notes/`}><small>목차</small>← 전체</a>
+            )}
+            {next ? (
+              <a class="next" href={`${base}/notes/s/${SUBJECT_SLUGS[next]}/`}><small>다음 과목</small>{no + 1}과목 →</a>
+            ) : (
+              <a class="next" href={`${base}/notes/`}><small>목차</small>전체 →</a>
+            )}
+          </nav>
+        </section>
+      </div>
+    </main>
+
+    <SiteFooter />
+  </body>
+</html>

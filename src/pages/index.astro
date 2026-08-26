@@ -1,5 +1,5 @@
 ---
-import { AREAS, DIFFICULTIES } from "../content.config";
+import { AREAS, DIFFICULTIES, SUBJECTS } from "../content.config";
 import { loadBank } from "../lib/bank";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
@@ -7,6 +7,9 @@ import "../styles/global.css";
 
 // 문제 은행 전체를 빌드 타임에 굽는다 — 서버 없이 클라이언트 JS만으로 동작.
 const bank = await loadBank();
+const countBySubject = Object.fromEntries(
+  SUBJECTS.map((s) => [s, bank.filter((q) => q.subject === s).length]),
+);
 const countByArea = Object.fromEntries(
   AREAS.map((a) => [a, bank.filter((q) => q.area === a).length]),
 );
@@ -38,20 +41,29 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       <section id="setup" class="panel">
         <h1>정처기 필기 연습</h1>
         <p class="lead">
-          영역을 고르면 문제를 섞어 출제합니다. 제출하면 바로 채점하고,
+          시험 과목이나 영역을 고르면 문제를 섞어 출제합니다. 제출하면 바로 채점하고,
           틀린 문제는 해설과 함께 개념 글로 이어집니다.
           풀기 전에 개념부터 훑고 싶다면
           <a class="lead-link" href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/notes/`}>개념 노트</a>를 펴 보세요.
         </p>
         <fieldset class="areas">
-          <legend>영역</legend>
+          <legend>시험 과목</legend>
           <label class="area-opt">
-            <input type="radio" name="area" value="전체" checked />
+            <input type="radio" name="scope" value="전체" checked />
             <span>전체 <em>{bank.length}</em></span>
           </label>
+          {SUBJECTS.map((s, i) => (
+            <label class="area-opt">
+              <input type="radio" name="scope" value={`과목:${s}`} />
+              <span>{i + 1}과목 {s} <em>{countBySubject[s]}</em></span>
+            </label>
+          ))}
+        </fieldset>
+        <fieldset class="areas">
+          <legend>영역</legend>
           {AREAS.map((a) => (
             <label class="area-opt">
-              <input type="radio" name="area" value={a} />
+              <input type="radio" name="scope" value={`영역:${a}`} />
               <span>{a} <em>{countByArea[a]}</em></span>
             </label>
           ))}
@@ -102,8 +114,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         <div class="mock-box">
           <h2>모의고사</h2>
           <p class="mock-desc">
-            실제 필기 형식 그대로 — 총 100문항을 150분 안에 풉니다. 영역 배분은
-            실제 출제 비중을 반영합니다(DB·소프트웨어공학 20, 나머지 영역 15).
+            실제 필기 형식 그대로 — 5과목 × 20문항, 총 100문항을 150분 안에 풉니다.
             과목별 40점 미만이면 과락, 과락 없이 평균 60점 이상이면 합격입니다.
             문항을 건너뛰고 나중에 돌아올 수 있습니다.
           </p>
@@ -166,12 +177,13 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 
     {/* 문제 은행 주입 — 빌드 타임 데이터, 런타임 요청 없음 */}
     <script is:inline type="application/json" id="bank" set:html={JSON.stringify(bank)} />
-    <script is:inline type="application/json" id="config" set:html={JSON.stringify({ blogPostBase: BLOG_POST_BASE, areas: AREAS })} />
+    <script is:inline type="application/json" id="config" set:html={JSON.stringify({ blogPostBase: BLOG_POST_BASE, areas: AREAS, subjects: SUBJECTS })} />
 
     <script>
       type Q = {
         id: string;
         area: string;
+        subject: string;
         difficulty: string;
         question: string;
         code?: string; // 코드 해석 문항의 코드 블록
@@ -186,9 +198,9 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       import { toast } from "../lib/toast";
 
       const bank: Q[] = JSON.parse(document.getElementById("bank")!.textContent!);
-      const { blogPostBase, areas } = JSON.parse(document.getElementById("config")!.textContent!) as {
+      const { blogPostBase, subjects: SUBJECT_LIST } = JSON.parse(document.getElementById("config")!.textContent!) as {
         blogPostBase: string;
-        areas: string[];
+        subjects: string[];
       };
 
       const $ = <T extends HTMLElement>(sel: string) => document.querySelector(sel) as T;
@@ -203,15 +215,8 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 
       // ── 타이머 — 모의고사는 150분 카운트다운, 연습은 경과 시간 카운트업 ──
       const MOCK_MINUTES = 150;
-      // 영역별 출제 수 — 합계 100문항(실제 필기 분량). 문항 비중이 큰 DB·소공에 20, 나머지 15
-      const MOCK_QUOTA: Record<string, number> = {
-        운영체제: 15,
-        네트워크: 15,
-        데이터베이스: 20,
-        소프트웨어공학: 20,
-        정보보안: 15,
-        프로그래밍: 15,
-      };
+      // 실제 필기 그대로 — 5과목 × 20문항 = 100문항
+      const MOCK_PER_SUBJECT = 20;
       let startedAt = 0;
       let deadline = 0;
       let timerId: ReturnType<typeof setInterval> | undefined;
@@ -604,31 +609,31 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         const subjects = $("#subjects");
         if (mode === "mock") {
           // 과목별 채점 — 40점 미만 과락, 과락 없이 평균 60점 이상 합격
-          const perArea = areas.map((a) => {
-            const qs = session.map((q, i) => ({ q, i })).filter(({ q }) => q.area === a);
-            const ok = qs.filter(({ q, i }) => picked[i] === q.answer).length;
+          const perSubject = SUBJECT_LIST.map((sj, i) => {
+            const qs = session.map((q, qi) => ({ q, qi })).filter(({ q }) => q.subject === sj);
+            const ok = qs.filter(({ q, qi }) => picked[qi] === q.answer).length;
             const score = qs.length ? Math.round((ok / qs.length) * 100) : 0;
-            return { area: a, ok, total: qs.length, score, fail: score < 40 };
+            return { no: i + 1, subject: sj, ok, total: qs.length, score, fail: score < 40 };
           });
-          const avg = Math.round(perArea.reduce((s, p) => s + p.score, 0) / perArea.length);
-          const failed = perArea.filter((p) => p.fail);
+          const avg = Math.round(perSubject.reduce((s, p) => s + p.score, 0) / perSubject.length);
+          const failed = perSubject.filter((p) => p.fail);
           const pass = avg >= 60 && failed.length === 0;
           $("#score").textContent = `평균 ${avg}점 — ${pass ? "합격" : "불합격"}`;
           setScoreBar(avg, pass);
           $("#verdict").textContent = [
             timedOut ? "시간이 종료되어 자동 제출되었습니다." : "",
             failed.length
-              ? `과락(40점 미만): ${failed.map((p) => p.area).join(", ")}.`
+              ? `과락(40점 미만): ${failed.map((p) => `${p.no}과목 ${p.subject}`).join(", ")}.`
               : avg >= 60
                 ? "과락 없이 평균 60점을 넘겼습니다."
                 : "과락은 없지만 평균이 60점에 못 미칩니다.",
             "아래에서 틀린 문항만 복기하세요.",
           ].filter(Boolean).join(" ");
-          subjects.innerHTML = perArea
+          subjects.innerHTML = perSubject
             .map(
               (p) => `
               <div class="subj${p.fail ? " fail" : ""}" style="--w:${p.score}%">
-                <span class="subj-area">${p.area}</span>
+                <span class="subj-area">${p.no}과목 ${p.subject}</span>
                 <span class="subj-count mono">${p.ok} / ${p.total}</span>
                 <span class="subj-score">${p.score}점${p.fail ? " · 과락" : ""}</span>
               </div>`,
@@ -687,24 +692,26 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       };
 
       $("#start").addEventListener("click", () => {
-        const area = (document.querySelector('input[name="area"]:checked') as HTMLInputElement).value;
+        // scope는 "전체" | "과목:<과목명>" | "영역:<영역명>" — 과목과 영역 중 하나만 고른다
+        const scope = (document.querySelector('input[name="scope"]:checked') as HTMLInputElement).value;
         const diff = (document.querySelector('input[name="diff"]:checked') as HTMLInputElement).value;
         const count = Number((document.querySelector('input[name="count"]:checked') as HTMLInputElement).value);
+        const [kind, name] = scope === "전체" ? ["전체", ""] : scope.split(":");
         const pool = bank
-          .filter((q) => area === "전체" || q.area === area)
+          .filter((q) => kind === "전체" || (kind === "과목" ? q.subject === name : q.area === name))
           .filter((q) => diff === "전체" || q.difficulty === diff);
         if (pool.length === 0) {
-          alert("선택한 영역·난이도 조합에 해당하는 문항이 아직 없습니다.");
+          alert("선택한 과목·영역과 난이도 조합에 해당하는 문항이 아직 없습니다.");
           return;
         }
         mode = "practice";
         startSession(shuffle(pool).slice(0, count));
       });
 
-      // 모의고사 — 영역 배분(MOCK_QUOTA, 합계 100문항)대로 과목 순서 출제, 150분 타이머
+      // 모의고사 — 실제 시험대로 과목 순서·과목당 20문항 출제, 150분 타이머
       $("#start-mock").addEventListener("click", () => {
-        const paper = areas.flatMap((a) =>
-          shuffle(bank.filter((q) => q.area === a)).slice(0, MOCK_QUOTA[a] ?? 0),
+        const paper = SUBJECT_LIST.flatMap((s) =>
+          shuffle(bank.filter((q) => q.subject === s)).slice(0, MOCK_PER_SUBJECT),
         );
         mode = "mock";
         startSession(paper, false);

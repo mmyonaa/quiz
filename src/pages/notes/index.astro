@@ -1,6 +1,6 @@
 ---
-import { AREAS, AREA_SLUGS } from "../../content.config";
-import { loadBank, topicsOf } from "../../lib/bank";
+import { AREAS, AREA_SLUGS, SUBJECTS, SUBJECT_SLUGS } from "../../content.config";
+import { loadBank, topicsOf, topicsOfSubject, areasOfSubject } from "../../lib/bank";
 import SiteHeader from "../../components/SiteHeader.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
 import "../../styles/global.css";
@@ -19,6 +19,16 @@ const areas = AREAS.map((area) => {
     preview: topics.slice(0, 3).map((t) => t.title),
   };
 });
+
+// 시험 과목 — 영역보다 한 단계 위. 과목과 영역은 다대다라 과목 안에 걸친 영역을 함께 보여준다.
+const subjects = SUBJECTS.map((subject, i) => ({
+  subject,
+  no: i + 1,
+  slug: SUBJECT_SLUGS[subject],
+  count: bank.filter((q) => q.subject === subject).length,
+  topics: topicsOfSubject(subject),
+  areas: areasOfSubject(subject),
+}));
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
@@ -52,10 +62,23 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         <section class="panel">
           <h1>개념 노트</h1>
           <p class="lead">
-            문제 은행 {bank.length}문항의 해설을 영역별·개념별로 모았습니다.
-            영역을 골라 들어가서 훑어 읽다가 '확인 문제'를 펼쳐 스스로 점검하고,
-            더 깊게는 개념 글로 이어가세요.
+            문제 은행 {bank.length}문항의 해설을 개념별로 모았습니다.
+            실제 시험 과목으로 훑거나, 아래 영역으로 들어가 읽다가 '확인 문제'를 펼쳐
+            스스로 점검하고, 더 깊게는 개념 글로 이어가세요.
           </p>
+
+          {/* 시험 과목 — 실제 필기의 5과목. 영역보다 한 단계 위 */}
+          <h2 class="group-title">시험 과목</h2>
+          <div class="subject-cards">
+            {subjects.map(({ subject, no, slug, count, topics, areas: sAreas }) => (
+              <a class="subject-card" href={`${base}/notes/s/${slug}/`}>
+                <h3><span class="subj-no">{no}과목</span> {subject} <em>{count}문항</em></h3>
+                <p class="ac-meta">{topics.length}개 주제 · {sAreas.join(" · ")}</p>
+              </a>
+            ))}
+          </div>
+
+          <h2 class="group-title">영역</h2>
           <div class="area-cards">
             {areas.map(({ area, slug, count, topicCount, preview }) => (
               <a class="area-card" href={`${base}/notes/${slug}/`}>

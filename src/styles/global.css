@@ -1434,3 +1434,55 @@ select.sort {
   text-align: center;
   padding: 1.5rem 0;
 }
+
+/* ── 시험 과목 — 영역 위 계층 ── */
+.group-title {
+  margin: 1.6rem 0 0.7rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+.group-title:first-of-type {
+  margin-top: 0;
+}
+.subject-cards {
+  display: grid;
+  gap: 0.6rem;
+}
+.subject-card {
+  display: block;
+  padding: 0.85rem 1.05rem;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: var(--bg);
+  color: inherit;
+  text-decoration: none;
+}
+.subject-card:hover {
+  border-color: var(--accent);
+  border-left-color: var(--accent);
+}
+.subject-card h3 {
+  margin: 0 0 0.2rem;
+  font-size: 1rem;
+}
+.subject-card em {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+/* 과목 번호 — 제목 앞의 작은 배지 */
+.subj-no {
+  display: inline-block;
+  margin-right: 0.35rem;
+  padding: 0.1em 0.5em;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.72em;
+  font-weight: 700;
+  vertical-align: middle;
+}

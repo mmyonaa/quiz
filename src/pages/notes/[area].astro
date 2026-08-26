@@ -1,6 +1,7 @@
 ---
 import { AREAS, AREA_SLUGS, DIFFICULTIES } from "../../content.config";
 import { loadBank, topicsOf } from "../../lib/bank";
+import NoteTopics from "../../components/NoteTopics.astro";
 import SiteHeader from "../../components/SiteHeader.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
 import "../../styles/global.css";
@@ -95,36 +96,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         </section>
 
         <section class="panel">
-          {topics.map(({ post, title, intro, questions }, i) => (
-            <div class="topic" id={`t${i}`}>
-              <h3 class="topic-title">
-                {title}
-                {post && (
-                  <a class="topic-link" href={`${BLOG_POST_BASE}${post}/`} target="_blank" rel="noopener">개념 글 →</a>
-                )}
-              </h3>
-              {/* 개념 도입부 — 문제 전제 없이 읽히는 자족적 정의·핵심 정리 */}
-              <p class="topic-intro">{intro}</p>
-              {questions.map((q) => (
-                <article class="cn" data-id={q.id} data-diff={q.difficulty}>
-                  <button class="save-star cn-save" type="button" title="이 개념 저장" aria-label="이 개념 저장">☆</button>
-                  <p class="cn-x">{q.explanation}</p>
-                  <details class="cn-q">
-                    <summary>확인 문제 <span class="badge diff" data-level={q.difficulty}>{q.difficulty}</span></summary>
-                    <p class="cn-question">{q.question}</p>
-                    {q.code && <pre class="q-code mono">{q.code}</pre>}
-                    {/* 정답은 가려져 있다 — 선지를 골라 자기 점검하거나 '정답만 보기' */}
-                    <ol class="cn-choices" data-answer={q.answer}>
-                      {q.choices.map((c) => (
-                        <li><button type="button" class="cn-choice">{c}</button></li>
-                      ))}
-                    </ol>
-                    <button type="button" class="linklike cn-reveal">정답만 보기</button>
-                  </details>
-                </article>
-              ))}
-            </div>
-          ))}
+          <NoteTopics topics={topics} blogPostBase={BLOG_POST_BASE} />
 
           {/* 이전/다음 영역 이동 */}
           <nav class="area-nav">
@@ -143,143 +115,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       </div>
     </main>
 
-    <script>
-      import { supabase } from "../../lib/supabase";
-      import { onAuth, authSession, requireLogin, errorText } from "../../lib/auth";
-      import { toast } from "../../lib/toast";
-
-      const $ = <T extends HTMLElement>(sel: string) => document.querySelector(sel) as T;
-
-      // ── 개념 저장(북마크) — saved_notes 테이블, 해설 카드(문항 id) 단위 ──
-      let savedNotes = new Set<string>();
-      const stars = [...document.querySelectorAll<HTMLButtonElement>(".cn-save")];
-      const idOf = (b: HTMLElement) => (b.closest(".cn") as HTMLElement).dataset.id!;
-
-      const paintStars = () => {
-        stars.forEach((b) => {
-          const on = savedNotes.has(idOf(b));
-          b.textContent = on ? "★" : "☆";
-          b.classList.toggle("on", on);
-        });
-      };
-
-      onAuth(async (s) => {
-        if (!s) {
-          savedNotes = new Set();
-          paintStars();
-          return;
-        }
-        const { data, error } = await supabase.from("saved_notes").select("question_id");
-        if (error) {
-          // 테이블 미적용 등 — 노트 읽기는 계속되어야 하므로 조용히 로그만
-          console.error("저장한 개념 조회 실패:", error.message);
-          return;
-        }
-        savedNotes = new Set((data ?? []).map((r: { question_id: string }) => r.question_id));
-        paintStars();
-      });
-
-      stars.forEach((b) =>
-        b.addEventListener("click", async () => {
-          if (!requireLogin()) return;
-          const id = idOf(b);
-          const uid = authSession()!.user.id;
-          const wasSaved = savedNotes.has(id);
-          if (wasSaved) savedNotes.delete(id);
-          else savedNotes.add(id);
-          paintStars(); // 낙관적 반영, 실패 시 되돌림
-          const { error } = wasSaved
-            ? await supabase.from("saved_notes").delete().eq("user_id", uid).eq("question_id", id)
-            : await supabase.from("saved_notes").upsert({ user_id: uid, question_id: id });
-          if (error) {
-            if (wasSaved) savedNotes.add(id);
-            else savedNotes.delete(id);
-            paintStars();
-            alert(errorText("저장에 실패했습니다", error));
-            return;
-          }
-          toast(wasSaved ? "저장을 해제했습니다" : "저장했습니다 · 마이페이지에 모아둡니다");
-        }),
-      );
-
-      // ── 확인 문제 — 정답은 가린 채 시작, 선지 선택 또는 '정답만 보기'로 공개 ──
-      document.querySelectorAll<HTMLOListElement>(".cn-choices").forEach((ol) => {
-        const answer = Number(ol.dataset.answer);
-        const revealBtn = ol.parentElement!.querySelector<HTMLElement>(".cn-reveal");
-        const reveal = (chosen: number | null) => {
-          if (ol.classList.contains("done")) return;
-          ol.classList.add("done");
-          [...ol.children].forEach((li, i) => {
-            li.classList.toggle("ans", i === answer);
-            if (chosen !== null && chosen !== answer && i === chosen) li.classList.add("bad");
-          });
-          if (revealBtn) revealBtn.hidden = true;
-        };
-        [...ol.querySelectorAll<HTMLButtonElement>(".cn-choice")].forEach((b, i) =>
-          b.addEventListener("click", () => reveal(i)),
-        );
-        revealBtn?.addEventListener("click", () => reveal(null));
-      });
-
-      // ── 난이도 필터 — 카드 숨김, 빈 주제는 통째로 숨김 ──
-      const diffChips = [...document.querySelectorAll<HTMLButtonElement>(".diff-chip")];
-      const cards = [...document.querySelectorAll<HTMLElement>(".cn")];
-      const topicEls = [...document.querySelectorAll<HTMLElement>(".topic")];
-      diffChips.forEach((chip) =>
-        chip.addEventListener("click", () => {
-          const d = chip.dataset.diff!;
-          diffChips.forEach((c) => c.classList.toggle("on", c === chip));
-          cards.forEach((c) => (c.hidden = d !== "전체" && c.dataset.diff !== d));
-          topicEls.forEach((t) => (t.hidden = ![...t.querySelectorAll<HTMLElement>(".cn")].some((c) => !c.hidden)));
-        }),
-      );
-
-      // ── 모두 펼치기/접기 ──
-      const toggleAll = $("#toggle-all") as HTMLButtonElement;
-      let allOpen = false;
-      toggleAll.addEventListener("click", () => {
-        allOpen = !allOpen;
-        document.querySelectorAll<HTMLDetailsElement>(".cn-q").forEach((d) => (d.open = allOpen));
-        toggleAll.textContent = allOpen ? "모두 접기" : "모두 펼치기";
-      });
-
-      // ── 읽기 진행률 + 읽던 위치 저장/복원 ──
-      const fill = $("#read-fill");
-      const POS_KEY = `daily.quiz.notes-pos.${location.pathname}`;
-      const onReadScroll = () => {
-        const max = document.documentElement.scrollHeight - innerHeight;
-        fill.style.width = max > 0 ? `${(scrollY / max) * 100}%` : "0%";
-        try {
-          localStorage.setItem(POS_KEY, String(Math.round(scrollY)));
-        } catch {
-          /* 저장 불가 환경 무시 */
-        }
-      };
-      let rTicking = false;
-      document.addEventListener(
-        "scroll",
-        () => {
-          if (!rTicking) {
-            rTicking = true;
-            requestAnimationFrame(() => {
-              rTicking = false;
-              onReadScroll();
-            });
-          }
-        },
-        { passive: true },
-      );
-      // 앵커 진입이 아니면 읽던 위치로 복원
-      if (!location.hash) {
-        try {
-          const saved = Number(localStorage.getItem(POS_KEY) ?? 0);
-          if (saved > 300) scrollTo({ top: saved, behavior: "instant" as ScrollBehavior });
-        } catch {
-          /* ignore */
-        }
-      }
-      onReadScroll();
-    </script>
 
     <SiteFooter />
   </body>
