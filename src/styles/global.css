@@ -727,6 +727,24 @@ button.linklike:hover {
   justify-content: flex-end;
 }
 
+/* 중단된 풀이 안내 — 오답노트 박스와 같은 꼴이되 되돌아갈 곳임을 강조 */
+.note-box.resume {
+  border-style: solid;
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+/* 팔레트에서 문항으로 점프할 때 sticky 헤더에 가리지 않도록 */
+#q-body {
+  scroll-margin-top: 5.5rem;
+}
+/* 문항 제목은 포커스를 받아 스크린리더에 읽히지만 테두리는 그리지 않는다 */
+#q-text:focus-visible,
+#score:focus-visible {
+  outline: none;
+}
+
 /* ── 결과 화면 ── */
 .score-bar {
   height: 8px;
@@ -1287,6 +1305,14 @@ kbd {
     margin: -1.25rem -1.25rem 1rem;
     padding: 0.9rem 1.25rem 0.75rem;
   }
+}
+
+/* 복기 필터 — 연습 모드 결과에서 오답만 추려 보기 */
+.review-tools {
+  margin-bottom: 1rem;
+}
+#review.only-wrong .rv:not(.wrong) {
+  display: none;
 }
 
 /* ── 로그인 / 마이페이지 ── */

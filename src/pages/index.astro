@@ -81,6 +81,15 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         </fieldset>
         <button id="start" class="primary">시작하기</button>
 
+        {/* 중단된 풀이 — localStorage 자동 저장분이 있으면 이어서 풀 수 있게 안내 */}
+        <div id="resume-box" class="note-box resume" hidden>
+          <span id="resume-info"></span>
+          <span class="note-actions">
+            <button id="resume-go" class="ghost">이어서 풀기</button>
+            <button id="resume-drop" class="linklike">버리기</button>
+          </span>
+        </div>
+
         {/* 오답노트 — localStorage 누적, 기기 로컬 전용 */}
         <div id="note-box" class="note-box" hidden>
           <span id="note-info"></span>
@@ -115,7 +124,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
               <span id="exam-area" class="badge"></span>
             </span>
           </div>
-          <div class="pbar"><i id="pbar-fill"></i></div>
+          <div id="pbar" class="pbar" role="progressbar" aria-label="풀이 진행률" aria-valuemin="0" aria-valuemax="100"><i id="pbar-fill"></i></div>
         </div>
         {/* 모의고사 전용 — OMR처럼 문항 이동·표기 현황 확인 */}
         <details id="palette" class="palette" hidden>
@@ -123,7 +132,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           <div id="palette-grid" class="palette-grid"></div>
         </details>
         <div id="q-body">
-          <h2 id="q-text"></h2>
+          <h2 id="q-text" tabindex="-1"></h2>
           <pre id="q-code" class="q-code mono" hidden></pre>
           <ol id="q-choices" class="choices"></ol>
         </div>
@@ -137,11 +146,14 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 
       {/* ── 3. 결과 화면 ── */}
       <section id="result" class="panel" hidden>
-        <h1 id="score"></h1>
+        <h1 id="score" tabindex="-1"></h1>
         <div class="score-bar"><i id="score-fill"></i></div>
         <p id="elapsed" class="elapsed"></p>
         <p id="verdict" class="lead"></p>
         <div id="subjects" class="subjects" hidden></div>
+        <div id="review-tools" class="review-tools" hidden>
+          <button id="only-wrong" class="toc-chip" type="button" aria-pressed="false">틀린 문제만 보기</button>
+        </div>
         <div id="review"></div>
         <p id="note-status" class="note-status"></p>
         <div class="exam-nav">
@@ -172,6 +184,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 
       import { supabase } from "../lib/supabase";
       import { onAuth, authSession, requireLogin, errorText } from "../lib/auth";
+      import { toast } from "../lib/toast";
 
       const bank: Q[] = JSON.parse(document.getElementById("bank")!.textContent!);
       const { blogPostBase, areas } = JSON.parse(document.getElementById("config")!.textContent!) as {
@@ -232,9 +245,10 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           $("#timer").textContent = fmtClock(Math.floor((Date.now() - startedAt) / 1000));
         }
       };
-      const startTimer = () => {
-        startedAt = Date.now();
-        deadline = startedAt + MOCK_MINUTES * 60 * 1000;
+      // 이어서 풀기는 중단 전 시각을 그대로 넘겨 시계를 되살린다(모의고사 마감은 실제 시각 기준)
+      const startTimer = (from = Date.now(), until = from + MOCK_MINUTES * 60 * 1000) => {
+        startedAt = from;
+        deadline = until;
         $("#timer").classList.toggle("mock", mode === "mock");
         $("#timer").classList.remove("low");
         $("#timer").hidden = false;
@@ -263,7 +277,9 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           else savedIds.delete(qid);
           updateSaveStar();
           alert(errorText("저장에 실패했습니다", error));
+          return savedIds.has(qid);
         }
+        toast(wasSaved ? "저장을 해제했습니다" : "저장했습니다 · 마이페이지에 모아둡니다");
         return savedIds.has(qid);
       };
 
@@ -345,6 +361,83 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         $("#retry-note").hidden = count === 0;
       };
 
+      // ── 진행 중 풀이 자동 저장 — 새로고침·탭 닫기로 답안이 날아가지 않도록 ──
+      // 문항 본문은 은행에 이미 있으므로 id만 남긴다. 모의고사는 마감 시각까지 실제 시각 기준으로 이어간다.
+      const SESSION_KEY = "daily.quiz.session.v1";
+      type Saved = {
+        ids: string[];
+        picked: (number | null)[]; // 미표기는 null — JSON 배열에 undefined를 담을 수 없다
+        cur: number;
+        mode: "practice" | "mock";
+        startedAt: number;
+        deadline: number;
+      };
+
+      const persist = () => {
+        try {
+          const saved: Saved = {
+            ids: session.map((q) => q.id),
+            picked: Array.from({ length: session.length }, (_, i) => picked[i] ?? null),
+            cur,
+            mode,
+            startedAt,
+            deadline,
+          };
+          localStorage.setItem(SESSION_KEY, JSON.stringify(saved));
+        } catch {
+          /* 시크릿 모드 등 저장 불가 환경은 조용히 무시 — 풀이는 그대로 진행된다 */
+        }
+      };
+      const dropSaved = () => {
+        try {
+          localStorage.removeItem(SESSION_KEY);
+        } catch {
+          /* ignore */
+        }
+      };
+      const readSaved = (): Saved | null => {
+        try {
+          const s = JSON.parse(localStorage.getItem(SESSION_KEY) ?? "null") as Saved | null;
+          if (!s || !Array.isArray(s.ids) || s.ids.length === 0) return null;
+          if (!s.ids.every((id) => bankById.has(id))) return null; // 은행이 개정됐으면 폐기
+          if (s.mode === "mock" && Date.now() >= s.deadline) return null; // 이미 시간이 끝난 모의고사
+          return s;
+        } catch {
+          return null;
+        }
+      };
+
+      const refreshResumeUI = () => {
+        const s = readSaved();
+        $("#resume-box").hidden = !s;
+        if (!s) return;
+        const answered = s.picked.filter((v) => v !== null).length;
+        const left =
+          s.mode === "mock"
+            ? ` · 남은 시간 ${fmtClock(Math.ceil((s.deadline - Date.now()) / 1000))}`
+            : "";
+        $("#resume-info").textContent =
+          `풀던 ${s.mode === "mock" ? "모의고사" : "연습"} ${s.ids.length}문항이 남아 있습니다 — ${answered}문항 표기${left}.`;
+      };
+
+      const resumeSession = () => {
+        const s = readSaved();
+        if (!s) {
+          refreshResumeUI();
+          return;
+        }
+        session = s.ids.map((id) => bankById.get(id)!);
+        picked = s.picked.map((v) => (v === null ? undefined : v)) as number[];
+        cur = Math.min(Math.max(0, s.cur), session.length - 1);
+        mode = s.mode;
+        recorded = false;
+        setup.hidden = true;
+        result.hidden = true;
+        exam.hidden = false;
+        startTimer(s.startedAt, s.deadline);
+        renderQuestion();
+      };
+
       const startSession = (pool: Q[], reshuffle = true) => {
         if (pool.length === 0) return;
         session = reshuffle ? shuffle(pool) : pool;
@@ -354,8 +447,8 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         setup.hidden = true;
         result.hidden = true;
         exam.hidden = false;
-        renderQuestion();
         startTimer(); // 시작 버튼을 누른 순간부터 잰다
+        renderQuestion();
       };
 
       // Fisher-Yates 셔플
@@ -372,9 +465,13 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         picked[cur] = i;
         $("#q-choices")
           .querySelectorAll(".choice")
-          .forEach((b, j) => b.classList.toggle("on", j === i));
+          .forEach((b, j) => {
+            b.classList.toggle("on", j === i);
+            b.setAttribute("aria-pressed", String(j === i));
+          });
         ($("#next") as HTMLButtonElement).disabled = false;
         renderPalette(); // 표기 현황 갱신
+        persist();
       };
 
       // 모의고사 전용 문항 팔레트 — 표기/미표기 확인과 임의 이동(OMR 역할)
@@ -398,6 +495,8 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           b.addEventListener("click", () => {
             cur = i;
             renderQuestion();
+            pal.open = false; // 100문항 그리드가 문제를 화면 밖으로 밀어내지 않게
+            $("#q-body").scrollIntoView({ block: "start", behavior: "smooth" });
           });
           grid.appendChild(b);
         });
@@ -406,7 +505,10 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       const renderQuestion = () => {
         const q = session[cur];
         $("#progress").textContent = `${cur + 1} / ${session.length}`;
-        $("#pbar-fill").style.width = `${((cur + 1) / session.length) * 100}%`;
+        const pct = ((cur + 1) / session.length) * 100;
+        $("#pbar-fill").style.width = `${pct}%`;
+        $("#pbar").setAttribute("aria-valuenow", String(Math.round(pct)));
+        $("#pbar").setAttribute("aria-valuetext", `${session.length}문항 중 ${cur + 1}번째`);
         $("#exam-area").textContent = q.area;
         $("#exam-diff").textContent = q.difficulty;
         $("#exam-diff").dataset.level = q.difficulty;
@@ -421,6 +523,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           const btn = document.createElement("button");
           btn.type = "button";
           btn.className = "choice";
+          btn.setAttribute("aria-pressed", String(picked[cur] === i));
           const num = document.createElement("span");
           num.className = "choice-num";
           num.textContent = String(i + 1);
@@ -440,11 +543,13 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         next.textContent = cur === session.length - 1 ? "제출하고 채점" : "다음";
         updateSaveStar();
         renderPalette();
+        persist();
         // 문항 전환 페이드 — 애니메이션 재시작을 위해 리플로 강제
         const body = $("#q-body");
         body.classList.remove("swap");
         void body.offsetWidth;
         body.classList.add("swap");
+        $("#q-text").focus({ preventScroll: true });
       };
 
       // 점수 바 — 표시 직후 폭을 채워 트랜지션이 걸리도록 두 프레임 뒤에 적용
@@ -461,6 +566,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 
       const renderResult = (timedOut = false) => {
         stopTimer();
+        dropSaved(); // 채점이 끝났으므로 이어서 풀 것이 없다
         const elapsedSec = Math.max(1, Math.round((Date.now() - startedAt) / 1000));
         const total = session.length;
         $("#elapsed").textContent =
@@ -567,9 +673,18 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           card.appendChild(star);
           review.appendChild(card);
         });
+        // 연습 모드는 정답까지 모두 나열되므로 오답만 추리는 필터를 붙인다(모의고사는 이미 오답만)
+        const wrongCount = session.filter((q, i) => picked[i] !== q.answer).length;
+        const onlyWrong = $("#only-wrong") as HTMLButtonElement;
+        review.classList.remove("only-wrong");
+        onlyWrong.setAttribute("aria-pressed", "false");
+        onlyWrong.textContent = `틀린 문제만 보기 (${wrongCount})`;
+        $("#review-tools").hidden = mode === "mock" || wrongCount === 0 || wrongCount === total;
+
         exam.hidden = true;
         result.hidden = false;
         window.scrollTo(0, 0);
+        $("#score").focus({ preventScroll: true });
       };
 
       $("#start").addEventListener("click", () => {
@@ -617,9 +732,11 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       $("#quit").addEventListener("click", () => {
         if (!confirm("진행 중인 풀이를 그만둘까요? 지금까지의 답은 저장되지 않습니다.")) return;
         stopTimer();
+        dropSaved();
         exam.hidden = true;
         setup.hidden = false;
         refreshNoteUI();
+        refreshResumeUI();
         window.scrollTo(0, 0);
       });
 
@@ -666,7 +783,23 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         window.scrollTo(0, 0);
       });
 
+      $("#only-wrong").addEventListener("click", () => {
+        const on = $("#review").classList.toggle("only-wrong");
+        const btn = $("#only-wrong");
+        btn.setAttribute("aria-pressed", String(on));
+        btn.classList.toggle("on", on);
+      });
+
+      // 이어서 풀기 / 버리기
+      $("#resume-go").addEventListener("click", resumeSession);
+      $("#resume-drop").addEventListener("click", () => {
+        if (!confirm("중단된 풀이를 버릴까요? 표기한 답은 지워집니다.")) return;
+        dropSaved();
+        refreshResumeUI();
+      });
+
       refreshNoteUI();
+      refreshResumeUI();
     </script>
   </body>
 </html>
