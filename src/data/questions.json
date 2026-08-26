@@ -5299,5 +5299,699 @@
     ],
     "answer": 3,
     "explanation": "Compile은 사람이 작성한 고급 언어 소스 코드를 기계어로 번역하는 기능이다. 반대 방향인 기계어에서 소스로 되돌리는 일은 역컴파일(디컴파일)이라 IDE의 Compile 설명을 뒤집어 놓은 함정 선지다."
+  },
+  {
+    "id": "os-critical-section-def",
+    "area": "운영체제",
+    "difficulty": "하",
+    "topic": "mutual-exclusion",
+    "question": "다음 설명에 해당하는 용어는?",
+    "code": "- 여러 프로세스가 공유하는 자원에 접근하는 프로그램 코드 구간이다\n- 한 번에 오직 하나의 프로세스만 실행되도록 통제해야 한다\n- 통제에 실패하면 실행 순서에 따라 결과가 달라지는 경쟁 상태가 생긴다",
+    "choices": [
+      "Critical Section",
+      "Context Switch",
+      "Busy Waiting",
+      "Entry Barrier"
+    ],
+    "answer": 0,
+    "explanation": "공유 자원을 다루는 코드 구간, 즉 한 번에 하나만 들어가야 하는 곳이 임계 구역(Critical Section)이다. 이 구간에 대한 진입 통제가 곧 상호배제(Mutual Exclusion)다. 문맥 교환(Context Switch)은 실행 프로세스를 바꾸며 상태를 저장·복원하는 동작이고, 바쁜 대기(Busy Waiting)는 진입할 때까지 CPU를 쓰며 조건을 반복 검사하는 대기 방식이다. Entry Barrier는 실재하지 않는 용어다."
+  },
+  {
+    "id": "os-mutual-exclusion-three-conditions",
+    "area": "운영체제",
+    "difficulty": "중",
+    "topic": "mutual-exclusion",
+    "question": "상호배제(Mutual Exclusion) 해법이 반드시 만족해야 할 조건이 아닌 것은?",
+    "choices": [
+      "상호배제 — 한 프로세스가 임계 구역에 있으면 다른 프로세스는 들어갈 수 없다",
+      "환형 대기 — 프로세스들이 원을 이루며 서로가 가진 자원을 기다린다",
+      "진행 — 임계 구역이 비어 있다면 들어가려는 프로세스 중 하나는 반드시 진입할 수 있다",
+      "한정 대기 — 임계 구역 진입을 기다리는 프로세스가 무한정 밀리지 않는다"
+    ],
+    "answer": 1,
+    "explanation": "상호배제 해법의 3조건은 상호배제·진행(Progress)·한정 대기(Bounded Waiting)다. 환형 대기(Circular Wait)는 교착상태 발생의 4가지 필요조건 중 하나로, 만족해야 할 조건이 아니라 오히려 피해야 할 상황이다. 진행 조건은 아무도 쓰지 않는 임계 구역 앞에서 모두가 대기하는 상황을, 한정 대기 조건은 특정 프로세스만 계속 밀리는 기아를 막는다."
+  },
+  {
+    "id": "os-semaphore-pv-wrong",
+    "area": "운영체제",
+    "difficulty": "중",
+    "topic": "mutual-exclusion",
+    "question": "세마포어(Semaphore)와 P·V 연산에 대한 설명으로 틀린 것은?",
+    "choices": [
+      "P(wait) 연산은 세마포어 변수 S를 1 감소시키고, 그 결과가 음수이면 해당 프로세스를 대기 큐에 넣는다",
+      "V(signal) 연산은 S를 1 증가시키고, 대기 중인 프로세스가 있으면 그중 하나를 깨운다",
+      "이진 세마포어는 S가 0과 1만 가지며 임계 구역의 상호배제를 구현하는 데 쓰인다",
+      "계수 세마포어는 초깃값을 0으로 두어야만 여러 개의 자원을 관리할 수 있다"
+    ],
+    "answer": 3,
+    "explanation": "계수 세마포어(Counting Semaphore)의 초깃값은 관리할 자원의 개수다. 프린터가 3대면 S를 3으로 두고 P 연산마다 하나씩 줄여 쓴다. 초깃값 0은 쓸 수 있는 자원이 하나도 없다는 뜻이라 아무도 진입하지 못한다. 이진 세마포어는 초깃값이 1인 특수한 경우이며, P와 V는 도중에 끼어들 수 없는 원자적 연산이어야 한다는 점도 함께 출제된다."
+  },
+  {
+    "id": "os-semaphore-value-trace",
+    "area": "운영체제",
+    "difficulty": "상",
+    "topic": "mutual-exclusion",
+    "question": "다음 조건에서 세마포어 변수 S의 최종 값과 대기 큐에 남아 있는 프로세스 수로 옳은 것은?",
+    "code": "[조건]\n- 계수 세마포어 S의 초깃값은 3이다\n- 프로세스 5개가 차례로 P(wait) 연산을 수행했다\n- 그 뒤 임계 구역에 있던 프로세스 1개가 V(signal) 연산을 수행했다",
+    "choices": [
+      "S = 1, 대기 프로세스 0개",
+      "S = -2, 대기 프로세스 2개",
+      "S = -1, 대기 프로세스 1개",
+      "S = -1, 대기 프로세스 2개"
+    ],
+    "answer": 2,
+    "explanation": "S = 3에서 P 연산을 5번 하면 3 - 5 = -2가 되고, 음수가 된 S의 절댓값이 곧 대기 중인 프로세스 수이므로 2개가 대기 큐에 있다. 이어서 V 연산 1번이 S를 -2 + 1 = -1로 만들고 대기 중이던 프로세스 하나를 깨우므로 대기는 1개만 남는다. S가 음수일 때 그 절댓값을 대기 프로세스 수로 읽는 것이 이 계산의 핵심이다."
+  },
+  {
+    "id": "os-monitor-characteristics",
+    "area": "운영체제",
+    "difficulty": "중",
+    "topic": "mutual-exclusion",
+    "question": "모니터(Monitor)에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "공유 자원과 그 자원에 접근하는 연산(프로시저)을 하나의 모듈로 묶는다",
+      "모니터 내부의 프로시저는 한 번에 하나의 프로세스만 수행할 수 있다",
+      "프로그래머가 P·V 연산을 직접 호출하고 짝을 맞춰야 하므로 세마포어보다 오류가 나기 쉽다",
+      "외부에서는 모니터가 제공하는 인터페이스를 통해서만 내부의 공유 자원에 접근할 수 있다"
+    ],
+    "answer": 2,
+    "explanation": "P·V 연산을 프로그래머가 직접 호출하고 짝을 맞춰야 하는 쪽은 세마포어다. 하나라도 빠뜨리면 상호배제가 깨지거나 교착이 생긴다. 모니터는 진입 통제를 언어·컴파일러 차원에서 자동으로 처리하고 자원을 캡슐화하므로 세마포어보다 실수가 적다는 것이 존재 이유다. 자바의 synchronized가 모니터 개념을 구현한 예다."
+  },
+  {
+    "id": "os-bakery-algorithm-def",
+    "area": "운영체제",
+    "difficulty": "상",
+    "topic": "mutual-exclusion",
+    "question": "다음 설명에 해당하는 상호배제 알고리즘은?",
+    "code": "- 두 프로세스로 제한되지 않고 n개 프로세스로 확장되는 소프트웨어 해법이다\n- 임계 구역에 들어가려는 프로세스는 먼저 번호표를 받는다\n- 번호가 가장 작은 프로세스가 먼저 들어가고, 번호가 같으면 프로세스 번호가 작은 쪽이 우선한다",
+    "choices": [
+      "Dekker Algorithm",
+      "Bakery Algorithm",
+      "Peterson Algorithm",
+      "Ticket Monitor"
+    ],
+    "answer": 1,
+    "explanation": "빵집에서 번호표를 뽑아 순서대로 처리하듯 동작해서 빵집 알고리즘(Bakery Algorithm)이며 램포트(Lamport)가 제안했다. 데커(Dekker)와 피터슨(Peterson) 알고리즘은 flag와 turn 변수를 쓰는 두 프로세스 전용 해법이라 n개로 바로 확장되지 않는 것이 결정적 차이다. Ticket Monitor는 지어낸 용어다."
+  },
+  {
+    "id": "os-mutex-software-solution-not",
+    "area": "운영체제",
+    "difficulty": "중",
+    "topic": "mutual-exclusion",
+    "question": "상호배제를 위한 소프트웨어 알고리즘에 해당하지 않는 것은?",
+    "choices": [
+      "데커(Dekker) 알고리즘",
+      "피터슨(Peterson) 알고리즘",
+      "램포트(Lamport)의 빵집 알고리즘",
+      "은행원(Banker) 알고리즘"
+    ],
+    "answer": 3,
+    "explanation": "은행원 알고리즘은 자원 할당 요청을 받아 안전 상태가 유지될 때만 승인하는 교착상태 회피 기법이지 상호배제 해법이 아니다. 데커와 피터슨은 두 프로세스를, 빵집 알고리즘은 n개 프로세스를 대상으로 하는 소프트웨어 상호배제 알고리즘이다. 소프트웨어가 아닌 하드웨어 지원 방식으로는 TestAndSet과 Swap 명령이 따로 있다."
+  },
+  {
+    "id": "os-linux-umask-027-calc",
+    "area": "운영체제",
+    "difficulty": "상",
+    "topic": "linux-admin",
+    "question": "umask 값이 027로 설정된 리눅스 시스템에서 새로 생성되는 일반 파일과 디렉터리의 기본 권한을 8진수로 옳게 짝지은 것은?",
+    "choices": [
+      "파일 640, 디렉터리 750",
+      "파일 640, 디렉터리 755",
+      "파일 750, 디렉터리 640",
+      "파일 644, 디렉터리 750"
+    ],
+    "answer": 0,
+    "explanation": "파일은 666, 디렉터리는 777에서 umask를 뺀다. 666 - 027 = 640(rw-r-----)이고 777 - 027 = 750(rwxr-x---)이다. 파일의 기준값이 777이 아니라 666인 이유는 새로 만든 데이터 파일에 실행 권한을 기본으로 주지 않기 위해서다. umask 022일 때 파일 644·디렉터리 755가 나오는 흔한 예를 그대로 갖다 붙이면 틀린다."
+  },
+  {
+    "id": "os-linux-umask-reverse-calc",
+    "area": "운영체제",
+    "difficulty": "상",
+    "topic": "linux-admin",
+    "question": "새로 생성되는 디렉터리의 권한이 rwxr-x--- 가 되게 하려면 umask 값을 얼마로 설정해야 하는가?",
+    "choices": [
+      "022",
+      "027",
+      "025",
+      "057"
+    ],
+    "answer": 1,
+    "explanation": "디렉터리의 기준 권한 777에서 umask를 빼면 생성 권한이 된다. 목표가 rwxr-x---, 즉 750이므로 umask = 777 - 750 = 027이다. 022면 755(rwxr-xr-x)가 되어 기타 사용자에게 읽기·실행이 남고, 025면 752, 057이면 720이 되어 그룹의 실행 권한까지 사라진다. umask는 '주는 값'이 아니라 '빼는 값'이라는 점이 함정이다."
+  },
+  {
+    "id": "os-linux-chmod-751-notation",
+    "area": "운영체제",
+    "difficulty": "중",
+    "topic": "linux-admin",
+    "question": "다음 명령을 수행한 뒤 report.txt에 부여되는 권한 표기로 옳은 것은?",
+    "code": "$ chmod 751 report.txt",
+    "choices": [
+      "-rwxr-xr-x",
+      "-rwx-wx--x",
+      "-rwxr-x--x",
+      "-rwx--xr--"
+    ],
+    "answer": 2,
+    "explanation": "8진수 한 자리는 r=4·w=2·x=1의 합이다. 7 = 4+2+1이라 소유자는 rwx, 5 = 4+1이라 그룹은 r-x, 1 = 1뿐이라 기타 사용자는 --x가 되어 -rwxr-x--x다. 자리 순서는 소유자·그룹·기타 사용자이며 맨 앞의 -는 일반 파일을 뜻한다(디렉터리면 d)."
+  },
+  {
+    "id": "os-linux-log-command-pair",
+    "area": "운영체제",
+    "difficulty": "중",
+    "topic": "linux-admin",
+    "question": "리눅스의 접속 관련 로그 파일과 그 내용을 확인하는 명령의 연결이 옳지 않은 것은?",
+    "choices": [
+      "wtmp — 로그인·로그아웃과 부팅·종료 이력 — last",
+      "utmp — 현재 로그인 중인 사용자 정보 — who",
+      "btmp — 로그인 실패 기록 — lastlog",
+      "lastlog — 사용자별 마지막 로그인 시각 — lastlog"
+    ],
+    "answer": 2,
+    "explanation": "로그인 실패 기록이 쌓이는 btmp는 lastb 명령으로 본다. lastlog는 사용자별 마지막 로그인 시각을 담은 별개의 파일이자 동명의 명령이라 이름만 보고 btmp에 갖다 붙이기 쉽다. b가 붙은 쪽(btmp·lastb)이 실패(bad)라고 묶어 외우면 헷갈리지 않는다."
+  },
+  {
+    "id": "os-linux-btmp-def",
+    "area": "운영체제",
+    "difficulty": "하",
+    "topic": "linux-admin",
+    "question": "다음 설명에 해당하는 리눅스 로그 파일은?",
+    "code": "- 로그인에 실패한 기록이 쌓이는 이진(binary) 로그 파일이다\n- 무차별 대입 공격 시도를 확인하는 근거가 된다\n- lastb 명령으로 내용을 확인한다",
+    "choices": [
+      "wtmp",
+      "btmp",
+      "utmp",
+      "lastlog"
+    ],
+    "answer": 1,
+    "explanation": "로그인 실패(bad login)를 기록하는 파일이 btmp이고 lastb로 조회한다. wtmp는 로그인 성공과 로그아웃·부팅·종료 이력을 담아 last로 보고, utmp는 지금 접속 중인 사용자를 담아 who로 본다. lastlog는 사용자별 마지막 로그인 시각을 보관하는 파일이다."
+  },
+  {
+    "id": "os-linux-command-usage-wrong",
+    "area": "운영체제",
+    "difficulty": "중",
+    "topic": "linux-admin",
+    "question": "리눅스 명령어에 대한 설명으로 틀린 것은?",
+    "choices": [
+      "chown은 파일의 소유자와 소유 그룹을 변경한다",
+      "chmod는 파일의 접근 권한을 변경하며 8진수와 기호(u+x 등) 두 가지 방식을 쓸 수 있다",
+      "ps는 현재 실행 중인 프로세스의 목록과 상태를 출력한다",
+      "kill은 종료할 프로세스의 이름을 인자로 받아 시그널을 보낸다"
+    ],
+    "answer": 3,
+    "explanation": "kill은 프로세스 이름이 아니라 PID(프로세스 식별 번호)를 인자로 받는다. 이름으로 끝내려면 pkill이나 killall을 써야 한다. kill은 기본적으로 종료 요청 시그널(SIGTERM, 15)을 보내고, 이를 무시하는 프로세스는 kill -9(SIGKILL)로 강제 종료한다. ps로 PID를 찾아 kill에 넘기는 흐름이 전형적인 출제 소재다."
+  },
+  {
+    "id": "os-storage-san-def",
+    "area": "운영체제",
+    "difficulty": "중",
+    "topic": "storage-ha",
+    "question": "다음 설명에 해당하는 스토리지 연결 방식은?",
+    "code": "- 파이버 채널 같은 전용 네트워크로 서버와 스토리지를 연결한다\n- 데이터를 파일이 아닌 블록(block) 단위로 제공한다\n- 성능과 확장성이 가장 뛰어나지만 구축 비용이 크다",
+    "choices": [
+      "DAS(Direct Attached Storage)",
+      "NAS(Network Attached Storage)",
+      "SAN(Storage Area Network)",
+      "NDS(Network Disk Storage)"
+    ],
+    "answer": 2,
+    "explanation": "전용 망으로 스토리지를 묶어 블록 단위로 제공하는 것이 SAN(Storage Area Network)이다. 파일 단위로 공유하는 NAS와 갈리는 결정적 지점이 '블록 단위'와 '전용 네트워크'다. DAS는 서버에 케이블로 직접 붙이는 방식이라 그 서버만 쓸 수 있고, NDS는 실재하지 않는 용어다."
+  },
+  {
+    "id": "os-storage-das-nas-san-wrong",
+    "area": "운영체제",
+    "difficulty": "중",
+    "topic": "storage-ha",
+    "question": "DAS·NAS·SAN에 대한 설명으로 틀린 것은?",
+    "choices": [
+      "NAS는 파이버 채널 전용 망을 따로 구축해야 해서 DAS보다 설치가 까다롭다",
+      "DAS는 서버에 저장 장치를 직접 연결하므로 접근 속도가 빠르지만 연결된 서버만 사용할 수 있다",
+      "NAS는 이더넷에 연결된 별도의 저장 장치로 여러 서버가 파일 단위로 공유한다",
+      "SAN은 스토리지를 독립된 전용 네트워크로 묶어 확장성이 가장 좋다"
+    ],
+    "answer": 0,
+    "explanation": "파이버 채널 전용 망을 구축하는 쪽은 NAS가 아니라 SAN이다. NAS는 이미 깔려 있는 이더넷에 장치를 붙이기만 하면 되므로 셋 중 설치가 가장 쉽고 비용도 낮은 편이다. DAS는 서버 전용이라 빠른 대신 공유와 확장이 어렵고, SAN은 성능·확장성이 가장 좋은 대신 구축 비용이 크다."
+  },
+  {
+    "id": "os-raid-level-difference",
+    "area": "운영체제",
+    "difficulty": "상",
+    "topic": "storage-ha",
+    "question": "RAID 구성에 대한 설명으로 가장 거리가 먼 것은?",
+    "choices": [
+      "RAID 0은 데이터를 여러 디스크에 나눠 저장(스트라이핑)해 속도를 높이지만 중복 저장이 없어 디스크 하나만 고장 나도 데이터를 잃는다",
+      "RAID 1은 같은 데이터를 그대로 복제(미러링)하므로 전체 용량의 절반만 실제로 쓸 수 있다",
+      "RAID 5는 패리티를 특정 디스크에 몰아 두지 않고 모든 디스크에 분산 저장한다",
+      "RAID 5는 디스크 2개가 동시에 고장 나도 패리티로 원래 데이터를 모두 복구할 수 있다"
+    ],
+    "answer": 3,
+    "explanation": "RAID 5의 패리티는 디스크 1개 고장까지만 복구한다. 2개가 동시에 깨지면 복구가 불가능하고, 이를 감당하려면 패리티를 이중으로 두는 RAID 6가 필요하다. RAID 5는 최소 3개의 디스크가 필요하며 실제 사용 용량은 (디스크 수 - 1)개분이다. 성능만 얻는 RAID 0, 내결함성만 얻는 RAID 1, 둘을 절충한 RAID 5라는 구도를 잡아 두면 된다."
+  },
+  {
+    "id": "os-ha-hacmp-def",
+    "area": "운영체제",
+    "difficulty": "중",
+    "topic": "storage-ha",
+    "question": "다음 설명에 해당하는 고가용성(HA, High Availability) 솔루션은?",
+    "code": "- 여러 노드가 공유 디스크를 함께 두고 하나의 클러스터로 묶인다\n- 운영 중인 노드에 장애가 나면 다른 노드가 자원을 넘겨받아 서비스를 이어간다\n- IBM 계열 유닉스 환경에서 쓰이는 클러스터링 솔루션이다",
+    "choices": [
+      "HACMP(High Availability Cluster Multi Processing)",
+      "HDFS(Hadoop Distributed File System)",
+      "HSRP(Hot Standby Router Protocol)",
+      "HAProxy"
+    ],
+    "answer": 0,
+    "explanation": "공유 디스크 기반 클러스터로 노드 장애 시 자원을 인수(failover)하는 IBM 계열 고가용성 솔루션이 HACMP(High Availability Cluster Multi Processing)다. HDFS는 하둡의 분산 파일 시스템, HSRP는 라우터를 이중화하는 시스코의 네트워크 프로토콜, HAProxy는 소프트웨어 로드 밸런서로 셋 다 계층과 목적이 다르다."
+  },
+  {
+    "id": "se-reengineering-activities-not",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "software-reengineering",
+    "question": "소프트웨어 재공학(Reengineering)의 주요 활동에 해당하지 않는 것은?",
+    "choices": [
+      "재구조화(Restructuring)",
+      "이식(Migration)",
+      "역공학(Reverse Engineering)",
+      "형상 감사(Configuration Audit)"
+    ],
+    "answer": 3,
+    "explanation": "재공학의 활동은 분석(Analysis)·재구조화(Restructuring)·이식(Migration)·역공학(Reverse Engineering) 네 가지다. 형상 감사는 형상관리(SCM)에서 산출물이 기준선대로 유지되는지 확인하는 활동이라 재공학의 활동이 아니다. 재공학은 기존 시스템을 버리지 않고 유지보수성을 높이는 것이 목적이라는 점을 기준으로 삼으면 소거된다."
+  },
+  {
+    "id": "se-reverse-engineering-term",
+    "area": "소프트웨어공학",
+    "difficulty": "하",
+    "topic": "software-reengineering",
+    "question": "다음 설명에 해당하는 재공학 활동은?",
+    "code": "- 이미 완성돼 동작하고 있는 프로그램의 코드를 입력으로 삼는다\n- 코드를 거꾸로 분석해 설계 정보와 문서를 추출한다\n- 문서가 남아 있지 않은 기존 시스템의 명세를 복원하는 데 쓴다",
+    "choices": [
+      "Restructuring",
+      "Reverse Engineering",
+      "Migration",
+      "Forward Engineering"
+    ],
+    "answer": 1,
+    "explanation": "완성된 코드에서 거꾸로 설계 정보와 문서를 뽑아내는 활동이 역공학(Reverse Engineering)이다. 요구사항과 설계에서 코드로 정방향으로 내려가는 것은 순공학(Forward Engineering)이고, 기능은 그대로 두고 구조만 다시 짜는 것이 재구조화, 새 환경으로 옮기는 것이 이식이다. '결과물에서 설계로 거슬러 올라간다'가 역공학의 유일한 판별 기준이다."
+  },
+  {
+    "id": "se-alien-code-term",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "software-reengineering",
+    "question": "다음 설명에 해당하는 용어는?",
+    "code": "- 개발 시점이 오래돼 관련 문서가 거의 남아 있지 않다\n- 최초 개발자도 조직을 떠나 아무도 내부 로직을 설명하지 못한다\n- 손대기 어려워 방치되며 역공학의 대표적인 대상이 된다",
+    "choices": [
+      "Alien Code",
+      "Dead Code",
+      "Spaghetti Code",
+      "Orphan Module"
+    ],
+    "answer": 0,
+    "explanation": "문서도 없고 아는 사람도 없어 아무도 유지보수하지 못하는 코드를 외계인 코드(Alien Code)라 한다. 죽은 코드(Dead Code)는 실행 경로가 없어 결코 수행되지 않는 코드이고, 스파게티 코드는 제어 흐름이 얽혀 읽기 어려운 코드로 문서 부재가 요건은 아니다. Orphan Module은 실재하지 않는 용어다."
+  },
+  {
+    "id": "se-restructuring-refactoring-compare",
+    "area": "소프트웨어공학",
+    "difficulty": "상",
+    "topic": "software-reengineering",
+    "question": "재공학의 재구조화(Restructuring)에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "외부에 드러나는 기능은 그대로 둔 채 코드나 자료의 구조만 다시 짜는 활동이다",
+      "리팩토링과 마찬가지로 동작을 바꾸지 않는 것을 전제로 하며 목적도 유지보수성 향상으로 겹친다",
+      "소프트웨어를 다른 하드웨어나 운영 환경으로 옮겨 동작하게 만드는 활동을 가리킨다",
+      "대상은 소스 코드에 한정되지 않으며 자료 구조를 정비하는 것도 포함된다"
+    ],
+    "answer": 2,
+    "explanation": "다른 하드웨어나 운영 환경으로 옮기는 것은 이식(Migration)이지 재구조화가 아니다. 재구조화는 기능을 보존한 채 구조만 개선한다는 점에서 리팩토링과 목적이 같지만, 재공학의 한 활동으로서 코드뿐 아니라 자료 구조까지 대상으로 삼는 더 넓은 개념이다. 기능을 보존한다는 조건 때문에 새 기능 추가나 결함 수정과도 구분된다."
+  },
+  {
+    "id": "se-reuse-scale-benefit-not",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "software-reengineering",
+    "question": "소프트웨어 재사용(Reuse)에 대한 설명으로 틀린 것은?",
+    "choices": [
+      "재사용의 규모는 함수·모듈 단위, 컴포넌트 단위, 애플리케이션 단위로 나눌 수 있다",
+      "이미 검증된 것을 쓰는 것이므로 쓸 만한 부품을 찾아내는 노력은 고려하지 않아도 된다",
+      "개발 기간과 비용을 줄이고 이미 검증된 품질의 산출물을 활용할 수 있다는 이점이 있다",
+      "새 시스템의 요구에 맞추기 위한 수정 작업이 오히려 부담이 될 수 있다"
+    ],
+    "answer": 1,
+    "explanation": "쓸 만한 부품을 찾아내는 일과 새 요구에 맞게 고치는 일 자체가 재사용의 대표적인 문제점이라 고려 대상에서 뺄 수 없다. 검색 비용이 새로 만드는 비용을 넘어서면 재사용의 이점이 사라진다. 규모에 따라 함수·모듈, 컴포넌트, 애플리케이션 단위로 나뉘며 단위가 커질수록 효과는 크지만 그만큼 맞춰 쓰기는 어려워진다."
+  },
+  {
+    "id": "se-maintenance-adaptive-term",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "software-reengineering",
+    "question": "다음 설명에 해당하는 유지보수 유형은?",
+    "code": "- 프로그램의 결함이나 기능 부족과는 무관한 이유로 손을 댄다\n- 운영체제 버전 상승, DBMS 교체 같은 외부 환경 변화가 계기가 된다\n- 바뀐 환경에서도 기존 기능이 그대로 동작하도록 맞춰 준다",
+    "choices": [
+      "Corrective Maintenance",
+      "Perfective Maintenance",
+      "Preventive Maintenance",
+      "Adaptive Maintenance"
+    ],
+    "answer": 3,
+    "explanation": "환경 변화에 소프트웨어를 맞추는 것이 적응(Adaptive) 유지보수다. 오류를 찾아 고치는 것은 수정(Corrective), 기능이나 성능을 개선하는 것은 완전(Perfective), 앞으로 생길 문제를 미리 막는 것은 예방(Preventive)이다. '요구가 바뀐 것이 아니라 환경이 바뀌었다'가 적응 유지보수의 결정적 단서다."
+  },
+  {
+    "id": "se-maintenance-type-match-not",
+    "area": "소프트웨어공학",
+    "difficulty": "상",
+    "topic": "software-reengineering",
+    "question": "유지보수 유형과 그 사례를 짝지은 것으로 틀린 것은?",
+    "choices": [
+      "수정(Corrective) 유지보수 — 앞으로 생길 문제에 대비해 이해하기 어려운 모듈의 문서를 정비한다",
+      "적응(Adaptive) 유지보수 — 새 운영체제 버전에서도 동작하도록 시스템 호출 부분을 고친다",
+      "완전(Perfective) 유지보수 — 사용자 요구를 받아 조회 화면에 정렬 기능을 추가하고 응답 속도를 개선한다",
+      "예방(Preventive) 유지보수 — 향후 변경에 대비해 복잡하게 얽힌 코드를 정리해 둔다"
+    ],
+    "answer": 0,
+    "explanation": "앞으로 생길 문제를 미리 막으려고 문서를 정비하고 구조를 다듬는 것은 예방(Preventive) 유지보수다. 수정(Corrective)은 이미 발견된 오류를 제거하는 활동이라 시점과 목적이 정반대다. 네 유형 중 비용 비중이 가장 큰 쪽은 기능 개선인 완전(Perfective) 유지보수라는 점도 함께 묻는다."
+  },
+  {
+    "id": "se-dfd-symbol-match-not",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "structured-analysis-notation",
+    "question": "자료 흐름도(DFD, Data Flow Diagram)의 구성 요소와 표기 기호를 짝지은 것으로 틀린 것은?",
+    "choices": [
+      "처리(Process) — 원 또는 둥근 사각형",
+      "자료 흐름(Data Flow) — 화살표",
+      "자료 저장소(Data Store) — 마름모",
+      "단말(Terminator) — 사각형"
+    ],
+    "answer": 2,
+    "explanation": "자료 저장소는 위아래 두 줄의 평행선으로 그린다. 마름모는 DFD가 아니라 E-R 다이어그램에서 관계(Relationship)를 나타내는 기호라, 두 표기법의 기호를 섞어 놓는 것이 이 유형의 단골 함정이다. 나머지 셋은 원(처리)·화살표(자료 흐름)·사각형(단말)으로 맞는 짝이다."
+  },
+  {
+    "id": "se-dfd-mini-spec-term",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "structured-analysis-notation",
+    "question": "다음 설명에 해당하는 구조적 분석 도구는?",
+    "code": "- 자료 흐름도에서 더 이상 분할되지 않는 최하위 처리를 대상으로 한다\n- 그 처리가 입력을 출력으로 바꾸는 논리를 기술한다\n- 구조적 언어, 의사결정표(Decision Table) 등으로 표현한다",
+    "choices": [
+      "Data Dictionary",
+      "Mini-Spec",
+      "HIPO Chart",
+      "Context Diagram"
+    ],
+    "answer": 1,
+    "explanation": "최하위 처리의 처리 논리를 기술한 것이 소단위 명세서(Mini-Spec)다. 자료 사전(DD, Data Dictionary)은 자료의 의미와 구조를 정의하는 것이라 대상이 처리가 아니라 자료라는 점에서 갈린다. 배경도(Context Diagram)는 시스템 전체를 하나의 처리로 그린 최상위 DFD이고, HIPO는 기능을 계층으로 그리는 설계 도구다."
+  },
+  {
+    "id": "se-ns-chart-feature-not",
+    "area": "소프트웨어공학",
+    "difficulty": "상",
+    "topic": "structured-analysis-notation",
+    "question": "나씨-슈나이더만 차트(NS Chart, Nassi-Schneiderman Chart)에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "순차·선택·반복의 세 가지 기본 제어 구조를 상자의 중첩으로 표현한다",
+      "제어 흐름을 화살표로 그리지 않아 논리 흐름이 한눈에 들어온다",
+      "연속적인 처리 과정을 명확히 나타내 구조적 프로그래밍의 표현 도구로 쓰인다",
+      "GOTO처럼 임의의 위치로 건너뛰는 분기도 화살표를 덧붙여 표현할 수 있다"
+    ],
+    "answer": 3,
+    "explanation": "NS 차트는 화살표와 GOTO를 쓰지 않는 것이 원칙이라 임의의 분기를 그릴 수 없고, 이 제약이 오히려 한계로 출제된다. 순차·선택·반복 세 구조만 상자의 중첩으로 나타내기 때문에 논리가 명확한 대신 자유로운 흐름 제어는 표현하지 못한다. 화살표로 흐름을 잇는 쪽은 순서도(Flowchart)다."
+  },
+  {
+    "id": "se-hipo-chart-def",
+    "area": "소프트웨어공학",
+    "difficulty": "하",
+    "topic": "structured-analysis-notation",
+    "question": "시스템의 기능을 입력·처리·출력으로 나누어 계층 구조로 나타내는 분석·설계 도구는?",
+    "choices": [
+      "HIPO",
+      "NS Chart",
+      "DFD",
+      "Data Dictionary"
+    ],
+    "answer": 0,
+    "explanation": "HIPO(Hierarchy plus Input Process Output)는 기능을 입력·처리·출력으로 쪼개 계층으로 그리는 도구로, 하향식 개발에 쓰이며 그 자체가 문서 역할도 한다. NS 차트는 제어 구조를 상자로 그리는 설계 표기이고, 자료 흐름도(DFD)는 자료의 흐름과 변환을, 자료 사전(DD)은 자료의 의미와 구조를 나타낸다."
+  },
+  {
+    "id": "se-dfd-feature-not",
+    "area": "소프트웨어공학",
+    "difficulty": "상",
+    "topic": "structured-analysis-notation",
+    "question": "자료 흐름도(DFD, Data Flow Diagram)에 대한 설명으로 가장 거리가 먼 것은?",
+    "choices": [
+      "시스템을 자료의 흐름과 그 변환 과정을 중심으로 표현한다",
+      "시스템 전체를 하나의 처리로 그린 배경도에서 시작해 단계적으로 분할해 나간다",
+      "처리들이 수행되는 시간적 순서와 조건 분기를 함께 명시한다",
+      "시스템 경계 밖에서 자료를 주고받는 발생지와 종착지를 단말로 표현한다"
+    ],
+    "answer": 2,
+    "explanation": "DFD는 자료가 어디서 와서 어떻게 변환되는지를 보여줄 뿐, 처리의 시간적 순서나 조건 분기 같은 제어 흐름은 나타내지 않는다. 그래서 최하위 처리의 판단 논리는 소단위 명세서로 따로 기술한다. 배경도에서 출발해 하향식으로 분할한다는 것과 단말이 시스템 경계 밖의 발생지·종착지라는 것은 맞는 설명이다."
+  },
+  {
+    "id": "db-er-symbol-match-not",
+    "area": "데이터베이스",
+    "difficulty": "중",
+    "topic": "er-modeling",
+    "question": "E-R 다이어그램의 구성 요소와 표기 기호를 짝지은 것으로 틀린 것은?",
+    "choices": [
+      "개체(Entity) — 사각형",
+      "속성(Attribute) — 마름모",
+      "관계(Relationship) — 마름모",
+      "구성 요소 사이의 연결 — 선"
+    ],
+    "answer": 1,
+    "explanation": "속성은 타원으로 그린다. 마름모는 관계(Relationship)의 기호이므로 속성과 관계의 기호를 맞바꿔 놓는 것이 이 표기법에서 가장 흔한 함정이다. 개체는 사각형, 개체·관계·속성을 잇는 것은 선이며, 기본키 속성은 타원 안에 밑줄을 그어 구분한다."
+  },
+  {
+    "id": "db-er-multivalued-term",
+    "area": "데이터베이스",
+    "difficulty": "중",
+    "topic": "er-modeling",
+    "question": "다음 설명에 해당하는 E-R 모델의 구성 요소는?",
+    "code": "- 하나의 개체 인스턴스가 이 값을 여러 개 가질 수 있다\n- 한 사람이 여러 개의 전화번호를 갖는 경우가 대표적이다\n- E-R 다이어그램에서 이중 타원으로 표기한다",
+    "choices": [
+      "Derived Attribute",
+      "Composite Attribute",
+      "Weak Entity",
+      "Multivalued Attribute"
+    ],
+    "answer": 3,
+    "explanation": "값을 여러 개 가질 수 있어 이중 타원으로 그리는 것이 다중값 속성(Multivalued Attribute)이다. 다른 속성에서 계산해 얻는 유도 속성(Derived Attribute)은 점선 타원, 더 작은 속성으로 나뉘는 복합 속성(Composite Attribute)은 타원에 하위 타원을 매단다. 이중 사각형은 속성이 아니라 약한 개체의 기호라는 점에서 이중 타원과 헷갈리기 쉽다."
+  },
+  {
+    "id": "db-er-weak-entity",
+    "area": "데이터베이스",
+    "difficulty": "상",
+    "topic": "er-modeling",
+    "question": "E-R 모델의 약한 개체(Weak Entity)에 대한 설명으로 옳은 것은?",
+    "choices": [
+      "자신의 속성만으로는 식별되지 않아 다른 개체에 의존하며 이중 사각형으로 표기한다",
+      "다른 개체와 관계를 맺지 않고 홀로 존재하는 개체이며 이중 타원으로 표기한다",
+      "값을 여러 개 가질 수 있는 속성을 하나 이상 포함한 개체를 가리킨다",
+      "기본키를 이루는 속성이 두 개 이상인 개체를 가리키며 점선 타원으로 표기한다"
+    ],
+    "answer": 0,
+    "explanation": "약한 개체는 자신의 속성만으로 식별되지 않고 소유 개체의 키에 기대어 구분되는 개체로, 이중 사각형으로 그린다. 이중 타원은 다중값 속성, 점선 타원은 유도 속성의 기호이며 개체가 아니라 속성에 붙는다. 기본키가 여러 속성으로 이뤄졌다고 해서 약한 개체가 되는 것도 아니다 — 판단 기준은 오직 독립적으로 식별되는지 여부다."
+  },
+  {
+    "id": "db-er-cardinality-case",
+    "area": "데이터베이스",
+    "difficulty": "중",
+    "topic": "er-modeling",
+    "question": "다음 업무 규칙을 E-R 다이어그램으로 옮길 때 학생 개체와 강좌 개체 사이의 대응수(Cardinality)로 옳은 것은?",
+    "code": "- 한 명의 학생은 여러 개의 강좌를 수강 신청할 수 있다\n- 하나의 강좌에는 여러 명의 학생이 등록할 수 있다\n- 두 개체는 '수강' 관계로 연결된다",
+    "choices": [
+      "1:1",
+      "1:N",
+      "N:M",
+      "학생 개체가 강좌 개체의 약한 개체가 되므로 대응수를 표시하지 않는다"
+    ],
+    "answer": 2,
+    "explanation": "양쪽 모두 상대를 여럿 가질 수 있으므로 N:M(다대다)이다. 대응수는 '학생 → 강좌', '강좌 → 학생' 두 방향을 각각 따져 보면 갈린다 — 한 방향만 여럿이면 1:N이다. N:M 관계는 관계형 테이블로 그대로 옮길 수 없어 논리적 설계에서 두 개체의 키를 가진 별도의 관계 테이블로 분해한다."
+  },
+  {
+    "id": "sec-bluesnarf-def",
+    "area": "정보보안",
+    "difficulty": "중",
+    "topic": "wireless-security",
+    "question": "다음 설명에 해당하는 블루투스 공격은?",
+    "code": "- 인증 없이 파일을 주고받는 OPP(Obex Push Protocol)를 악용한다\n- 기기 소유자 모르게 연락처·일정 같은 저장 데이터를 빼낸다\n- 메시지를 밀어 넣는 것이 아니라 안에 있는 정보를 꺼내 가는 것이 목적이다",
+    "choices": [
+      "BlueJacking",
+      "BluePrinting",
+      "BlueSnarf",
+      "BlueChaining"
+    ],
+    "answer": 2,
+    "explanation": "인증 절차가 없는 OPP(Obex Push Protocol)를 파고들어 기기에 저장된 데이터를 몰래 꺼내 가는 것이 블루스나프(BlueSnarf)다. 블루재킹(BlueJacking)은 반대로 원치 않는 메시지를 상대 기기에 밀어 넣고, 블루프린팅(BluePrinting)은 공격에 앞서 주변 기기의 모델과 기능을 식별하는 정보 수집 단계다. BlueChaining은 실재하지 않는 용어다."
+  },
+  {
+    "id": "sec-bluebug-def",
+    "area": "정보보안",
+    "difficulty": "중",
+    "topic": "wireless-security",
+    "question": "다음 설명에 해당하는 블루투스 공격은?",
+    "code": "- 기기의 취약점을 이용해 임의의 명령을 내릴 수 있는 연결을 만든다\n- 통화 걸기·문자 발송처럼 기기 기능 자체를 장악한다\n- 데이터를 훔쳐보는 데 그치지 않고 원격 조종 수준까지 간다",
+    "choices": [
+      "BlueBug",
+      "BlueSnarf",
+      "BlueJacking",
+      "BlueSpoofing"
+    ],
+    "answer": 0,
+    "explanation": "명령을 내릴 수 있는 연결을 만들어 통화·문자까지 장악하는 것이 블루버그(BlueBug)다. 이름이 비슷한 블루스나프(BlueSnarf)는 OPP를 악용해 데이터를 빼내는 데서 멈추므로, '기기를 부린다(BlueBug)'와 '데이터를 꺼낸다(BlueSnarf)'로 갈라 외운다. BlueSpoofing은 지어낸 용어다."
+  },
+  {
+    "id": "sec-bluetooth-attack-mismatch",
+    "area": "정보보안",
+    "difficulty": "상",
+    "topic": "wireless-security",
+    "question": "블루투스를 노리는 공격에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "블루프린팅(BluePrinting)은 주변 블루투스 기기의 모델과 제공 기능을 식별해 공격 대상을 선별하는 단계다",
+      "블루재킹(BlueJacking)은 근처 기기에 원치 않는 메시지를 밀어 넣어 사용자를 성가시게 하거나 유인한다",
+      "블루스나프(BlueSnarf)는 OPP(Obex Push Protocol)를 악용해 인증 없이 기기에 저장된 데이터를 빼낸다",
+      "블루버그(BlueBug)는 위조한 MAC 주소를 대량으로 흘려보내 스위치를 더미 허브처럼 동작하게 만든다"
+    ],
+    "answer": 3,
+    "explanation": "위조 MAC을 대량으로 흘려 스위치의 주소 테이블을 넘치게 만드는 것은 유선 구간의 스위치 재밍(Switch Jamming)이지 블루버그가 아니다. 블루버그(BlueBug)는 취약점을 통해 기기에 명령을 내려 통화·문자까지 장악하는 블루투스 공격이다. 나머지 셋은 정보 수집(BluePrinting)·메시지 주입(BlueJacking)·데이터 탈취(BlueSnarf)로 목적이 서로 다르다."
+  },
+  {
+    "id": "sec-switch-jamming-def",
+    "area": "정보보안",
+    "difficulty": "중",
+    "topic": "wireless-security",
+    "question": "다음 설명에 해당하는 공격 기법은?",
+    "code": "- 위조한 MAC 주소를 대량으로 흘려보내 스위치의 주소 테이블을 넘치게 만든다\n- 목적지를 찾지 못한 스위치가 프레임을 모든 포트로 뿌리게 된다\n- 결과적으로 스위치가 더미 허브처럼 동작해 도청이 가능해진다",
+    "choices": [
+      "ARP Redirect",
+      "Switch Jamming",
+      "LAN Tapping",
+      "Port Mirroring"
+    ],
+    "answer": 1,
+    "explanation": "MAC 주소 테이블을 포화시켜 스위치를 더미 허브로 만드는 것이 스위치 재밍(Switch Jamming)이며, MAC 플러딩이라고도 부른다. 랜 태핑(LAN Tapping)은 케이블에 장비를 직접 붙여 신호를 엿보는 물리적 방식이라 다르고, 포트 미러링(Port Mirroring)은 스위치가 정상 기능으로 제공하는 트래픽 복제라 공격 기법이 아니다."
+  },
+  {
+    "id": "sec-wlan-wep-wpa",
+    "area": "정보보안",
+    "difficulty": "중",
+    "topic": "wireless-security",
+    "question": "무선랜 보안 규격에 대한 설명으로 틀린 것은?",
+    "choices": [
+      "WEP(Wired Equivalent Privacy)는 초기화 벡터(IV)가 짧아 재사용되는 구조적 결함 탓에 키가 복구되어 폐기됐다",
+      "WEP는 키 길이만 늘리면 취약점이 해소되므로 WPA2·WPA3로 교체할 필요가 없다",
+      "WPA2는 AES 기반의 CCMP를 사용해 RC4를 쓰던 WEP보다 강한 암호화를 제공한다",
+      "WPA3는 SAE 방식을 도입해 비밀번호를 노린 오프라인 사전 대입 공격을 어렵게 만든다"
+    ],
+    "answer": 1,
+    "explanation": "WEP의 문제는 키 길이가 아니라 IV 재사용과 RC4 운용 방식이라는 설계 자체에 있어, 키를 늘려도 해결되지 않는다. 그래서 WEP는 폐기됐고 AES 기반 CCMP를 쓰는 WPA2, SAE로 사전 대입을 막는 WPA3로 옮겨 가는 것이 무선랜 보호의 기본이다."
+  },
+  {
+    "id": "sec-wireless-threat-far",
+    "area": "정보보안",
+    "difficulty": "상",
+    "topic": "wireless-security",
+    "question": "무선·근거리 통신 구간을 노리는 위협에 대한 설명으로 가장 거리가 먼 것은?",
+    "choices": [
+      "블루재킹(BlueJacking)은 대상 기기에 저장된 연락처와 파일을 인증 없이 꺼내 오는 것이 목적이다",
+      "랜 태핑(LAN Tapping)은 통신 케이블에 장비를 직접 접속해 흐르는 신호를 엿보는 물리적 도청 방식이다",
+      "스위치 재밍(Switch Jamming)은 스위치의 MAC 주소 테이블을 포화시켜 도청이 가능한 환경을 만든다",
+      "무선랜 자체의 보호 수단인 WEP는 구조적 결함으로 폐기되어 WPA2·WPA3를 쓰는 것이 기본이다"
+    ],
+    "answer": 0,
+    "explanation": "저장된 데이터를 인증 없이 꺼내 오는 것은 블루스나프(BlueSnarf)이고, 블루재킹(BlueJacking)은 반대로 원치 않는 메시지를 상대 기기에 밀어 넣는 공격이다. 빼내느냐 밀어 넣느냐가 두 기법을 가르는 기준이다. 랜 태핑은 케이블에 직접 손대는 물리적 도청, 스위치 재밍은 스위치를 더미 허브로 만들어 도청 환경을 여는 공격으로 결이 다르다."
+  },
+  {
+    "id": "sec-honeypot-def",
+    "area": "정보보안",
+    "difficulty": "하",
+    "topic": "security-solutions",
+    "question": "다음 설명에 해당하는 보안 솔루션은?",
+    "code": "- 일부러 취약하게 꾸며 놓은 미끼 시스템이다\n- 공격자를 끌어들여 실제 운영 자산에서 떼어 놓는다\n- 공격자의 침입 수법과 행위를 기록해 분석 자료로 삼는다",
+    "choices": [
+      "Honeypot",
+      "Bastion Host",
+      "TCP Wrapper",
+      "Sandbox"
+    ],
+    "answer": 0,
+    "explanation": "취약하게 꾸민 미끼로 공격자를 유인해 관찰·기록하는 것이 허니팟(Honeypot)이다. 배스천 호스트(Bastion Host)는 외부에 노출되는 요새화된 관문 서버라 미끼가 아니고, TCP Wrapper는 접속한 IP가 허용 목록에 있는지 대조해 서비스 제공 여부를 정하는 유틸리티, 샌드박스(Sandbox)는 의심스러운 코드를 격리해 실행하는 환경이다."
+  },
+  {
+    "id": "sec-dpi-inspection",
+    "area": "정보보안",
+    "difficulty": "중",
+    "topic": "security-solutions",
+    "question": "DPI(Deep Packet Inspection)에 대한 설명으로 틀린 것은?",
+    "choices": [
+      "패킷의 헤더뿐 아니라 페이로드(내용)까지 열어 분석한다",
+      "유해 트래픽 차단이나 침입 탐지, 응용 프로그램 식별에 활용된다",
+      "패킷 내용은 보지 않고 출발지·목적지 주소와 포트만으로 판단하므로 처리가 가볍다",
+      "내용을 모두 검사하는 만큼 처리 부담이 커지고 사생활 침해 논란이 따라붙는다"
+    ],
+    "answer": 2,
+    "explanation": "DPI는 이름 그대로 패킷을 '깊이' 들여다보는 기술이라 헤더 너머 페이로드까지 검사한다. 주소와 포트만 보고 빠르게 통과 여부를 정하는 것은 헤더 기반의 패킷 필터링이며, 이 둘을 가르는 기준이 바로 내용을 여느냐다. 정밀한 대신 성능 부담과 사생활 침해 논란이 대가로 따른다."
+  },
+  {
+    "id": "sec-injection-type-match",
+    "area": "정보보안",
+    "difficulty": "상",
+    "topic": "secure-coding",
+    "question": "취약점과 그 설명의 연결로 옳지 않은 것은?",
+    "choices": [
+      "자원 삽입(Resource Injection) — 외부 입력이 파일 경로나 포트 번호 같은 자원 식별자로 그대로 쓰여 의도치 않은 자원에 접근하게 된다",
+      "크로스사이트 스크립팅(XSS) — 스택에 심어 둔 값이 훼손됐는지 함수 반환 직전에 검사해 버퍼 오버플로를 탐지한다",
+      "운영체제 명령어 삽입 — 외부 입력이 시스템 명령의 일부로 넘어가 서버에서 의도하지 않은 명령이 실행된다",
+      "SQL 인젝션 — 입력값이 SQL 문법의 일부로 해석되어 쿼리의 구조 자체가 바뀐다"
+    ],
+    "answer": 1,
+    "explanation": "카나리 값으로 스택 훼손을 검사하는 것은 XSS가 아니라 StackGuard의 동작이다. XSS는 검증 없이 출력된 입력값이 브라우저에서 스크립트로 실행되는 취약점이라 대응도 출력값 인코딩이다. 자원 삽입·운영체제 명령어 삽입·SQL 인젝션은 모두 외부 입력이 값이 아니라 '구조'로 해석되면서 생기는 인젝션 계열로 묶인다."
+  },
+  {
+    "id": "sec-stackguard-def",
+    "area": "정보보안",
+    "difficulty": "상",
+    "topic": "secure-coding",
+    "question": "다음 설명에 해당하는 보안 기법은?",
+    "code": "- 함수에 들어갈 때 스택의 복귀 주소 앞에 특정한 값을 심어 둔다\n- 함수가 반환되기 직전에 그 값이 그대로인지 검사한다\n- 값이 훼손됐으면 오버플로가 일어난 것으로 보고 실행을 중단한다",
+    "choices": [
+      "ASLR",
+      "DEP",
+      "StackGuard",
+      "Salting"
+    ],
+    "answer": 2,
+    "explanation": "스택에 카나리(canary) 값을 심어 두고 함수 반환 직전에 훼손 여부를 확인해 버퍼 오버플로를 잡아내는 것이 StackGuard다. ASLR은 메모리 배치 주소를 실행마다 무작위로 바꿔 공격 지점을 예측하기 어렵게 만들고, DEP는 데이터 영역의 코드 실행을 막으며, 솔팅(Salting)은 비밀번호 해시에 임의 값을 덧붙이는 기법이라 스택과 무관하다."
+  },
+  {
+    "id": "sec-des-aes-spec",
+    "area": "정보보안",
+    "difficulty": "중",
+    "topic": "symmetric-asymmetric",
+    "question": "DES와 AES의 제원에 대한 설명으로 옳은 것은?",
+    "choices": [
+      "DES는 128비트 블록을 처리하며 키 길이는 256비트로 고정되어 있다",
+      "DES의 블록 크기는 64비트이고 키도 64비트지만, 패리티 비트를 뺀 실질 키 길이는 56비트다",
+      "AES의 키 길이는 DES와 같은 56비트 하나로 고정되어 있다",
+      "AES는 키 길이를 128·192·256비트 중에서 고르며, 블록 크기도 키 길이에 맞춰 함께 늘어난다"
+    ],
+    "answer": 1,
+    "explanation": "DES는 64비트 블록을 64비트 키로 처리하지만 8비트가 패리티라 실질 키는 56비트뿐이고, 이 짧은 키 때문에 오늘날 무차별 대입에 뚫린다. 후속인 AES는 블록이 128비트로 고정이고 키만 128·192·256비트 중에서 고른다 — 키 길이를 바꿔도 블록은 128비트 그대로라는 점이 함정이다."
+  },
+  {
+    "id": "sec-kerberos-def",
+    "area": "정보보안",
+    "difficulty": "하",
+    "topic": "authentication",
+    "question": "다음 설명에 해당하는 인증 프로토콜은?",
+    "code": "- 대칭키 암호를 바탕으로 동작하는 네트워크 인증 프로토콜이다\n- 인증 서버가 발급한 티켓으로 사용자와 서비스가 서로를 확인한다\n- 비밀번호를 네트워크에 직접 흘리지 않아 도청에 강하다",
+    "choices": [
+      "OAuth",
+      "RADIUS",
+      "SAML",
+      "Kerberos"
+    ],
+    "answer": 3,
+    "explanation": "티켓을 발급해 상호 인증을 처리하는 대칭키 기반 네트워크 인증 프로토콜이 케르베로스(Kerberos)이며, 비밀번호 자체를 망에 흘리지 않는다는 점이 핵심 특징이다. RADIUS는 접속 서버가 인증·인가·계정 관리를 중앙 서버에 위임하는 AAA 프로토콜, OAuth는 비밀번호 대신 접근 토큰으로 권한을 넘기는 인가 프레임워크, SAML은 SSO에 쓰이는 인증 정보 교환 표준이다."
   }
 ]
