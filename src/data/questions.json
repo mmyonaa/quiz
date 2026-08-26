@@ -3910,5 +3910,1394 @@
     ],
     "answer": 2,
     "explanation": "이미지를 만들고 컨테이너를 실행하는 쪽은 도커이고, 쿠버네티스는 여러 호스트에 걸친 컨테이너의 배포·스케일링·자기 치유·로드 밸런싱을 자동화하는 오케스트레이션 도구다. '컨테이너 런타임'과 '오케스트레이터'의 역할을 바꿔 놓는 것이 단골 함정이며, IoT·디지털 트윈·블록체인의 세 짝은 정확한 설명이라 소거법으로 쿠버네티스 항목이 남는다."
+  },
+  {
+    "id": "prog-c-relational-int-value",
+    "area": "프로그래밍",
+    "difficulty": "중",
+    "topic": "c-operators",
+    "question": "다음 C 코드의 출력은?",
+    "code": "int x = 10, y = 0;\nint a = (x > 5) + (y > 5);\nint b = !y + !x;\nprintf(\"%d %d\", a, b);",
+    "choices": [
+      "1 2",
+      "1 1",
+      "2 1",
+      "0 1"
+    ],
+    "answer": 1,
+    "explanation": "관계 연산자의 결과는 참이면 1, 거짓이면 0인 정수라서 그대로 덧셈에 쓰인다. a = (10>5) + (0>5) = 1 + 0 = 1이다. 부정 연산자 !는 피연산자가 0이면 1, 0이 아니면 0을 내므로 !0 = 1, !10 = 0이라 b = 1이다. !x를 '10의 반대인 -10'처럼 읽으면 틀린다."
+  },
+  {
+    "id": "prog-c-short-circuit-side-effect",
+    "area": "프로그래밍",
+    "difficulty": "상",
+    "topic": "c-operators",
+    "question": "다음 C 코드의 출력은?",
+    "code": "int a = 0, b = 0, c = 0;\nif (a++ && ++b) c = 1;\nif (a++ || ++b) c = c + 2;\nprintf(\"%d %d %d\", a, b, c);",
+    "choices": [
+      "2 1 2",
+      "2 0 2",
+      "2 2 2",
+      "1 0 2"
+    ],
+    "answer": 1,
+    "explanation": "첫 if에서 a++는 증가 전 값 0을 내놓고 a를 1로 만든다. &&는 왼쪽이 거짓이면 결과가 이미 거짓이므로 오른쪽 ++b를 아예 평가하지 않는다(단축 평가, short-circuit evaluation). 둘째 if에서 a++는 1을 내놓고 a를 2로 만드는데, ||는 왼쪽이 참이면 오른쪽을 평가하지 않으므로 ++b는 여기서도 실행되지 않는다. 결국 b는 끝까지 0이고 c는 0+2 = 2, a는 두 번 증가해 2다. 단축 평가된 쪽의 증감이 일어나지 않는다는 점이 이 유형의 전부다."
+  },
+  {
+    "id": "prog-c-ternary-nested-incr",
+    "area": "프로그래밍",
+    "difficulty": "상",
+    "topic": "c-operators",
+    "question": "다음 C 코드의 출력은?",
+    "code": "int a = 4, b = 4;\nint r = (a++ > b) ? a : (++b == a) ? b * 2 : b + a;\nprintf(\"%d %d %d\", a, b, r);",
+    "choices": [
+      "4 5 9",
+      "5 4 10",
+      "5 5 8",
+      "5 5 10"
+    ],
+    "answer": 3,
+    "explanation": "조건 a++ > b는 증가 전 값 4와 4를 비교하므로 거짓이고, 이때 a는 5가 된다. 삼항 연산자(ternary operator)는 거짓 쪽만 평가하므로 두 번째 조건 ++b == a로 넘어가는데, b가 5로 오른 뒤 이미 5가 된 a와 비교해 참이다. 따라서 r = b * 2 = 10이고 b + a 쪽은 평가되지 않는다. 삼항 연산자가 중첩되면 오른쪽부터 묶여 앞 조건이 거짓일 때만 뒤 조건을 따진다는 점, 그리고 조건 안의 증감이 뒤쪽 식에 영향을 준다는 점이 함께 걸린다."
+  },
+  {
+    "id": "prog-c-loop-continue-break",
+    "area": "프로그래밍",
+    "difficulty": "상",
+    "topic": "c-operators",
+    "question": "다음 C 코드의 출력은?",
+    "code": "int sum = 0;\nfor (int i = 1; i <= 10; i++) {\n    if (i % 3 == 0) continue;\n    if (sum > 20) break;\n    sum += i;\n}\nprintf(\"%d\", sum);",
+    "choices": [
+      "22",
+      "27",
+      "30",
+      "37"
+    ],
+    "answer": 1,
+    "explanation": "3의 배수인 3·6·9는 continue로 건너뛰므로 더해지는 값은 1, 2, 4, 5, 7, 8, 10 후보다. 누적은 1→3→7→12→19→27로 진행되고, i가 9일 때는 3의 배수라 continue로 빠지며, i가 10일 때 sum이 27로 20을 넘어 break가 걸려 10은 더해지지 않는다. 그래서 27이다. break 없이 끝까지 더하면 37이 나오는데, 검사 순서상 continue가 break보다 먼저라 sum 검사 자체를 건너뛰는 회차가 있다는 점이 함정이다."
+  },
+  {
+    "id": "prog-c-string-func-result",
+    "area": "프로그래밍",
+    "difficulty": "중",
+    "topic": "c-operators",
+    "question": "다음 C 코드를 실행한 뒤의 상태에 대한 설명으로 틀린 것은? (단, string.h는 포함되어 있다.)",
+    "code": "char s[20] = \"abc\";\nchar t[10] = \"de\";\nstrcat(s, t);",
+    "choices": [
+      "strlen(s)의 값은 5다",
+      "strcmp(s, \"abcde\")의 값은 0이다",
+      "t의 내용은 \"de\" 그대로 남는다",
+      "s의 내용은 \"abc\" 그대로이고 이어 붙인 결과는 새 문자열로 반환된다"
+    ],
+    "answer": 3,
+    "explanation": "strcat(s, t)는 새 문자열을 만드는 것이 아니라 s의 널 문자 자리부터 t를 덧붙여 s 자체를 \"abcde\"로 바꾼다(반환값도 s의 주소다). 따라서 strlen(s)는 널 문자를 뺀 5이고, strcmp는 두 문자열이 같으므로 0이며, 원본 t는 읽히기만 해서 그대로다. 붙는 쪽 배열이 결과를 담을 만큼 크지 않으면 넘침이 난다는 점도 함께 나온다."
+  },
+  {
+    "id": "prog-c-continue-blank",
+    "area": "프로그래밍",
+    "difficulty": "상",
+    "topic": "c-operators",
+    "question": "다음 C 코드가 [실행결과]와 같이 출력되도록 괄호 안에 들어갈 조건식으로 옳은 것은?",
+    "code": "int i, sum = 0;\nfor (i = 1; i <= 20; i++) {\n    if (          ) continue;\n    sum += i;\n}\nprintf(\"%d\", sum);\n\n[실행결과]\n110",
+    "choices": [
+      "i % 2 == 0",
+      "i % 2 == 1",
+      "i % 3 == 0",
+      "i > 10"
+    ],
+    "answer": 1,
+    "explanation": "110은 1부터 20까지의 짝수 합(2+4+...+20)이다. 즉 홀수일 때 continue로 건너뛰어야 하므로 조건은 i % 2 == 1이다. 나머지를 넣어 보면 i % 2 == 0은 홀수만 더해 100, i % 3 == 0은 210에서 3의 배수 합 63을 뺀 147, i > 10은 앞의 열 개만 더해 55가 되어 모두 다른 값이 나온다. continue는 '건너뛸 조건'을 쓰는 자리라, 남기고 싶은 조건을 그대로 넣으면 정반대가 된다는 점이 핵심이다."
+  },
+  {
+    "id": "prog-c-incr-ternary-concept",
+    "area": "프로그래밍",
+    "difficulty": "중",
+    "topic": "c-operators",
+    "question": "C언어의 증감 연산자와 삼항 연산자(ternary operator)에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "전위 ++a는 값을 1 증가시킨 뒤의 값이 그 식의 값이 된다",
+      "후위 a++는 증가 전의 값이 그 식의 값이지만, 문장이 끝나면 a는 증가해 있다",
+      "조건 ? A : B는 조건이 0이 아니면 A로 평가된다",
+      "조건 ? A : B는 조건과 무관하게 A와 B를 모두 평가한 뒤 하나를 고른다"
+    ],
+    "answer": 3,
+    "explanation": "삼항 연산자는 조건에 따라 한쪽만 평가하고 다른 쪽은 아예 실행하지 않는다. 그래서 선택되지 않은 가지에 있는 증감이나 함수 호출은 일어나지 않는다. 증감 연산자는 위치가 값을 가르는데, 전위는 올린 뒤의 값을, 후위는 올리기 전의 값을 식의 값으로 준다는 차이만 있을 뿐 문장이 끝난 시점의 변수 값은 둘 다 1 증가한 상태다."
+  },
+  {
+    "id": "prog-c-control-flow-concept",
+    "area": "프로그래밍",
+    "difficulty": "중",
+    "topic": "c-operators",
+    "question": "C언어의 제어문에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "break는 자신을 감싼 가장 안쪽 반복문 하나만 빠져나간다",
+      "continue는 남은 본문을 건너뛰고 다음 반복 단계로 넘어간다",
+      "for( ; ; )처럼 조건식을 비우면 참으로 간주되어 무한 반복한다",
+      "do-while은 조건이 처음부터 거짓이면 본문을 한 번도 실행하지 않는다"
+    ],
+    "answer": 3,
+    "explanation": "do-while은 본문을 먼저 실행하고 조건을 나중에 검사하므로 조건이 처음부터 거짓이어도 최소 한 번은 실행된다. 조건을 먼저 보는 while·for와 갈리는 지점이 바로 이 '최소 1회'다. break는 반복문 하나만 벗어나므로 이중 반복문을 한 번에 탈출하려면 플래그나 함수 반환을 써야 하고, for의 조건식을 비우면 참으로 취급되어 무한 루프가 된다."
+  },
+  {
+    "id": "prog-java-array-default-init",
+    "area": "프로그래밍",
+    "difficulty": "중",
+    "topic": "java-basics",
+    "question": "다음 Java 코드에 대한 설명으로 틀린 것은?",
+    "code": "int[] a = new int[4];\na[0] = 7;",
+    "choices": [
+      "a.length의 값은 4다",
+      "a[3]의 값은 0이다",
+      "a[1]은 초기화되지 않아 알 수 없는 쓰레기 값이 들어 있다",
+      "a[4]에 접근하면 실행 중 ArrayIndexOutOfBoundsException이 발생한다"
+    ],
+    "answer": 2,
+    "explanation": "Java는 new로 만든 배열의 원소를 자동으로 기본값(int는 0, 참조형은 null, boolean은 false)으로 채운다. 값을 넣지 않은 a[1]도 쓰레기 값이 아니라 0이다. 지역 변수는 초기화 없이 쓰면 컴파일 오류가 나지만 배열 원소는 다르다는 대비가 함정이다. 길이는 메서드가 아닌 필드 length로 얻고, 유효 인덱스는 0부터 length-1까지라 a[4]는 컴파일은 통과하고 실행 중에 예외로 터진다."
+  },
+  {
+    "id": "prog-java-array-return",
+    "area": "프로그래밍",
+    "difficulty": "상",
+    "topic": "java-basics",
+    "question": "다음 Java 코드의 출력은?",
+    "code": "public class Main {\n  static int[] make(int n) {\n    int[] r = new int[n];\n    for (int i = 0; i < n; i++) r[i] = i * i;\n    return r;\n  }\n\n  public static void main(String[] args) {\n    int[] a = make(5);\n    System.out.print(a[a.length - 2] + a[1]);\n  }\n}",
+    "choices": [
+      "10",
+      "17",
+      "20",
+      "25"
+    ],
+    "answer": 0,
+    "explanation": "make(5)는 [0, 1, 4, 9, 16]을 담은 배열을 통째로 반환한다. a.length가 5이므로 a[a.length - 2]는 a[3] = 9이고, a[1] = 1이라 9 + 1 = 10이 출력된다. 마지막 원소 a[4] = 16을 고르면 17이 나오는데, length - 1이 마지막이고 length - 2는 그 앞이라는 점을 흘리면 틀린다. 참고로 두 피연산자가 모두 int라 +는 문자열 연결이 아니라 덧셈이다."
+  },
+  {
+    "id": "prog-java-int-division",
+    "area": "프로그래밍",
+    "difficulty": "상",
+    "topic": "java-basics",
+    "question": "다음 Java 코드의 출력은?",
+    "code": "int a = 7, b = 2;\nint c = a / b;\ndouble d = a / b;\nSystem.out.print(c + \" \" + d + \" \" + (a % b == 1 ? \"odd\" : \"even\"));",
+    "choices": [
+      "3.5 3.5 odd",
+      "3 3.5 odd",
+      "3 3.0 odd",
+      "3 3.0 even"
+    ],
+    "answer": 2,
+    "explanation": "a와 b가 모두 int라 a / b는 정수 나눗셈으로 먼저 3이 되고, 그 3을 double 변수 d에 담는 것은 계산이 끝난 뒤의 형 변환이라 3.5가 아니라 3.0이 된다. 실수 결과를 얻으려면 (double) a / b처럼 나누기 전에 한쪽을 실수로 바꿔야 한다. 7 % 2는 1이므로 삼항 연산자는 \"odd\"로 평가되고, double 값은 3이 아니라 3.0으로 출력된다는 점도 선지를 가른다."
+  },
+  {
+    "id": "prog-java-incr-prefix-postfix",
+    "area": "프로그래밍",
+    "difficulty": "상",
+    "topic": "java-basics",
+    "question": "다음 Java 코드의 출력은?",
+    "code": "int a = 5;\nint b = a++ + ++a;\nint c = --a - a--;\nSystem.out.print(a + \" \" + b + \" \" + c);",
+    "choices": [
+      "6 12 1",
+      "5 11 0",
+      "5 12 1",
+      "5 12 0"
+    ],
+    "answer": 3,
+    "explanation": "Java는 피연산자를 왼쪽부터 평가한다. b는 a++가 5를 내놓고 a를 6으로 만든 뒤, ++a가 a를 7로 올린 7을 내놓아 5 + 7 = 12이고 이때 a는 7이다. c는 --a가 a를 6으로 내리고 6을 내놓은 뒤, a--가 현재 값 6을 내놓고 a를 5로 내려 6 - 6 = 0이며 a는 5로 끝난다. 후위 연산자는 '값은 바뀌기 전 것, 변수는 이미 바뀐 상태'라는 두 갈래를 따로 적어 가며 추적해야 한다."
+  },
+  {
+    "id": "prog-java-nested-break-continue",
+    "area": "프로그래밍",
+    "difficulty": "상",
+    "topic": "java-basics",
+    "question": "다음 Java 코드의 출력은?",
+    "code": "int cnt = 0;\nfor (int i = 1; i <= 3; i++) {\n    for (int j = 1; j <= 3; j++) {\n        if (j == i) break;\n        if (j % 2 == 0) continue;\n        cnt++;\n    }\n}\nSystem.out.print(cnt);",
+    "choices": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "answer": 1,
+    "explanation": "i가 1이면 j = 1에서 곧바로 j == i라 break가 걸려 아무것도 세지 않는다. i가 2면 j = 1에서 홀수라 cnt가 1이 되고 j = 2에서 break다. i가 3이면 j = 1에서 cnt가 2, j = 2는 짝수라 continue, j = 3에서 break다. 따라서 2다. break는 안쪽 for 하나만 벗어나 바깥 반복은 계속된다는 점과, continue는 그 회차의 cnt++만 건너뛴다는 점을 구분해야 한다."
+  },
+  {
+    "id": "prog-java-continue-blank",
+    "area": "프로그래밍",
+    "difficulty": "상",
+    "topic": "java-basics",
+    "question": "다음 Java 코드가 [실행결과]와 같이 출력되도록 괄호 안에 들어갈 조건식으로 옳은 것은?",
+    "code": "int[] a = {4, 7, 2, 9, 3, 5};\nint s = 0;\nfor (int i = 0; i < a.length; i++) {\n    if (             ) continue;\n    s += a[i];\n}\nSystem.out.print(s);\n\n[실행결과]\n9",
+    "choices": [
+      "i % 2 == 0",
+      "a[i] % 2 == 1",
+      "i % 2 == 1",
+      "a[i] % 2 == 0"
+    ],
+    "answer": 2,
+    "explanation": "9는 인덱스가 짝수인 원소 a[0] + a[2] + a[4] = 4 + 2 + 3의 합이다. 즉 인덱스가 홀수일 때 건너뛰어야 하므로 i % 2 == 1이다. i % 2 == 0을 넣으면 7 + 9 + 5 = 21, a[i] % 2 == 1이면 짝수 원소만 남아 4 + 2 = 6, a[i] % 2 == 0이면 홀수 원소만 남아 7 + 9 + 3 + 5 = 24가 되어 모두 어긋난다. 조건을 '인덱스 i'로 거는지 '원소 a[i]'로 거는지 뒤바꾸는 것이 이 유형의 함정이다."
+  },
+  {
+    "id": "prog-java-length-field",
+    "area": "프로그래밍",
+    "difficulty": "하",
+    "topic": "java-basics",
+    "question": "Java에서 배열과 문자열의 길이를 얻는 방법에 대한 설명으로 틀린 것은?",
+    "choices": [
+      "배열 a의 길이는 a.length로 얻는다",
+      "배열의 length는 메서드가 아니라 필드이므로 괄호를 붙이지 않는다",
+      "문자열 s의 길이는 s.length()로 얻는다",
+      "문자열도 배열과 같이 s.length로 길이를 얻을 수 있다"
+    ],
+    "answer": 3,
+    "explanation": "String에는 length라는 공개 필드가 없어 s.length라고 쓰면 컴파일 오류가 난다. 문자열은 메서드 s.length(), 배열은 필드 a.length로 서로 반대다. 괄호 하나를 붙이고 빼는 차이라 선지를 슬쩍 바꿔 내기 좋은 자리이며, 컬렉션(List·Map)은 또 다른 이름인 size()를 쓴다는 점까지 묶어 외워 두면 헷갈리지 않는다."
+  },
+  {
+    "id": "prog-java-operator-control-concept",
+    "area": "프로그래밍",
+    "difficulty": "중",
+    "topic": "java-basics",
+    "question": "Java의 연산자와 제어문에 대한 설명으로 가장 거리가 먼 것은?",
+    "choices": [
+      "continue를 만나면 그 반복문 전체가 즉시 종료된다",
+      "정수끼리의 / 연산은 소수점 이하를 버린 몫을 낸다",
+      "삼항 연산자 조건 ? A : B는 조건이 true면 A로 평가된다",
+      "중첩 반복문에서 break는 자신을 감싼 가장 안쪽 반복문 하나만 빠져나간다"
+    ],
+    "answer": 0,
+    "explanation": "반복문을 즉시 끝내는 것은 break이고, continue는 그 회차의 남은 본문만 건너뛴 뒤 증감식과 조건 검사를 거쳐 다음 반복으로 이어간다. 둘의 역할을 맞바꾼 선지가 단골이다. 정수끼리의 나눗셈이 몫만 남긴다는 점(7 / 2가 3)과, 안쪽 반복문 하나만 벗어나는 break의 범위는 출력 추적 문제에서 그대로 답을 가른다."
+  },
+  {
+    "id": "prog-c-struct-copy",
+    "area": "프로그래밍",
+    "difficulty": "상",
+    "topic": "c-pointer-array",
+    "question": "다음 C 코드를 실행한 결과에 대한 설명으로 틀린 것은?",
+    "code": "struct Point { int x; int arr[3]; };\n\nstruct Point a = {1, {10, 20, 30}};\nstruct Point b = a;\nb.x = 5;\nb.arr[1] = 99;",
+    "choices": [
+      "b.arr[0]의 값은 10이다",
+      "b.x의 값은 5다",
+      "a.x의 값은 1 그대로다",
+      "b는 a와 같은 배열을 공유하므로 a.arr[1]도 99로 바뀐다"
+    ],
+    "answer": 3,
+    "explanation": "C의 구조체 대입 b = a는 주소를 나눠 갖는 것이 아니라 멤버 값을 통째로 복사하는 것이고, 멤버 배열 arr까지 원소 단위로 복사된다. 그래서 b는 a와 완전히 별개의 저장 공간을 가지며 b.arr[1]을 99로 바꿔도 a.arr[1]은 20 그대로다. 복사 직후 b.arr[0]은 원본과 같은 10이고, b.x만 5로 덮인다. 배열 이름끼리는 대입이 안 되지만 구조체로 감싸면 배열째 복사된다는 점이 이 문항의 노림수다."
+  },
+  {
+    "id": "prog-c-pointer-address-calc",
+    "area": "프로그래밍",
+    "difficulty": "상",
+    "topic": "c-pointer-array",
+    "question": "다음 C 코드의 출력은? (단, int형의 크기는 4Byte, char형의 크기는 1Byte이며, 배열 a의 시작 주소는 2000, 배열 c의 시작 주소는 3000이라고 가정한다.)",
+    "code": "int a[4] = {1, 2, 3, 4};\nchar c[4] = {'A', 'B', 'C', 'D'};\nint *p = a;\nchar *q = c;\nprintf(\"%u %u\", p + 2, q + 2);",
+    "choices": [
+      "2002 3002",
+      "2002 3008",
+      "2008 3002",
+      "2008 3008"
+    ],
+    "answer": 2,
+    "explanation": "포인터에 정수를 더하면 주소가 그 수만큼 커지는 것이 아니라 가리키는 자료형의 크기만큼 곱해져 커진다. int 포인터 p는 한 칸이 4Byte라 p + 2는 2000 + 4×2 = 2008이고, char 포인터 q는 한 칸이 1Byte라 q + 2는 3000 + 1×2 = 3002다. 같은 +2인데 결과가 다른 이유가 여기에 있으며, 그래서 p + 2는 언제나 a[2]를, q + 2는 c[2]를 가리킨다."
+  },
+  {
+    "id": "prog-c-struct-pointer-concept",
+    "area": "프로그래밍",
+    "difficulty": "중",
+    "topic": "c-pointer-array",
+    "question": "C언어의 구조체(struct)와 포인터에 대한 설명으로 가장 거리가 먼 것은?",
+    "choices": [
+      "구조체 변수를 두 개 선언하면 멤버 배열도 인스턴스마다 따로 할당된다",
+      "int형 포인터 p에 대해 p + 1은 자료형과 무관하게 주소가 1Byte만 커진다",
+      "구조체 변수끼리의 대입(b = a)은 멤버 값 전체를 복사한다",
+      "구조체 포인터 p로 멤버 x에 접근할 때는 p->x 또는 (*p).x를 쓴다"
+    ],
+    "answer": 1,
+    "explanation": "포인터 산술은 바이트가 아니라 칸 단위다. int 포인터라면 p + 1은 4Byte(int 크기)만큼 뒤로, double 포인터라면 8Byte만큼 뒤로 간다. 1Byte씩 움직이는 것은 char 포인터일 때뿐이다. 구조체는 인스턴스마다 멤버 전체를 따로 갖고 대입이 값 복사라는 점, 그리고 화살표 연산자 p->x가 (*p).x의 축약이라는 점은 모두 맞는 설명이다."
+  },
+  {
+    "id": "prog-py-sequence-types",
+    "area": "프로그래밍",
+    "difficulty": "하",
+    "topic": "python-slicing",
+    "question": "Python의 내장 자료형 중 순서가 있어 인덱싱과 슬라이싱이 가능한 시퀀스형에 해당하지 않는 것은?",
+    "choices": [
+      "리스트(list)",
+      "튜플(tuple)",
+      "세트(set)",
+      "문자열(str)"
+    ],
+    "answer": 2,
+    "explanation": "세트는 순서도 중복도 없는 자료형이라 s[0] 같은 인덱싱이 아예 되지 않고 중복 원소를 넣어도 하나로 합쳐진다. 리스트·튜플·문자열은 모두 순서가 있는 시퀀스형이며, 이 중 수정이 가능한 것은 리스트뿐이고 튜플과 문자열은 불변이다. 키와 값의 쌍을 다루는 딕셔너리는 시퀀스가 아니라 매핑형으로 따로 분류한다."
+  },
+  {
+    "id": "prog-py-if-elif-syntax",
+    "area": "프로그래밍",
+    "difficulty": "하",
+    "topic": "python-slicing",
+    "question": "Python의 조건문 문법에 대한 설명으로 틀린 것은?",
+    "choices": [
+      "블록의 범위는 중괄호 { }로 묶어 지정하며 들여쓰기는 가독성을 위한 것이다",
+      "두 번째 이후의 조건은 elif로 이어 쓰며 else if는 문법 오류다",
+      "if와 elif의 조건식 뒤에는 콜론(:)을 붙인다",
+      "elif는 여러 번 쓸 수 있지만 else는 마지막에 한 번만 쓴다"
+    ],
+    "answer": 0,
+    "explanation": "Python은 중괄호를 쓰지 않고 들여쓰기 자체가 블록의 범위를 결정하는 문법이라, 들여쓰기를 어기면 IndentationError로 실행조차 되지 않는다. C나 Java의 습관대로 { }를 붙이면 오류다. 조건 뒤의 콜론, else if 대신 elif, 그리고 elif는 여러 개·else는 마지막 하나라는 규칙은 모두 맞는 설명이다."
+  },
+  {
+    "id": "prog-py-set-dedup-branch",
+    "area": "프로그래밍",
+    "difficulty": "중",
+    "topic": "python-slicing",
+    "question": "다음 Python 코드의 출력은?",
+    "code": "t = (1, 2, 3)\ns = {1, 2, 2, 3}\nd = {\"a\": 1, \"b\": 2}\n\nif len(s) == len(t):\n    print(\"A\", len(d))\nelif len(s) > len(t):\n    print(\"B\", len(d))\nelse:\n    print(\"C\", len(d))",
+    "choices": [
+      "A 2",
+      "A 3",
+      "B 2",
+      "C 2"
+    ],
+    "answer": 0,
+    "explanation": "세트는 중복을 허용하지 않으므로 {1, 2, 2, 3}은 원소가 세 개인 {1, 2, 3}이 되어 len(s)는 4가 아니라 3이다. 튜플 t의 길이도 3이라 첫 조건이 참이 되고, elif와 else는 건너뛴다. 딕셔너리의 len은 키-값 쌍의 개수라 2이므로 출력은 \"A 2\"다. 중복을 그대로 센 4를 쓰면 elif로 빠져 B를 고르게 되는 것이 이 문항의 갈림길이다."
+  },
+  {
+    "id": "db-relation-degree-read",
+    "area": "데이터베이스",
+    "difficulty": "중",
+    "topic": "relation-basics",
+    "question": "다음 [학생] 릴레이션에 대한 설명으로 틀린 것은?",
+    "code": "[학생]\n학번   | 이름   | 학과       | 학년\n-------+--------+------------+-----\n2101   | 김민수 | 컴퓨터공학 | 2\n2102   | 이서연 | 전자공학   | 3\n2103   | 박지훈 | 컴퓨터공학 | 1",
+    "choices": [
+      "차수(Degree)는 4다",
+      "카디널리티(Cardinality)는 3이다",
+      "학년 속성의 도메인(Domain)은 학년이 가질 수 있는 값들의 집합이다",
+      "튜플을 저장된 순서와 다르게 배열하면 서로 다른 릴레이션이 된다"
+    ],
+    "answer": 3,
+    "explanation": "차수는 속성(열)의 수라 학번·이름·학과·학년 4개, 카디널리티는 튜플(행)의 수라 3이다. 릴레이션은 튜플 사이에 순서가 없어서 행을 어떻게 배열하든 같은 릴레이션이다. 차수와 카디널리티를 맞바꿔 놓은 선지와 함께 단골로 나온다."
+  },
+  {
+    "id": "db-relation-property-wrong",
+    "area": "데이터베이스",
+    "difficulty": "중",
+    "topic": "relation-basics",
+    "question": "릴레이션(Relation)의 성질에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "한 릴레이션에 포함된 튜플(Tuple)은 모두 서로 다르다",
+      "속성(Attribute) 사이에는 순서가 없다",
+      "모든 속성 값은 더 이상 분해할 수 없는 원자값(Atomic Value)이다",
+      "하나의 속성은 서로 다른 도메인(Domain)의 값을 자유롭게 섞어 가질 수 있다"
+    ],
+    "answer": 3,
+    "explanation": "속성 값은 그 속성에 정의된 하나의 도메인 안에서만 나와야 하며, 도메인이 뒤섞이면 도메인 무결성 위반이다. 나머지 셋은 릴레이션 4성질 중 튜플 유일성·속성 무순서성·속성 원자성이고, 여기에 튜플 무순서성까지가 네 가지다."
+  },
+  {
+    "id": "db-data-model-elements",
+    "area": "데이터베이스",
+    "difficulty": "하",
+    "topic": "relation-basics",
+    "question": "데이터 모델(Data Model)을 구성하는 3요소에 해당하지 않는 것은?",
+    "choices": [
+      "구조(Structure)",
+      "연산(Operation)",
+      "제약조건(Constraint)",
+      "인덱스(Index)"
+    ],
+    "answer": 3,
+    "explanation": "데이터 모델은 구조·연산·제약조건 세 요소로 정의된다. 구조는 데이터의 논리적 구성, 연산은 실제 데이터를 처리하는 작업의 명세, 제약조건은 값이 지켜야 할 논리적 규칙이다. 인덱스는 물리적 설계에서 성능을 위해 두는 접근 구조일 뿐 모델의 구성 요소가 아니다."
+  },
+  {
+    "id": "db-referential-integrity-case",
+    "area": "데이터베이스",
+    "difficulty": "상",
+    "topic": "relation-basics",
+    "question": "다음 연산이 데이터베이스에 의해 거부되었다면 위반한 무결성 제약으로 옳은 것은?",
+    "code": "[릴레이션 스키마]\n사원(사번, 이름, 부서코드)\n부서(부서코드, 부서명)\n- 사원.부서코드는 부서.부서코드를 참조하는 외래키다.\n\n[시도한 연산]\nINSERT INTO 사원 VALUES (1005, '최유진', 'D99');\n- 단, 부서 릴레이션에 부서코드가 'D99'인 튜플은 없다.",
+    "choices": [
+      "개체 무결성(Entity Integrity)",
+      "참조 무결성(Referential Integrity)",
+      "도메인 무결성(Domain Integrity)",
+      "NULL 무결성(NULL Integrity)"
+    ],
+    "answer": 1,
+    "explanation": "외래키 값은 참조하는 릴레이션의 기본키 값과 같거나 NULL이어야 한다는 것이 참조 무결성이다. 존재하지 않는 부서코드 'D99'를 넣었으니 위반이다. 기본키가 NULL이거나 중복되면 개체 무결성, 값이 정의된 도메인을 벗어나면 도메인 무결성 위반이라는 점과 구분해야 한다."
+  },
+  {
+    "id": "db-cardinality-term",
+    "area": "데이터베이스",
+    "difficulty": "하",
+    "topic": "relation-basics",
+    "question": "릴레이션을 구성하는 튜플(행)의 개수를 가리키는 용어로 옳은 것은?",
+    "choices": [
+      "Cardinality",
+      "Degree",
+      "Domain",
+      "Attribute"
+    ],
+    "answer": 0,
+    "explanation": "튜플의 수가 카디널리티(Cardinality), 속성의 수가 차수(Degree)다. 둘을 맞바꿔 놓은 선지가 이 주제에서 가장 흔한 함정이다. Domain은 속성이 가질 수 있는 값의 집합, Attribute는 릴레이션의 열 자체를 뜻한다."
+  },
+  {
+    "id": "db-design-step-order",
+    "area": "데이터베이스",
+    "difficulty": "중",
+    "topic": "db-design-steps",
+    "question": "데이터베이스 설계 단계를 순서대로 바르게 나열한 것은?",
+    "code": "ㄱ. 논리적 설계\nㄴ. 물리적 설계\nㄷ. 요구조건 분석\nㄹ. 개념적 설계\nㅁ. 구현",
+    "choices": [
+      "ㄷ → ㄹ → ㄱ → ㄴ → ㅁ",
+      "ㄷ → ㄱ → ㄹ → ㄴ → ㅁ",
+      "ㄹ → ㄷ → ㄱ → ㄴ → ㅁ",
+      "ㄷ → ㄹ → ㄴ → ㄱ → ㅁ"
+    ],
+    "answer": 0,
+    "explanation": "요구조건 분석 → 개념적 설계 → 논리적 설계 → 물리적 설계 → 구현 순이다. 개념적 설계는 DBMS와 무관한 추상화, 논리적 설계는 DBMS에 맞춘 스키마 변환과 정규화, 물리적 설계는 저장 구조와 접근 경로 결정이다. 논리와 물리의 순서를 뒤집어 놓은 선지가 함정이다."
+  },
+  {
+    "id": "db-physical-design-scope",
+    "area": "데이터베이스",
+    "difficulty": "중",
+    "topic": "db-design-steps",
+    "question": "물리적 설계 단계에서 수행하는 작업이나 고려 사항에 해당하지 않는 것은?",
+    "choices": [
+      "저장 레코드 양식 설계",
+      "인덱스와 접근 경로 설계",
+      "데이터 값의 분포와 접근 빈도 분석",
+      "트랜잭션 모델링"
+    ],
+    "answer": 3,
+    "explanation": "트랜잭션 모델링은 개념적 설계 단계의 일이다. 물리적 설계는 데이터를 저장 장치에 어떻게 담을지를 정하는 단계라 저장 레코드 양식·접근 경로·인덱스를 설계하며, 이때 고려하는 것은 데이터 타입·데이터 값의 분포·접근 빈도 세 가지다. 이 셋을 묶어 외우면 오답이 바로 걸러진다."
+  },
+  {
+    "id": "db-conceptual-design-step",
+    "area": "데이터베이스",
+    "difficulty": "중",
+    "topic": "db-design-steps",
+    "question": "다음 작업을 수행하는 데이터베이스 설계 단계로 옳은 것은?",
+    "code": "- 특정 DBMS에 독립적으로 현실 세계를 개체(Entity)와 관계(Relationship)로 추상화한다.\n- 산출물로 E-R 다이어그램과 개념 스키마를 만든다.\n- 트랜잭션 모델링을 수행한다.",
+    "choices": [
+      "요구조건 분석",
+      "개념적 설계",
+      "논리적 설계",
+      "물리적 설계"
+    ],
+    "answer": 1,
+    "explanation": "특정 DBMS와 무관하게 개체와 관계로 추상화하고 E-R 다이어그램·개념 스키마를 산출하는 단계가 개념적 설계다. 트랜잭션 모델링도 여기서 한다. 이를 목표 DBMS의 테이블로 옮기고 정규화하는 것은 다음 단계인 논리적 설계다."
+  },
+  {
+    "id": "db-logical-design-task",
+    "area": "데이터베이스",
+    "difficulty": "상",
+    "topic": "db-design-steps",
+    "question": "논리적 설계 단계에 대한 설명으로 틀린 것은?",
+    "choices": [
+      "사용할 DBMS에 맞는 논리 스키마로 변환한다",
+      "정규화를 수행해 중복과 이상 현상을 줄인다",
+      "트랜잭션 인터페이스를 설계한다",
+      "레코드의 저장 형식과 접근 경로를 확정한다"
+    ],
+    "answer": 3,
+    "explanation": "저장 형식과 접근 경로를 확정하는 것은 물리적 설계다. 논리적 설계는 개념 스키마를 목표 DBMS의 논리 스키마(관계형이면 테이블)로 옮기고 정규화와 트랜잭션 인터페이스 설계를 맡는다. '트랜잭션 모델링(개념적 설계)'과 '트랜잭션 인터페이스 설계(논리적 설계)'는 이름이 비슷해 자주 뒤바뀐다."
+  },
+  {
+    "id": "db-data-dictionary-update",
+    "area": "데이터베이스",
+    "difficulty": "상",
+    "topic": "db-design-steps",
+    "question": "데이터 사전(Data Dictionary)에 대한 설명으로 틀린 것은?",
+    "choices": [
+      "시스템 카탈로그라고도 하며 메타데이터(Metadata)를 저장한다",
+      "사용자가 SELECT 문으로 그 내용을 조회할 수 있다",
+      "사용자가 INSERT·UPDATE 문으로 그 내용을 직접 갱신할 수 있다",
+      "DDL이 실행되면 DBMS가 그 내용을 자동으로 갱신한다"
+    ],
+    "answer": 2,
+    "explanation": "데이터 사전은 DBMS가 스스로 관리하는 시스템 테이블이라 조회는 되지만 사용자가 직접 갱신할 수는 없다. 테이블 생성 같은 DDL이 실행될 때 DBMS가 알아서 내용을 고친다. '조회 가능, 갱신 불가'라는 비대칭이 이 주제에서 유일하게 갈리는 지점이다."
+  },
+  {
+    "id": "db-distributed-transparency-not",
+    "area": "데이터베이스",
+    "difficulty": "하",
+    "topic": "distributed-db",
+    "question": "분산 데이터베이스가 제공해야 하는 투명성(Transparency)이 아닌 것은?",
+    "choices": [
+      "위치 투명성(Location Transparency)",
+      "중복 투명성(Replication Transparency)",
+      "병행 투명성(Concurrency Transparency)",
+      "계층 투명성(Hierarchy Transparency)"
+    ],
+    "answer": 3,
+    "explanation": "투명성은 위치·중복(복제)·병행·장애 네 가지이며 계층 투명성이라는 항목은 없다. 네 가지 모두 '사용자가 분산되어 있다는 사실을 몰라도 되게 한다'는 하나의 목표를 각기 다른 측면에서 말한 것이다."
+  },
+  {
+    "id": "db-distributed-failure-transparency",
+    "area": "데이터베이스",
+    "difficulty": "중",
+    "topic": "distributed-db",
+    "question": "다음 설명에 해당하는 분산 데이터베이스의 투명성으로 옳은 것은?",
+    "code": "- 시스템의 특정 지역(사이트)에 장애가 발생하더라도\n- 해당 트랜잭션은 원자성을 잃지 않고 정확하게 처리된다.",
+    "choices": [
+      "Location Transparency",
+      "Replication Transparency",
+      "Concurrency Transparency",
+      "Failure Transparency"
+    ],
+    "answer": 3,
+    "explanation": "장애가 나도 트랜잭션이 원자성을 잃지 않고 정확히 처리되는 성질이 장애 투명성(Failure Transparency)이다. 데이터의 물리적 위치를 몰라도 되는 것이 위치, 복사본이 몇 개인지 의식하지 않아도 되는 것이 중복, 동시 접근에도 서로 간섭받지 않는 것이 병행 투명성이다."
+  },
+  {
+    "id": "db-distributed-pros-cons",
+    "area": "데이터베이스",
+    "difficulty": "상",
+    "topic": "distributed-db",
+    "question": "분산 데이터베이스 시스템에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "여러 지역에 물리적으로 분산된 데이터베이스를 논리적으로는 하나처럼 사용한다",
+      "지역 자치성이 높고 시스템 확장이 비교적 쉽다",
+      "중앙 집중식보다 설계와 관리가 단순해지고 통신 비용도 줄어든다",
+      "한 지역에 장애가 생겨도 다른 지역이 처리를 이어받을 수 있어 가용성이 높다"
+    ],
+    "answer": 2,
+    "explanation": "분산 데이터베이스는 사이트가 늘수록 설계·관리 복잡도가 커지고 사이트 사이의 통신 비용이 추가로 든다 — 이것이 대표적인 단점이다. 장점은 지역 자치성, 확장 용이성, 장애 시 가용성 유지이므로 장단점을 통째로 뒤집어 놓은 선지를 골라내면 된다."
+  },
+  {
+    "id": "db-distributed-local-computer",
+    "area": "데이터베이스",
+    "difficulty": "하",
+    "topic": "distributed-db",
+    "question": "분산 데이터베이스 시스템에서 각 지역에 위치해 자체 데이터베이스를 관리하고 그 지역 사용자의 요구를 처리하는 컴퓨터를 가리키는 것은?",
+    "choices": [
+      "Local Computer",
+      "Communication Network",
+      "Global Schema",
+      "Data Dictionary"
+    ],
+    "answer": 0,
+    "explanation": "지역 컴퓨터(Local Computer)는 분산 처리기라고도 하며 자기 지역의 데이터를 자율적으로 관리한다. 이들을 잇는 통신 네트워크(Communication Network)는 분산 시스템의 성능을 좌우하는 별개의 구성 요소이므로 둘을 섞어 놓은 선지에 주의해야 한다."
+  },
+  {
+    "id": "db-distributed-transparency-goal",
+    "area": "데이터베이스",
+    "difficulty": "중",
+    "topic": "distributed-db",
+    "question": "분산 데이터베이스의 투명성이 지향하는 바와 가장 거리가 먼 것은?",
+    "choices": [
+      "사용자는 데이터가 어느 사이트에 저장되어 있는지 몰라도 질의할 수 있어야 한다",
+      "같은 데이터의 복사본이 몇 개 유지되는지 사용자가 의식하지 않아도 되어야 한다",
+      "데이터가 여러 사이트에 분산되어 있다는 사실을 사용자가 인식하도록 드러내야 한다",
+      "여러 트랜잭션이 동시에 수행되어도 서로 간섭 없이 일관된 결과를 얻어야 한다"
+    ],
+    "answer": 2,
+    "explanation": "투명성의 목표는 분산되어 있다는 사실을 감춰 사용자가 하나의 데이터베이스처럼 쓰게 만드는 것이다. 분산을 드러내야 한다는 서술은 목표를 정반대로 뒤집은 것이라 오답이다. 나머지 셋은 각각 위치·중복·병행 투명성의 설명이다."
+  },
+  {
+    "id": "db-sql-orderby-blank",
+    "area": "데이터베이스",
+    "difficulty": "중",
+    "topic": "sql-query-basics",
+    "question": "다음 [조건]을 만족하도록 [SQL문]의 괄호에 들어갈 내용으로 옳은 것은?",
+    "code": "[조건]\n학생 테이블에서 학과가 '컴퓨터공학'인 학생의 이름과 점수를\n점수가 높은 학생부터 차례로 출력한다.\n\n[SQL문]\nSELECT 이름, 점수\n  FROM 학생\n WHERE 학과 = '컴퓨터공학'\n (        );",
+    "choices": [
+      "ORDER BY 점수 ASC",
+      "ORDER BY 점수 DESC",
+      "GROUP BY 점수 DESC",
+      "SORT BY 점수 DESC"
+    ],
+    "answer": 1,
+    "explanation": "정렬은 ORDER BY이고 내림차순은 DESC다. ASC는 생략 시 기본값인 오름차순이라 낮은 점수부터 나온다. GROUP BY는 행을 그룹으로 묶는 절이라 정렬 용도로 쓸 수 없고, SORT BY는 표준 SQL에 없는 구문이다."
+  },
+  {
+    "id": "db-sql-between-blank",
+    "area": "데이터베이스",
+    "difficulty": "중",
+    "topic": "sql-query-basics",
+    "question": "다음 [조건]을 만족하도록 [SQL문]의 괄호에 들어갈 조건으로 옳은 것은?",
+    "code": "[조건]\n학생 테이블에서 점수가 80점 이상 90점 이하인 학생의 이름을 출력한다.\n\n[SQL문]\nSELECT 이름\n  FROM 학생\n WHERE (                    );",
+    "choices": [
+      "점수 BETWEEN 80 AND 90",
+      "점수 IN (80, 90)",
+      "점수 LIKE '80-90'",
+      "점수 >= 80 OR 점수 <= 90"
+    ],
+    "answer": 0,
+    "explanation": "BETWEEN A AND B는 양 끝값을 포함하는 범위 조건이라 '80 이상 90 이하'와 정확히 같다. IN은 나열한 값과 정확히 일치하는 행만 고르고, LIKE는 문자열 패턴 매칭이라 숫자 범위에 쓸 수 없다. 4번은 OR라서 모든 행이 참이 되어 버리므로 AND로 써야 맞다."
+  },
+  {
+    "id": "db-sql-grant-form",
+    "area": "데이터베이스",
+    "difficulty": "중",
+    "topic": "sql-query-basics",
+    "question": "다음 [조건]을 수행하는 SQL문으로 옳은 것은?",
+    "code": "[조건]\n사용자 KIM에게 학생 테이블을 검색할 수 있는 권한을 부여한다.",
+    "choices": [
+      "GRANT SELECT ON 학생 TO KIM;",
+      "GRANT SELECT TO 학생 ON KIM;",
+      "GRANT KIM ON SELECT TO 학생;",
+      "REVOKE SELECT ON 학생 FROM KIM;"
+    ],
+    "answer": 0,
+    "explanation": "권한 부여는 GRANT 권한 ON 객체 TO 사용자 순서로 쓴다. '무엇을(SELECT) 어디에(학생) 누구에게(KIM)'로 읽으면 순서가 헷갈리지 않는다. 4번의 REVOKE는 권한을 거두는 반대 명령이고, ON과 TO 뒤의 대상을 서로 바꿔 놓은 선지가 단골 함정이다."
+  },
+  {
+    "id": "db-sql-revoke-cascade",
+    "area": "데이터베이스",
+    "difficulty": "상",
+    "topic": "sql-query-basics",
+    "question": "권한을 제어하는 DCL(Data Control Language) 구문에 대한 설명으로 틀린 것은?",
+    "choices": [
+      "GRANT는 'GRANT 권한 ON 객체 TO 사용자' 형태로 쓴다",
+      "REVOKE는 'REVOKE 권한 ON 객체 FROM 사용자' 형태로 쓴다",
+      "WITH GRANT OPTION을 붙여 권한을 주면 받은 사용자가 그 권한을 다시 다른 사용자에게 부여할 수 있다",
+      "REVOKE에 CASCADE를 붙이면 해당 사용자의 권한만 회수하고 그가 넘겨준 권한은 그대로 남는다"
+    ],
+    "answer": 3,
+    "explanation": "CASCADE는 연쇄 회수 옵션이라 그 사용자가 다른 사용자에게 넘겨준 권한까지 함께 거둬 간다. 넘겨준 권한이 남으면 회수 자체가 무의미해지기 때문이다. 방향은 GRANT가 TO, REVOKE가 FROM으로 갈리고, 재부여까지 허용하는 옵션이 WITH GRANT OPTION이다."
+  },
+  {
+    "id": "db-sql-subquery-avg",
+    "area": "데이터베이스",
+    "difficulty": "상",
+    "topic": "sql-query-basics",
+    "question": "다음 [조건]을 만족하도록 [SQL문]의 괄호에 들어갈 하위 질의(Subquery)로 옳은 것은?",
+    "code": "[조건]\n사원 테이블에서 급여가 전체 사원의 평균 급여보다 많은 사원의\n이름과 급여를 출력한다.\n\n[SQL문]\nSELECT 이름, 급여\n  FROM 사원\n WHERE 급여 > (                          );",
+    "choices": [
+      "AVG(급여)",
+      "SELECT AVG(급여) FROM 사원",
+      "SELECT 급여 FROM 사원",
+      "SELECT MAX(급여) FROM 사원"
+    ],
+    "answer": 1,
+    "explanation": "WHERE 절에는 집계 함수를 직접 쓸 수 없으므로 평균을 구하는 SELECT 문을 하위 질의로 감싸 하나의 값으로 만든 뒤 비교한다. 그래서 1번은 문법 오류이고, 3번은 여러 행을 돌려줘 단일 값 비교 연산자(>)와 맞지 않으며, 4번은 최댓값이라 조건 자체가 달라진다."
+  },
+  {
+    "id": "db-sql-having-from-table",
+    "area": "데이터베이스",
+    "difficulty": "상",
+    "topic": "sql-query-basics",
+    "question": "다음 [사원] 테이블에서 [결과]를 얻기 위한 SQL문으로 옳은 것은?",
+    "code": "[사원]\n사번  | 이름   | 부서 | 급여\n------+--------+------+------\n101   | 김철수 | 영업 | 3200\n102   | 이영희 | 개발 | 4500\n103   | 박민준 | 개발 | 3800\n104   | 최수빈 | 영업 | 2900\n\n[결과]\n부서 | 인원 | 평균급여\n-----+------+---------\n개발 |  2   |   4150",
+    "choices": [
+      "SELECT 부서, COUNT(*) AS 인원, AVG(급여) AS 평균급여 FROM 사원 WHERE AVG(급여) >= 4000 GROUP BY 부서;",
+      "SELECT 부서, COUNT(*) AS 인원, AVG(급여) AS 평균급여 FROM 사원 GROUP BY 부서 HAVING AVG(급여) >= 4000;",
+      "SELECT 부서, COUNT(*) AS 인원, AVG(급여) AS 평균급여 FROM 사원 WHERE 급여 >= 4000 GROUP BY 부서;",
+      "SELECT 부서, COUNT(*) AS 인원, AVG(급여) AS 평균급여 FROM 사원 GROUP BY 급여 HAVING AVG(급여) >= 4000;"
+    ],
+    "answer": 1,
+    "explanation": "부서로 묶은 뒤 그룹 단위 조건을 거는 것이므로 GROUP BY 부서 다음에 HAVING AVG(급여) >= 4000을 써야 한다. 1번처럼 WHERE에 집계 함수를 쓰면 문법 오류이고, 3번은 급여가 4000 이상인 행만 남아 개발 부서 인원이 1로 나오며, 4번은 급여로 묶어 부서별 집계가 되지 않는다."
+  },
+  {
+    "id": "sec-malware-worm-def",
+    "area": "정보보안",
+    "difficulty": "하",
+    "topic": "malware-types",
+    "question": "다음 설명에 해당하는 악성코드는?",
+    "code": "- 숙주 파일에 기생하지 않고 독립된 프로그램으로 존재한다\n- 스스로를 복제해 네트워크를 타고 자동으로 퍼진다\n- 전파 과정에서 대역폭과 시스템 자원을 크게 소모시킨다",
+    "choices": [
+      "Worm",
+      "Trojan Horse",
+      "Adware",
+      "Macro Blaster"
+    ],
+    "answer": 0,
+    "explanation": "숙주 없이 자기 복제와 자가 전파를 한다는 것이 웜(Worm)을 가리키는 결정적 단서다. 트로이 목마(Trojan Horse)는 정상 프로그램으로 위장할 뿐 자기 복제를 하지 않고, 애드웨어(Adware)는 광고 노출이 목적이다. Macro Blaster는 실재하지 않는 용어다."
+  },
+  {
+    "id": "sec-malware-trojan-replicate",
+    "area": "정보보안",
+    "difficulty": "중",
+    "topic": "malware-types",
+    "question": "악성코드 유형에 대한 설명으로 틀린 것은?",
+    "choices": [
+      "바이러스(Virus)는 다른 실행 파일에 자신을 붙이므로 숙주 파일이 필요하다",
+      "웜(Worm)은 숙주 없이 스스로를 복제해 네트워크로 전파된다",
+      "트로이 목마(Trojan Horse)는 유용한 프로그램인 척 위장해 사용자가 직접 설치하게 만든다",
+      "트로이 목마(Trojan Horse)는 자기 복제로 다른 시스템까지 스스로 퍼져 나간다"
+    ],
+    "answer": 3,
+    "explanation": "트로이 목마의 정의적 특징은 '위장'이지 '복제'가 아니다 — 스스로 퍼지지 못하고 사용자가 속아서 설치해야 동작한다. 자기 복제는 바이러스(숙주 필요)와 웜(숙주 불필요)의 성질이며, 이 셋의 구분이 최빈출 지점이다."
+  },
+  {
+    "id": "sec-malware-rogueware-def",
+    "area": "정보보안",
+    "difficulty": "중",
+    "topic": "malware-types",
+    "question": "다음 설명에 해당하는 악성코드는?",
+    "code": "- 정상적인 백신 프로그램인 것처럼 화면과 이름을 꾸민다\n- 감염되지 않은 시스템을 감염됐다고 허위로 경고한다\n- 치료를 명목으로 결제나 정품 구매를 유도한다",
+    "choices": [
+      "Ransomware",
+      "Rogue Ware",
+      "Keylogger",
+      "Anti-Vaccine"
+    ],
+    "answer": 1,
+    "explanation": "가짜 백신 행세를 하며 허위 감염 경고로 결제를 유도하는 것이 로그웨어(Rogue Ware)다. 랜섬웨어(Ransomware)는 실제로 파일을 암호화한 뒤 대가를 요구하고, 키로거(Keylogger)는 키보드 입력을 가로챈다. Anti-Vaccine은 지어낸 용어다."
+  },
+  {
+    "id": "sec-malware-rootkit-def",
+    "area": "정보보안",
+    "difficulty": "상",
+    "topic": "malware-types",
+    "question": "다음 설명에 해당하는 악성코드는?",
+    "code": "- 침투에 성공한 뒤 관리자 권한을 계속 유지하는 것이 목적이다\n- 자신의 프로세스·파일·접속 기록을 시스템 조회 결과에서 숨긴다\n- 운영체제 핵심 영역에 자리 잡아 일반적인 검사로는 발견하기 어렵다",
+    "choices": [
+      "Botnet",
+      "Logic Bomb",
+      "Rootkit",
+      "Stealth Loader"
+    ],
+    "answer": 2,
+    "explanation": "침입 후 흔적을 감추고 권한을 유지하는 은닉 도구 모음이 루트킷(Rootkit)이다. 봇넷(Botnet)은 원격 조종되는 감염 시스템의 집단이고, 논리 폭탄(Logic Bomb)은 특정 조건이 충족될 때 터지도록 심어 둔 코드다. Stealth Loader는 실재하지 않는 용어다."
+  },
+  {
+    "id": "sec-malware-behavior-match",
+    "area": "정보보안",
+    "difficulty": "중",
+    "topic": "malware-types",
+    "question": "악성코드와 그 주된 행위의 연결이 옳지 않은 것은?",
+    "choices": [
+      "키로거(Keylogger) — 키보드 입력을 가로채 계정 정보나 카드 번호를 빼낸다",
+      "애드웨어(Adware) — 사용자가 원하지 않는 광고를 강제로 노출한다",
+      "봇넷(Botnet) — 감염된 다수의 시스템을 원격에서 한꺼번에 조종한다",
+      "랜섬웨어(Ransomware) — 시스템 파일을 삭제해 부팅을 막고 자신의 흔적을 숨긴다"
+    ],
+    "answer": 3,
+    "explanation": "랜섬웨어는 파일을 삭제하는 것이 아니라 암호화해 열지 못하게 만든 뒤 복호화 대가를 요구한다 — 그래서 침해되는 요소가 가용성이다. 흔적을 숨기는 것은 루트킷의 역할이라, 서로 다른 두 악성코드의 행위를 섞어 놓은 보기가 함정이다."
+  },
+  {
+    "id": "sec-threat-physical-not",
+    "area": "정보보안",
+    "difficulty": "하",
+    "topic": "security-threat-types",
+    "question": "다음 중 물리적 위협에 해당하지 않는 것은?",
+    "choices": [
+      "방화벽 정책을 잘못 설정해 불필요한 포트가 열려 있는 것",
+      "지진이나 홍수로 전산실 설비가 파손되는 것",
+      "서버 장비를 무단 반출해 도난당하는 것",
+      "화재로 백업 매체가 소실되는 것"
+    ],
+    "answer": 0,
+    "explanation": "방화벽 설정 오류는 기술적 수단의 결함에서 비롯되므로 기술적 위협이다. 물리적 위협은 천재지변·화재·도난·파손처럼 실체가 있는 자산에 물리력이 가해지는 경우이며, 원인이 물리력인지 기술인지로 갈라 본다."
+  },
+  {
+    "id": "sec-threat-classify-cases",
+    "area": "정보보안",
+    "difficulty": "상",
+    "topic": "security-threat-types",
+    "question": "다음 상황 ㄱ~ㄷ을 보안 위협의 분류에 맞게 짝지은 것은?",
+    "code": "ㄱ. 정전으로 서버실의 스토리지 장비가 손상됐다\nㄴ. 운영 서버에 초기 설정 그대로의 취약한 관리자 암호가 남아 있었다\nㄷ. 퇴사자 계정을 회수하는 절차가 없어 계정이 그대로 살아 있었다",
+    "choices": [
+      "ㄱ 기술적, ㄴ 물리적, ㄷ 관리적",
+      "ㄱ 물리적, ㄴ 관리적, ㄷ 기술적",
+      "ㄱ 물리적, ㄴ 기술적, ㄷ 관리적",
+      "ㄱ 관리적, ㄴ 기술적, ㄷ 물리적"
+    ],
+    "answer": 2,
+    "explanation": "장비 손상은 물리적 위협, 취약한 암호는 기술적 수단의 결함이라 기술적 위협, 절차와 정책의 부재는 관리적 위협이다. 사람과 절차에서 비롯됐으면 관리적, 설정·기술의 결함이면 기술적으로 가르는 것이 판별 기준이다."
+  },
+  {
+    "id": "sec-threat-server-room-control",
+    "area": "정보보안",
+    "difficulty": "중",
+    "topic": "security-threat-types",
+    "question": "서버 관리실 출입문에 인증 장치를 두고 출입 기록을 남기는 조치는 무엇에 해당하는가?",
+    "choices": [
+      "기술적 위협에 대한 기술적 대책",
+      "관리적 위협에 대한 기술적 대책",
+      "기술적 위협에 대한 관리적 대책",
+      "물리적 위협에 대한 물리적 대책"
+    ],
+    "answer": 3,
+    "explanation": "출입 통제는 사람이 장비에 직접 손대는 것을 막는 조치이므로 물리적 위협에 대한 물리적 대책이다. '인증'과 '기록'이라는 말만 보고 기술적 대책으로 고르기 쉬운데, 보호 대상이 물리적 자산이라는 점이 기준이다."
+  },
+  {
+    "id": "sec-vuln-app-privilege",
+    "area": "정보보안",
+    "difficulty": "중",
+    "topic": "security-threat-types",
+    "question": "응용 프로그램의 취약점을 줄이기 위한 조치로 가장 적절하지 않은 것은?",
+    "choices": [
+      "권한 오류를 피하기 위해 응용 프로그램을 항상 관리자 권한으로 실행한다",
+      "제공되는 보안 패치를 확인해 최신 상태로 유지한다",
+      "사용하지 않는 서비스와 계정을 제거한다",
+      "주요 파일에 대한 무결성 검사를 주기적으로 수행한다"
+    ],
+    "answer": 0,
+    "explanation": "응용 프로그램은 동작에 필요한 최소한의 권한으로 실행해야 한다 — 관리자 권한으로 돌리면 취약점 하나가 뚫렸을 때 시스템 전체가 넘어간다. 패치 유지·불필요한 서비스 제거·무결성 검사는 모두 올바른 수칙이다."
+  },
+  {
+    "id": "sec-threat-managerial-far",
+    "area": "정보보안",
+    "difficulty": "상",
+    "topic": "security-threat-types",
+    "question": "관리적 위협에 대한 설명으로 가장 거리가 먼 것은?",
+    "choices": [
+      "보안 정책과 지침이 없어 담당자마다 처리 방식이 제각각이다",
+      "직원 대상 보안 교육이 없어 피싱 메일에 그대로 반응한다",
+      "권한 부여와 회수 절차가 없어 불필요한 권한이 계속 쌓인다",
+      "노후한 항온항습 설비가 고장 나 장비가 과열로 멈춘다"
+    ],
+    "answer": 3,
+    "explanation": "설비 고장으로 장비가 손상되는 것은 물리적 위협이다. 관리적 위협은 정책 부재·교육 부족·권한 관리 미흡처럼 사람과 절차의 결함에서 나오므로, 원인이 설비인지 절차인지를 따져 가른다."
+  },
+  {
+    "id": "net-ip-protocol-def",
+    "area": "네트워크",
+    "difficulty": "중",
+    "topic": "ip-protocol",
+    "question": "다음 설명에 해당하는 프로토콜은?",
+    "code": "- 네트워크 계층에서 패킷을 목적지까지 전달한다\n- 연결을 맺지 않고 보내며 도착을 보장하지 않는다\n- 오류 검출용 체크섬을 헤더에만 두고 데이터 부분은 검사하지 않는다",
+    "choices": [
+      "ICMP",
+      "ARP",
+      "IP",
+      "TCP"
+    ],
+    "answer": 2,
+    "explanation": "비연결형이면서 최선형 전달(Best Effort Delivery)을 하고 헤더 체크섬만 두는 것이 IP(Internet Protocol)의 특징이다. 신뢰성은 위층인 TCP가 책임지고, ICMP는 오류·상태 통보를, ARP는 IP 주소를 MAC 주소로 변환하는 일을 맡는다."
+  },
+  {
+    "id": "net-ip-header-field-not",
+    "area": "네트워크",
+    "difficulty": "하",
+    "topic": "ip-protocol",
+    "question": "IPv4 헤더에 포함되는 필드가 아닌 것은?",
+    "choices": [
+      "TTL(Time To Live)",
+      "전체 패킷 길이(Total Packet Length)",
+      "상위 프로토콜 번호(Protocol)",
+      "목적지 포트 번호(Destination Port Number)"
+    ],
+    "answer": 3,
+    "explanation": "포트 번호는 네트워크 계층이 아니라 전송 계층(TCP·UDP) 헤더의 필드다. IP 헤더에는 버전(Version)·헤더 길이(Header Length)·전체 패킷 길이·TTL·Protocol·헤더 체크섬과 출발지·목적지 IP 주소가 들어간다."
+  },
+  {
+    "id": "net-ip-ttl-hops",
+    "area": "네트워크",
+    "difficulty": "중",
+    "topic": "ip-protocol",
+    "question": "송신 호스트가 TTL(Time To Live)을 64로 설정해 보낸 패킷이 목적지에 도착했을 때 TTL 값이 57이었다. 이 패킷이 거쳐 온 라우터의 수는?",
+    "choices": [
+      "6개",
+      "7개",
+      "8개",
+      "57개"
+    ],
+    "answer": 1,
+    "explanation": "TTL은 라우터를 하나 지날 때마다 1씩 줄어들므로 64 - 57 = 7, 라우터 7개를 거쳤다. TTL이 0이 되면 패킷은 그 자리에서 폐기되며, 이 장치가 라우팅 루프로 인한 무한 순환을 막는다."
+  },
+  {
+    "id": "net-ip-header-data-size",
+    "area": "네트워크",
+    "difficulty": "상",
+    "topic": "ip-protocol",
+    "question": "어떤 IPv4 패킷의 헤더 길이(Header Length) 필드 값이 7이고 전체 패킷 길이(Total Packet Length) 필드 값이 1500일 때, 데이터 부분의 크기는?",
+    "choices": [
+      "1465바이트",
+      "1472바이트",
+      "1480바이트",
+      "1493바이트"
+    ],
+    "answer": 1,
+    "explanation": "헤더 길이 필드는 32비트(4바이트) 워드 단위로 표시하므로 실제 헤더는 7 × 4 = 28바이트다. 전체 패킷 길이는 헤더까지 포함한 값이라 데이터는 1500 - 28 = 1472바이트다. 필드 값 7을 그대로 바이트로 읽어 1493을 고르는 것이 함정이다."
+  },
+  {
+    "id": "net-ip-fragment-reassembly",
+    "area": "네트워크",
+    "difficulty": "상",
+    "topic": "ip-protocol",
+    "question": "IP 단편화(Fragmentation)와 재조립에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "링크마다 전송 가능한 최대 크기(MTU)가 달라 단편화가 필요하다",
+      "단편화된 조각은 중간 라우터를 지날 때마다 재조립된 뒤 다시 쪼개진다",
+      "재조립은 최종 목적지 호스트에서 이뤄진다",
+      "조각들은 서로 다른 경로로 전달될 수 있어 도착 순서가 뒤바뀔 수 있다"
+    ],
+    "answer": 1,
+    "explanation": "중간 라우터는 필요하면 더 쪼갤 뿐 재조립하지 않는다 — 조각마다 경로가 달라질 수 있어 한 라우터가 모든 조각을 모을 보장이 없기 때문이다. 그래서 재조립은 모든 조각이 결국 모이는 최종 목적지에서만 한다."
+  },
+  {
+    "id": "net-topology-star-def",
+    "area": "네트워크",
+    "difficulty": "하",
+    "topic": "network-topology",
+    "question": "다음 설명에 해당하는 네트워크 토폴로지는?",
+    "code": "- 모든 노드가 중앙의 한 장치에 각각 연결된다\n- 장애가 난 노드를 찾아내고 관리하기 쉽다\n- 중앙 장치가 고장 나면 네트워크 전체가 마비된다",
+    "choices": [
+      "Bus",
+      "Ring",
+      "Star",
+      "Mesh"
+    ],
+    "answer": 2,
+    "explanation": "중앙 집중 연결과 '중앙이 죽으면 전체가 멈춘다'는 성형(Star)의 전형적인 특징이다. 버스형(Bus)은 하나의 공용 회선에 매다는 형태, 링형(Ring)은 원형으로 이어 한 방향으로 도는 형태, 망형(Mesh)은 모든 노드를 서로 직접 잇는 형태다."
+  },
+  {
+    "id": "net-topology-features-not",
+    "area": "네트워크",
+    "difficulty": "중",
+    "topic": "network-topology",
+    "question": "네트워크 토폴로지에 대한 설명으로 틀린 것은?",
+    "choices": [
+      "버스형(Bus)은 하나의 공용 회선에 노드를 연결해 설치 비용이 적게 든다",
+      "링형(Ring)은 노드가 원형으로 이어져 데이터가 정해진 방향으로 순환한다",
+      "계층형(Tree)은 성형을 여러 단계로 확장해 쌓아 올린 형태다",
+      "망형(Mesh)은 필요한 회선 수가 적어 구축 비용이 가장 낮다"
+    ],
+    "answer": 3,
+    "explanation": "망형은 모든 노드를 서로 직접 잇느라 회선이 n(n-1)/2개나 필요해 비용이 가장 크다 — 대신 중계를 거치지 않고 직접 통신하므로 신뢰성이 가장 높다. '신뢰성이 높다'와 '비용이 싸다'를 바꿔치기한 보기가 단골 함정이다."
+  },
+  {
+    "id": "net-topology-mesh-lines",
+    "area": "네트워크",
+    "difficulty": "상",
+    "topic": "network-topology",
+    "question": "노드 12개를 모두 서로 직접 연결하는 완전 연결 망형(Mesh)을 구성할 때 필요한 회선 수는?",
+    "choices": [
+      "55개",
+      "66개",
+      "72개",
+      "132개"
+    ],
+    "answer": 1,
+    "explanation": "완전 연결 망형의 회선 수는 n(n-1)/2다. n = 12이므로 12 × 11 / 2 = 66개가 필요하다. 나누기 2를 빼먹으면 132, 노드를 11개로 잘못 세면 55가 나오므로 두 실수를 함께 조심한다."
+  },
+  {
+    "id": "net-device-layer-match",
+    "area": "네트워크",
+    "difficulty": "중",
+    "topic": "network-topology",
+    "question": "네트워크 장비와 그 장비가 동작하는 계층의 연결이 옳지 않은 것은?",
+    "choices": [
+      "게이트웨이(Gateway) — 물리 계층",
+      "리피터(Repeater) — 물리 계층",
+      "브리지(Bridge) — 데이터링크 계층",
+      "라우터(Router) — 네트워크 계층"
+    ],
+    "answer": 0,
+    "explanation": "게이트웨이는 서로 다른 프로토콜 체계를 변환해 이어 주는 장비라 전송 계층 이상의 상위 계층에서 동작한다. 신호를 증폭하는 리피터와 포트를 나누는 허브가 1계층, MAC 주소로 프레임을 거르는 브리지·스위치가 2계층, IP로 경로를 정하는 라우터가 3계층이다."
+  },
+  {
+    "id": "os-unix-shell-def",
+    "area": "운영체제",
+    "difficulty": "하",
+    "topic": "unix-os",
+    "question": "다음 설명에 해당하는 UNIX의 구성 요소는?",
+    "code": "- 사용자가 입력한 명령을 해석해 커널에 전달한다\n- 하드웨어를 직접 다루지 않고 요청을 넘기는 역할만 한다\n- 사용자가 다른 종류로 바꿔 쓸 수 있으며 여러 구현이 존재한다",
+    "choices": [
+      "Kernel",
+      "Utility",
+      "Shell",
+      "Interpreter Core"
+    ],
+    "answer": 2,
+    "explanation": "명령어 해석기 역할을 하며 교체가 가능한 것이 셸(Shell)이다. 커널(Kernel)은 하드웨어를 직접 다루며 프로세스·메모리·파일·입출력을 관리하는 핵심부이고, 유틸리티(Utility)는 편집기·컴파일러 같은 도구다. Interpreter Core는 실재하지 않는 용어다."
+  },
+  {
+    "id": "os-unix-feature-not",
+    "area": "운영체제",
+    "difficulty": "중",
+    "topic": "unix-os",
+    "question": "UNIX 운영체제의 특징으로 틀린 것은?",
+    "choices": [
+      "대화식 시분할(Time Sharing) 방식으로 동작한다",
+      "대부분이 어셈블리어로 작성되어 다른 기종으로 옮기기 어렵다",
+      "다중 사용자(Multi-User)와 다중 작업(Multi-Tasking)을 함께 지원한다",
+      "루트(/)를 정점으로 하는 트리 구조 파일 시스템을 사용한다"
+    ],
+    "answer": 1,
+    "explanation": "UNIX는 대부분이 C 언어로 작성돼 다른 기종으로 옮기기 쉬운 이식성이 큰 장점이다. 하드웨어에 직접 종속되는 극히 일부만 어셈블리로 쓴다. 이식성을 정반대로 뒤집은 이 진술이 단골 오답이다."
+  },
+  {
+    "id": "os-unix-kernel-shell",
+    "area": "운영체제",
+    "difficulty": "상",
+    "topic": "unix-os",
+    "question": "UNIX의 커널(Kernel)과 셸(Shell)에 대한 설명으로 옳은 것은?",
+    "choices": [
+      "커널은 부팅 시 메모리에 적재되어 상주하고, 셸은 사용자가 다른 종류로 바꿔 쓸 수 있다",
+      "셸이 하드웨어를 직접 제어하고, 커널이 사용자의 명령을 해석한다",
+      "셸은 프로세스·메모리·파일 시스템을 관리하는 핵심부다",
+      "커널과 셸은 같은 기능을 서로 다르게 부르는 이름이다"
+    ],
+    "answer": 0,
+    "explanation": "커널은 부팅과 함께 메모리에 상주하며 프로세스·메모리·파일·입출력을 관리하는 핵심부이고, 셸은 그 위에서 명령을 해석해 커널에 넘기는 껍데기라 사용자가 다른 셸로 교체할 수 있다. 둘의 역할을 뒤집은 보기가 최다 함정이다."
+  },
+  {
+    "id": "os-unix-filesystem-tree",
+    "area": "운영체제",
+    "difficulty": "중",
+    "topic": "unix-os",
+    "question": "UNIX 파일 시스템에 대한 설명으로 가장 거리가 먼 것은?",
+    "choices": [
+      "루트(/) 디렉터리를 정점으로 뻗어나가는 트리 구조다",
+      "디렉터리는 파일 이름과 i-node 번호의 대응을 보관한다",
+      "모든 파일이 계층 없이 하나의 평면(flat) 목록에 저장된다",
+      "주변 장치도 파일처럼 취급해 같은 방식으로 입출력한다"
+    ],
+    "answer": 2,
+    "explanation": "UNIX 파일 시스템은 평면 구조가 아니라 루트에서 갈라져 나가는 계층적 트리 구조다. 파일의 메타데이터는 i-node가 갖고 이름은 디렉터리가 가지며, 장치까지 파일로 다루는 것도 UNIX의 대표적인 설계 철학이다."
+  },
+  {
+    "id": "se-oop-instance-term",
+    "area": "소프트웨어공학",
+    "difficulty": "하",
+    "topic": "oop-basics",
+    "question": "다음 설명에 해당하는 객체지향 용어로 가장 적절한 것은?",
+    "code": "- 공통 속성과 연산을 가진 객체들을 정의해 놓은 틀로부터 실제로 만들어진다.\n- 같은 틀에서 여러 개를 만들 수 있고, 만들어진 각각은 자기만의 상태 값을 가진다.\n- 붕어빵 틀과 구워진 붕어빵의 관계에서 '붕어빵'에 해당한다.",
+    "choices": [
+      "Module",
+      "Package",
+      "Instance",
+      "Attribute"
+    ],
+    "answer": 2,
+    "explanation": "클래스(Class)라는 틀에서 실제로 생성된 개별 객체가 인스턴스(Instance)다. Module은 기능 단위로 나눈 코드 묶음, Package는 클래스들을 모아 놓은 이름 공간, Attribute는 객체가 가진 데이터 항목이라 틀과 실체의 관계를 가리키는 말이 아니다."
+  },
+  {
+    "id": "se-oop-encapsulation-hiding",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "oop-basics",
+    "question": "캡슐화(Encapsulation)와 정보 은닉(Information Hiding)에 대한 설명으로 틀린 것은?",
+    "choices": [
+      "캡슐화는 데이터인 속성과 그 속성을 다루는 연산을 클래스 안에 하나로 묶는 것이다",
+      "정보 은닉은 캡슐로 감싼 내부 구현을 외부에서 직접 건드리지 못하게 막는 것이다",
+      "Java의 private 접근 지정자는 해당 멤버를 외부에 공개하겠다는 선언이다",
+      "정보 은닉이 잘 되면 내부 구현이 바뀌어도 그 클래스를 사용하는 쪽 코드는 영향을 덜 받는다"
+    ],
+    "answer": 2,
+    "explanation": "private는 '공개'가 아니라 '해당 클래스 밖에서는 접근 금지'라는 선언으로, 정보 은닉을 구현하는 수단이다. 공개하는 쪽은 public이며, 이 둘을 뒤집어 놓은 선지가 단골 함정이다."
+  },
+  {
+    "id": "se-oop-overloading-overriding",
+    "area": "소프트웨어공학",
+    "difficulty": "상",
+    "topic": "oop-basics",
+    "question": "오버로딩(Overloading)과 오버라이딩(Overriding)에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "오버로딩은 한 클래스 안에서 이름은 같고 매개변수의 수나 타입이 다른 메서드를 여러 개 두는 것이다",
+      "오버라이딩은 상속 관계에서 상위 클래스의 메서드를 하위 클래스가 같은 형태로 다시 정의하는 것이다",
+      "오버로딩은 상속 관계가 전제되어야만 성립하므로 단독 클래스에서는 만들 수 없다",
+      "둘 다 같은 이름의 연산이 상황에 따라 다르게 동작하게 만들어 다형성을 뒷받침한다"
+    ],
+    "answer": 2,
+    "explanation": "오버로딩은 상속과 무관하게 한 클래스 안에서 매개변수 목록을 달리해 만든다. 상속 관계를 요구하는 쪽은 오버라이딩이며, '한 클래스 안 vs 상속 관계'가 두 용어를 가르는 기준이다."
+  },
+  {
+    "id": "se-oop-polymorphism-term",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "oop-basics",
+    "question": "다음 설명에 해당하는 객체지향의 성질은?",
+    "code": "- 같은 형태의 메시지를 받아도 그것을 받는 객체가 무엇이냐에 따라 실제 수행되는 동작이 달라진다.\n- 여러 도형 객체에 '그려라'라는 메시지를 보내면 원은 원을, 사각형은 사각형을 그린다.\n- 오버로딩과 오버라이딩이 이 성질을 만들어 내는 대표적인 장치다.",
+    "choices": [
+      "Inheritance",
+      "Polymorphism",
+      "Encapsulation",
+      "Aggregation"
+    ],
+    "answer": 1,
+    "explanation": "같은 메시지에 객체마다 다른 방식으로 반응하는 성질이 다형성(Polymorphism)이다. Inheritance는 상위 클래스의 속성과 연산을 물려받는 것, Encapsulation은 속성과 연산을 묶는 것, Aggregation은 전체와 부분을 잇는 집합 관계라 동작이 달라지는 성질과는 다르다."
+  },
+  {
+    "id": "se-oop-message-role",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "oop-basics",
+    "question": "객체지향에서 메시지(Message)에 대한 설명으로 가장 거리가 먼 것은?",
+    "choices": [
+      "한 객체가 다른 객체에게 특정 연산의 수행을 요구하는 것이다",
+      "메시지에는 수신 객체, 수행할 연산의 이름, 그 연산에 필요한 인자가 담긴다",
+      "메시지를 받은 객체는 자신이 가진 메서드로 그 요구를 처리한다",
+      "메시지는 수신 객체의 내부 속성을 호출한 쪽이 직접 읽고 쓰는 방식으로 전달된다"
+    ],
+    "answer": 3,
+    "explanation": "메시지는 공개된 연산을 통해 요청을 전달하는 방식이라, 내부 속성을 직접 읽고 쓴다는 서술은 정보 은닉을 정면으로 깨뜨린다. 객체 사이의 상호작용은 속성 직접 접근이 아니라 메시지로만 이뤄지는 것이 원칙이다."
+  },
+  {
+    "id": "se-oop-inheritance-feature",
+    "area": "소프트웨어공학",
+    "difficulty": "하",
+    "topic": "oop-basics",
+    "question": "상속(Inheritance)에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "상위 클래스의 속성과 연산을 하위 클래스가 물려받는 것이다",
+      "하위 클래스는 상위 클래스에 없는 새로운 속성이나 연산을 추가할 수 없다",
+      "하위 클래스는 물려받은 연산을 같은 형태로 다시 정의해 자기 방식으로 바꿀 수 있다",
+      "공통된 속성과 연산을 상위 클래스에 모아 두면 재사용성이 높아진다"
+    ],
+    "answer": 1,
+    "explanation": "하위 클래스는 물려받은 것에 더해 자기만의 속성과 연산을 얼마든지 추가할 수 있다. 상속은 '물려받은 범위로 제한하는' 장치가 아니라 '물려받은 위에 확장하는' 장치다."
+  },
+  {
+    "id": "se-oop-method-signature",
+    "area": "소프트웨어공학",
+    "difficulty": "상",
+    "topic": "oop-basics",
+    "question": "다음 Java 코드에 대한 설명으로 옳은 것은?",
+    "code": "class Printer {\n  void print(String s) { ... }\n  void print(String s, int count) { ... }\n}\n\nclass ColorPrinter extends Printer {\n  void print(String s) { ... }\n}",
+    "choices": [
+      "Printer 안의 두 print는 매개변수 목록이 서로 달라 오버로딩(Overloading) 관계다",
+      "Printer 안의 두 print는 이름이 같으므로 서로 오버라이딩(Overriding) 관계다",
+      "ColorPrinter의 print(String)은 상위와 형태가 같으므로 오버로딩(Overloading)이다",
+      "오버로딩과 오버라이딩은 모두 상속 관계에서만 성립하므로 Printer 안에서는 어느 쪽도 성립하지 않는다"
+    ],
+    "answer": 0,
+    "explanation": "한 클래스 안에서 이름이 같고 매개변수의 수나 타입이 다른 메서드를 여러 개 두는 것이 오버로딩이다. ColorPrinter의 print(String)은 상속 관계에서 상위 메서드를 같은 형태로 다시 정의했으므로 오버라이딩이며, 이 코드에는 두 관계가 동시에 들어 있다."
+  },
+  {
+    "id": "se-packaging-user-view",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "packaging-drm",
+    "question": "제품 소프트웨어 패키징에 대한 설명으로 틀린 것은?",
+    "choices": [
+      "개발이 끝난 소프트웨어를 사용자가 설치해 사용할 수 있는 형태로 묶는 작업이다",
+      "내부 모듈 구조와 소스 코드를 그대로 드러내는 것이 목표이므로 개발자 관점에서 진행한다",
+      "설치 매뉴얼에는 설치 절차와 최소 실행 환경, 문제 발생 시 대처 방법을 담는다",
+      "릴리스 노트에는 버전별 변경 내용과 아직 남아 있는 알려진 문제를 정리한다"
+    ],
+    "answer": 1,
+    "explanation": "패키징은 개발자 편의가 아니라 사용자 관점에서 진행하는 것이 원칙이며, 내부 구조를 드러내는 것이 아니라 설치와 사용이 쉬운 형태로 감싸는 일이다. '개발자 관점'으로 뒤집어 놓은 선지가 자주 나온다."
+  },
+  {
+    "id": "se-release-note-term",
+    "area": "소프트웨어공학",
+    "difficulty": "하",
+    "topic": "packaging-drm",
+    "question": "다음 설명에 해당하는 패키징 산출물은?",
+    "code": "- 버전별로 새로 추가된 기능과 수정된 결함을 정리해 적는다.\n- 아직 고치지 못한 알려진 문제(Known Issues)와 제약 사항도 함께 밝힌다.\n- 배포 시점에 소프트웨어와 함께 최종 사용자에게 전달된다.",
+    "choices": [
+      "Checklist",
+      "Release Note",
+      "Baseline",
+      "Test Oracle"
+    ],
+    "answer": 1,
+    "explanation": "버전별 변경 내용과 알려진 문제를 정리해 배포와 함께 전달하는 문서가 릴리스 노트(Release Note)다. Baseline은 형상관리에서 승인된 기준 형상, Test Oracle은 테스트 결과의 정답을 판정하는 기준이라 배포 문서가 아니다."
+  },
+  {
+    "id": "se-drm-purpose-tech",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "packaging-drm",
+    "question": "DRM(Digital Rights Management)에 대한 설명으로 가장 적절하지 않은 것은?",
+    "choices": [
+      "콘텐츠를 암호화해 인가된 사용자만 복호화하여 이용할 수 있게 한다",
+      "워터마킹으로 저작권 정보를 콘텐츠 안에 심어 유출 경로를 추적할 수 있다",
+      "원본 콘텐츠의 유통 과정에는 전자적 보안을 적용하지 않고 사후 법적 조치에만 의존한다",
+      "키 관리로 이용 기간이나 재생 횟수 같은 사용 조건을 통제한다"
+    ],
+    "answer": 2,
+    "explanation": "DRM은 유통 단계 자체에 암호화·워터마킹·키 관리 같은 전자적 보안을 걸어 무단 복제와 유통을 막는 기술이다. '전자적 보안을 고려하지 않는다'거나 '불법 복제 방지가 불가능하다'는 서술은 DRM의 목적과 정반대라 항상 오답이다."
+  },
+  {
+    "id": "se-drm-clearing-house-term",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "packaging-drm",
+    "question": "다음 설명에 해당하는 DRM(Digital Rights Management) 구성 요소는?",
+    "code": "- 콘텐츠 이용에 필요한 라이선스를 발급하고 사용 권한을 부여한다.\n- 사용 내역을 근거로 과금과 정산을 처리한다.\n- 콘텐츠 자체를 암호화하거나 유통하지는 않고 권한과 정산만 다룬다.",
+    "choices": [
+      "Packager",
+      "Contents Provider",
+      "DRM Controller",
+      "Clearing House"
+    ],
+    "answer": 3,
+    "explanation": "라이선스 발급과 과금·정산을 맡는 권한 관리의 중심이 클리어링 하우스(Clearing House)다. Packager는 콘텐츠를 암호화해 배포 단위로 묶고, DRM Controller는 사용자 기기에서 권한을 확인하며, Contents Provider는 원본을 제공하는 주체다."
+  },
+  {
+    "id": "se-drm-component-roles",
+    "area": "소프트웨어공학",
+    "difficulty": "상",
+    "topic": "packaging-drm",
+    "question": "DRM(Digital Rights Management) 구성 요소와 그 역할의 연결이 옳지 않은 것은?",
+    "choices": [
+      "콘텐츠 분배자(Contents Distributor) — 원본 콘텐츠를 직접 창작해 공급하는 주체다",
+      "패키저(Packager) — 콘텐츠를 메타데이터와 함께 암호화해 배포 단위로 묶는다",
+      "클리어링 하우스(Clearing House) — 라이선스를 발급하고 사용 내역에 따라 과금을 처리한다",
+      "DRM 컨트롤러(DRM Controller) — 사용자 기기에서 권한을 확인해 콘텐츠 이용을 통제한다"
+    ],
+    "answer": 0,
+    "explanation": "원본 콘텐츠를 창작해 공급하는 쪽은 콘텐츠 제공자(Contents Provider)이고, 콘텐츠 분배자는 그것을 유통 채널로 실어 나르는 쪽이다. 제공자와 분배자를 바꿔 놓은 선지가 대표적인 함정이다."
+  },
+  {
+    "id": "se-uml-usecase-relation-not",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "uml-diagrams",
+    "question": "유스케이스(Use Case) 다이어그램에서 사용하는 관계에 해당하지 않는 것은?",
+    "choices": [
+      "연관(Association)",
+      "포함(Include)",
+      "집합(Aggregation)",
+      "확장(Extend)"
+    ],
+    "answer": 2,
+    "explanation": "유스케이스 관계는 연관·포함·확장·일반화 네 가지다. 집합(Aggregation)은 전체와 부분을 잇는 클래스 다이어그램의 관계라 유스케이스 다이어그램에서는 쓰지 않는다."
+  },
+  {
+    "id": "se-uml-include-term",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "uml-diagrams",
+    "question": "다음 설명에 해당하는 유스케이스 관계는?",
+    "code": "- 하나의 유스케이스를 수행하려면 다른 유스케이스의 실행이 반드시 전제된다.\n- '상품 주문'을 하려면 언제나 '로그인'이 먼저 수행되는 경우가 여기에 해당한다.\n- 여러 유스케이스에 공통으로 반복되는 동작을 따로 떼어 재사용할 때 쓴다.",
+    "choices": [
+      "Extend",
+      "Realization",
+      "Include",
+      "Generalization"
+    ],
+    "answer": 2,
+    "explanation": "실행이 반드시 전제되는 필수 관계가 포함(Include)이다. 확장(Extend)은 조건이 맞을 때만 선택적으로 덧붙는 관계이고, 일반화(Generalization)는 유사한 것들을 상위로 묶는 관계라 '반드시'와 '선택적'이 둘을 가르는 기준이다."
+  },
+  {
+    "id": "se-uml-elements",
+    "area": "소프트웨어공학",
+    "difficulty": "하",
+    "topic": "uml-diagrams",
+    "question": "UML(Unified Modeling Language)의 구성 요소 세 가지를 바르게 나열한 것은?",
+    "choices": [
+      "액터(Actor), 시나리오(Scenario), 시퀀스(Sequence)",
+      "클래스(Class), 객체(Object), 인스턴스(Instance)",
+      "사물(Things), 관계(Relationships), 다이어그램(Diagrams)",
+      "속성(Attribute), 연산(Operation), 메시지(Message)"
+    ],
+    "answer": 2,
+    "explanation": "UML은 모델을 이루는 사물(Things), 사물을 잇는 관계(Relationships), 그것들을 모아 보여주는 다이어그램(Diagrams) 세 요소로 구성된다. 나머지 선지는 객체지향이나 유스케이스에서 쓰는 개념일 뿐 UML의 구성 요소 분류가 아니다."
+  },
+  {
+    "id": "se-ui-guideline-detail",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "ui-design",
+    "question": "UI(User Interface) 설계 지침에 대한 설명으로 틀린 것은?",
+    "choices": [
+      "결과 예측 가능성 — 어떤 기능을 수행하면 어떤 결과가 나올지 미리 짐작할 수 있어야 한다",
+      "표준화 — 디자인을 통일해 사용자가 기능 구조를 한 번 익히면 계속 활용할 수 있게 한다",
+      "피드백(Feedback) — 처리 결과와 진행 상황을 사용자에게 되돌려 알려 준다",
+      "오류 발생 해결 — 오류가 나면 사용자에게 알리지 않고 시스템이 조용히 넘겨 혼란을 없앤다"
+    ],
+    "answer": 3,
+    "explanation": "오류 발생 해결은 사용자가 자신의 오류 상황을 정확히 인지할 수 있어야 한다는 지침이다. 오류를 숨기면 사용자는 잘못된 상태를 모른 채 같은 조작을 반복하게 되므로 지침과 정반대다."
+  },
+  {
+    "id": "se-ui-vui-term",
+    "area": "소프트웨어공학",
+    "difficulty": "하",
+    "topic": "ui-design",
+    "question": "다음 설명에 해당하는 사용자 인터페이스 유형은?",
+    "code": "- 사용자가 말로 명령을 내리고 기기는 음성으로 응답한다.\n- 손과 눈을 쓰기 어려운 운전 중이나 조리 중 상황에서 특히 유용하다.\n- 스마트 스피커와 차량용 음성 비서가 대표적인 사례다.",
+    "choices": [
+      "CLI",
+      "VUI",
+      "OUI",
+      "GUI"
+    ],
+    "answer": 1,
+    "explanation": "음성으로 기기를 조작하는 인터페이스가 VUI(Voice User Interface)다. CLI는 명령어 입력, GUI는 아이콘·메뉴 조작, OUI는 시선이나 뇌파 같은 무의식적 신호를 쓰는 인터페이스라 음성 조작과는 다르다."
+  },
+  {
+    "id": "se-gantt-chart",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "project-management",
+    "question": "간트 차트(Gantt Chart)에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "작업별 시작과 끝을 막대로 늘어놓아 일정을 표현하는 시간선 차트다",
+      "막대의 길이가 곧 해당 작업의 소요 기간을 나타낸다",
+      "작업 사이의 선후 의존 관계와 임계 경로를 도표로 직접 보여준다",
+      "자원 배치와 일정 진척 상황을 한눈에 파악하는 데 유리하다"
+    ],
+    "answer": 2,
+    "explanation": "간트 차트는 작업 기간을 막대로 늘어놓는 시간선 도구라 작업 간 선후 관계와 임계 경로는 드러내지 못한다. 그것을 보여주는 것은 네트워크 도표를 쓰는 PERT·CPM이다."
+  },
+  {
+    "id": "se-risk-monitoring",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "project-management",
+    "question": "프로젝트 위험 관리에서 위험 모니터링(Risk Monitoring)에 대한 설명으로 옳은 것은?",
+    "choices": [
+      "프로젝트 착수 시점에 한 번만 수행하고 끝내는 일회성 활동이다",
+      "이미 발생한 사고의 피해를 복구하는 사후 처리만을 가리킨다",
+      "위험 요소를 처음 찾아내 목록으로 정리하는 활동이다",
+      "식별한 위험이 실제로 나타나는지 계속 관찰하고 대응 계획이 잘 듣고 있는지 점검하는 활동이다"
+    ],
+    "answer": 3,
+    "explanation": "위험 모니터링은 이미 식별·분석한 위험의 상태 변화를 프로젝트 내내 추적하며 대응책의 효과를 확인하는 지속적 활동이다. 위험 요소를 처음 찾아내는 일은 위험 식별이고, 피해 복구는 모니터링이 아니라 대응의 결과다."
+  },
+  {
+    "id": "se-productivity-loc",
+    "area": "소프트웨어공학",
+    "difficulty": "상",
+    "topic": "cost-estimation",
+    "question": "총 50,000 LOC 규모의 소프트웨어를 개발자 10명이 25개월 만에 완성했다. 생산성 = LOC / (투입 인원 × 개발 기간)으로 계산할 때 1인당 월 생산성은?",
+    "choices": [
+      "200 LOC/인월",
+      "250 LOC/인월",
+      "2,000 LOC/인월",
+      "5,000 LOC/인월"
+    ],
+    "answer": 0,
+    "explanation": "투입 노력은 10명 × 25개월 = 250인월이고, 50,000 / 250 = 200 LOC/인월이다. 인원이나 기간 한쪽으로만 나눈 2,000(50,000÷25)과 5,000(50,000÷10), 노력 값 그 자체인 250이 대표적인 함정 선지다."
+  },
+  {
+    "id": "se-effort-manmonth",
+    "area": "소프트웨어공학",
+    "difficulty": "상",
+    "topic": "cost-estimation",
+    "question": "총 개발 규모가 36,000 LOC이고 개발자 1인당 월 생산성이 300 LOC/인월로 측정된 프로젝트가 있다. 이 프로젝트를 10개월 안에 끝내려면 필요한 최소 투입 인원은?",
+    "choices": [
+      "10명",
+      "12명",
+      "15명",
+      "120명"
+    ],
+    "answer": 1,
+    "explanation": "먼저 노력을 구하면 36,000 ÷ 300 = 120인월이고, 이를 개발 기간 10개월로 나누면 12명이다. 12명 × 10개월 = 120인월, 120인월 × 300 LOC = 36,000 LOC로 되짚어도 맞아떨어진다. 120은 인월 값을 인원으로 착각한 선지다."
+  },
+  {
+    "id": "se-vcs-tool-diff",
+    "area": "소프트웨어공학",
+    "difficulty": "상",
+    "topic": "configuration-management",
+    "question": "버전 관리 도구에 대한 설명으로 틀린 것은?",
+    "choices": [
+      "RCS는 파일을 잠가 한 번에 한 사람만 해당 파일을 수정할 수 있게 한다",
+      "CVS는 여러 개발자가 같은 파일을 동시에 수정한 뒤 병합하는 방식을 허용한다",
+      "Subversion(SVN)은 중앙 저장소 한 곳을 두고 개발자들이 그곳을 통해 변경을 주고받는다",
+      "Git은 중앙 저장소에만 이력이 있어 서버에 연결하지 않으면 커밋 이력을 조회할 수 없다"
+    ],
+    "answer": 3,
+    "explanation": "Git은 각 개발자가 저장소 사본 전체를 갖는 분산 방식이라 네트워크가 끊긴 상태에서도 커밋과 이력 조회가 된다. 중앙 저장소에 의존하는 쪽은 SVN이고, 이 둘의 성질을 바꿔 놓은 선지가 함정이다."
+  },
+  {
+    "id": "se-integration-stub-driver-role",
+    "area": "소프트웨어공학",
+    "difficulty": "상",
+    "topic": "test-levels",
+    "question": "통합 테스트에 대한 설명으로 가장 거리가 먼 것은?",
+    "choices": [
+      "빅뱅(big-bang) 통합은 모든 모듈을 한 번에 붙이므로 결함이 있는 모듈을 가장 빠르게 특정할 수 있다",
+      "스텁(Stub)은 상위 모듈이 넘긴 인자를 받아 하위 모듈인 척 최소한의 결과만 돌려준다",
+      "드라이버(Driver)는 아직 없는 상위 호출부를 대신해 하위 모듈에 인자를 넘기고 결과를 받아온다",
+      "하향식 통합에서는 붙일 하위 모듈을 깊이 우선 또는 넓이 우선으로 골라 내려간다"
+    ],
+    "answer": 0,
+    "explanation": "빅뱅 통합은 한꺼번에 붙이는 만큼 오류가 나도 어느 모듈 탓인지 좁히기가 가장 어렵다. 스텁은 인자를 받아 흉내만 내는 아래쪽 대역, 드라이버는 인자를 넘겨 호출하는 위쪽 대역이라는 방향 차이도 함께 외워야 뒤집힌 선지에 걸리지 않는다."
+  },
+  {
+    "id": "se-ide-function",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "framework-build-batch",
+    "question": "IDE(Integrated Development Environment)의 기능에 대한 설명으로 틀린 것은?",
+    "choices": [
+      "Coding — 프로그래밍 언어로 소스 코드를 작성하고 편집한다",
+      "Compile — 기계어로 된 실행 파일을 사람이 읽을 수 있는 고급 언어 소스 코드로 되돌린다",
+      "Debugging — 코드에 숨은 오류를 추적해 찾아내고 수정한다",
+      "Deployment — 완성한 프로그램을 최종 사용자에게 배포해 전달한다"
+    ],
+    "answer": 1,
+    "explanation": "Compile은 사람이 작성한 고급 언어 소스 코드를 기계어로 번역하는 기능이다. 반대 방향인 기계어에서 소스로 되돌리는 일은 역컴파일(디컴파일)이라 IDE의 Compile 설명을 뒤집어 놓은 함정 선지다."
   }
 ]

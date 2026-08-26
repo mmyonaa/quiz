@@ -42,7 +42,10 @@ const quiz = defineCollection({
       /** 소속 개념 주제 — topic-notes.json에 없는 주제를 쓰면 빌드가 실패한다 */
       topic: z.enum(TOPIC_KEYS),
       question: z.string().min(10),
-      /** 코드 해석 문항의 코드 블록 — 고정폭 <pre>로 렌더 (프로그래밍 영역용, 선택) */
+      /**
+       * 제시문 블록 — 고정폭 <pre>로 렌더(선택). 기출의 박스 제시문에 대응한다:
+       * 코드와 [실행결과], [조건]·[SQL문], 표 형태 데이터, 용어를 고르게 하는 특징 불릿 등.
+       */
       code: z.string().optional(),
       /** 4지선다 고정 — 정처기 필기 형식 */
       choices: z.array(z.string().min(1)).length(4),
