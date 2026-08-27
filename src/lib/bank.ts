@@ -16,6 +16,21 @@ export async function loadBank() {
   }));
 }
 
+/**
+ * 실기 문항 로더 — 필기와 같은 91주제를 공유하므로 area·subject는 주제에서 풀어 얹는다.
+ * 덕분에 실기 문항 JSON은 area를 중복해 적지 않아도 되고, 어긋날 여지도 없다.
+ */
+export async function loadPractical() {
+  const entries = await getCollection("practical");
+  return entries.map((e) => ({
+    ...e.data,
+    area: TOPICS[e.data.topic].area,
+    subject: TOPICS[e.data.topic].subject,
+    topicTitle: TOPICS[e.data.topic].title,
+    relatedPost: TOPICS[e.data.topic].post,
+  }));
+}
+
 /** 한 영역의 주제 목록 — topic-notes.json의 정의 순서(기초 → 심화)를 그대로 따른다. */
 export function topicsOf(area: (typeof AREAS)[number]) {
   return Object.entries(TOPICS)

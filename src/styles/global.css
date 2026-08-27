@@ -560,7 +560,7 @@ button.linklike:hover {
   gap: 1.5rem;
 }
 @media (min-width: 1080px) {
-  #exam.mock .exam-cols {
+  #exam.with-sheet .exam-cols {
     grid-template-columns: minmax(0, 1fr) 13rem;
     align-items: start;
   }
@@ -742,12 +742,12 @@ button.linklike:hover {
   }
 }
 @media (min-width: 1080px) {
-  #exam.mock .omr {
+  #exam.with-sheet .omr {
     position: sticky;
     top: 1rem;
   }
   /* 화면을 꽉 채우되, 본문보다 지나치게 길어져 아래가 비어 보이지 않도록 상한을 둔다 */
-  #exam.mock .omr-sheet {
+  #exam.with-sheet .omr-sheet {
     max-height: min(calc(100vh - 16rem), 30rem);
   }
 }
@@ -1708,4 +1708,266 @@ select.sort {
   font-size: 0.72em;
   font-weight: 700;
   vertical-align: middle;
+}
+
+/* ══ 실기 필답 ══════════════════════════════════════════════════
+   보기를 고르는 대신 답을 직접 쓴다. 입력란과 채점 결과가 화면의 주인공이다. */
+.start-row {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+.pool-info {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+/* ── 답안 입력 ── */
+.pa-answer {
+  margin-top: 1.25rem;
+  display: grid;
+  gap: 0.6rem;
+}
+.pa-field {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.pa-label {
+  flex: 0 0 auto;
+  min-width: 1.6rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.pa-input,
+.pa-textarea {
+  width: 100%;
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.7em 0.9em;
+}
+.pa-textarea {
+  resize: vertical;
+  line-height: 1.7;
+}
+.pa-input:focus,
+.pa-textarea:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-color: transparent;
+}
+
+/* ── 답안 작성란 사이드바 — 쓴 답을 그대로 훑어볼 수 있게 ── */
+.pa-sheet .omr-row {
+  gap: 0.5rem;
+}
+.pa-preview {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.75rem;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.omr-row.blank .pa-preview {
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+/* ── 채점 결과 카드 ── */
+.pa-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.2rem;
+  margin-bottom: 0.9rem;
+  background: var(--bg);
+}
+.pa-card-head {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.6rem;
+}
+.pa-mark {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.25em 0.7em;
+  border-radius: 999px;
+}
+.pa-mark.ok {
+  background: var(--ok-soft);
+  color: var(--ok);
+}
+.pa-mark.no {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.pa-mark.pending {
+  background: var(--border);
+  color: var(--muted);
+}
+.pa-no {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.pa-topic {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-left: auto;
+}
+.pa-q {
+  margin: 0 0 0.75rem;
+  font-weight: 600;
+  line-height: 1.65;
+}
+.pa-card .q-code {
+  margin: 0 0 0.85rem;
+}
+
+/* 답란별 대조 — 내가 쓴 답 → 정답 */
+.pa-blanks {
+  display: grid;
+  gap: 0.4rem;
+}
+.pa-blank {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.88rem;
+  padding: 0.5em 0.75em;
+  border-radius: 8px;
+  border-left: 3px solid transparent;
+}
+.pa-blank.ok {
+  background: var(--ok-soft);
+  border-left-color: var(--ok);
+}
+.pa-blank.no {
+  background: var(--accent-soft);
+  border-left-color: var(--accent);
+}
+.pa-blank-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  flex: 0 0 auto;
+}
+.pa-mine {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.pa-mine i,
+.pa-mine-text i {
+  color: var(--muted);
+  font-style: normal;
+}
+.pa-arrow {
+  color: var(--muted);
+}
+.pa-correct {
+  font-weight: 700;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.pa-accept {
+  appearance: none;
+  margin-left: auto;
+  font: inherit;
+  font-size: 0.72rem;
+  padding: 0.3em 0.75em;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+}
+.pa-accept:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.pa-alt {
+  margin: 0.5rem 0 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* 약술형 — 내 답안과 모범답안을 나란히 놓고 스스로 채점 */
+.pa-brief {
+  display: grid;
+  gap: 0.9rem;
+}
+@media (min-width: 800px) {
+  .pa-brief {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.pa-brief-col h4 {
+  margin: 0 0 0.35rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+.pa-mine-text,
+.pa-model {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.75;
+  padding: 0.7em 0.9em;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  white-space: pre-wrap;
+}
+.pa-kw {
+  margin: 0.4rem 0 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.pa-self {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.pa-self-btn {
+  appearance: none;
+  font: inherit;
+  font-size: 0.8rem;
+  padding: 0.35em 1em;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+}
+.pa-self-btn:hover {
+  color: var(--text);
+}
+.pa-self-btn.ok[aria-pressed="true"] {
+  background: var(--ok-soft);
+  border-color: var(--ok);
+  color: var(--ok);
+  font-weight: 700;
+}
+.pa-self-btn.no[aria-pressed="true"] {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 700;
+}
+.pa-exp {
+  margin: 0.85rem 0 0;
+  font-size: 0.86rem;
+  line-height: 1.8;
+  color: var(--muted);
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--border);
 }

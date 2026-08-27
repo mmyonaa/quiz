@@ -637,7 +637,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         next.disabled = mode === "practice" && picked[cur] === undefined;
         next.textContent = cur === session.length - 1 ? "제출하고 채점" : "다음";
         updateSaveStar();
-        exam.classList.toggle("mock", mode === "mock"); // 답안지 2단 배치 전환
+        exam.classList.toggle("with-sheet", mode === "mock"); // 답안지가 있을 때만 2단 배치
         syncOMR();
         persist();
         // 문항 전환 페이드 — 애니메이션 재시작을 위해 리플로 강제
