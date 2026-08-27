@@ -8,3 +8,6 @@ dist/
 
 # Claude Code 개인 설정 (팀 공유 안 함)
 .claude/settings.local.json
+
+# Playwright MCP 스크린샷 산출물
+.playwright-mcp/

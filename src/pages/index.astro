@@ -116,6 +116,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           <p class="mock-desc">
             실제 필기 형식 그대로 — 5과목 × 20문항, 총 100문항을 150분 안에 풉니다.
             과목별 40점 미만이면 과락, 과락 없이 평균 60점 이상이면 합격입니다.
+            오른쪽 답안 표기란에 실제 OMR처럼 문항별 ①~④를 마킹하고, 번호를 눌러 곧장 이동합니다.
             문항을 건너뛰고 나중에 돌아올 수 있습니다.
           </p>
           <button id="start-mock" class="primary">모의고사 시작</button>
@@ -124,34 +125,47 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 
       {/* ── 2. 풀이 화면 ── */}
       <section id="exam" class="panel" hidden>
-        <div class="exam-top">
-          <div class="exam-head">
-            <span id="progress" class="mono"></span>
-            <span id="timer" class="mono timer" hidden></span>
-            <span class="exam-tools">
-              <button id="save-q" class="save-star" type="button" title="이 문제 저장" aria-label="이 문제 저장">☆</button>
-              <span id="exam-diff" class="badge diff"></span>
-              <span id="exam-area" class="badge"></span>
-            </span>
+        <div class="exam-cols">
+          <div class="exam-main">
+            <div class="exam-top">
+              <div class="exam-head">
+                <span id="progress" class="mono"></span>
+                <span id="timer" class="mono timer" hidden></span>
+                <span class="exam-tools">
+                  <button id="save-q" class="save-star" type="button" title="이 문제 저장" aria-label="이 문제 저장">☆</button>
+                  <span id="exam-diff" class="badge diff"></span>
+                  <span id="exam-area" class="badge"></span>
+                </span>
+              </div>
+              <div id="pbar" class="pbar" role="progressbar" aria-label="풀이 진행률" aria-valuemin="0" aria-valuemax="100"><i id="pbar-fill"></i></div>
+            </div>
+            <div id="q-body">
+              <h2 id="q-text" tabindex="-1"></h2>
+              <pre id="q-code" class="q-code mono" hidden></pre>
+              <ol id="q-choices" class="choices"></ol>
+            </div>
+            <div class="exam-nav">
+              <button id="quit" class="linklike quit">그만두고 나가기</button>
+              <button id="prev" class="ghost" disabled>이전</button>
+              <button id="next" class="primary" disabled>다음</button>
+            </div>
+            <p class="kbd-hint"><kbd>1</kbd>–<kbd>4</kbd> 선택 · <kbd>←</kbd> <kbd>→</kbd> 이동 · <kbd>Enter</kbd> 다음</p>
           </div>
-          <div id="pbar" class="pbar" role="progressbar" aria-label="풀이 진행률" aria-valuemin="0" aria-valuemax="100"><i id="pbar-fill"></i></div>
+
+          {/* 모의고사 전용 답안지 — 실제 OMR처럼 문항별 ①~④를 마킹하고, 번호로 곧장 이동한다 */}
+          <details id="omr" class="omr" hidden>
+            <summary class="omr-head">
+              <span class="omr-title">답안 표기란</span>
+              <span id="omr-count" class="mono omr-count"></span>
+            </summary>
+            <div class="omr-legend" aria-hidden="true">
+              <span><i class="omr-dot marked"></i> 표기</span>
+              <span><i class="omr-dot"></i> 미표기</span>
+            </div>
+            <div id="omr-sheet" class="omr-sheet"></div>
+            <p class="omr-hint">번호를 누르면 그 문항으로 이동하고, ①~④를 누르면 바로 표기됩니다.</p>
+          </details>
         </div>
-        {/* 모의고사 전용 — OMR처럼 문항 이동·표기 현황 확인 */}
-        <details id="palette" class="palette" hidden>
-          <summary>답안 표기 현황 <span id="palette-count" class="mono"></span></summary>
-          <div id="palette-grid" class="palette-grid"></div>
-        </details>
-        <div id="q-body">
-          <h2 id="q-text" tabindex="-1"></h2>
-          <pre id="q-code" class="q-code mono" hidden></pre>
-          <ol id="q-choices" class="choices"></ol>
-        </div>
-        <div class="exam-nav">
-          <button id="quit" class="linklike quit">그만두고 나가기</button>
-          <button id="prev" class="ghost" disabled>이전</button>
-          <button id="next" class="primary" disabled>다음</button>
-        </div>
-        <p class="kbd-hint"><kbd>1</kbd>–<kbd>4</kbd> 선택 · <kbd>←</kbd> <kbd>→</kbd> 이동 · <kbd>Enter</kbd> 다음</p>
       </section>
 
       {/* ── 3. 결과 화면 ── */}
@@ -474,37 +488,114 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
             b.setAttribute("aria-pressed", String(j === i));
           });
         ($("#next") as HTMLButtonElement).disabled = false;
-        renderPalette(); // 표기 현황 갱신
+        syncOMR(); // 답안지 표기 갱신
         persist();
       };
 
-      // 모의고사 전용 문항 팔레트 — 표기/미표기 확인과 임의 이동(OMR 역할)
-      const renderPalette = () => {
-        const pal = $("#palette");
-        if (mode !== "mock") {
-          pal.hidden = true;
+      // ── 모의고사 답안지(OMR) ──
+      // 실제 시험지처럼 문항 번호와 ①~④ 마킹란을 과목별로 나눠 세로로 늘어놓는다.
+      // 번호를 누르면 그 문항으로 이동하고, 마킹란을 누르면 그 자리에서 답을 표기한다.
+      const OMR_MARKS = ["①", "②", "③", "④"];
+      const wideOMR = window.matchMedia("(min-width: 1080px)");
+      let omrRows: HTMLElement[] = [];
+      let omrBuiltFor = ""; // 같은 시험지를 다시 그리지 않기 위한 식별자
+
+      const markFromSheet = (i: number, c: number) => {
+        if (i === cur) {
+          selectChoice(c); // 현재 문항이면 보기 버튼 상태까지 함께 맞춘다
           return;
         }
-        pal.hidden = false;
-        const answered = picked.filter((p) => p !== undefined).length;
-        $("#palette-count").textContent = `${answered} / ${session.length}`;
-        const grid = $("#palette-grid");
-        grid.innerHTML = "";
-        session.forEach((_, i) => {
-          const b = document.createElement("button");
-          b.type = "button";
-          b.className =
-            "pal" + (picked[i] !== undefined ? " done" : "") + (i === cur ? " here" : "");
-          b.textContent = String(i + 1);
-          b.addEventListener("click", () => {
+        picked[i] = c;
+        syncOMR();
+        persist();
+      };
+
+      const buildOMR = () => {
+        const sheet = $("#omr-sheet");
+        sheet.innerHTML = "";
+        omrRows = [];
+        let lastSubject = "";
+        session.forEach((q, i) => {
+          // 과목이 바뀌는 자리에 실제 시험지처럼 과목 구분 머리글을 넣는다
+          if (q.subject && q.subject !== lastSubject) {
+            lastSubject = q.subject;
+            const h = document.createElement("p");
+            h.className = "omr-subject";
+            h.textContent = q.subject;
+            sheet.appendChild(h);
+          }
+          const row = document.createElement("div");
+          row.className = "omr-row";
+          const no = document.createElement("button");
+          no.type = "button";
+          no.className = "omr-no";
+          no.textContent = String(i + 1);
+          no.title = `${i + 1}번으로 이동`;
+          no.setAttribute("aria-label", `${i + 1}번 문항으로 이동`);
+          no.addEventListener("click", () => {
             cur = i;
             renderQuestion();
-            pal.open = false; // 100문항 그리드가 문제를 화면 밖으로 밀어내지 않게
-            $("#q-body").scrollIntoView({ block: "start", behavior: "smooth" });
+            if (!wideOMR.matches) $("#q-body").scrollIntoView({ block: "start", behavior: "smooth" });
           });
-          grid.appendChild(b);
+          row.appendChild(no);
+          const bubbles = document.createElement("div");
+          bubbles.className = "omr-bubbles";
+          OMR_MARKS.forEach((m, c) => {
+            const b = document.createElement("button");
+            b.type = "button";
+            b.className = "omr-bub";
+            b.textContent = m;
+            b.setAttribute("aria-label", `${i + 1}번 ${c + 1}번 보기 표기`);
+            b.addEventListener("click", () => markFromSheet(i, c));
+            bubbles.appendChild(b);
+          });
+          row.appendChild(bubbles);
+          sheet.appendChild(row);
+          omrRows.push(row);
         });
       };
+
+      // 표기 상태만 칠한다 — 100문항 × 4칸을 매번 다시 만들면 스크롤이 튀므로 클래스만 갱신
+      const syncOMR = () => {
+        const omr = $("#omr");
+        if (mode !== "mock") {
+          omr.hidden = true;
+          omrBuiltFor = "";
+          return;
+        }
+        omr.hidden = false;
+        const key = session.map((q) => q.id).join(",");
+        if (key !== omrBuiltFor) {
+          buildOMR();
+          omrBuiltFor = key;
+          (omr as HTMLDetailsElement).open = wideOMR.matches; // 넓은 화면에서는 펼친 채로 둔다
+        }
+        const answered = picked.filter((p) => p !== undefined).length;
+        $("#omr-count").textContent = `${answered} / ${session.length}`;
+        omrRows.forEach((row, i) => {
+          row.classList.toggle("here", i === cur);
+          row.classList.toggle("blank", picked[i] === undefined);
+          row.querySelectorAll(".omr-bub").forEach((b, c) => {
+            const on = picked[i] === c;
+            b.classList.toggle("on", on);
+            b.setAttribute("aria-pressed", String(on));
+          });
+        });
+        // 현재 문항 줄이 답안지 스크롤 밖으로 나가지 않게 따라 붙인다
+        const here = omrRows[cur];
+        if (here && (omr as HTMLDetailsElement).open) {
+          const box = $("#omr-sheet");
+          const top = here.offsetTop - box.offsetTop;
+          if (top < box.scrollTop || top + here.offsetHeight > box.scrollTop + box.clientHeight) {
+            box.scrollTo({ top: top - box.clientHeight / 2 + here.offsetHeight, behavior: "smooth" });
+          }
+        }
+      };
+
+      // 화면 폭이 바뀌면 펼침 상태를 그 폭에 맞춘다(모의고사 중일 때만)
+      wideOMR.addEventListener("change", (e) => {
+        if (mode === "mock" && !exam.hidden) ($("#omr") as HTMLDetailsElement).open = e.matches;
+      });
 
       const renderQuestion = () => {
         const q = session[cur];
@@ -546,7 +637,8 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         next.disabled = mode === "practice" && picked[cur] === undefined;
         next.textContent = cur === session.length - 1 ? "제출하고 채점" : "다음";
         updateSaveStar();
-        renderPalette();
+        exam.classList.toggle("mock", mode === "mock"); // 답안지 2단 배치 전환
+        syncOMR();
         persist();
         // 문항 전환 페이드 — 애니메이션 재시작을 위해 리플로 강제
         const body = $("#q-body");

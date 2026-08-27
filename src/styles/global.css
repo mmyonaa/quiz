@@ -552,49 +552,205 @@ button.linklike:hover {
   }
 }
 
-/* 문항 팔레트 — 모의고사 OMR 표기 현황 */
-.palette {
-  margin-bottom: 1.1rem;
-  font-size: 0.85rem;
-  color: var(--muted);
+/* ── 모의고사 답안지(OMR) ──
+   실제 시험처럼 문항 본문 오른쪽에 표기란을 세워 둔다. 좁은 화면에서는
+   접었다 펴는 패널로 내려앉아 문항 아래에 붙는다. */
+.exam-cols {
+  display: grid;
+  gap: 1.5rem;
 }
-.palette summary {
+@media (min-width: 1080px) {
+  #exam.mock .exam-cols {
+    grid-template-columns: minmax(0, 1fr) 15.5rem;
+    align-items: start;
+  }
+}
+.omr {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  /* 본문 패널보다 한 톤 눌러 별도의 답안지처럼 보이게 — 라이트/다크 모두에서 성립 */
+  background: color-mix(in srgb, var(--text) 4%, var(--surface));
+  padding: 0.85rem 0.9rem 0.75rem;
+  font-size: 0.85rem;
+}
+.omr-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
   cursor: pointer;
   user-select: none;
+  color: var(--muted);
 }
-.palette summary:hover {
+.omr-head::-webkit-details-marker {
+  display: none;
+}
+.omr-head:hover {
   color: var(--text);
 }
-.palette-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(2.3rem, 1fr));
-  gap: 0.3rem;
-  margin-top: 0.6rem;
+.omr-title {
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
-.pal {
-  appearance: none;
-  font: inherit;
-  font-size: 0.78rem;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  padding: 0.32em 0;
+/* 접힘 표시 — flex summary는 기본 삼각형이 사라지므로 직접 그린다 */
+.omr-title::before {
+  content: "▸";
+  display: inline-block;
+  margin-right: 0.35rem;
+  font-size: 0.7em;
+  transition: transform 0.15s ease;
+}
+.omr[open] .omr-title::before {
+  transform: rotate(90deg);
+}
+.omr-count {
+  font-size: 0.8rem;
+}
+.omr-legend {
+  display: flex;
+  gap: 0.85rem;
+  margin: 0.7rem 0 0.5rem;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.omr-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.omr-dot {
+  width: 0.62rem;
+  height: 0.62rem;
+  border-radius: 50%;
   border: 1px solid var(--border);
+  background: var(--surface);
+}
+.omr-dot.marked {
+  background: var(--text);
+  border-color: var(--text);
+}
+.omr-sheet {
+  max-height: 26rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-top: 1px solid var(--border);
+  padding-top: 0.5rem;
+}
+.omr-subject {
+  margin: 0.7rem 0 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  border-bottom: 1px dashed var(--border);
+  padding-bottom: 0.25rem;
+}
+.omr-subject:first-child {
+  margin-top: 0;
+}
+.omr-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.08rem 0.2rem;
   border-radius: 6px;
-  background: var(--bg);
+}
+.omr-row.here {
+  background: var(--accent-soft);
+}
+.omr-no {
+  appearance: none;
+  flex: 0 0 1.85rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  text-align: right;
+  padding: 0.2em 0.15em;
+  border: 0;
+  background: none;
   color: var(--muted);
   cursor: pointer;
 }
-.pal:hover {
-  border-color: var(--accent);
-}
-.pal.done {
-  background: var(--accent-soft);
-  border-color: transparent;
-  color: var(--accent);
-}
-.pal.here {
-  border-color: var(--accent);
+.omr-row.here .omr-no {
   color: var(--accent);
   font-weight: 700;
+}
+.omr-no:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+.omr-bubbles {
+  display: flex;
+  gap: 0.22rem;
+}
+.omr-bub {
+  appearance: none;
+  width: 1.45rem;
+  height: 1.45rem;
+  display: grid;
+  place-items: center;
+  font-size: 0.74rem;
+  line-height: 1;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease;
+}
+.omr-bub:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+/* 마킹된 칸 — 실제 답안지처럼 까맣게 채운다 */
+.omr-bub.on {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--surface);
+  font-weight: 700;
+}
+/* 아직 표기하지 않은 줄은 번호를 흐리게 두어 빈칸이 한눈에 보이게 */
+.omr-row.blank .omr-no {
+  opacity: 0.55;
+}
+.omr-hint {
+  margin: 0.6rem 0 0;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+/* 좁은 화면에서는 손가락으로 찍을 수 있게 마킹란을 키운다 */
+@media (max-width: 1079px) {
+  .omr-sheet {
+    max-height: 22rem;
+  }
+  .omr-row {
+    padding: 0.14rem 0.2rem;
+  }
+  .omr-no {
+    flex: 0 0 2.1rem;
+    font-size: 0.8rem;
+    padding: 0.45em 0.15em;
+  }
+  .omr-bub {
+    width: 2.1rem;
+    height: 2.1rem;
+    font-size: 0.9rem;
+  }
+  .omr-bubbles {
+    gap: 0.35rem;
+  }
+}
+@media (min-width: 1080px) {
+  #exam.mock .omr {
+    position: sticky;
+    top: 1rem;
+  }
+  /* 화면을 꽉 채우되, 본문보다 지나치게 길어져 아래가 비어 보이지 않도록 상한을 둔다 */
+  #exam.mock .omr-sheet {
+    max-height: min(calc(100vh - 16rem), 30rem);
+  }
 }
 
 /* 문항 전환 페이드 */
