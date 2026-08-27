@@ -561,7 +561,7 @@ button.linklike:hover {
 }
 @media (min-width: 1080px) {
   #exam.mock .exam-cols {
-    grid-template-columns: minmax(0, 1fr) 15.5rem;
+    grid-template-columns: minmax(0, 1fr) 13rem;
     align-items: start;
   }
 }
@@ -678,14 +678,16 @@ button.linklike:hover {
   color: var(--text);
   text-decoration: underline;
 }
+/* 실제 답안지처럼 ①~④를 줄 너비에 고르게 펼친다 — 오른쪽에 빈 공간이 남지 않게 */
 .omr-bubbles {
   display: flex;
-  gap: 0.22rem;
+  flex: 1;
+  justify-content: space-between;
 }
 .omr-bub {
   appearance: none;
-  width: 1.45rem;
-  height: 1.45rem;
+  width: 1.75rem;
+  height: 1.75rem;
   display: grid;
   place-items: center;
   font-size: 0.74rem;
@@ -737,9 +739,6 @@ button.linklike:hover {
     width: 2.1rem;
     height: 2.1rem;
     font-size: 0.9rem;
-  }
-  .omr-bubbles {
-    gap: 0.35rem;
   }
 }
 @media (min-width: 1080px) {
