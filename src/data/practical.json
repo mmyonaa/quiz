@@ -1,0 +1,358 @@
+[
+  {
+    "id": "p-deadlock-nonpreemption",
+    "topic": "deadlock",
+    "difficulty": "하",
+    "kind": "단답형",
+    "question": "교착상태가 일어나기 위한 네 가지 조건 중, 한 프로세스가 이미 점유하고 있는 자원을 다른 프로세스가 강제로 빼앗을 수 없다는 조건을 무엇이라 하는지 쓰시오.",
+    "answers": [
+      [
+        "비선점",
+        "비선점 조건",
+        "Non-preemption",
+        "No preemption",
+        "비선점(Non-preemption)"
+      ]
+    ],
+    "explanation": "교착상태의 4대 조건은 상호 배제, 점유와 대기, 비선점, 환형 대기다. 이 중 비선점(Non-preemption)은 자원을 쥔 프로세스가 스스로 놓기 전에는 회수할 수 없다는 뜻이다. 이 조건을 깨뜨리는 예방 기법이 자원을 강제 회수해 다시 배정하는 방식이다."
+  },
+  {
+    "id": "p-normalization-2nf",
+    "topic": "db-normalization",
+    "difficulty": "중",
+    "kind": "단답형",
+    "question": "제1정규형을 만족하는 릴레이션에서 기본키가 아닌 모든 속성이 기본키에 완전 함수 종속되도록, 부분 함수 종속을 제거한 정규형을 쓰시오.",
+    "answers": [
+      [
+        "제2정규형",
+        "2NF",
+        "2정규형",
+        "제2정규형(2NF)",
+        "Second Normal Form"
+      ]
+    ],
+    "explanation": "부분 함수 종속은 복합 기본키의 일부에만 종속되는 상태를 말하며, 이를 없앤 것이 제2정규형(2NF)이다. 이어서 이행적 함수 종속을 제거하면 제3정규형, 결정자가 모두 후보키가 되게 하면 BCNF가 된다."
+  },
+  {
+    "id": "p-c-pointer-stride-sum",
+    "topic": "c-pointer-array",
+    "difficulty": "중",
+    "kind": "코드형",
+    "question": "다음 C 프로그램의 실행 결과를 쓰시오.",
+    "code": "#include <stdio.h>\n\nint main() {\n    int a[5] = {2, 4, 6, 8, 10};\n    int *p = a;\n    int s = 0;\n    for (int i = 0; i < 5; i += 2)\n        s += *(p + i);\n    printf(\"%d\", s);\n    return 0;\n}",
+    "answers": [
+      [
+        "18"
+      ]
+    ],
+    "explanation": "p는 배열 a의 첫 원소를 가리키므로 *(p + i)는 a[i]와 같다. i가 0, 2, 4로 증가하므로 a[0] + a[2] + a[4] = 2 + 6 + 10 = 18이다. 포인터에 정수를 더하면 바이트가 아니라 원소 단위로 이동한다는 점이 핵심이다."
+  },
+  {
+    "id": "p-sql-groupby-having",
+    "topic": "sql-query-basics",
+    "difficulty": "중",
+    "kind": "SQL형",
+    "question": "[학생] 테이블에서 학과별 학생 수가 3명 이상인 학과와 그 인원수를 구하려고 한다. 다음 SQL문의 빈칸 ①, ②에 들어갈 알맞은 키워드를 쓰시오.",
+    "code": "SELECT 학과, COUNT(*) AS 인원\n  FROM 학생\n ( ① ) 학과\n ( ② ) COUNT(*) >= 3;",
+    "answers": [
+      [
+        "GROUP BY"
+      ],
+      [
+        "HAVING"
+      ]
+    ],
+    "labels": [
+      "①",
+      "②"
+    ],
+    "explanation": "행을 특정 열의 값으로 묶는 것이 GROUP BY이고, 그렇게 묶인 그룹에 조건을 거는 것이 HAVING이다. WHERE는 그룹으로 묶기 전 개별 행을 걸러내므로 COUNT 같은 집계 함수를 조건으로 쓸 수 없다."
+  },
+  {
+    "id": "p-uml-composition",
+    "topic": "uml-diagrams",
+    "difficulty": "중",
+    "kind": "단답형",
+    "question": "클래스 다이어그램의 관계 중, 전체 객체가 사라지면 부분 객체도 함께 사라지는 강한 전체-부분 관계를 무엇이라 하는지 쓰시오.",
+    "answers": [
+      [
+        "합성",
+        "합성 관계",
+        "Composition",
+        "컴포지션",
+        "합성(Composition)",
+        "컴포지션 관계",
+        "합성(Composition) 관계"
+      ]
+    ],
+    "explanation": "생명주기를 공유하는 강한 전체-부분 관계가 합성(Composition)이고, 속이 찬 마름모로 그린다. 전체가 없어져도 부분이 남는 느슨한 관계는 집합(Aggregation)이며 속이 빈 마름모로 구분한다."
+  },
+  {
+    "id": "p-java-dynamic-dispatch",
+    "topic": "java-inheritance",
+    "difficulty": "상",
+    "kind": "코드형",
+    "question": "다음 Java 프로그램의 실행 결과를 쓰시오.",
+    "code": "class A {\n    int calc(int x) { return x + 5; }\n    int run(int x) { return calc(x) * 2; }\n}\n\nclass B extends A {\n    int calc(int x) { return x * 3; }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        A obj = new B();\n        System.out.print(obj.run(4));\n    }\n}",
+    "answers": [
+      [
+        "24"
+      ]
+    ],
+    "explanation": "참조 변수의 자료형은 A지만 실제 생성된 객체는 B이므로, 오버라이딩된 메서드는 객체 기준으로 호출된다(동적 바인딩). run은 A에만 있으니 A의 것이 실행되지만 그 안의 calc(4)는 B의 것이 불려 4 × 3 = 12가 되고, 여기에 2를 곱해 24가 된다."
+  },
+  {
+    "id": "p-subnet-count-hosts",
+    "topic": "ip-subnetting",
+    "difficulty": "상",
+    "kind": "계산형",
+    "question": "192.168.10.0/24 네트워크를 서브넷 마스크 255.255.255.192로 나누려고 한다. 만들어지는 서브넷의 개수와, 각 서브넷에서 실제 호스트에 배정할 수 있는 주소의 개수를 각각 쓰시오.",
+    "answers": [
+      [
+        "4",
+        "4개"
+      ],
+      [
+        "62",
+        "62개"
+      ]
+    ],
+    "labels": [
+      "서브넷 개수",
+      "서브넷당 호스트 수"
+    ],
+    "explanation": "255.255.255.192는 마지막 옥텟이 11000000이므로 /26이다. 원래 /24에서 네트워크 비트를 2개 빌렸으니 서브넷은 2² = 4개다. 남은 호스트 비트는 6개라 2⁶ = 64개 주소가 생기지만, 네트워크 주소와 브로드캐스트 주소를 빼야 하므로 실제 배정 가능한 주소는 62개다."
+  },
+  {
+    "id": "p-code-transposition-error",
+    "topic": "code-design",
+    "difficulty": "하",
+    "kind": "단답형",
+    "question": "원래 코드 5314를 5134로 잘못 입력했다. 이처럼 이웃한 두 자리의 순서가 뒤바뀌어 생기는 코드 오류의 유형을 쓰시오.",
+    "answers": [
+      [
+        "전위 오류",
+        "Transposition Error",
+        "전위 오류(Transposition Error)",
+        "Transposition",
+        "전위",
+        "자리바꿈 오류"
+      ]
+    ],
+    "explanation": "이웃한 두 자리가 서로 자리를 바꾼 것이 전위 오류(Transposition Error)다. 한 자리가 더 붙으면 첨가 오류, 빠지면 생략 오류, 한 글자가 다른 글자로 바뀌면 필사 오류이며, 전위가 두 곳 이상에서 일어나면 이중 전위 오류가 된다."
+  },
+  {
+    "id": "p-python-slice-set",
+    "topic": "python-slicing",
+    "difficulty": "중",
+    "kind": "코드형",
+    "question": "다음 Python 프로그램의 실행 결과를 쓰시오.",
+    "code": "a = [3, 1, 4, 1, 5, 9, 2, 6]\nprint(sum(a[1:6:2]) * len(set(a)))",
+    "answers": [
+      [
+        "77"
+      ]
+    ],
+    "explanation": "a[1:6:2]는 인덱스 1부터 6 직전까지 2칸씩 건너뛰므로 인덱스 1, 3, 5 즉 [1, 1, 9]이고 합은 11이다. set(a)는 중복을 없애 {1, 2, 3, 4, 5, 6, 9}가 되어 길이가 7이다. 따라서 11 × 7 = 77이다."
+  },
+  {
+    "id": "p-sql-alter-add-constraint",
+    "topic": "sql-command-types",
+    "difficulty": "중",
+    "kind": "SQL형",
+    "question": "[사원] 테이블의 '사번' 속성에 PK_사원이라는 이름의 기본키 제약조건을 추가하려고 한다. 다음 SQL문의 빈칸 ①, ②에 들어갈 알맞은 키워드를 쓰시오.",
+    "code": "( ① ) TABLE 사원\n( ② ) CONSTRAINT PK_사원 PRIMARY KEY(사번);",
+    "answers": [
+      [
+        "ALTER"
+      ],
+      [
+        "ADD"
+      ]
+    ],
+    "labels": [
+      "①",
+      "②"
+    ],
+    "explanation": "이미 만들어진 테이블의 구조를 바꾸는 DDL이 ALTER TABLE이고, 제약조건이나 속성을 새로 붙일 때는 ADD를 쓴다. 반대로 떼어낼 때는 DROP CONSTRAINT를, 속성의 자료형을 바꿀 때는 MODIFY를 쓴다."
+  },
+  {
+    "id": "p-arq-go-back-n",
+    "topic": "error-flow-control",
+    "difficulty": "중",
+    "kind": "단답형",
+    "question": "오류가 발생한 프레임뿐 아니라 그 뒤에 이미 보낸 프레임까지 모두 다시 전송하는 ARQ 방식을 쓰시오.",
+    "answers": [
+      [
+        "Go-Back-N ARQ",
+        "Go-Back-N",
+        "GBN ARQ",
+        "GBN",
+        "고백엔 ARQ",
+        "Go Back N",
+        "GO-Back-N ARQ"
+      ]
+    ],
+    "explanation": "GO-Back-N ARQ는 오류가 난 프레임 번호로 되돌아가 그 이후를 전부 재전송한다. 오류가 난 것만 골라 다시 보내는 방식은 선택적 재전송(Selective-Repeat) ARQ이며, 한 프레임씩 응답을 기다리는 것은 정지-대기(Stop-and-Wait) ARQ다."
+  },
+  {
+    "id": "p-postfix-traversal",
+    "topic": "tree-traversal",
+    "difficulty": "중",
+    "kind": "계산형",
+    "question": "다음 이진 트리를 후위 순회(Postorder)한 결과를 쓰시오.",
+    "code": "        *\n      /   \\\n     +     -\n    / \\   / \\\n   3   5 8   2",
+    "answers": [
+      [
+        "35+82-*"
+      ]
+    ],
+    "explanation": "후위 순회는 왼쪽 서브트리 → 오른쪽 서브트리 → 루트 순으로 방문한다. 왼쪽 (3 5 +), 오른쪽 (8 2 -), 마지막에 루트 *를 놓아 35+82-*가 된다. 수식 트리를 후위 순회한 결과가 곧 후위 표기법(postfix)이다."
+  },
+  {
+    "id": "p-c-recursive-sum",
+    "topic": "c-operators",
+    "difficulty": "상",
+    "kind": "코드형",
+    "question": "다음 C 프로그램의 실행 결과를 쓰시오.",
+    "code": "#include <stdio.h>\n\nint f(int n) {\n    if (n < 3) return n;\n    return f(n - 1) + f(n - 3);\n}\n\nint main() {\n    printf(\"%d\", f(8));\n    return 0;\n}",
+    "answers": [
+      [
+        "15"
+      ]
+    ],
+    "explanation": "n이 3보다 작으면 n을 그대로 돌려주므로 f(0)=0, f(1)=1, f(2)=2가 기저가 된다. 이후 f(3)=f(2)+f(0)=2, f(4)=f(3)+f(1)=3, f(5)=f(4)+f(2)=5, f(6)=f(5)+f(3)=7, f(7)=f(6)+f(4)=10, f(8)=f(7)+f(5)=15이다."
+  },
+  {
+    "id": "p-pattern-observer",
+    "topic": "design-patterns",
+    "difficulty": "중",
+    "kind": "단답형",
+    "question": "한 객체의 상태가 바뀌면 그 객체에 의존하는 다른 객체들에게 자동으로 알려 갱신되게 하는 행위(Behavioral) 패턴의 이름을 쓰시오.",
+    "answers": [
+      [
+        "옵서버",
+        "옵저버",
+        "Observer",
+        "옵서버 패턴",
+        "옵저버 패턴",
+        "Observer Pattern",
+        "Observer 패턴",
+        "옵서버(Observer)"
+      ]
+    ],
+    "explanation": "일대다 의존 관계를 두고 상태 변화를 자동으로 전파하는 것이 옵서버(Observer) 패턴이며, 발행-구독 구조의 바탕이 된다. 생성 패턴인 싱글톤·팩토리 메서드, 구조 패턴인 어댑터·프록시와 갈래가 다르다."
+  },
+  {
+    "id": "p-syn-flooding",
+    "topic": "security-attacks",
+    "difficulty": "하",
+    "kind": "단답형",
+    "question": "TCP 3-way handshake를 끝내지 않고 SYN 패킷만 대량으로 보내 서버의 연결 대기 큐를 가득 채워 정상 접속을 막는 공격 기법을 쓰시오.",
+    "answers": [
+      [
+        "SYN 플러딩",
+        "SYN Flooding",
+        "SYN Flood",
+        "SYN 플러드",
+        "SYN 플러딩 공격",
+        "SYN Flooding Attack",
+        "SYN 플러딩 공격(SYN Flooding)"
+      ]
+    ],
+    "explanation": "SYN 플러딩은 SYN에 대한 응답(SYN+ACK) 뒤 마지막 ACK를 보내지 않아 half-open 연결을 쌓아 올리는 서비스 거부 공격이다. 대응책으로는 SYN 쿠키, 대기 큐 크기 확대, 타임아웃 단축이 쓰인다."
+  },
+  {
+    "id": "p-java-string-stride",
+    "topic": "java-basics",
+    "difficulty": "중",
+    "kind": "코드형",
+    "question": "다음 Java 프로그램의 실행 결과를 쓰시오.",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        String s = \"INFORMATION\";\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < s.length(); i += 3)\n            sb.append(s.charAt(i));\n        System.out.print(sb.reverse());\n    }\n}",
+    "answers": [
+      [
+        "OAOI"
+      ]
+    ],
+    "explanation": "\"INFORMATION\"은 11글자이고 인덱스는 0부터 10까지다. i가 0, 3, 6, 9일 때의 문자는 차례로 I, O, A, O이므로 sb에는 \"IOAO\"가 쌓인다. reverse()로 뒤집어 출력하면 OAOI가 된다."
+  },
+  {
+    "id": "p-sql-grant-option",
+    "topic": "sql-command-types",
+    "difficulty": "중",
+    "kind": "SQL형",
+    "question": "[성적] 테이블에 대한 SELECT 권한을 사용자 PARK에게 주면서, PARK이 그 권한을 다시 다른 사용자에게 넘길 수 있도록 하려고 한다. 다음 SQL문의 빈칸 ①, ②를 채우시오.",
+    "code": "( ① ) SELECT ON 성적 TO PARK ( ② );",
+    "answers": [
+      [
+        "GRANT"
+      ],
+      [
+        "WITH GRANT OPTION"
+      ]
+    ],
+    "labels": [
+      "①",
+      "②"
+    ],
+    "explanation": "권한을 부여하는 DCL이 GRANT이고, 회수는 REVOKE다. 받은 권한을 제3자에게 다시 넘길 수 있게 하려면 WITH GRANT OPTION을 덧붙인다. 역할(ROLE)에 대해 같은 일을 하려면 WITH ADMIN OPTION을 쓴다."
+  },
+  {
+    "id": "p-statement-coverage",
+    "topic": "test-blackbox-whitebox",
+    "difficulty": "중",
+    "kind": "단답형",
+    "question": "프로그램 안의 모든 명령문이 적어도 한 번씩은 수행되도록 테스트 케이스를 설계하는 화이트박스 테스트 검증 기준을 쓰시오.",
+    "answers": [
+      [
+        "구문 커버리지",
+        "문장 커버리지",
+        "Statement Coverage",
+        "구문 검증 기준",
+        "문장 검증 기준",
+        "구문 커버리지(Statement Coverage)",
+        "문장 검증"
+      ]
+    ],
+    "explanation": "모든 명령문을 한 번씩 실행하는 것이 구문(문장) 커버리지로, 화이트박스 커버리지 중 가장 약한 기준이다. 조건식의 참·거짓을 모두 거치게 하는 결정 커버리지, 개별 조건마다 참·거짓을 보는 조건 커버리지가 그 위에 놓인다."
+  },
+  {
+    "id": "p-coupling-cohesion-brief",
+    "topic": "coupling-cohesion",
+    "difficulty": "중",
+    "kind": "약술형",
+    "question": "모듈 설계에서 결합도와 응집도가 각각 무엇을 나타내는 척도인지 설명하고, 좋은 설계를 위해 두 값을 어느 방향으로 가져가야 하는지 서술하시오.",
+    "answers": [],
+    "modelAnswer": "결합도(Coupling)는 모듈과 모듈 사이의 상호 의존 정도를 나타내는 척도이고, 응집도(Cohesion)는 한 모듈 안의 구성 요소들이 얼마나 하나의 목적에 집중되어 있는지를 나타내는 척도다. 결합도가 낮을수록 한 모듈의 변경이 다른 모듈로 번지지 않아 유지보수가 쉽고, 응집도가 높을수록 모듈의 역할이 뚜렷해 재사용과 이해가 쉽다. 따라서 좋은 설계는 결합도를 낮추고 응집도를 높이는 방향으로 간다.",
+    "keywords": [
+      "결합도",
+      "모듈 간",
+      "의존",
+      "응집도",
+      "모듈 내부",
+      "낮게",
+      "높게"
+    ],
+    "explanation": "두 척도의 정의(모듈 사이 / 모듈 안)를 뒤집어 쓰는 답안이 가장 흔한 실수다. 결합도는 낮을수록, 응집도는 높을수록 좋다는 방향까지 함께 써야 완결된 답이 된다. 결합도는 자료 < 스탬프 < 제어 < 외부 < 공통 < 내용 순으로 나빠지고, 응집도는 기능 > 순차 > 교환 > 절차 > 시간 > 논리 > 우연 순으로 나빠진다."
+  },
+  {
+    "id": "p-atomicity-durability-brief",
+    "topic": "transaction-acid",
+    "difficulty": "중",
+    "kind": "약술형",
+    "question": "트랜잭션의 특성 중 원자성(Atomicity)과 지속성(Durability)이 각각 무엇을 보장하는지 서술하시오.",
+    "answers": [],
+    "modelAnswer": "원자성은 트랜잭션에 속한 연산들이 전부 수행되거나 전혀 수행되지 않아야 한다는 성질이다. 중간에 실패하면 이미 반영된 부분까지 되돌려(롤백) 트랜잭션 이전 상태로 복원해야 하며, 일부만 반영된 상태로 남아서는 안 된다. 지속성은 성공적으로 완료(커밋)된 트랜잭션의 결과가 이후 시스템에 장애가 나더라도 없어지지 않고 영구적으로 남아야 한다는 성질이다.",
+    "keywords": [
+      "원자성",
+      "전부",
+      "전혀",
+      "롤백",
+      "지속성",
+      "커밋",
+      "장애",
+      "영구"
+    ],
+    "explanation": "원자성은 '전부 아니면 전무', 지속성은 '커밋된 결과는 장애에도 남는다'로 요약된다. 나머지 두 특성인 일관성은 트랜잭션 전후로 데이터베이스가 모순 없는 상태를 유지하는 것, 격리성은 수행 중인 트랜잭션의 중간 결과를 다른 트랜잭션이 보지 못하게 하는 것이다."
+  }
+]

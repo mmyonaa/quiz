@@ -95,4 +95,57 @@ const quiz = defineCollection({
     }),
 });
 
-export const collections = { quiz };
+/**
+ * 실기 문항 유형 — 정처기 실기는 필답형 20문항·100점(문항당 5점)·150분·60점 합격이다.
+ * 필기와 달리 보기가 없고 답을 직접 쓰므로, 채점 방식이 유형마다 다르다.
+ * 단답형·계산형·코드형·SQL형은 문자열 대조로 자동 채점하고, 약술형은 자가 채점한다.
+ */
+export const PRACTICAL_KINDS = ["단답형", "계산형", "코드형", "SQL형", "약술형"] as const;
+
+const practical = defineCollection({
+  loader: file("src/data/practical.json"),
+  schema: z
+    .object({
+      /** 필기 문항 id와 섞이지 않게 p- 접두어를 강제한다(저장·오답 기록이 두 은행을 함께 다룬다) */
+      id: z.string().regex(/^p-[a-z0-9-]+$/, "실기 문항 id는 p-로 시작하는 kebab-case"),
+      /** 소속 개념 주제 — 필기와 같은 91주제를 공유해 개념 노트에 함께 붙는다 */
+      topic: z.enum(TOPIC_KEYS),
+      difficulty: z.enum(DIFFICULTIES),
+      kind: z.enum(PRACTICAL_KINDS),
+      question: z.string().min(10),
+      /** 제시문 — 코드형·SQL형·계산형의 코드/조건 블록(고정폭 렌더) */
+      code: z.string().optional(),
+      /**
+       * 답란별 허용 표기 — 바깥 배열이 답란(①②③ 다답형), 안쪽이 그 답란의 정답 표기 목록.
+       * 예: [["교착상태", "데드락", "deadlock"]]. 표기 흔들림은 정규화 + 이 목록으로 흡수한다.
+       * 약술형은 채점 대상이 아니므로 빈 배열을 허용한다.
+       */
+      answers: z.array(z.array(z.string().min(1)).min(1)),
+      /** 답란 이름 — 다답형에서 무엇을 쓰는 칸인지 표시(예: ["①", "②"]). 길이는 answers와 같아야 한다 */
+      labels: z.array(z.string().min(1)).optional(),
+      /** 약술형 모범답안 — 자가 채점의 기준 */
+      modelAnswer: z.string().optional(),
+      /** 약술형 채점 키워드 — 포함 개수를 세어 자가 채점을 돕는다 */
+      keywords: z.array(z.string().min(1)).optional(),
+      explanation: z.string().min(20, "해설은 오답 학습의 핵심 — 20자 이상"),
+    })
+    .strict()
+    .refine((q) => (q.kind === "약술형" ? q.answers.length === 0 : q.answers.length > 0), {
+      message: "약술형은 answers를 비우고, 나머지 유형은 답란을 하나 이상 둬야 합니다",
+      path: ["answers"],
+    })
+    .refine((q) => (q.kind === "약술형" ? !!q.modelAnswer && !!q.keywords?.length : true), {
+      message: "약술형은 modelAnswer와 keywords가 필요합니다",
+      path: ["modelAnswer"],
+    })
+    .refine((q) => !q.labels || q.labels.length === q.answers.length, {
+      message: "labels 길이가 답란 수와 다릅니다",
+      path: ["labels"],
+    })
+    .refine((q) => (q.kind === "코드형" || q.kind === "SQL형" ? !!q.code : true), {
+      message: "코드형·SQL형은 제시문(code)이 필요합니다",
+      path: ["code"],
+    }),
+});
+
+export const collections = { quiz, practical };

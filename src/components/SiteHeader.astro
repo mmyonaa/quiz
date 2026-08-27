@@ -6,7 +6,8 @@ import AuthBox from "./AuthBox.astro";
 const { current = "" } = Astro.props as { current?: string };
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const links = [
-  { key: "quiz", href: `${base}/`, label: "문제 풀기" },
+  { key: "quiz", href: `${base}/`, label: "필기 문제" },
+  { key: "practical", href: `${base}/practical/`, label: "실기 필답" },
   { key: "notes", href: `${base}/notes/`, label: "개념 노트" },
 ];
 ---

@@ -1,0 +1,753 @@
+---
+import { DIFFICULTIES, PRACTICAL_KINDS } from "../content.config";
+import { loadPractical } from "../lib/bank";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import {
+  PRACTICAL_MINUTES,
+  PRACTICAL_PASS,
+  PRACTICAL_POINT,
+  PRACTICAL_TOTAL,
+} from "../lib/practical-grade";
+import "../styles/global.css";
+
+// 실기 문항 은행 — 필기와 같이 빌드 타임에 구워 서버 없이 동작한다.
+const bank = await loadPractical();
+const countByKind = Object.fromEntries(
+  PRACTICAL_KINDS.map((k) => [k, bank.filter((q) => q.kind === k).length]),
+);
+const countByDiff = Object.fromEntries(
+  DIFFICULTIES.map((d) => [d, bank.filter((q) => q.difficulty === d).length]),
+);
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>daily.quiz — 정처기 실기 필답 연습</title>
+    <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
+    <meta
+      name="description"
+      content="정보처리기사 실기 필답형 연습장. 단답·코드 출력·SQL을 직접 입력해 자동 채점하고, 약술형은 모범답안과 대조해 자가 채점합니다."
+    />
+  </head>
+  <body>
+    <SiteHeader current="practical" />
+
+    <main>
+      {/* ── 1. 설정 화면 ── */}
+      <section id="setup" class="panel">
+        <h1>정처기 실기 필답 연습</h1>
+        <p class="lead">
+          보기 없이 답을 직접 씁니다. 단답·계산·코드 출력·SQL은 자동 채점하고,
+          약술형은 모범답안과 나란히 놓고 스스로 채점합니다.
+          개념부터 훑고 싶다면 <a class="lead-link" href={`${base}/notes/`}>개념 노트</a>를 펴 보세요.
+        </p>
+
+        <fieldset class="areas">
+          <legend>문항 유형</legend>
+          <label class="area-opt">
+            <input type="radio" name="kind" value="전체" checked />
+            <span>전체 <em>{bank.length}</em></span>
+          </label>
+          {PRACTICAL_KINDS.map((k) => (
+            <label class="area-opt">
+              <input type="radio" name="kind" value={k} disabled={countByKind[k] === 0} />
+              <span>{k} <em>{countByKind[k]}</em></span>
+            </label>
+          ))}
+        </fieldset>
+
+        <fieldset class="diffs">
+          <legend>난이도</legend>
+          <label class="area-opt">
+            <input type="radio" name="diff" value="전체" checked />
+            <span>전체</span>
+          </label>
+          {DIFFICULTIES.map((d) => (
+            <label class="area-opt">
+              <input type="radio" name="diff" value={d} />
+              <span>{d} <em>{countByDiff[d]}</em></span>
+            </label>
+          ))}
+        </fieldset>
+
+        <fieldset class="counts">
+          <legend>문항 수</legend>
+          {[5, 10, 20].map((n, i) => (
+            <label class="area-opt">
+              <input type="radio" name="count" value={n} checked={i === 1} />
+              <span>{n}문항</span>
+            </label>
+          ))}
+        </fieldset>
+
+        <div class="start-row">
+          <button id="start" class="primary">연습 시작</button>
+          <span id="pool-info" class="pool-info"></span>
+        </div>
+
+        {/* 이어서 풀기 — 중단된 풀이 복원 */}
+        <div id="resume-box" class="note-box resume" hidden>
+          <span id="resume-info"></span>
+          <span class="note-actions">
+            <button id="resume-go" class="ghost">이어서 풀기</button>
+            <button id="resume-drop" class="linklike">버리기</button>
+          </span>
+        </div>
+
+        {/* 실기 모의고사 — 실제 시험 형식 모사 */}
+        <div class="mock-box">
+          <h2>실기 모의고사</h2>
+          <p class="mock-desc">
+            실제 실기 형식 그대로 — 필답형 {PRACTICAL_TOTAL}문항을 {PRACTICAL_MINUTES}분 안에 풉니다.
+            문항당 {PRACTICAL_POINT}점, {PRACTICAL_PASS}점 이상이면 합격입니다.
+            부분 점수가 없어 다답형은 모든 답란을 맞혀야 정답입니다.
+          </p>
+          <button id="start-mock" class="primary" disabled={bank.length < PRACTICAL_TOTAL}>
+            모의고사 시작
+          </button>
+          {bank.length < PRACTICAL_TOTAL && (
+            <p class="mock-desc">문항이 {PRACTICAL_TOTAL}개 이상 쌓이면 열립니다 (현재 {bank.length}개).</p>
+          )}
+        </div>
+      </section>
+
+      {/* ── 2. 풀이 화면 — 답안 작성란이 늘 붙으므로 2단 배치를 켠 채로 둔다 ── */}
+      <section id="exam" class="panel with-sheet" hidden>
+        <div class="exam-cols">
+          <div class="exam-main">
+            <div class="exam-top">
+              <div class="exam-head">
+                <span id="progress" class="mono"></span>
+                <span id="timer" class="mono timer" hidden></span>
+                <span class="exam-tools">
+                  <span id="exam-kind" class="badge"></span>
+                  <span id="exam-diff" class="badge diff"></span>
+                </span>
+              </div>
+              <div id="pbar" class="pbar" role="progressbar" aria-label="풀이 진행률" aria-valuemin="0" aria-valuemax="100"><i id="pbar-fill"></i></div>
+            </div>
+            <div id="q-body">
+              <h2 id="q-text" tabindex="-1"></h2>
+              <pre id="q-code" class="q-code mono" hidden></pre>
+              <div id="q-answer" class="pa-answer"></div>
+            </div>
+            <div class="exam-nav">
+              <button id="quit" class="linklike quit">그만두고 나가기</button>
+              <button id="prev" class="ghost" disabled>이전</button>
+              <button id="next" class="primary">다음</button>
+            </div>
+            <p class="kbd-hint"><kbd>Enter</kbd> 다음 문항 · <kbd>Shift</kbd>+<kbd>Enter</kbd> 이전 (약술형은 줄바꿈)</p>
+          </div>
+
+          {/* 답안 작성 현황 — 실제 답안지처럼 쓴 답을 한눈에 훑고, 번호로 곧장 이동한다 */}
+          <details id="omr" class="omr">
+            <summary class="omr-head">
+              <span class="omr-title">답안 작성란</span>
+              <span id="omr-count" class="mono omr-count"></span>
+            </summary>
+            <div id="omr-sheet" class="omr-sheet pa-sheet"></div>
+            <p class="omr-hint">번호를 누르면 그 문항으로 이동합니다.</p>
+          </details>
+        </div>
+      </section>
+
+      {/* ── 3. 결과 화면 ── */}
+      <section id="result" class="panel" hidden>
+        <h1 id="score" tabindex="-1"></h1>
+        <div class="score-bar"><i id="score-fill"></i></div>
+        <p id="elapsed" class="elapsed"></p>
+        <p id="verdict" class="lead"></p>
+        <div id="selfgrade-note" class="note-box" hidden>
+          <span id="selfgrade-info"></span>
+        </div>
+        <div id="review"></div>
+        <div class="exam-nav">
+          <button id="retry" class="primary">다시 풀기</button>
+        </div>
+      </section>
+    </main>
+
+    <SiteFooter />
+
+    <script is:inline type="application/json" id="bank" set:html={JSON.stringify(bank)} />
+
+    <script>
+      import {
+        normalize,
+        gradeQuestion,
+        countKeywords,
+        PRACTICAL_TOTAL,
+        PRACTICAL_POINT,
+        PRACTICAL_PASS,
+        PRACTICAL_MINUTES,
+      } from "../lib/practical-grade";
+      import { toast } from "../lib/toast";
+
+      type P = {
+        id: string;
+        topic: string;
+        topicTitle: string;
+        area: string;
+        subject: string;
+        difficulty: string;
+        kind: string;
+        question: string;
+        code?: string;
+        answers: string[][];
+        labels?: string[];
+        modelAnswer?: string;
+        keywords?: string[];
+        explanation: string;
+      };
+
+      const bank: P[] = JSON.parse(document.getElementById("bank")!.textContent!);
+      const $ = <T extends HTMLElement>(sel: string) => document.querySelector(sel) as T;
+      const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      const setup = $("#setup"), exam = $("#exam"), result = $("#result");
+
+      let session: P[] = [];
+      let inputs: string[][] = [];      // 문항별 답란 입력값
+      let selfGrade: (boolean | undefined)[] = []; // 약술형 자가 채점 결과
+      let cur = 0;
+      let mode: "practice" | "mock" = "practice";
+      let startedAt = Date.now();
+      let deadline = 0;
+
+      // ── 사용자가 인정시킨 표기 — 자동 채점이 놓친 동의어를 로컬에 쌓는다 ──
+      const EXTRA_KEY = "daily.quiz.practical.extra.v1";
+      type Extras = Record<string, string[]>; // `${id}#${blank}` → 허용 표기 목록
+      const loadExtras = (): Extras => {
+        try {
+          return JSON.parse(localStorage.getItem(EXTRA_KEY) ?? "{}");
+        } catch {
+          return {};
+        }
+      };
+      const saveExtras = (e: Extras) => {
+        try {
+          localStorage.setItem(EXTRA_KEY, JSON.stringify(e));
+        } catch {
+          /* 저장 불가 환경이면 이번 세션에만 적용 */
+        }
+      };
+      let extras = loadExtras();
+      const extrasOf = (q: P) => q.answers.map((_, i) => extras[`${q.id}#${i}`] ?? []);
+
+      // ── 이어서 풀기 ──
+      const SAVE_KEY = "daily.quiz.practical.session.v1";
+      type Saved = {
+        ids: string[];
+        inputs: string[][];
+        cur: number;
+        mode: "practice" | "mock";
+        startedAt: number;
+        deadline: number;
+      };
+      const persist = () => {
+        if (!session.length) return;
+        const s: Saved = {
+          ids: session.map((q) => q.id),
+          inputs,
+          cur,
+          mode,
+          startedAt,
+          deadline,
+        };
+        try {
+          localStorage.setItem(SAVE_KEY, JSON.stringify(s));
+        } catch {
+          /* 무시 */
+        }
+      };
+      const dropSaved = () => {
+        try {
+          localStorage.removeItem(SAVE_KEY);
+        } catch {
+          /* 무시 */
+        }
+      };
+      const readSaved = (): Saved | null => {
+        try {
+          const s = JSON.parse(localStorage.getItem(SAVE_KEY) ?? "null") as Saved | null;
+          if (!s?.ids?.length) return null;
+          if (s.mode === "mock" && Date.now() >= s.deadline) return null; // 시간이 끝난 모의고사
+          if (s.ids.some((id) => !bank.some((q) => q.id === id))) return null; // 은행이 바뀌었다
+          return s;
+        } catch {
+          return null;
+        }
+      };
+
+      // ── 타이머 ──
+      let tick = 0;
+      const fmt = (sec: number) => {
+        const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+        const mm = String(m).padStart(2, "0"), ss = String(s).padStart(2, "0");
+        return h ? `${h}:${mm}:${ss}` : `${m}:${ss}`;
+      };
+      const fmtDuration = (sec: number) =>
+        sec >= 60 ? `${Math.floor(sec / 60)}분 ${sec % 60}초` : `${sec}초`;
+      const paintTimer = () => {
+        const el = $("#timer");
+        if (mode === "mock") {
+          const left = Math.max(0, deadline - Date.now());
+          el.textContent = fmt(Math.ceil(left / 1000));
+          el.classList.toggle("low", left <= 10 * 60 * 1000);
+          if (left <= 0) {
+            stopTimer();
+            renderResult(true);
+          }
+        } else {
+          el.textContent = fmt(Math.floor((Date.now() - startedAt) / 1000));
+        }
+      };
+      const startTimer = (from = Date.now(), until = from + PRACTICAL_MINUTES * 60 * 1000) => {
+        startedAt = from;
+        deadline = until;
+        $("#timer").hidden = false;
+        $("#timer").classList.toggle("mock", mode === "mock");
+        $("#timer").classList.remove("low");
+        paintTimer();
+        clearInterval(tick);
+        tick = window.setInterval(paintTimer, 1000);
+      };
+      const stopTimer = () => clearInterval(tick);
+
+      const shuffle = <T,>(arr: T[]): T[] => {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      };
+
+      // ── 답안 작성란(사이드바) ──
+      const answered = (i: number) => (inputs[i] ?? []).some((v) => v.trim() !== "");
+      let sheetRows: HTMLElement[] = [];
+      let sheetBuiltFor = "";
+
+      const buildSheet = () => {
+        const sheet = $("#omr-sheet");
+        sheet.innerHTML = "";
+        sheetRows = [];
+        session.forEach((_, i) => {
+          const row = document.createElement("div");
+          row.className = "omr-row";
+          const no = document.createElement("button");
+          no.type = "button";
+          no.className = "omr-no";
+          no.textContent = String(i + 1);
+          no.setAttribute("aria-label", `${i + 1}번 문항으로 이동`);
+          no.addEventListener("click", () => {
+            cur = i;
+            renderQuestion();
+            if (!wide.matches) $("#q-body").scrollIntoView({ block: "start", behavior: "smooth" });
+          });
+          const prev = document.createElement("span");
+          prev.className = "pa-preview";
+          row.append(no, prev);
+          sheet.appendChild(row);
+          sheetRows.push(row);
+        });
+      };
+
+      const wide = window.matchMedia("(min-width: 1080px)");
+      const syncSheet = () => {
+        const key = session.map((q) => q.id).join(",");
+        if (key !== sheetBuiltFor) {
+          buildSheet();
+          sheetBuiltFor = key;
+          ($("#omr") as HTMLDetailsElement).open = wide.matches;
+        }
+        const done = session.filter((_, i) => answered(i)).length;
+        $("#omr-count").textContent = `${done} / ${session.length}`;
+        sheetRows.forEach((row, i) => {
+          row.classList.toggle("here", i === cur);
+          row.classList.toggle("blank", !answered(i));
+          const text = (inputs[i] ?? []).filter((v) => v.trim()).join(" / ");
+          const prev = row.querySelector(".pa-preview") as HTMLElement;
+          prev.textContent = text || "—";
+          prev.title = text;
+        });
+        const here = sheetRows[cur];
+        if (here && ($("#omr") as HTMLDetailsElement).open) {
+          const box = $("#omr-sheet");
+          const top = here.offsetTop - box.offsetTop;
+          if (top < box.scrollTop || top + here.offsetHeight > box.scrollTop + box.clientHeight) {
+            box.scrollTo({ top: top - box.clientHeight / 2 + here.offsetHeight, behavior: "smooth" });
+          }
+        }
+      };
+      wide.addEventListener("change", (e) => {
+        if (!exam.hidden) ($("#omr") as HTMLDetailsElement).open = e.matches;
+      });
+
+      // ── 문항 렌더 ──
+      const renderQuestion = () => {
+        const q = session[cur];
+        $("#progress").textContent = `${cur + 1} / ${session.length}`;
+        const pct = ((cur + 1) / session.length) * 100;
+        $("#pbar-fill").style.width = `${pct}%`;
+        $("#pbar").setAttribute("aria-valuenow", String(Math.round(pct)));
+        $("#exam-kind").textContent = q.kind;
+        $("#exam-diff").textContent = q.difficulty;
+        $("#exam-diff").dataset.level = q.difficulty;
+        $("#q-text").textContent = q.question;
+        const codeEl = $("#q-code");
+        codeEl.hidden = !q.code;
+        codeEl.textContent = q.code ?? "";
+
+        const box = $("#q-answer");
+        box.innerHTML = "";
+        if (q.kind === "약술형") {
+          const ta = document.createElement("textarea");
+          ta.className = "pa-textarea";
+          ta.rows = 7;
+          ta.placeholder = "답안을 서술하세요. 채점은 모범답안과 대조해 스스로 합니다.";
+          ta.value = inputs[cur]?.[0] ?? "";
+          ta.addEventListener("input", () => {
+            inputs[cur] = [ta.value];
+            syncSheet();
+            persist();
+          });
+          box.appendChild(ta);
+        } else {
+          q.answers.forEach((_, i) => {
+            const wrap = document.createElement("label");
+            wrap.className = "pa-field";
+            if (q.labels?.[i]) {
+              const lab = document.createElement("span");
+              lab.className = "pa-label";
+              lab.textContent = q.labels[i];
+              wrap.appendChild(lab);
+            }
+            const inp = document.createElement("input");
+            inp.type = "text";
+            inp.className = "pa-input";
+            inp.autocomplete = "off";
+            inp.spellcheck = false;
+            inp.setAttribute("autocapitalize", "off");
+            inp.placeholder = q.answers.length > 1 ? `${i + 1}번 답란` : "답을 입력하세요";
+            inp.value = inputs[cur]?.[i] ?? "";
+            inp.addEventListener("input", () => {
+              inputs[cur] = q.answers.map((_, j) =>
+                j === i ? inp.value : (inputs[cur]?.[j] ?? ""),
+              );
+              syncSheet();
+              persist();
+            });
+            wrap.appendChild(inp);
+            box.appendChild(wrap);
+          });
+        }
+
+        ($("#prev") as HTMLButtonElement).disabled = cur === 0;
+        $("#next").textContent = cur === session.length - 1 ? "제출하고 채점" : "다음";
+        syncSheet();
+        persist();
+        const body = $("#q-body");
+        body.classList.remove("swap");
+        void body.offsetWidth;
+        body.classList.add("swap");
+        (box.querySelector("input, textarea") as HTMLElement | null)?.focus({ preventScroll: true });
+      };
+
+      const startSession = (pool: P[]) => {
+        if (!pool.length) return;
+        session = pool;
+        inputs = session.map((q) => (q.kind === "약술형" ? [""] : q.answers.map(() => "")));
+        selfGrade = session.map(() => undefined);
+        cur = 0;
+        setup.hidden = true;
+        result.hidden = true;
+        exam.hidden = false;
+        startTimer();
+        renderQuestion();
+      };
+
+      // ── 채점 ──
+      const isAuto = (q: P) => q.kind !== "약술형";
+      const gradeOf = (i: number) => {
+        const q = session[i];
+        if (!isAuto(q)) return { ok: selfGrade[i] === true, blanks: [] as { input: string; ok: boolean }[] };
+        return gradeQuestion(q.answers, inputs[i] ?? [], extrasOf(q));
+      };
+
+      const setScoreBar = (pct: number, pass: boolean) => {
+        const fill = $("#score-fill");
+        fill.classList.toggle("fail", !pass);
+        fill.style.width = "0%";
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => {
+            fill.style.width = `${pct}%`;
+          }),
+        );
+      };
+
+      // 점수는 자가 채점 결과가 바뀔 때마다 다시 센다
+      const paintScore = () => {
+        const total = session.length;
+        const correct = session.filter((_, i) => gradeOf(i).ok).length;
+        const pending = session.filter((q, i) => !isAuto(q) && selfGrade[i] === undefined).length;
+        const pct = Math.round((correct / total) * 100);
+        const points = mode === "mock" ? correct * PRACTICAL_POINT : null;
+        const pass = points === null ? pct >= PRACTICAL_PASS : points >= PRACTICAL_PASS;
+
+        $("#score").textContent =
+          points === null
+            ? `${total}문항 중 ${correct}문항 정답 (${pct}점)`
+            : `${points}점 / 100점 · ${correct} / ${total}문항`;
+        setScoreBar(pct, pass);
+        $("#verdict").textContent =
+          mode === "mock"
+            ? pass
+              ? `합격선 ${PRACTICAL_PASS}점을 넘겼습니다.`
+              : `합격선 ${PRACTICAL_PASS}점에 ${PRACTICAL_PASS - (points ?? 0)}점 모자랍니다.`
+            : pct === 100
+              ? "전부 맞혔습니다."
+              : pct >= 60
+                ? "합격선 수준입니다. 틀린 문항의 표기를 확인해 보세요."
+                : "아직 합격선 아래입니다. 해설을 보고 개념을 다시 잡아 보세요.";
+
+        const note = $("#selfgrade-note");
+        note.hidden = pending === 0;
+        $("#selfgrade-info").textContent =
+          `약술형 ${pending}문항이 아직 채점되지 않았습니다 — 모범답안과 견줘 O / X를 눌러 주세요.`;
+      };
+
+      const renderResult = (timedOut = false) => {
+        stopTimer();
+        dropSaved();
+        exam.hidden = true;
+        result.hidden = false;
+        const elapsedSec = Math.max(1, Math.round((Date.now() - startedAt) / 1000));
+        $("#elapsed").textContent =
+          `풀이 시간 ${fmtDuration(elapsedSec)}${timedOut ? " · 시간이 끝나 자동 제출됐습니다" : ""}`;
+
+        const review = $("#review");
+        review.innerHTML = "";
+        session.forEach((q, i) => {
+          const g = gradeOf(i);
+          const card = document.createElement("article");
+          card.className = "pa-card";
+          card.dataset.i = String(i);
+
+          const auto = isAuto(q);
+          const blanksHtml = auto
+            ? `<div class="pa-blanks">${q.answers
+                .map((acc, b) => {
+                  const got = g.blanks[b];
+                  const label = q.labels?.[b] ?? (q.answers.length > 1 ? `${b + 1}번 답란` : "내 답");
+                  return `<div class="pa-blank ${got?.ok ? "ok" : "no"}">
+                      <span class="pa-blank-label">${esc(label)}</span>
+                      <span class="pa-mine">${got?.input.trim() ? esc(got.input) : "<i>미작성</i>"}</span>
+                      <span class="pa-arrow">→</span>
+                      <span class="pa-correct">${esc(acc[0])}</span>
+                      ${
+                        !got?.ok && got?.input.trim()
+                          ? `<button type="button" class="pa-accept" data-i="${i}" data-b="${b}">이 표기도 정답 처리</button>`
+                          : ""
+                      }
+                    </div>`;
+                })
+                .join("")}</div>
+                ${
+                  q.answers.some((a) => a.length > 1)
+                    ? `<p class="pa-alt">함께 정답 처리되는 표기: ${q.answers
+                        .map((a) => a.slice(1).map(esc).join(", "))
+                        .filter(Boolean)
+                        .join(" / ")}</p>`
+                    : ""
+                }`
+            : `<div class="pa-brief">
+                 <div class="pa-brief-col">
+                   <h4>내 답안</h4>
+                   <p class="pa-mine-text">${
+                     inputs[i]?.[0]?.trim() ? esc(inputs[i][0]) : "<i>미작성</i>"
+                   }</p>
+                   <p class="pa-kw">${(() => {
+                     const hit = countKeywords(inputs[i]?.[0] ?? "", q.keywords ?? []);
+                     return `핵심어 ${hit.length} / ${q.keywords?.length ?? 0} 포함${
+                       hit.length ? ` — ${hit.map(esc).join(", ")}` : ""
+                     }`;
+                   })()}</p>
+                 </div>
+                 <div class="pa-brief-col">
+                   <h4>모범답안</h4>
+                   <p class="pa-model">${esc(q.modelAnswer ?? "")}</p>
+                 </div>
+               </div>
+               <div class="pa-self">
+                 <span>스스로 채점:</span>
+                 <button type="button" class="pa-self-btn ok" data-i="${i}" data-v="1" aria-pressed="${selfGrade[i] === true}">맞음</button>
+                 <button type="button" class="pa-self-btn no" data-i="${i}" data-v="0" aria-pressed="${selfGrade[i] === false}">틀림</button>
+               </div>`;
+
+          card.innerHTML = `
+            <header class="pa-card-head">
+              <span class="pa-mark ${auto ? (g.ok ? "ok" : "no") : selfGrade[i] === undefined ? "pending" : selfGrade[i] ? "ok" : "no"}">${
+                auto ? (g.ok ? "정답" : "오답") : selfGrade[i] === undefined ? "미채점" : selfGrade[i] ? "정답" : "오답"
+              }</span>
+              <span class="pa-no mono">${i + 1}</span>
+              <span class="badge">${esc(q.kind)}</span>
+              <span class="badge diff" data-level="${esc(q.difficulty)}">${esc(q.difficulty)}</span>
+              <span class="pa-topic">${esc(q.topicTitle)}</span>
+            </header>
+            <p class="pa-q">${esc(q.question)}</p>
+            ${q.code ? `<pre class="q-code mono">${esc(q.code)}</pre>` : ""}
+            ${blanksHtml}
+            <p class="pa-exp">${esc(q.explanation)}</p>
+          `;
+          review.appendChild(card);
+        });
+        paintScore();
+        $("#score").focus({ preventScroll: true });
+      };
+
+      // 자가 채점 · 표기 인정 — 카드가 많으므로 위임으로 받는다
+      $("#review").addEventListener("click", (e) => {
+        const t = e.target as HTMLElement;
+        const self = t.closest(".pa-self-btn") as HTMLElement | null;
+        if (self) {
+          const i = Number(self.dataset.i);
+          selfGrade[i] = self.dataset.v === "1";
+          const card = self.closest(".pa-card") as HTMLElement;
+          card.querySelectorAll(".pa-self-btn").forEach((b) =>
+            b.setAttribute("aria-pressed", String((b as HTMLElement).dataset.v === self.dataset.v)),
+          );
+          const mark = card.querySelector(".pa-mark")!;
+          mark.className = `pa-mark ${selfGrade[i] ? "ok" : "no"}`;
+          mark.textContent = selfGrade[i] ? "정답" : "오답";
+          paintScore();
+          return;
+        }
+        const accept = t.closest(".pa-accept") as HTMLElement | null;
+        if (accept) {
+          const i = Number(accept.dataset.i), b = Number(accept.dataset.b);
+          const q = session[i];
+          const typed = (inputs[i]?.[b] ?? "").trim();
+          if (!typed) return;
+          const key = `${q.id}#${b}`;
+          extras[key] = [...new Set([...(extras[key] ?? []), typed])];
+          saveExtras(extras);
+          toast(`"${typed}"를 이 답란의 정답 표기로 기억합니다.`);
+          renderResult();
+          return;
+        }
+      });
+
+      // ── 출제 ──
+      const pickPool = () => {
+        const kind = (document.querySelector('input[name="kind"]:checked') as HTMLInputElement).value;
+        const diff = (document.querySelector('input[name="diff"]:checked') as HTMLInputElement).value;
+        return bank.filter(
+          (q) => (kind === "전체" || q.kind === kind) && (diff === "전체" || q.difficulty === diff),
+        );
+      };
+      const paintPool = () => {
+        const n = pickPool().length;
+        $("#pool-info").textContent = `조건에 맞는 문항 ${n}개`;
+        ($("#start") as HTMLButtonElement).disabled = n === 0;
+      };
+      setup.addEventListener("change", paintPool);
+
+      $("#start").addEventListener("click", () => {
+        const count = Number(
+          (document.querySelector('input[name="count"]:checked') as HTMLInputElement).value,
+        );
+        mode = "practice";
+        startSession(shuffle(pickPool()).slice(0, count));
+      });
+
+      $("#start-mock").addEventListener("click", () => {
+        mode = "mock";
+        startSession(shuffle(bank).slice(0, PRACTICAL_TOTAL));
+      });
+
+      $("#prev").addEventListener("click", () => {
+        if (cur > 0) {
+          cur--;
+          renderQuestion();
+        }
+      });
+      $("#next").addEventListener("click", () => {
+        if (cur === session.length - 1) {
+          const blank = session.filter((_, i) => !answered(i)).length;
+          if (blank && !confirm(`아직 쓰지 않은 문항이 ${blank}개 있습니다. 그대로 제출할까요?`)) return;
+          renderResult();
+        } else {
+          cur++;
+          renderQuestion();
+        }
+      });
+      $("#quit").addEventListener("click", () => {
+        if (!confirm("진행 중인 풀이를 그만둘까요? 지금까지 쓴 답은 저장되지 않습니다.")) return;
+        stopTimer();
+        dropSaved();
+        exam.hidden = true;
+        result.hidden = true;
+        setup.hidden = false;
+        session = [];
+        sheetBuiltFor = "";
+        paintResume();
+      });
+      $("#retry").addEventListener("click", () => {
+        result.hidden = true;
+        setup.hidden = false;
+        session = [];
+        sheetBuiltFor = "";
+        paintResume();
+      });
+
+      // Enter로 다음 문항 — 약술형 textarea에서는 줄바꿈이 우선이므로 Ctrl/Cmd+Enter로만 넘어간다
+      document.addEventListener("keydown", (e) => {
+        if (exam.hidden || e.altKey) return;
+        const inTextarea = (e.target as HTMLElement)?.tagName === "TEXTAREA";
+        if (e.key !== "Enter") return;
+        if (inTextarea && !(e.metaKey || e.ctrlKey)) return;
+        e.preventDefault();
+        if (e.shiftKey) $("#prev").click();
+        else $("#next").click();
+      });
+
+      // ── 이어서 풀기 ──
+      const paintResume = () => {
+        const s = readSaved();
+        $("#resume-box").hidden = !s;
+        if (!s) return;
+        const done = s.inputs.filter((v) => v?.some((x) => x.trim())).length;
+        const left =
+          s.mode === "mock" ? ` · 남은 시간 ${fmt(Math.ceil((s.deadline - Date.now()) / 1000))}` : "";
+        $("#resume-info").textContent =
+          `풀던 ${s.mode === "mock" ? "모의고사" : "연습"} ${s.ids.length}문항이 남아 있습니다 — ${done}문항 작성${left}.`;
+      };
+      $("#resume-go").addEventListener("click", () => {
+        const s = readSaved();
+        if (!s) return;
+        session = s.ids.map((id) => bank.find((q) => q.id === id)!);
+        inputs = s.inputs;
+        selfGrade = session.map(() => undefined);
+        cur = Math.min(Math.max(0, s.cur), session.length - 1);
+        mode = s.mode;
+        setup.hidden = true;
+        result.hidden = true;
+        exam.hidden = false;
+        startTimer(s.startedAt, s.deadline);
+        renderQuestion();
+      });
+      $("#resume-drop").addEventListener("click", () => {
+        dropSaved();
+        paintResume();
+      });
+
+      paintPool();
+      paintResume();
+    </script>
+  </body>
+</html>
