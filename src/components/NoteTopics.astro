@@ -259,12 +259,18 @@ const blankLabel = (q: PQ, i: number) =>
         if (cur === spyAt) return;
         spyAt = cur;
         subLinks.forEach((a, i) => a.classList.toggle("on", i === cur));
-        // 목차가 자체 스크롤 중이면 현재 항목을 시야 안으로(페이지는 건드리지 않는다)
-        if (sideToc) {
-          const r = subLinks[cur].getBoundingClientRect();
-          const b = sideToc.getBoundingClientRect();
-          if (r.top < b.top) sideToc.scrollTop += r.top - b.top;
-          else if (r.bottom > b.bottom) sideToc.scrollTop += r.bottom - b.bottom;
+        // 목차가 자체 스크롤 중이면 현재 항목을 시야 안으로(페이지는 건드리지 않는다).
+        // 시야는 목차 전체가 아니다 — 위아래로 고정된 영역 줄이 가리므로, 현재 영역 줄의
+        // 아래부터 다음 영역 줄의 위까지가 주제가 실제로 보이는 구간이다.
+        if (sideToc && sideToc.scrollHeight > sideToc.clientHeight) {
+          const el = subLinks[cur];
+          const wrap = el.closest(".side-sub-wrap");
+          const box = sideToc.getBoundingClientRect();
+          const above = Math.max(wrap?.previousElementSibling?.getBoundingClientRect().bottom ?? box.top, box.top);
+          const below = Math.min(wrap?.nextElementSibling?.getBoundingClientRect().top ?? box.bottom, box.bottom);
+          const r = el.getBoundingClientRect();
+          if (r.top < above) sideToc.scrollTop -= above - r.top;
+          else if (r.bottom > below) sideToc.scrollTop += r.bottom - below;
         }
       };
 
