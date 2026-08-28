@@ -27,6 +27,8 @@ const topics = topicsOfSubject(subject).map((t) => ({
 const countBySubject = Object.fromEntries(SUBJECTS.map((s) => [s, bank.filter((q) => q.subject === s).length]));
 // 사이드 목차는 모든 과목의 주제를 담는다 — 다른 과목도 접힌 채로 있다가 그 자리에서 펼쳐진다
 const topicsBySubject = Object.fromEntries(SUBJECTS.map((s) => [s, topicsOfSubject(s)]));
+// 사이드 목차에서 위아래로 고정될 줄 수 — '전체' 한 줄 + 과목들
+const SIDE_N = SUBJECTS.length + 1;
 const cards = [...qs, ...ps];
 const countByDiff = Object.fromEntries(DIFFICULTIES.map((d) => [d, cards.filter((q) => q.difficulty === d).length]));
 const no = SUBJECTS.indexOf(subject) + 1;
@@ -65,14 +67,18 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         {/* 좁은 화면에선 헤더의 '목차' 버튼으로 여는 좌측 드로어가 된다 */}
         <button id="toc-close" class="toc-close" type="button" aria-label="목차 닫기">×</button>
         <span class="side-toc-title">시험 과목</span>
-        <a class="side-link side-all" href={`${base}/notes/`}>전체 <em>{bank.length}</em></a>
-        {/* 과목 밑의 세부 주제 — 현재 과목은 펼친 채로, 나머지는 화살표로 그 자리에서 펼친다 */}
+        {/* '전체'와 과목 줄은 목차 안에서 위아래로 붙어 고정된다 — 주제를 아무리 스크롤해도
+            과목 전환은 항상 한 번에 닿는다(--i/--j는 그 줄이 쌓일 위·아래 칸 수). */}
+        <div class="side-row" style={`--i: 0; --j: ${SIDE_N - 1}`}>
+          <a class="side-link side-all" href={`${base}/notes/`}><span class="side-label">전체</span> <em>{bank.length}</em></a>
+        </div>
+        {/* 과목 밑의 세부 주제 — 넓은 화면은 그 자리에서 펼치고, 드로어에선 2단으로 밀려 들어온다 */}
         {SUBJECTS.map((s, i) => {
           const cur = s === subject;
           const href = `${base}/notes/s/${SUBJECT_SLUGS[s]}/`;
           return (
-            <div class="side-group">
-              <div class={`side-row${cur ? " on" : ""}`}>
+            <Fragment>
+              <div class={`side-row${cur ? " on" : ""}`} style={`--i: ${i + 1}; --j: ${SIDE_N - 2 - i}`}>
                 <button
                   class="side-caret"
                   type="button"
@@ -83,17 +89,23 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
                   <Fragment set:html={CARET} />
                 </button>
                 <a class={`side-link${cur ? " on" : ""}`} href={href} aria-current={cur ? "page" : undefined}>
-                  {i + 1}. {s} <em>{countBySubject[s]}</em>
+                  <span class="side-label">{i + 1}. {s}</span> <em>{countBySubject[s]}</em>
                 </a>
               </div>
-              <div class={`side-sub-wrap${cur ? " open" : ""}`} id={`sub-${SUBJECT_SLUGS[s]}`}>
+              <div
+                class={`side-sub-wrap${cur ? " open" : ""}`}
+                id={`sub-${SUBJECT_SLUGS[s]}`}
+                data-current={cur ? "" : undefined}
+              >
+                {/* 드로어 2단에서만 보이는 뒤로가기 — 넓은 화면에선 display:none이라 아코디언 격자에서 빠진다 */}
+                <button class="side-back" type="button">← {i + 1}과목</button>
                 <nav class={`side-sub${cur ? " current" : ""}`} aria-label={`${s} 주제`}>
                   {topicsBySubject[s].map(({ title }, j) => (
                     <a class="side-sublink" href={cur ? `#t${j}` : `${href}#t${j}`}>{title.split(" — ")[0]}</a>
                   ))}
                 </nav>
               </div>
-            </div>
+            </Fragment>
           );
         })}
       </aside>

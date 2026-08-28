@@ -1108,6 +1108,9 @@ button.side-link {
   display: flex;
   align-items: center;
   border-radius: 8px;
+  /* 위아래 고정(sticky)이 어긋나지 않으려면 줄 높이가 모두 같아야 한다 */
+  height: var(--row-h, 2.25rem);
+  background: var(--bg);
 }
 .side-row.on {
   background: var(--accent-soft);
@@ -1115,7 +1118,17 @@ button.side-link {
 .side-row .side-link {
   flex: 1;
   min-width: 0;
-  padding-left: 0.35rem;
+  height: 100%;
+  align-items: center;
+  /* 가장 긴 과목명('4. 프로그래밍 언어 활용')이 말줄임 없이 들어가는 최소 여백 */
+  gap: 0.35rem;
+  padding: 0 0.5rem 0 0.35rem;
+}
+/* 줄 높이를 고정했으므로 라벨은 한 줄로 — 넘치면 말줄임 */
+.side-label {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .side-row.on .side-link {
   background: none;
@@ -1175,6 +1188,10 @@ button.side-link {
   display: flex;
   flex-direction: column;
   gap: 0.12rem;
+}
+/* 드로어 2단의 뒤로가기 — 넓은 화면에선 아코디언 격자에 끼어들지 않게 아예 빠진다 */
+.side-back {
+  display: none;
 }
 .side-sublink {
   padding: 0.4rem 0.45rem;
@@ -1240,9 +1257,59 @@ button.side-link {
     display: block;
   }
   /* 손가락으로 찍는 자리 — 넓은 화면보다 넉넉하게 */
+  .side-toc.as-drawer .side-row {
+    --row-h: 2.9rem;
+    background: var(--surface);
+  }
+  .side-toc.as-drawer .side-row.on {
+    background: var(--accent-soft);
+  }
   .side-toc.as-drawer .side-link {
     padding: 0.6rem 0.65rem;
     font-size: 1rem;
+  }
+  /* 2단 드로어 — 하위 주제는 아코디언이 아니라 오른쪽에서 밀려 들어오는 두 번째 판이다.
+     한 화면에 영역 6줄 또는 주제 목록 하나만 놓여, 목록이 길어져도 화면이 넘치지 않는다. */
+  .side-toc.as-drawer .side-sub-wrap {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    margin: 0;
+    padding: 0.5rem 1rem calc(1.5rem + env(safe-area-inset-bottom, 0px));
+    border-left: 0;
+    background: var(--surface);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    transform: translateX(100%);
+    transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  .side-toc.as-drawer .side-sub-wrap.open {
+    transform: none;
+  }
+  /* 2단에서는 화살표가 '펼치기'가 아니라 '들어가기'다 — 돌리지 않는다 */
+  .side-toc.as-drawer .side-caret[aria-expanded="true"] svg {
+    transform: none;
+  }
+  .side-toc.as-drawer .side-back {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    height: 2.4rem;
+    margin-bottom: 0.35rem;
+    padding: 0 0.55rem;
+    appearance: none;
+    border: 0;
+    border-radius: 8px;
+    background: none;
+    font: inherit;
+    font-weight: 600;
+    color: var(--accent-strong);
+    cursor: pointer;
+  }
+  /* 2단이 덮고 있어도 드로어는 닫을 수 있어야 한다 */
+  .toc-close {
+    z-index: 3;
   }
   .side-toc.as-drawer .side-sublink {
     padding: 0.5rem 0.5rem;
@@ -1284,13 +1351,22 @@ button.side-link {
     align-self: start;
     position: sticky;
     top: calc(var(--top-h) + 0.75rem);
-    margin-top: 1rem;
-    padding: 0.5rem 0;
+    margin-top: 1.5rem;
+    /* 세로 여백을 두면 고정된 줄 위로 그 여백만큼 주제가 비쳐 지나간다 — 여백은 margin으로 준다 */
+    padding: 0;
     /* 세부 주제까지 펼치면 26개까지 늘어난다 — 화면을 넘기면 목차만 스크롤 */
     max-height: calc(100vh - var(--top-h) - 1.75rem);
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-width: thin;
+  }
+  /* 영역·과목 줄은 목차 안에서 위아래로 쌓여 고정된다 — 주제가 26개까지 늘어나도
+     위로는 지나온 영역이, 아래로는 남은 영역이 항상 한 번에 닿는 자리에 남는다. */
+  .side-row {
+    position: sticky;
+    top: calc(var(--i) * var(--row-h, 2.25rem));
+    bottom: calc(var(--j) * var(--row-h, 2.25rem));
+    z-index: 2;
   }
   /* 사이드 목차가 있으면 상단 칩·탭·주제 바로가기는 중복이라 숨긴다 */
   .side-body .toc,

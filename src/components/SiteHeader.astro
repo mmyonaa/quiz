@@ -114,13 +114,39 @@ const links = [
     if ((e.target as HTMLElement).closest("a")) setOpen(false);
   });
 
+  // ── 사이드 목차의 하위 주제 — 넓은 화면은 제자리 아코디언, 드로어에선 2단 판 ──
+  // 표시만 CSS가 갈라 놓고 상태는 하나다: 열린 판은 언제나 하나뿐(.open).
+  // 화살표·뒤로가기는 버튼이라 링크 이동도, 드로어 닫힘도 일으키지 않는다(둘 다 a 클릭에만 반응).
+  const carets = [...document.querySelectorAll<HTMLButtonElement>(".side-caret")];
+  const subOf = (b: HTMLButtonElement) => document.getElementById(b.getAttribute("aria-controls")!);
+  const openPane = (wrap: HTMLElement | null) =>
+    carets.forEach((c) => {
+      const on = !!wrap && c.getAttribute("aria-controls") === wrap.id;
+      c.setAttribute("aria-expanded", String(on));
+      subOf(c)?.classList.toggle("open", on);
+    });
+  carets.forEach((btn) =>
+    // 한 번에 하나만 — 여섯 영역이 모두 펼쳐지면 목차가 화면을 넘긴다
+    btn.addEventListener("click", () =>
+      openPane(btn.getAttribute("aria-expanded") === "true" ? null : subOf(btn)),
+    ),
+  );
+  document
+    .querySelectorAll<HTMLButtonElement>(".side-back")
+    .forEach((b) => b.addEventListener("click", () => openPane(null)));
+
   // ── 좌측 목차 드로어 — 넓은 화면의 사이드 목차를 좁은 화면에서 그대로 연다 ──
   // 사이드 목차(.side-toc.as-drawer)는 페이지가 그리고, 여는 버튼만 헤더에 둔다
   // (스크롤을 내려도 목차에 닿으려면 고정된 헤더가 유일한 자리다).
   const tocBtn = document.getElementById("toc-toggle");
   const sideToc = document.querySelector<HTMLElement>(".side-toc.as-drawer");
+  const currentPane = document.querySelector<HTMLElement>(".side-sub-wrap[data-current]");
   const setTocOpen = (open: boolean) => {
     if (!sideToc || !tocBtn) return;
+    // 드로어는 영역 목록부터 보여 준다 — 영역 이동이 첫 목적이다.
+    // 되돌리기는 다 닫힌 뒤에 — 닫히는 동안 판이 다시 밀려 들어오면 어수선하다.
+    if (open) openPane(null);
+    else setTimeout(() => sideToc.classList.contains("open") || openPane(currentPane), 300);
     sideToc.classList.toggle("open", open);
     backdrop.classList.toggle("open", open);
     tocBtn.setAttribute("aria-expanded", String(open));
@@ -158,22 +184,6 @@ const links = [
       if (m.matches) setTocOpen(false);
     });
   }
-
-  // ── 사이드 목차 아코디언 — 영역·과목 옆 화살표로 하위 주제를 그 자리에서 펼친다 ──
-  // 화살표는 버튼이라 링크 이동도, 드로어 닫힘도 일으키지 않는다(둘 다 a 클릭에만 반응).
-  const carets = [...document.querySelectorAll<HTMLButtonElement>(".side-caret")];
-  const subOf = (b: HTMLButtonElement) => document.getElementById(b.getAttribute("aria-controls")!);
-  carets.forEach((btn) =>
-    btn.addEventListener("click", () => {
-      const open = btn.getAttribute("aria-expanded") !== "true";
-      // 한 번에 하나만 — 여섯 영역이 모두 펼쳐지면 목차가 화면을 넘긴다
-      carets.forEach((other) => {
-        const on = other === btn && open;
-        other.setAttribute("aria-expanded", String(on));
-        subOf(other)?.classList.toggle("open", on);
-      });
-    }),
-  );
 
   // ── 헤더 높이 공유 — sticky 주제 제목·앵커 오프셋이 --top-h를 참조한다 ──
   // 로그인 상태나 줄바꿈으로 높이가 달라지므로 실측해서 넘긴다.

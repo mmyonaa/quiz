@@ -30,6 +30,8 @@ const topics = topicsOf(area).map((t) => ({
 const countByArea = Object.fromEntries(AREAS.map((a) => [a, bank.filter((q) => q.area === a).length]));
 // 사이드 목차는 모든 영역의 주제를 담는다 — 다른 영역도 접힌 채로 있다가 그 자리에서 펼쳐진다
 const topicsByArea = Object.fromEntries(AREAS.map((a) => [a, topicsOf(a)]));
+// 사이드 목차에서 위아래로 고정될 줄 수 — '전체' 한 줄 + 영역들
+const SIDE_N = AREAS.length + 1;
 // 난이도 칩은 이 페이지에 실제로 놓인 카드 수와 맞아야 한다 — 필기 해설 + 실기 확인 문제
 const cards = [...qs, ...ps];
 const countByDiff = Object.fromEntries(DIFFICULTIES.map((d) => [d, cards.filter((q) => q.difficulty === d).length]));
@@ -68,14 +70,18 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         {/* 좁은 화면에선 헤더의 '목차' 버튼으로 여는 좌측 드로어가 된다 */}
         <button id="toc-close" class="toc-close" type="button" aria-label="목차 닫기">×</button>
         <span class="side-toc-title">영역</span>
-        <a class="side-link side-all" href={`${base}/notes/`}>전체 <em>{bank.length}</em></a>
-        {/* 영역 밑의 세부 주제 — 현재 영역은 펼친 채로, 나머지는 화살표로 그 자리에서 펼친다 */}
-        {AREAS.map((a) => {
+        {/* '전체'와 영역 줄은 목차 안에서 위아래로 붙어 고정된다 — 주제를 아무리 스크롤해도
+            영역 전환은 항상 한 번에 닿는다(--i/--j는 그 줄이 쌓일 위·아래 칸 수). */}
+        <div class="side-row" style={`--i: 0; --j: ${SIDE_N - 1}`}>
+          <a class="side-link side-all" href={`${base}/notes/`}><span class="side-label">전체</span> <em>{bank.length}</em></a>
+        </div>
+        {/* 영역 밑의 세부 주제 — 넓은 화면은 그 자리에서 펼치고, 드로어에선 2단으로 밀려 들어온다 */}
+        {AREAS.map((a, k) => {
           const cur = a === area;
           const href = `${base}/notes/${AREA_SLUGS[a]}/`;
           return (
-            <div class="side-group">
-              <div class={`side-row${cur ? " on" : ""}`}>
+            <Fragment>
+              <div class={`side-row${cur ? " on" : ""}`} style={`--i: ${k + 1}; --j: ${SIDE_N - 2 - k}`}>
                 <button
                   class="side-caret"
                   type="button"
@@ -86,17 +92,23 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
                   <Fragment set:html={CARET} />
                 </button>
                 <a class={`side-link${cur ? " on" : ""}`} href={href} aria-current={cur ? "page" : undefined}>
-                  {a} <em>{countByArea[a]}</em>
+                  <span class="side-label">{a}</span> <em>{countByArea[a]}</em>
                 </a>
               </div>
-              <div class={`side-sub-wrap${cur ? " open" : ""}`} id={`sub-${AREA_SLUGS[a]}`}>
+              <div
+                class={`side-sub-wrap${cur ? " open" : ""}`}
+                id={`sub-${AREA_SLUGS[a]}`}
+                data-current={cur ? "" : undefined}
+              >
+                {/* 드로어 2단에서만 보이는 뒤로가기 — 넓은 화면에선 display:none이라 아코디언 격자에서 빠진다 */}
+                <button class="side-back" type="button">← {a}</button>
                 <nav class={`side-sub${cur ? " current" : ""}`} aria-label={`${a} 주제`}>
                   {topicsByArea[a].map(({ title }, i) => (
                     <a class="side-sublink" href={cur ? `#t${i}` : `${href}#t${i}`}>{title.split(" — ")[0]}</a>
                   ))}
                 </nav>
               </div>
-            </div>
+            </Fragment>
           );
         })}
       </aside>
