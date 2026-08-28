@@ -559,6 +559,12 @@ button.linklike:hover {
   display: grid;
   gap: 1.5rem;
 }
+/* 그리드 아이템은 기본이 min-width:auto라, 안쪽의 긴 <pre> 코드 줄이 열을 통째로
+   밀어낸다. 좁은 화면에선 그 폭이 뷰포트를 넘겨 '다음' 버튼까지 잘려 나갔다
+   (html에 overflow-x:clip이라 스크롤도 안 되고 소리 없이 잘린다). */
+.exam-main {
+  min-width: 0;
+}
 @media (min-width: 1080px) {
   #exam.with-sheet .exam-cols {
     grid-template-columns: minmax(0, 1fr) 13rem;
@@ -1725,7 +1731,9 @@ select.sort {
 
 /* ── 답안 입력 ── */
 .pa-answer {
-  margin-top: 1.25rem;
+  /* 아래 여백은 객관식 .choices와 같은 값 — 없으면 입력창 포커스 링(2px+offset)이
+     바로 아래 이전/다음 버튼 줄을 덮는다. */
+  margin: 1.25rem 0;
   display: grid;
   gap: 0.6rem;
 }
