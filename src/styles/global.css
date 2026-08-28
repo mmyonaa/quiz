@@ -1102,14 +1102,79 @@ button.side-link {
   width: 100%;
   cursor: pointer;
 }
-/* 현재 영역·과목 아래 펼쳐지는 세부 주제 — 사이드 목차의 두 번째 단 */
+/* 영역·과목 한 줄 — 펼침 화살표 + 링크. 현재 항목의 강조는 행이 통째로 맡는다
+   (배경이 화살표까지 덮어야 한 덩어리로 보인다). */
+.side-row {
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+}
+.side-row.on {
+  background: var(--accent-soft);
+}
+.side-row .side-link {
+  flex: 1;
+  min-width: 0;
+  padding-left: 0.35rem;
+}
+.side-row.on .side-link {
+  background: none;
+}
+/* '전체'는 화살표가 없으므로 그 폭만큼 들여 다른 항목과 글자를 맞춘다 */
+.side-link.side-all {
+  margin-left: 1.55rem;
+}
+.side-caret {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 1.55rem;
+  align-self: stretch;
+  appearance: none;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  padding: 0;
+  color: var(--muted);
+  cursor: pointer;
+}
+.side-caret:hover {
+  color: var(--accent-strong);
+}
+.side-caret svg {
+  transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.side-caret[aria-expanded="true"] svg {
+  transform: rotate(90deg);
+}
+/* 하위 주제 펼치기 — 높이를 0fr↔1fr로 보간해 내용 높이를 몰라도 매끄럽게 열린다.
+   들여쓰기 선과 세로 여백은 이 바깥 상자가 맡는다 — 안쪽(그리드 항목)에 여백이 있으면
+   접어도 그 여백만큼 높이가 남아 빈 줄처럼 보인다. */
+.side-sub-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  margin-left: 0.9rem;
+  padding-left: 0.5rem;
+  border-left: 1px solid var(--border);
+  transition:
+    grid-template-rows 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
+    padding 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.side-sub-wrap.open {
+  grid-template-rows: 1fr;
+  padding-top: 0.25rem;
+  padding-bottom: 0.55rem;
+}
+.side-sub-wrap > .side-sub {
+  overflow: hidden;
+  min-height: 0;
+}
 .side-sub {
   display: flex;
   flex-direction: column;
   gap: 0.12rem;
-  margin: 0.25rem 0 0.55rem 0.9rem;
-  padding-left: 0.5rem;
-  border-left: 1px solid var(--border);
 }
 .side-sublink {
   padding: 0.4rem 0.45rem;
@@ -1183,9 +1248,22 @@ button.side-link {
     padding: 0.5rem 0.5rem;
     font-size: 0.9rem;
   }
+  /* 손가락으로 찍는 화살표 — 링크와 겹치지 않게 넉넉히 */
+  .side-toc.as-drawer .side-caret {
+    width: 2.4rem;
+  }
+  .side-toc.as-drawer .side-caret svg {
+    width: 14px;
+    height: 14px;
+  }
+  .side-toc.as-drawer .side-link.side-all {
+    margin-left: 2.4rem;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .side-toc {
+  .side-toc,
+  .side-sub-wrap,
+  .side-caret svg {
     transition: none;
   }
 }

@@ -159,6 +159,22 @@ const links = [
     });
   }
 
+  // ── 사이드 목차 아코디언 — 영역·과목 옆 화살표로 하위 주제를 그 자리에서 펼친다 ──
+  // 화살표는 버튼이라 링크 이동도, 드로어 닫힘도 일으키지 않는다(둘 다 a 클릭에만 반응).
+  const carets = [...document.querySelectorAll<HTMLButtonElement>(".side-caret")];
+  const subOf = (b: HTMLButtonElement) => document.getElementById(b.getAttribute("aria-controls")!);
+  carets.forEach((btn) =>
+    btn.addEventListener("click", () => {
+      const open = btn.getAttribute("aria-expanded") !== "true";
+      // 한 번에 하나만 — 여섯 영역이 모두 펼쳐지면 목차가 화면을 넘긴다
+      carets.forEach((other) => {
+        const on = other === btn && open;
+        other.setAttribute("aria-expanded", String(on));
+        subOf(other)?.classList.toggle("open", on);
+      });
+    }),
+  );
+
   // ── 헤더 높이 공유 — sticky 주제 제목·앵커 오프셋이 --top-h를 참조한다 ──
   // 로그인 상태나 줄바꿈으로 높이가 달라지므로 실측해서 넘긴다.
   const bar = document.getElementById("top-bar")!;

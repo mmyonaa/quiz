@@ -28,6 +28,8 @@ const topics = topicsOf(area).map((t) => ({
 }));
 
 const countByArea = Object.fromEntries(AREAS.map((a) => [a, bank.filter((q) => q.area === a).length]));
+// 사이드 목차는 모든 영역의 주제를 담는다 — 다른 영역도 접힌 채로 있다가 그 자리에서 펼쳐진다
+const topicsByArea = Object.fromEntries(AREAS.map((a) => [a, topicsOf(a)]));
 // 난이도 칩은 이 페이지에 실제로 놓인 카드 수와 맞아야 한다 — 필기 해설 + 실기 확인 문제
 const cards = [...qs, ...ps];
 const countByDiff = Object.fromEntries(DIFFICULTIES.map((d) => [d, cards.filter((q) => q.difficulty === d).length]));
@@ -36,6 +38,9 @@ const prevArea = idx > 0 ? AREAS[idx - 1] : null;
 const nextArea = idx < AREAS.length - 1 ? AREAS[idx + 1] : null;
 
 const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
+/** 목차 펼침 화살표 — 열리면 90도 돈다(회전은 CSS가 맡는다) */
+const CARET =
+  '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>';
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 
@@ -63,24 +68,37 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         {/* 좁은 화면에선 헤더의 '목차' 버튼으로 여는 좌측 드로어가 된다 */}
         <button id="toc-close" class="toc-close" type="button" aria-label="목차 닫기">×</button>
         <span class="side-toc-title">영역</span>
-        <a class="side-link" href={`${base}/notes/`}>전체 <em>{bank.length}</em></a>
-        {AREAS.map((a) =>
-          a === area ? (
-            <>
-              <a class="side-link on" href={`${base}/notes/${AREA_SLUGS[a]}/`} aria-current="page">
-                {a} <em>{countByArea[a]}</em>
-              </a>
-              {/* 현재 영역의 세부 주제 — 큰 영역 밑의 작은 분야까지 한눈에 */}
-              <nav class="side-sub" aria-label={`${a} 주제 바로가기`}>
-                {topics.map(({ title }, i) => (
-                  <a class="side-sublink" href={`#t${i}`}>{title.split(" — ")[0]}</a>
-                ))}
-              </nav>
-            </>
-          ) : (
-            <a class="side-link" href={`${base}/notes/${AREA_SLUGS[a]}/`}>{a} <em>{countByArea[a]}</em></a>
-          ),
-        )}
+        <a class="side-link side-all" href={`${base}/notes/`}>전체 <em>{bank.length}</em></a>
+        {/* 영역 밑의 세부 주제 — 현재 영역은 펼친 채로, 나머지는 화살표로 그 자리에서 펼친다 */}
+        {AREAS.map((a) => {
+          const cur = a === area;
+          const href = `${base}/notes/${AREA_SLUGS[a]}/`;
+          return (
+            <div class="side-group">
+              <div class={`side-row${cur ? " on" : ""}`}>
+                <button
+                  class="side-caret"
+                  type="button"
+                  aria-expanded={cur ? "true" : "false"}
+                  aria-controls={`sub-${AREA_SLUGS[a]}`}
+                  aria-label={`${a} 주제 목록`}
+                >
+                  <Fragment set:html={CARET} />
+                </button>
+                <a class={`side-link${cur ? " on" : ""}`} href={href} aria-current={cur ? "page" : undefined}>
+                  {a} <em>{countByArea[a]}</em>
+                </a>
+              </div>
+              <div class={`side-sub-wrap${cur ? " open" : ""}`} id={`sub-${AREA_SLUGS[a]}`}>
+                <nav class={`side-sub${cur ? " current" : ""}`} aria-label={`${a} 주제`}>
+                  {topicsByArea[a].map(({ title }, i) => (
+                    <a class="side-sublink" href={cur ? `#t${i}` : `${href}#t${i}`}>{title.split(" — ")[0]}</a>
+                  ))}
+                </nav>
+              </div>
+            </div>
+          );
+        })}
       </aside>
 
       <div class="side-body">

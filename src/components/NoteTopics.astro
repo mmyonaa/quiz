@@ -244,7 +244,7 @@ const blankLabel = (q: PQ, i: number) =>
 
       // ── 사이드 목차 스크롤 스파이 — 지금 읽는 주제를 좌측 세부 목록에서 표시 ──
       const sideToc = document.querySelector<HTMLElement>(".side-toc");
-      const subLinks = [...document.querySelectorAll<HTMLAnchorElement>(".side-sublink")];
+      const subLinks = [...document.querySelectorAll<HTMLAnchorElement>(".side-sub.current .side-sublink")];
       let spyAt = -1;
       const spy = () => {
         if (!subLinks.length) return;
