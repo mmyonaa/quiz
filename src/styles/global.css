@@ -2007,6 +2007,12 @@ select.sort {
 .cn-pa .cn-q {
   margin-top: 0;
 }
+/* 필기 카드에서 .cn-q[open]의 점선은 위쪽 해설과 문제를 가르는 선이다.
+   실기 카드는 <details>가 유일한 자식이라 위에 아무것도 없어 점선만 떠 있었다. */
+.cn-pa .cn-q[open] {
+  border-top: 0;
+  padding-top: 0;
+}
 /* 답을 떠올린 뒤 펼쳐 대조하는 자리 */
 .cn-pa-ans {
   margin-top: 0.5rem;
@@ -2021,21 +2027,25 @@ select.sort {
 }
 .cn-pa-key {
   display: inline-block;
-  min-width: 3.6rem;
-  margin-right: 0.5rem;
-  font-size: 0.72rem;
+  /* 빈칸이 여럿일 때 답이 세로로 맞아떨어지게 최소 폭만 준다.
+     한 카드 안의 라벨은 같은 꼴(①·② 또는 1번 답란·2번 답란)이라 이 값이 작아도 정렬은 유지된다.
+     3.4rem은 "1번 답란" 기준이라 한 글자 라벨에서 빈칸이 크게 떴다. */
+  min-width: 2.4rem;
+  margin-right: 0.6rem;
+  font-size: 0.74rem;
   color: var(--muted);
 }
 .cn-pa-alt {
-  margin: 0.35rem 0 0;
-  font-size: 0.75rem;
+  margin: 0.45rem 0 0;
+  font-size: 0.76rem;
   line-height: 1.6;
   color: var(--muted);
 }
 .cn-pa-exp {
-  margin-top: 0.6rem;
-  padding-top: 0.6rem;
-  border-top: 1px dashed var(--border);
+  margin-top: 0.7rem;
+  padding-top: 0.7rem;
+  /* 색을 깐 상자 안에서 점선은 어수선하다 — 바탕색에 녹인 실선 한 줄로 */
+  border-top: 1px solid color-mix(in srgb, var(--ok) 28%, transparent);
   font-size: 0.88rem;
   color: var(--muted);
 }
