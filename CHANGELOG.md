@@ -6,7 +6,11 @@ daily.quiz의 버전별 변경 기록. [Keep a Changelog](https://keepachangelog
 - 버전의 기준은 `package.json`의 `version`이며, 릴리스마다 git 태그(`v1.0.0` 형식)를 붙인다.
 - 일감 단위 기록은 [GitHub Project](https://github.com/users/mmyonaa/projects/6)와 이슈에 남긴다.
 
-## [Unreleased]
+## [2.1.0] - 2026-08-28
+
+개념 노트를 **읽는 도구**로 다듬은 릴리스. 문항 91주제·해설 515개가 한 축으로만 열려 있어
+"지금 어디를 읽고 있고 다음은 어디인지"가 화면에 없었다. 좌측 목차가 그 축을 맡는다.
+콘텐츠는 그대로이고 전부 UI 레이어의 변화다.
 
 ### 추가
 
@@ -21,6 +25,9 @@ daily.quiz의 버전별 변경 기록. [Keep a Changelog](https://keepachangelog
 - **좁은 화면 2단 드로어** — 헤더의 '목차' 버튼으로 좌측 목차를 연다. 1단은 영역 목록, 화살표를 누르면
   그 영역의 주제 목록이 오른쪽에서 덮으며 들어온다(← 뒤로). 한 화면에 항상 짧은 목록 하나만 남는다.
   표시만 화면 폭에 따라 갈리고 상태는 하나다 — 열린 판은 언제나 하나뿐이다.
+- **목차 검색** — 91주제가 여섯 영역에 나뉘어 있어, 어느 영역에 있는지 모르는 주제는 목록을 훑어서는
+  못 찾았다. 목차 맨 위 입력 한 줄로 영역 경계를 넘어 거른다. 결과는 새로 그리지 않고 있는 목록을
+  거르므로 영역 줄이 그대로 결과의 머리글이 되고, 다른 영역의 주제는 그 영역 페이지의 앵커로 이어진다.
 - **헤더 상단 고정** — 스크롤을 내려도 메뉴·테마·목차 버튼에 닿는다. 높이는 로그인 여부·줄바꿈으로
   달라지므로 실측해 `--top-h`로 공유하며, sticky 주제 제목·풀이 상단바·답안지·앵커 오프셋이 이를 참조한다.
 
@@ -256,6 +263,9 @@ daily.quiz의 버전별 변경 기록. [Keep a Changelog](https://keepachangelog
 - GitHub Pages 자동 배포 — main push 트리거(`deploy.yml`), Supabase 키는 Actions 시크릿으로 주입
 - 블로그 동기화 도구(`scripts/blog-sync.mjs`) — prebuild 링크 검증·제목 자동화(`--check`), 죽은 링크·글 개정·커버리지 갭·도입부 갭 주간 리포트(`--report`)
 
+[2.1.0]: https://github.com/mmyonaa/quiz/releases/tag/v2.1.0
+[2.0.0]: https://github.com/mmyonaa/quiz/releases/tag/v2.0.0
+[1.6.0]: https://github.com/mmyonaa/quiz/releases/tag/v1.6.0
 [1.5.0]: https://github.com/mmyonaa/quiz/releases/tag/v1.5.0
 [1.4.0]: https://github.com/mmyonaa/quiz/releases/tag/v1.4.0
 [1.3.0]: https://github.com/mmyonaa/quiz/releases/tag/v1.3.0
