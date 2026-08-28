@@ -78,11 +78,12 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
           <div class="subject-cards">
             {subjects.map(({ subject, no, slug, count, practicalCount, topics, areas: sAreas }) => (
               <a class="subject-card" href={`${base}/notes/s/${slug}/`}>
-                <h3>
-                  <span class="subj-no">{no}과목</span> {subject} <em>{count}문항</em>
-                  {practicalCount > 0 && <span class="topic-pa-badge">실기 {practicalCount}문항</span>}
-                </h3>
-                <p class="ac-meta">{topics.length}개 주제 · {sAreas.join(" · ")}</p>
+                <h3><span class="subj-no">{no}과목</span> {subject} <em>{count}문항</em></h3>
+                <p class="ac-meta">
+                  {topics.length}개 주제
+                  {practicalCount > 0 && <> · <span class="ac-pa">실기 {practicalCount}문항</span></>}
+                  {" · "}{sAreas.join(" · ")}
+                </p>
               </a>
             ))}
           </div>
@@ -91,12 +92,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
           <div class="area-cards">
             {areas.map(({ area, slug, count, practicalCount, topicCount, preview }) => (
               <a class="area-card" href={`${base}/notes/${slug}/`}>
-                <h2>
-                  {area} <em>{count}문항</em>
-                  {practicalCount > 0 && <span class="topic-pa-badge">실기 {practicalCount}문항</span>}
-                </h2>
+                <h2>{area} <em>{count}문항</em></h2>
                 <p class="ac-meta">
-                  {topicCount}개 주제{preview.length > 0 && ` — ${preview.join(" · ")}${topicCount > preview.length ? " …" : ""}`}
+                  {topicCount}개 주제
+                  {practicalCount > 0 && <> · <span class="ac-pa">실기 {practicalCount}문항</span></>}
+                  {preview.length > 0 && ` — ${preview.join(" · ")}${topicCount > preview.length ? " …" : ""}`}
                 </p>
               </a>
             ))}

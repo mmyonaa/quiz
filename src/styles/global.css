@@ -2046,3 +2046,8 @@ select.sort {
   display: block;
   margin: 0 0 0.2rem;
 }
+/* 목차 카드의 실기 문항 수 — 뱃지 대신 메타 줄에 두되, 눈에는 걸리게 색만 남긴다 */
+.ac-pa {
+  color: var(--ok);
+  font-weight: 600;
+}
