@@ -1171,14 +1171,24 @@ button.side-link {
   margin-left: 0.9rem;
   padding-left: 0.5rem;
   border-left: 1px solid var(--border);
+  /* 닫힌 판은 화면에서만 사라지는 게 아니라 탭 순서에서도 빠져야 한다 —
+     보이지 않는 링크에 포커스가 가면 잘라 둔 영역이 그만큼 밀린다.
+     감추는 시점은 닫히는 동작이 끝난 뒤로 미룬다(0s + 지연). */
+  visibility: hidden;
   transition:
     grid-template-rows 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
-    padding 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+    padding 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
+    visibility 0s linear 0.28s;
 }
 .side-sub-wrap.open {
   grid-template-rows: 1fr;
   padding-top: 0.25rem;
   padding-bottom: 0.55rem;
+  visibility: visible;
+  transition:
+    grid-template-rows 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
+    padding 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
+    visibility 0s;
 }
 .side-sub-wrap > .side-sub {
   overflow: hidden;
@@ -1248,6 +1258,9 @@ button.side-link {
     transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
     will-change: transform;
     overflow-y: auto;
+    /* 2단 판은 닫혀 있는 동안 오른쪽 밖(translateX(100%))에 서 있다 — 세로만 auto로 두면
+       가로도 auto가 되어 그 판만큼 가로 스크롤이 생긴다. 가로는 잘라 낸다. */
+    overflow-x: hidden;
     overscroll-behavior: contain;
   }
   .side-toc.as-drawer.open {
@@ -1282,10 +1295,13 @@ button.side-link {
     overflow-y: auto;
     overscroll-behavior: contain;
     transform: translateX(100%);
-    transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+    transition:
+      transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
+      visibility 0s linear 0.28s;
   }
   .side-toc.as-drawer .side-sub-wrap.open {
     transform: none;
+    transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
   }
   /* 2단에서는 화살표가 '펼치기'가 아니라 '들어가기'다 — 돌리지 않는다 */
   .side-toc.as-drawer .side-caret[aria-expanded="true"] svg {
