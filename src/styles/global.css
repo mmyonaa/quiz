@@ -1069,6 +1069,8 @@ button.linklike:hover {
 .side-toc {
   display: none;
   font-size: 0.9rem;
+  /* 검색창 높이 — 고정된 영역 줄이 이만큼 아래에서부터 쌓인다 */
+  --search-h: 2.75rem;
 }
 .side-toc-title {
   display: block;
@@ -1381,6 +1383,66 @@ button.side-link {
     margin-left: 2.4rem;
   }
 }
+/* 목차 검색 — 91주제가 여섯 영역에 나뉘어 있어, 어느 영역인지 모르는 주제는 목록을 훑어서는 못 찾는다.
+   검색 중에는 영역 경계를 넘어 일치하는 주제만 남기고, 영역 줄은 결과의 머리글이 된다. */
+.side-search {
+  height: var(--search-h);
+  padding-bottom: 0.55rem;
+}
+#toc-search {
+  width: 100%;
+  height: 100%;
+  padding: 0 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--text);
+}
+#toc-search::placeholder {
+  color: var(--muted);
+}
+#toc-search:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.side-empty {
+  margin: 0.6rem 0.65rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+/* 검색 중 — 접기·고정을 모두 풀고 결과를 한 줄로 늘어놓는다.
+   줄이 빠지면 위아래 고정(sticky)의 칸 계산이 어긋나므로 고정도 함께 푼다. */
+.side-toc.searching .side-toc-title,
+.side-toc.searching .side-caret,
+/* 2단을 편 상태라 '뒤로'는 갈 곳이 없다 */
+.side-toc.as-drawer.searching .side-back {
+  display: none;
+}
+.side-toc.searching .side-row {
+  position: static;
+}
+.side-toc.searching .side-sub-wrap,
+.side-toc.as-drawer.searching .side-sub-wrap {
+  display: block;
+  position: static;
+  transform: none;
+  visibility: visible;
+  overflow: visible;
+  padding-top: 0.2rem;
+  padding-bottom: 0.5rem;
+  transition: none;
+}
+@media (max-width: 1099px) {
+  #toc-search {
+    background: var(--bg);
+    font-size: 1rem; /* 16px 미만이면 iOS가 입력 시 화면을 확대한다 */
+  }
+  .side-search {
+    --search-h: 3rem;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .side-toc,
   .side-sub-wrap,
@@ -1418,9 +1480,15 @@ button.side-link {
   }
   /* 영역·과목 줄은 목차 안에서 위아래로 쌓여 고정된다 — 주제가 26개까지 늘어나도
      위로는 지나온 영역이, 아래로는 남은 영역이 항상 한 번에 닿는 자리에 남는다. */
+  .side-search {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    background: var(--bg);
+  }
   .side-row {
     position: sticky;
-    top: calc(var(--i) * var(--row-h, 2.25rem));
+    top: calc(var(--search-h) + var(--i) * var(--row-h, 2.25rem));
     bottom: calc(var(--j) * var(--row-h, 2.25rem));
     z-index: 2;
   }

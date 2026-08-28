@@ -185,6 +185,48 @@ const links = [
     });
   }
 
+  // ── 목차 검색 — 영역 경계를 넘어 주제를 찾는다 ──
+  // 결과는 새로 그리지 않고 있는 목록을 걸러 낸다(영역 줄이 그대로 결과의 머리글이 된다).
+  const search = document.querySelector<HTMLInputElement>("#toc-search");
+  const sideTocEl = document.querySelector<HTMLElement>(".side-toc");
+  if (search && sideTocEl) {
+    const empty = sideTocEl.querySelector<HTMLElement>(".side-empty");
+    const allRow = sideTocEl.querySelector<HTMLElement>(".side-row"); // '전체' 줄 — 검색 중엔 군더더기
+    const groups = [...sideTocEl.querySelectorAll<HTMLElement>(".side-sub-wrap")].map((wrap) => ({
+      wrap,
+      row: wrap.previousElementSibling as HTMLElement,
+      links: [...wrap.querySelectorAll<HTMLAnchorElement>(".side-sublink")],
+    }));
+    const filter = () => {
+      // 제목은 "주제 — 부제"에서 앞부분만 보여주므로, 찾을 때는 title(전체 제목)을 본다
+      const q = search.value.trim().toLowerCase();
+      sideTocEl.classList.toggle("searching", !!q);
+      if (allRow) allRow.hidden = !!q;
+      let hits = 0;
+      groups.forEach((g) => {
+        let hit = 0;
+        g.links.forEach((a) => {
+          const on = !q || (a.title || a.textContent || "").toLowerCase().includes(q);
+          a.hidden = !on;
+          if (on) hit++;
+        });
+        g.row.hidden = !!q && hit === 0;
+        g.wrap.hidden = !!q && hit === 0;
+        hits += hit;
+      });
+      if (empty) empty.hidden = !q || hits > 0;
+      if (!q) openPane(currentPane); // 검색을 지우면 원래 아코디언 상태로
+    };
+    search.addEventListener("input", filter);
+    search.addEventListener("keydown", (e) => {
+      // Esc는 먼저 검색어를 지운다 — 드로어까지 닫히면 결과를 다시 부르기 번거롭다
+      if (e.key !== "Escape" || !search.value) return;
+      e.stopPropagation();
+      search.value = "";
+      filter();
+    });
+  }
+
   // ── 헤더 높이 공유 — sticky 주제 제목·앵커 오프셋이 --top-h를 참조한다 ──
   // 로그인 상태나 줄바꿈으로 높이가 달라지므로 실측해서 넘긴다.
   const bar = document.getElementById("top-bar")!;
