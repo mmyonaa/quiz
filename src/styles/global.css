@@ -1068,9 +1068,10 @@ button.linklike:hover {
    항목 모양은 두 자리에서 같으므로 여기 모아 두고, 배치만 폭에 따라 갈린다. */
 .side-toc {
   display: none;
-  font-size: 0.9rem;
+  /* 목차는 본문을 읽는 동안 곁눈으로 보는 자리 — 본문보다 한 단계 작게 둔다 */
+  font-size: 0.85rem;
   /* 검색창 높이 — 고정된 영역 줄이 이만큼 아래에서부터 쌓인다 */
-  --search-h: 2.75rem;
+  --search-h: 2.6rem;
 }
 .side-toc-title {
   display: block;
@@ -1116,7 +1117,7 @@ button.side-link {
   align-items: center;
   border-radius: 8px;
   /* 위아래 고정(sticky)이 어긋나지 않으려면 줄 높이가 모두 같아야 한다 */
-  height: var(--row-h, 2.25rem);
+  height: var(--row-h, 2.15rem);
   background: var(--bg);
 }
 .side-row.on {
@@ -1211,9 +1212,9 @@ button.side-link {
   display: none;
 }
 .side-sublink {
-  padding: 0.4rem 0.45rem;
+  padding: 0.38rem 0.45rem;
   border-radius: 6px;
-  font-size: 0.82rem;
+  font-size: 0.79rem;
   line-height: 1.45;
   color: var(--muted);
   text-decoration: none;
@@ -1311,7 +1312,7 @@ button.side-link {
   }
   /* 손가락으로 찍는 자리 — 넓은 화면보다 넉넉하게 */
   .side-toc.as-drawer .side-row {
-    --row-h: 2.9rem;
+    --row-h: 2.7rem;
     background: var(--surface);
   }
   .side-toc.as-drawer .side-row.on {
@@ -1319,7 +1320,7 @@ button.side-link {
   }
   .side-toc.as-drawer .side-link {
     padding: 0.6rem 0.65rem;
-    font-size: 1rem;
+    font-size: 0.92rem;
   }
   /* 2단 드로어 — 하위 주제는 아코디언이 아니라 오른쪽에서 밀려 들어오는 두 번째 판이다.
      한 화면에 영역 6줄 또는 주제 목록 하나만 놓여, 목록이 길어져도 화면이 넘치지 않는다. */
@@ -1368,8 +1369,8 @@ button.side-link {
     z-index: 3;
   }
   .side-toc.as-drawer .side-sublink {
-    padding: 0.5rem 0.5rem;
-    font-size: 0.9rem;
+    padding: 0.48rem 0.5rem;
+    font-size: 0.85rem;
   }
   /* 손가락으로 찍는 화살표 — 링크와 겹치지 않게 넉넉히 */
   .side-toc.as-drawer .side-caret {
@@ -1392,12 +1393,12 @@ button.side-link {
 #toc-search {
   width: 100%;
   height: 100%;
-  padding: 0 0.7rem;
+  padding: 0 0.65rem;
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--surface);
   font: inherit;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--text);
 }
 #toc-search::placeholder {
@@ -1440,12 +1441,13 @@ button.side-link {
 @media (max-width: 1099px) {
   #toc-search {
     background: var(--bg);
-    /* 16px 미만이면 iOS가 입력할 때 화면을 확대한다 — 글자는 못 줄이므로 상자를 줄인다 */
-    font-size: 1rem;
+    /* 목록 글자에 맞춰 낮춘 값(사용자 요청). 16px 미만이라 iOS는 입력할 때 화면을 확대하고
+       블러 후에도 되돌리지 않는다 — 확대가 거슬리면 여기를 1rem으로 되돌릴 것. */
+    font-size: 0.9rem;
     padding: 0 0.6rem;
   }
   .side-search {
-    --search-h: 2.6rem;
+    --search-h: 2.45rem;
     padding-bottom: 0.45rem;
   }
 }
@@ -1494,8 +1496,8 @@ button.side-link {
   }
   .side-row {
     position: sticky;
-    top: calc(var(--search-h) + var(--i) * var(--row-h, 2.25rem));
-    bottom: calc(var(--j) * var(--row-h, 2.25rem));
+    top: calc(var(--search-h) + var(--i) * var(--row-h, 2.15rem));
+    bottom: calc(var(--j) * var(--row-h, 2.15rem));
     z-index: 2;
   }
   /* 사이드 목차가 있으면 상단 칩·탭·주제 바로가기는 중복이라 숨긴다 */
