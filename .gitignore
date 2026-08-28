@@ -11,3 +11,6 @@ dist/
 
 # Playwright MCP 스크린샷 산출물
 .playwright-mcp/
+
+# 세션 인계 기록 (로컬 전용 — 커밋하지 않는다)
+handoff/
