@@ -1,6 +1,6 @@
 ---
 import { SUBJECTS, SUBJECT_SLUGS, DIFFICULTIES } from "../../../content.config";
-import { loadBank, topicsOfSubject, areasOfSubject } from "../../../lib/bank";
+import { loadBank, loadPractical, topicsOfSubject, areasOfSubject } from "../../../lib/bank";
 import NoteTopics from "../../../components/NoteTopics.astro";
 import SiteHeader from "../../../components/SiteHeader.astro";
 import SiteFooter from "../../../components/SiteFooter.astro";
@@ -15,11 +15,18 @@ export function getStaticPaths() {
 const { subject } = Astro.props as { subject: (typeof SUBJECTS)[number] };
 
 const bank = await loadBank();
+const pbank = await loadPractical();
 const qs = bank.filter((q) => q.subject === subject);
-const topics = topicsOfSubject(subject).map((t) => ({ ...t, questions: qs.filter((q) => q.topic === t.key) }));
+const ps = pbank.filter((q) => q.subject === subject);
+const topics = topicsOfSubject(subject).map((t) => ({
+  ...t,
+  questions: qs.filter((q) => q.topic === t.key),
+  practical: ps.filter((q) => q.topic === t.key),
+}));
 
 const countBySubject = Object.fromEntries(SUBJECTS.map((s) => [s, bank.filter((q) => q.subject === s).length]));
-const countByDiff = Object.fromEntries(DIFFICULTIES.map((d) => [d, qs.filter((q) => q.difficulty === d).length]));
+const cards = [...qs, ...ps];
+const countByDiff = Object.fromEntries(DIFFICULTIES.map((d) => [d, cards.filter((q) => q.difficulty === d).length]));
 const no = SUBJECTS.indexOf(subject) + 1;
 const prev = no > 1 ? SUBJECTS[no - 2] : null;
 const next = no < SUBJECTS.length ? SUBJECTS[no] : null;
@@ -67,6 +74,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
           <p class="lead">
             <a class="lead-link" href={`${base}/notes/`}>개념 노트</a> 안의 {no}과목 —
             해설 {qs.length}문항을 {topics.length}개 주제로 모았습니다.
+            {ps.length > 0 && <> 같은 주제에 실기 확인 문제 {ps.length}개가 함께 붙어 있습니다.</>}
             영역으로는 {areasOfSubject(subject).join(" · ")}에 걸쳐 있습니다.
           </p>
           {/* 좁은 화면 전용 — 과목 이동 칩 */}
@@ -97,7 +105,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
           {/* 난이도 필터 + 모두 펼치기 */}
           <div class="note-tools">
             <div class="chip-row" role="group" aria-label="난이도 필터">
-              <button class="toc-chip diff-chip on" type="button" data-diff="전체">전체 <em>{qs.length}</em></button>
+              <button class="toc-chip diff-chip on" type="button" data-diff="전체">전체 <em>{cards.length}</em></button>
               {DIFFICULTIES.map((d) => (
                 <button class="toc-chip diff-chip" type="button" data-diff={d}>{d} <em>{countByDiff[d]}</em></button>
               ))}

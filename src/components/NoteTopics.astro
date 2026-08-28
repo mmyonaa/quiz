@@ -12,16 +12,44 @@ type Q = {
   answer: number;
   explanation: string;
 };
+/** 실기 문항 — 같은 주제에 붙어 "고르기" 다음에 "직접 쓰기"로 이어지는 사다리를 만든다 */
+type PQ = {
+  id: string;
+  difficulty: (typeof DIFFICULTIES)[number];
+  kind: string;
+  question: string;
+  code?: string;
+  answers: string[][];
+  labels?: string[];
+  modelAnswer?: string;
+  keywords?: string[];
+  explanation: string;
+};
 const { topics, blogPostBase } = Astro.props as {
-  topics: { post?: string; title: string; intro: string; questions: Q[] }[];
+  topics: {
+    post?: string;
+    title: string;
+    intro: string;
+    questions: Q[];
+    practical?: PQ[];
+  }[];
   blogPostBase: string;
 };
+
+/** 답란 이름 — 다답형은 ①② 같은 라벨이 있고, 단일 답란은 그냥 "정답" */
+const blankLabel = (q: PQ, i: number) =>
+  q.labels?.[i] ?? (q.answers.length > 1 ? `${i + 1}번 답란` : "정답");
 ---
 
-{topics.map(({ post, title, intro, questions }, i) => (
+{topics.map(({ post, title, intro, questions, practical = [] }, i) => (
     <div class="topic" id={`t${i}`}>
       <h3 class="topic-title">
-        {title}
+        <span class="topic-name">{title}</span>
+        {/* 실기 출제 형태 — practical.json에서 주제별 유형을 모아 보여준다(별도 데이터 없음).
+            "이 주제는 실기에서 코드형으로 나온다"를 개념을 읽는 자리에서 바로 알 수 있다. */}
+        {[...new Set(practical.map((p) => p.kind))].map((k) => (
+          <span class="topic-pa-badge">실기 {k}</span>
+        ))}
         {post && (
           <a class="topic-link" href={`${blogPostBase}${post}/`} target="_blank" rel="noopener">개념 글 →</a>
         )}
@@ -53,6 +81,48 @@ const { topics, blogPostBase } = Astro.props as {
               ))}
             </ol>
             <button type="button" class="linklike cn-reveal">정답만 보기</button>
+          </details>
+        </article>
+      ))}
+
+      {/* 실기 확인 문제 — 보기 없이 직접 써 보는 자리. 필기 확인 문제가 "알아보기"라면 이쪽은 "떠올리기"다. */}
+      {practical.map((p) => (
+        <article class="cn cn-pa" data-diff={p.difficulty}>
+          <details class="cn-q">
+            <summary>
+              실기 확인 문제
+              <span class="badge">{p.kind}</span>
+              <span class="badge diff" data-level={p.difficulty}>{p.difficulty}</span>
+            </summary>
+            <p class="cn-question">{p.question}</p>
+            {p.code && <pre class="q-code mono">{p.code}</pre>}
+            <button type="button" class="linklike cn-pa-reveal">정답 보기</button>
+            <div class="cn-pa-ans" hidden>
+              {p.kind === "약술형" ? (
+                <>
+                  {/* 서술형 답안은 길어서 라벨을 같은 줄에 두면 둘째 줄부터 들여쓰기가 어긋난다 */}
+                  <p class="cn-pa-line stacked"><span class="cn-pa-key">모범답안</span>{p.modelAnswer}</p>
+                  {p.keywords?.length && (
+                    <p class="cn-pa-alt">핵심어 — {p.keywords.join(" · ")}</p>
+                  )}
+                </>
+              ) : (
+                <>
+                  {p.answers.map((acc, b) => (
+                    <p class="cn-pa-line">
+                      <span class="cn-pa-key">{blankLabel(p, b)}</span>
+                      <strong class="mono">{acc[0]}</strong>
+                    </p>
+                  ))}
+                  {p.answers.some((a) => a.length > 1) && (
+                    <p class="cn-pa-alt">
+                      함께 정답 처리되는 표기 — {p.answers.map((a) => a.slice(1).join(", ")).filter(Boolean).join(" / ")}
+                    </p>
+                  )}
+                </>
+              )}
+              <p class="cn-x cn-pa-exp">{p.explanation}</p>
+            </div>
           </details>
         </article>
       ))}
@@ -136,6 +206,14 @@ const { topics, blogPostBase } = Astro.props as {
           b.addEventListener("click", () => reveal(i)),
         );
         revealBtn?.addEventListener("click", () => reveal(null));
+      });
+
+      // ── 실기 확인 문제 — 보기가 없으므로 답을 떠올린 뒤 펼쳐 대조한다 ──
+      document.querySelectorAll<HTMLButtonElement>(".cn-pa-reveal").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          (btn.nextElementSibling as HTMLElement).hidden = false;
+          btn.hidden = true;
+        });
       });
 
       // ── 난이도 필터 — 카드 숨김, 빈 주제는 통째로 숨김 ──

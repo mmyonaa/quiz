@@ -1339,8 +1339,8 @@ button.toc-chip {
 .topic-title {
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
-  gap: 0.75rem;
+  /* 제목 → 실기 뱃지 → (오른쪽 끝) 개념 글 링크. 뱃지가 가운데로 밀려나지 않게 space-between을 쓰지 않는다 */
+  gap: 0.45rem;
   /* 스크롤 중에도 현재 주제가 남아 있게 — 패널 배경을 깔아 본문이 비쳐 보이지 않게 한다 */
   position: sticky;
   top: 0;
@@ -1353,6 +1353,7 @@ button.toc-chip {
 }
 .topic-link {
   flex: none;
+  margin-left: auto;
   font-size: 0.85rem;
   font-weight: 400;
   color: var(--accent);
@@ -1978,4 +1979,70 @@ select.sort {
   color: var(--muted);
   padding-top: 0.75rem;
   border-top: 1px dashed var(--border);
+}
+
+/* ── 개념 노트의 실기 연결 ──
+   노트는 필기/실기로 나누지 않는다. 개념은 하나고, 요구하는 것만 다르다.
+   필기 확인 문제가 "알아보기"라면 실기 확인 문제는 "떠올리기"다. */
+.topic-name {
+  flex: 0 1 auto;
+}
+/* 이 주제가 실기에서 어떤 형태로 나오는지 — 개념을 읽는 자리에서 바로 알려 준다 */
+.topic-pa-badge {
+  flex: none;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: 0.2em 0.6em;
+  border-radius: 999px;
+  border: 1px solid var(--ok);
+  color: var(--ok);
+  background: var(--ok-soft);
+  white-space: nowrap;
+}
+/* 실기 카드 — 필기 해설 카드와 한눈에 구분되게 왼쪽에 색 띠를 둔다 */
+.cn-pa {
+  border-left: 3px solid var(--ok);
+}
+.cn-pa .cn-q {
+  margin-top: 0;
+}
+/* 답을 떠올린 뒤 펼쳐 대조하는 자리 */
+.cn-pa-ans {
+  margin-top: 0.5rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 8px;
+  background: var(--ok-soft);
+}
+.cn-pa-line {
+  margin: 0 0 0.35rem;
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+.cn-pa-key {
+  display: inline-block;
+  min-width: 3.6rem;
+  margin-right: 0.5rem;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.cn-pa-alt {
+  margin: 0.35rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.cn-pa-exp {
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 1px dashed var(--border);
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+.cn-pa-reveal {
+  margin-top: 0.3rem;
+}
+.cn-pa-line.stacked .cn-pa-key {
+  display: block;
+  margin: 0 0 0.2rem;
 }
