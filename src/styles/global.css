@@ -265,14 +265,19 @@ body.nav-locked {
     padding: 3.4rem 1.4rem 1.5rem;
     background: var(--surface);
     border-left: 1px solid var(--border);
-    box-shadow: -12px 0 32px rgb(0 0 0 / 0.15);
+    /* 그림자는 닫혀 있어도 모양을 유지하되 투명하게 — 색만 바뀌므로 열릴 때 튀지 않고,
+       화면 밖에 서 있는 동안 가장자리로 그늘이 새지도 않는다. */
+    box-shadow: -12px 0 32px rgb(0 0 0 / 0);
     transform: translateX(100%);
-    transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+    transition:
+      transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
+      box-shadow 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
     will-change: transform;
     overflow-y: auto;
   }
   .site-nav.open {
     transform: none;
+    box-shadow: -12px 0 32px rgb(0 0 0 / 0.15);
   }
   .nav-close {
     display: block;
@@ -576,8 +581,8 @@ button.linklike:hover {
   top: var(--top-h);
   z-index: 5;
   background: var(--surface);
-  margin: -1.75rem -1.75rem 1.1rem;
-  padding: 1.1rem 1.75rem 0.85rem;
+  margin: calc(var(--pad) * -1) calc(var(--pad) * -1) 1.1rem;
+  padding: 1.1rem var(--pad) 0.85rem;
   border-radius: var(--radius) var(--radius) 0 0;
   border-bottom: 1px solid var(--border);
 }
@@ -1251,11 +1256,14 @@ button.side-link {
     padding: 3.1rem 1rem calc(1.5rem + env(safe-area-inset-bottom, 0px));
     background: var(--surface);
     border-right: 1px solid var(--border);
-    /* 그림자는 닫혀 있을 때부터 달아 둔다 — 열리는 순간 튀어나오면 덜컥거려 보인다 */
-    box-shadow: 12px 0 32px rgb(0 0 0 / 0.15);
+    /* 그림자는 닫혀 있어도 모양을 유지하되 투명하게 — 색만 바뀌므로 열릴 때 튀지 않고,
+       화면 밖에 서 있는 동안 가장자리로 그늘이 새지도 않는다. */
+    box-shadow: 12px 0 32px rgb(0 0 0 / 0);
     transform: translateX(-100%);
     /* 감속 곡선(ease-out) — 빠르게 나와 부드럽게 멈춘다 */
-    transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+    transition:
+      transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
+      box-shadow 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
     will-change: transform;
     overflow-y: auto;
     /* 2단 판은 닫혀 있는 동안 오른쪽 밖(translateX(100%))에 서 있다 — 세로만 auto로 두면
@@ -1265,6 +1273,7 @@ button.side-link {
   }
   .side-toc.as-drawer.open {
     transform: none;
+    box-shadow: 12px 0 32px rgb(0 0 0 / 0.15);
   }
   .side-toc.as-drawer .toc-close {
     display: block;
@@ -1500,6 +1509,20 @@ button.toc-chip {
 }
 /* 모바일 — 칩 행은 모두 줄 바꿈(가로 스크롤 없음) */
 @media (max-width: 720px) {
+  /* 화면 폭이 좁을수록 여백 한 겹(페이지 + 패널)이 본문을 크게 갉아먹는다.
+     둘 다 줄여 한 줄에 더 담는다 — 줄 수가 줄면 그만큼 스크롤도 짧아진다. */
+  main {
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+  }
+  .panel {
+    --pad: 1.15rem;
+  }
+  /* 시작 버튼 — 주변 칩(0.9rem)에 비해 혼자 커서 화면을 지배했다 */
+  button.primary {
+    font-size: 0.95rem;
+    padding: 0.62em 1.35em;
+  }
   .toc {
     margin-top: 0.6rem;
   }
@@ -1850,15 +1873,6 @@ kbd {
   background: var(--bg);
 }
 
-@media (max-width: 480px) {
-  .panel {
-    --pad: 1.25rem;
-  }
-  .exam-top {
-    margin: -1.25rem -1.25rem 1rem;
-    padding: 0.9rem 1.25rem 0.75rem;
-  }
-}
 
 /* 복기 필터 — 연습 모드 결과에서 오답만 추려 보기 */
 .review-tools {
