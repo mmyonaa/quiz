@@ -1,15 +1,22 @@
 /* daily.quiz — 최소한의 시스템. 문제 풀이에 집중하는 담백한 단일 컬럼. */
 /* 테마 — 기본은 시스템 설정, 헤더 토글로 고정하면 data-theme가 우선한다 */
 :root {
-  --bg: #fafafa;
+  /* daily.mcp 블로그와 같은 계열의 쿨 뉴트럴 + 코랄 액센트.
+     --accent는 면·테두리·표식용, --accent-strong은 본문 텍스트와 버튼 바탕용이다
+     (코랄 원색은 흰 배경에서 3.5:1이라 본문 대비에 못 미친다). */
+  --bg: #f7f8fb;
   --surface: #ffffff;
-  --text: #1c1c22;
-  --muted: #6b6b76;
-  --border: #e4e4ea;
-  --accent: #e5484d;
-  --accent-soft: #fdeaea;
-  --ok: #2f9e63;
-  --ok-soft: #e8f6ee;
+  --surface-2: #eef0f5;
+  --text: #24252e;
+  --muted: #686b76;
+  --border: #e6e8ef;
+  --accent: #ee4f6a;
+  --accent-strong: #d0324e;
+  --accent-contrast: #ffffff;
+  --accent-soft: #fceaee;
+  /* 정답·합격 표시 전용. 풀잎 초록 대신 코랄과 맞물리는 제이드로 낮췄다. */
+  --ok: #0a7d5f;
+  --ok-soft: #e4f4ee;
   --radius: 10px;
   /* 페이지 셸 폭 — daily.mcp(--shell-width: 1240px)와 동일 */
   --shell: 77.5rem;
@@ -18,28 +25,36 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #131317;
-    --surface: #1b1b21;
-    --text: #ececf1;
-    --muted: #9a9aa5;
-    --border: #2c2c34;
-    --accent: #ff6369;
-    --accent-soft: #3a2225;
-    --ok: #46c47f;
-    --ok-soft: #1d3428;
+    --bg: #14151b;
+    --surface: #1e2029;
+    --surface-2: #272a35;
+    --text: #e6e7ec;
+    --muted: #9a9ca6;
+    --border: #30333e;
+    /* 다크에선 채도를 낮춘 소프트 로즈. 밝아진 만큼 버튼 글자는 어두운 쪽으로 뒤집는다
+       (흰 글자였을 때 대비가 2.9:1까지 떨어졌다). */
+    --accent: #ef7c8e;
+    --accent-strong: #ef7c8e;
+    --accent-contrast: #1c0e12;
+    --accent-soft: #2b1a20;
+    --ok: #45c39a;
+    --ok-soft: #17302a;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #131317;
-  --surface: #1b1b21;
-  --text: #ececf1;
-  --muted: #9a9aa5;
-  --border: #2c2c34;
-  --accent: #ff6369;
-  --accent-soft: #3a2225;
-  --ok: #46c47f;
-  --ok-soft: #1d3428;
+  --bg: #14151b;
+  --surface: #1e2029;
+  --surface-2: #272a35;
+  --text: #e6e7ec;
+  --muted: #9a9ca6;
+  --border: #30333e;
+  --accent: #ef7c8e;
+  --accent-strong: #ef7c8e;
+  --accent-contrast: #1c0e12;
+  --accent-soft: #2b1a20;
+  --ok: #45c39a;
+  --ok-soft: #17302a;
   color-scheme: dark;
 }
 
@@ -101,7 +116,7 @@ body {
   font-size: 0.85rem;
 }
 .sister:hover {
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 a.brand {
   color: inherit;
@@ -124,10 +139,10 @@ a.brand {
   font-size: 0.9rem;
 }
 .nav-link:hover {
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 .nav-link[aria-current="page"] {
-  color: var(--accent);
+  color: var(--accent-strong);
   font-weight: 700;
 }
 .nav-sep {
@@ -151,7 +166,7 @@ a.brand {
   cursor: pointer;
 }
 .icon-btn:hover {
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 /* 테마 버튼 — 라이트에선 달(→다크), 다크에선 해(→라이트) */
 #theme-toggle .ic-sun {
@@ -264,7 +279,7 @@ a.brand {
   }
 }
 .lead-link {
-  color: var(--accent);
+  color: var(--accent-strong);
   text-decoration: none;
 }
 .lead-link:hover {
@@ -334,9 +349,9 @@ legend {
   font-size: 0.8em;
 }
 .area-opt input:checked + span {
-  border-color: var(--accent);
+  border-color: var(--accent-strong);
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 .area-opt input:checked + span em {
   color: inherit;
@@ -350,8 +365,8 @@ button.primary {
   appearance: none;
   border: 0;
   border-radius: 999px;
-  background: var(--accent);
-  color: #fff;
+  background: var(--accent-strong);
+  color: var(--accent-contrast);
   font: inherit;
   font-weight: 600;
   padding: 0.65em 1.6em;
@@ -394,7 +409,7 @@ button.ghost {
   border: 1px solid var(--accent);
   border-radius: 999px;
   background: transparent;
-  color: var(--accent);
+  color: var(--accent-strong);
   cursor: pointer;
 }
 button.ghost:hover {
@@ -412,7 +427,7 @@ button.linklike {
   text-decoration: underline;
 }
 button.linklike:hover {
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 .note-status {
   margin: 0.25rem 0 1rem;
@@ -446,7 +461,7 @@ button.linklike:hover {
   font-weight: 600;
 }
 .timer.mock {
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 .elapsed {
   color: var(--muted);
@@ -469,9 +484,8 @@ button.linklike:hover {
   gap: 0.9rem;
   padding: 0.55rem 0.9rem;
   border: 1px solid var(--border);
-  border-left: 4px solid var(--ok);
   border-radius: var(--radius);
-  background: var(--bg);
+  background: var(--surface);
   font-size: 0.92rem;
 }
 /* 과목 점수만큼 배경을 채워 한눈에 비교 */
@@ -486,7 +500,7 @@ button.linklike:hover {
   position: relative;
 }
 .subj.fail {
-  border-left-color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 42%, var(--border));
 }
 .subj.fail::before {
   background: var(--accent-soft);
@@ -504,7 +518,7 @@ button.linklike:hover {
   text-align: right;
 }
 .subj.fail .subj-score {
-  color: var(--accent);
+  color: var(--accent-strong);
   font-weight: 600;
 }
 
@@ -677,18 +691,21 @@ button.linklike:hover {
   cursor: pointer;
 }
 .omr-row.here .omr-no {
-  color: var(--accent);
+  color: var(--accent-strong);
   font-weight: 700;
 }
 .omr-no:hover {
   color: var(--text);
   text-decoration: underline;
 }
-/* 실제 답안지처럼 ①~④를 줄 너비에 고르게 펼친다 — 오른쪽에 빈 공간이 남지 않게 */
+/* 실제 답안지처럼 ①~④를 줄 너비에 고르게 펼친다 — 오른쪽에 빈 공간이 남지 않게.
+   다만 사이드바(13rem)를 벗어나 답안지가 본문 아래로 내려오면 줄이 너무 늘어나
+   번호와 마크가 멀어진다. 한 줄이 벌어질 수 있는 폭에 상한을 둔다. */
 .omr-bubbles {
   display: flex;
   flex: 1;
   justify-content: space-between;
+  max-width: 22rem;
 }
 .omr-bub {
   appearance: none;
@@ -708,7 +725,7 @@ button.linklike:hover {
     color 0.12s ease;
 }
 .omr-bub:hover {
-  border-color: var(--accent);
+  border-color: var(--accent-strong);
   color: var(--text);
 }
 /* 마킹된 칸 — 실제 답안지처럼 까맣게 채운다 */
@@ -778,7 +795,7 @@ button.linklike:hover {
   }
   .timer.low {
     animation: none;
-    color: var(--accent);
+    color: var(--accent-strong);
   }
 }
 .badge {
@@ -786,7 +803,7 @@ button.linklike:hover {
   padding: 0.15em 0.7em;
   border-radius: 999px;
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--accent-strong);
   font-size: 0.78rem;
   font-weight: 600;
 }
@@ -820,8 +837,8 @@ button.linklike:hover {
   background: var(--ok-soft);
 }
 .badge.diff[data-level="상"] {
-  color: var(--accent);
-  border-color: var(--accent);
+  color: var(--accent-strong);
+  border-color: var(--accent-strong);
   background: var(--accent-soft);
 }
 #q-text {
@@ -853,7 +870,7 @@ button.linklike:hover {
   transition: border-color 0.15s ease, background 0.15s ease;
 }
 .choice:hover {
-  border-color: var(--accent);
+  border-color: var(--accent-strong);
 }
 .choice-num {
   flex: none;
@@ -869,19 +886,19 @@ button.linklike:hover {
   transition: inherit;
 }
 .choice:hover .choice-num {
-  border-color: var(--accent);
-  color: var(--accent);
+  border-color: var(--accent-strong);
+  color: var(--accent-strong);
 }
 .choice.on {
-  border-color: var(--accent);
+  border-color: var(--accent-strong);
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--accent-strong);
   font-weight: 600;
 }
 .choice.on .choice-num {
-  border-color: var(--accent);
+  border-color: var(--accent-strong);
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-contrast);
 }
 .exam-nav {
   display: flex;
@@ -891,7 +908,7 @@ button.linklike:hover {
 /* 중단된 풀이 안내 — 오답노트 박스와 같은 꼴이되 되돌아갈 곳임을 강조 */
 .note-box.resume {
   border-style: solid;
-  border-color: var(--accent);
+  border-color: var(--accent-strong);
   background: var(--accent-soft);
   color: var(--text);
 }
@@ -930,14 +947,14 @@ button.linklike:hover {
 }
 .rv {
   border: 1px solid var(--border);
-  border-left: 4px solid var(--ok);
   border-radius: var(--radius);
   padding: 1rem 1.15rem;
   margin-bottom: 0.8rem;
-  background: var(--bg);
+  background: var(--surface);
 }
+/* 오답만 테두리 전체를 물들인다 — 좌측 색 띠 없이도 목록에서 바로 찾힌다 */
 .rv.wrong {
-  border-left-color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 42%, var(--border));
 }
 .rv-q {
   margin: 0 0 0.5rem;
@@ -948,7 +965,7 @@ button.linklike:hover {
   font-size: 0.92rem;
 }
 .rv.wrong .rv-a {
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 .rv .rv-a b {
   color: var(--ok);
@@ -963,7 +980,7 @@ button.linklike:hover {
   font-size: 0.88rem;
 }
 .rv-link a {
-  color: var(--accent);
+  color: var(--accent-strong);
   text-decoration: none;
 }
 .rv-link a:hover {
@@ -1041,11 +1058,11 @@ button.linklike:hover {
     font-size: 0.8em;
   }
   .side-link:hover {
-    color: var(--accent);
+    color: var(--accent-strong);
   }
   .side-link.on {
     background: var(--accent-soft);
-    color: var(--accent);
+    color: var(--accent-strong);
     font-weight: 600;
   }
   /* 사이드 목차가 있으면 상단 칩·탭은 중복이라 숨긴다 */
@@ -1084,13 +1101,13 @@ button.linklike:hover {
   font-size: 0.8em;
 }
 .toc-chip:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+  border-color: var(--accent-strong);
+  color: var(--accent-strong);
 }
 .toc-chip.on {
-  border-color: var(--accent);
+  border-color: var(--accent-strong);
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 .toc-chip.on em {
   color: inherit;
@@ -1122,7 +1139,7 @@ button.linklike:hover {
   transform: rotate(90deg);
 }
 .topic-jumps-box > summary:hover {
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 .topic-jumps {
   display: flex;
@@ -1144,11 +1161,11 @@ button.linklike:hover {
 .topic-jump::before {
   content: "#";
   margin-right: 0.25em;
-  color: var(--accent);
+  color: var(--accent-strong);
   opacity: 0.7;
 }
 .topic-jump:hover {
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 /* 난이도 필터 등 — 데스크톱에서도 유지되는 칩 행(.toc는 사이드 목차가 대체) */
 .chip-row {
@@ -1205,7 +1222,7 @@ button.toc-chip {
   transition: border-color 0.15s ease;
 }
 .area-card:hover {
-  border-color: var(--accent);
+  border-color: var(--accent-strong);
 }
 .area-card h2 {
   margin: 0 0 0.3rem;
@@ -1218,7 +1235,7 @@ button.toc-chip {
   color: var(--muted);
 }
 .area-card:hover h2 {
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 .ac-meta {
   margin: 0;
@@ -1287,8 +1304,8 @@ button.toc-chip {
   box-shadow: 0 2px 10px rgb(0 0 0 / 0.12);
 }
 .scroll-btn:hover {
-  color: var(--accent);
-  border-color: var(--accent);
+  color: var(--accent-strong);
+  border-color: var(--accent-strong);
 }
 
 /* 영역 상세 하단 — 이전/다음 영역 이동(넓은 터치 타깃의 버튼 카드) */
@@ -1322,8 +1339,8 @@ button.toc-chip {
   text-align: right;
 }
 .area-nav a:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+  border-color: var(--accent-strong);
+  color: var(--accent-strong);
 }
 .area-title {
   margin: 0 0 1rem;
@@ -1356,7 +1373,7 @@ button.toc-chip {
   margin-left: auto;
   font-size: 0.85rem;
   font-weight: 400;
-  color: var(--accent);
+  color: var(--accent-strong);
   text-decoration: none;
 }
 .topic-link:hover {
@@ -1414,7 +1431,7 @@ button.toc-chip {
 }
 /* 마이페이지 '저장한 개념' 카드 — 해설이 본문이므로 강조 보더 없이 */
 .rv.note {
-  border-left: 1px solid var(--border);
+  border-color: var(--border);
 }
 .rv.note .rv-x {
   color: var(--text);
@@ -1452,7 +1469,7 @@ button.toc-chip {
   transform: rotate(90deg);
 }
 .cn-q summary:hover {
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 /* 펼친 확인 문제는 구분선으로만 분리 — 박스 중첩을 더 늘리지 않는다 */
 .cn-q[open] {
@@ -1499,7 +1516,7 @@ button.toc-chip {
 }
 .cn-choices li.bad,
 .cn-choices li.bad .cn-choice {
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 .cn-reveal {
   margin-top: 0.35rem;
@@ -1587,7 +1604,7 @@ a.brand {
 }
 .save-star:hover,
 .save-star.on {
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 .rv {
   position: relative;
@@ -1621,9 +1638,9 @@ a.brand {
   font-size: 0.8em;
 }
 .tab.on {
-  border-color: var(--accent);
+  border-color: var(--accent-strong);
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 .tab.on em {
   color: inherit;
@@ -1684,15 +1701,14 @@ select.sort {
   display: block;
   padding: 0.85rem 1.05rem;
   border: 1px solid var(--border);
-  border-left: 3px solid var(--accent);
-  border-radius: 0 var(--radius) var(--radius) 0;
-  background: var(--bg);
+  border-radius: var(--radius);
+  background: var(--surface);
   color: inherit;
   text-decoration: none;
+  transition: border-color 0.15s ease;
 }
 .subject-card:hover {
-  border-color: var(--accent);
-  border-left-color: var(--accent);
+  border-color: var(--accent-strong);
 }
 .subject-card h3 {
   margin: 0 0 0.2rem;
@@ -1711,7 +1727,7 @@ select.sort {
   padding: 0.1em 0.5em;
   border-radius: 999px;
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--accent-strong);
   font-size: 0.72em;
   font-weight: 700;
   vertical-align: middle;
@@ -1816,7 +1832,7 @@ select.sort {
 }
 .pa-mark.no {
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 .pa-mark.pending {
   background: var(--border);
@@ -1853,15 +1869,12 @@ select.sort {
   font-size: 0.88rem;
   padding: 0.5em 0.75em;
   border-radius: 8px;
-  border-left: 3px solid transparent;
 }
 .pa-blank.ok {
   background: var(--ok-soft);
-  border-left-color: var(--ok);
 }
 .pa-blank.no {
   background: var(--accent-soft);
-  border-left-color: var(--accent);
 }
 .pa-blank-label {
   font-size: 0.75rem;
@@ -1896,8 +1909,8 @@ select.sort {
   cursor: pointer;
 }
 .pa-accept:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+  border-color: var(--accent-strong);
+  color: var(--accent-strong);
 }
 .pa-alt {
   margin: 0.5rem 0 0;
@@ -1968,8 +1981,8 @@ select.sort {
 }
 .pa-self-btn.no[aria-pressed="true"] {
   background: var(--accent-soft);
-  border-color: var(--accent);
-  color: var(--accent);
+  border-color: var(--accent-strong);
+  color: var(--accent-strong);
   font-weight: 700;
 }
 .pa-exp {
@@ -1995,14 +2008,15 @@ select.sort {
   letter-spacing: 0.01em;
   padding: 0.2em 0.6em;
   border-radius: 999px;
-  border: 1px solid var(--ok);
-  color: var(--ok);
-  background: var(--ok-soft);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  background: var(--surface-2);
   white-space: nowrap;
 }
-/* 실기 카드 — 필기 해설 카드와 한눈에 구분되게 왼쪽에 색 띠를 둔다 */
+/* 실기 카드 — 색 띠 대신 한 톤 눌린 면으로 필기 해설 카드와 구분한다.
+   초록은 정답·합격 의미로만 남기고 실기 브랜딩에서는 뺐다. */
 .cn-pa {
-  border-left: 3px solid var(--ok);
+  background: var(--surface-2);
 }
 .cn-pa .cn-q {
   margin-top: 0;
@@ -2018,7 +2032,8 @@ select.sort {
   margin-top: 0.5rem;
   padding: 0.75rem 0.9rem;
   border-radius: 8px;
-  background: var(--ok-soft);
+  border: 1px solid var(--border);
+  background: var(--surface);
 }
 .cn-pa-line {
   margin: 0 0 0.35rem;
@@ -2044,20 +2059,22 @@ select.sort {
 .cn-pa-exp {
   margin-top: 0.7rem;
   padding-top: 0.7rem;
-  /* 색을 깐 상자 안에서 점선은 어수선하다 — 바탕색에 녹인 실선 한 줄로 */
-  border-top: 1px solid color-mix(in srgb, var(--ok) 28%, transparent);
+  border-top: 1px solid var(--border);
   font-size: 0.88rem;
   color: var(--muted);
 }
 .cn-pa-reveal {
   margin-top: 0.3rem;
 }
+.cn-pa-line strong {
+  color: var(--ok);
+}
 .cn-pa-line.stacked .cn-pa-key {
   display: block;
   margin: 0 0 0.2rem;
 }
-/* 목차 카드의 실기 문항 수 — 뱃지 대신 메타 줄에 두되, 눈에는 걸리게 색만 남긴다 */
+/* 목차 카드의 실기 문항 수 — 색 대신 굵기로만 눈에 걸리게 한다 */
 .ac-pa {
-  color: var(--ok);
+  color: var(--text);
   font-weight: 600;
 }
