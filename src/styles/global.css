@@ -1404,8 +1404,11 @@ button.side-link {
   color: var(--muted);
 }
 #toc-search:focus-visible {
+  /* 목차가 스크롤 상자이고 검색창은 그 맨 위에 붙어 있다 — 바깥으로 그린 포커스 링은
+     상자 경계에 잘려 위쪽이 사라진다. 링을 안쪽으로 그려 테두리와 겹친다. */
   outline: 2px solid var(--accent);
-  outline-offset: 1px;
+  outline-offset: -2px;
+  border-color: var(--accent);
 }
 .side-empty {
   margin: 0.6rem 0.65rem;
@@ -1437,10 +1440,13 @@ button.side-link {
 @media (max-width: 1099px) {
   #toc-search {
     background: var(--bg);
-    font-size: 1rem; /* 16px 미만이면 iOS가 입력 시 화면을 확대한다 */
+    /* 16px 미만이면 iOS가 입력할 때 화면을 확대한다 — 글자는 못 줄이므로 상자를 줄인다 */
+    font-size: 1rem;
+    padding: 0 0.6rem;
   }
   .side-search {
-    --search-h: 3rem;
+    --search-h: 2.6rem;
+    padding-bottom: 0.45rem;
   }
 }
 @media (prefers-reduced-motion: reduce) {
