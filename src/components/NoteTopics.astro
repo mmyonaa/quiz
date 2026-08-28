@@ -226,6 +226,10 @@ const blankLabel = (q: PQ, i: number) =>
           diffChips.forEach((c) => c.classList.toggle("on", c === chip));
           cards.forEach((c) => (c.hidden = d !== "전체" && c.dataset.diff !== d));
           topicEls.forEach((t) => (t.hidden = ![...t.querySelectorAll<HTMLElement>(".cn")].some((c) => !c.hidden)));
+          // 숨은 주제는 사이드 목록에서도 빠진다 — 없는 곳으로 보내는 링크는 죽은 링크다
+          subLinks.forEach((a, i) => (a.hidden = topicEls[i]?.hidden ?? false));
+          spyAt = -1;
+          spy();
         }),
       );
 
@@ -238,12 +242,39 @@ const blankLabel = (q: PQ, i: number) =>
         toggleAll.textContent = allOpen ? "모두 접기" : "모두 펼치기";
       });
 
+      // ── 사이드 목차 스크롤 스파이 — 지금 읽는 주제를 좌측 세부 목록에서 표시 ──
+      const sideToc = document.querySelector<HTMLElement>(".side-toc");
+      const subLinks = [...document.querySelectorAll<HTMLAnchorElement>(".side-sublink")];
+      let spyAt = -1;
+      const spy = () => {
+        if (!subLinks.length) return;
+        // 화면 위쪽 140px 선을 지난 마지막 주제가 '지금 읽는 주제'
+        const line = 140;
+        // 첫 화면에서는(또는 필터로 앞 주제가 사라졌으면) 보이는 첫 주제가 기준
+        let cur = topicEls.findIndex((t) => !t.hidden);
+        if (cur < 0) return;
+        topicEls.forEach((t, i) => {
+          if (!t.hidden && t.getBoundingClientRect().top <= line) cur = i;
+        });
+        if (cur === spyAt) return;
+        spyAt = cur;
+        subLinks.forEach((a, i) => a.classList.toggle("on", i === cur));
+        // 목차가 자체 스크롤 중이면 현재 항목을 시야 안으로(페이지는 건드리지 않는다)
+        if (sideToc) {
+          const r = subLinks[cur].getBoundingClientRect();
+          const b = sideToc.getBoundingClientRect();
+          if (r.top < b.top) sideToc.scrollTop += r.top - b.top;
+          else if (r.bottom > b.bottom) sideToc.scrollTop += r.bottom - b.bottom;
+        }
+      };
+
       // ── 읽기 진행률 + 읽던 위치 저장/복원 ──
       const fill = $("#read-fill");
       const POS_KEY = `daily.quiz.notes-pos.${location.pathname}`;
       const onReadScroll = () => {
         const max = document.documentElement.scrollHeight - innerHeight;
         fill.style.width = max > 0 ? `${(scrollY / max) * 100}%` : "0%";
+        spy();
         try {
           localStorage.setItem(POS_KEY, String(Math.round(scrollY)));
         } catch {

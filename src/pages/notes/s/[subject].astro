@@ -49,23 +49,37 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     />
   </head>
   <body>
-    <SiteHeader current="notes" />
+    <SiteHeader current="notes" toc="과목" />
 
     {/* 읽기 진행률 — 화면 최상단 얇은 바 */}
     <div class="read-progress" aria-hidden="true"><i id="read-fill"></i></div>
 
     <main class="side-layout">
       {/* 넓은 화면 전용 — 좌측 과목 메뉴, 현재 과목 하이라이트 */}
-      <aside class="side-toc" aria-label="과목 바로가기">
+      <aside id="side-toc" class="side-toc as-drawer" aria-label="과목 바로가기">
+        {/* 좁은 화면에선 헤더의 '목차' 버튼으로 여는 좌측 드로어가 된다 */}
+        <button id="toc-close" class="toc-close" type="button" aria-label="목차 닫기">×</button>
         <span class="side-toc-title">시험 과목</span>
         <a class="side-link" href={`${base}/notes/`}>전체 <em>{bank.length}</em></a>
-        {SUBJECTS.map((s, i) => (
-          <a
-            class={`side-link${s === subject ? " on" : ""}`}
-            href={`${base}/notes/s/${SUBJECT_SLUGS[s]}/`}
-            aria-current={s === subject ? "page" : undefined}
-          >{i + 1}. {s} <em>{countBySubject[s]}</em></a>
-        ))}
+        {SUBJECTS.map((s, i) =>
+          s === subject ? (
+            <>
+              <a class="side-link on" href={`${base}/notes/s/${SUBJECT_SLUGS[s]}/`} aria-current="page">
+                {i + 1}. {s} <em>{countBySubject[s]}</em>
+              </a>
+              {/* 현재 과목의 세부 주제 — 큰 과목 밑의 작은 분야까지 한눈에 */}
+              <nav class="side-sub" aria-label={`${s} 주제 바로가기`}>
+                {topics.map(({ title }, j) => (
+                  <a class="side-sublink" href={`#t${j}`}>{title.split(" — ")[0]}</a>
+                ))}
+              </nav>
+            </>
+          ) : (
+            <a class="side-link" href={`${base}/notes/s/${SUBJECT_SLUGS[s]}/`}>
+              {i + 1}. {s} <em>{countBySubject[s]}</em>
+            </a>
+          ),
+        )}
       </aside>
 
       <div class="side-body">
@@ -94,14 +108,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
               ))}
             </nav>
           </details>
-          {/* 넓은 화면은 펼친 채로, 좁은 화면은 접은 채로 — 주제가 20개를 넘으면
-              세로 목록이 첫 화면을 통째로 먹는다. 파싱 중 실행해 깜빡임을 막는다. */}
-          <script is:inline>
-            (function () {
-              var d = document.currentScript.previousElementSibling;
-              d.open = matchMedia("(min-width: 1100px)").matches;
-            })();
-          </script>
           {/* 난이도 필터 + 모두 펼치기 */}
           <div class="note-tools">
             <div class="chip-row" role="group" aria-label="난이도 필터">

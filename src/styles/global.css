@@ -20,6 +20,9 @@
   --radius: 10px;
   /* 페이지 셸 폭 — daily.mcp(--shell-width: 1240px)와 동일 */
   --shell: 77.5rem;
+  /* 고정 헤더 높이 — SiteHeader가 실측값으로 덮어쓴다(로그인 여부·줄바꿈으로 달라진다).
+     sticky 주제 제목·사이드 목차·앵커 오프셋이 모두 이 값을 기준으로 비켜선다. */
+  --top-h: 4.6rem;
   font-size: 16px;
   color-scheme: light;
 }
@@ -72,6 +75,12 @@ body {
   overflow-x: hidden;
   overflow-x: clip;
 }
+html {
+  /* 앵커로 뛸 때 고정 헤더 밑으로 숨지 않게 — 목차·주제 바로가기가 모두 이 값을 탄다 */
+  scroll-padding-top: var(--top-h);
+  /* 드로어를 열 때 배경 스크롤을 잠그면 스크롤바가 사라지며 본문이 옆으로 튄다 — 자리를 늘 비워 둔다 */
+  scrollbar-gutter: stable;
+}
 body {
   margin: 0;
   background: var(--bg);
@@ -88,13 +97,48 @@ body {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
+/* 상단 고정 — 스크롤을 내려도 메뉴·테마·목차 버튼에 닿는다 */
+.top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 17; /* 읽기 진행률(18)·드로어(19~20) 아래 */
+  background: var(--bg);
+}
+/* 맨 위에서는 경계선 없이, 본문이 밑으로 흐르기 시작하면 헤더를 떼어 놓는다 */
+.top-bar.scrolled {
+  box-shadow: 0 1px 0 var(--border);
+}
 .top {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 0.75rem;
   max-width: var(--shell);
   margin: 0 auto;
   padding: 1.1rem 1.25rem;
+}
+/* 좌측 목차 여는 버튼 — 사이드 목차가 드로어로 접히는 좁은 화면에서만 */
+.toc-toggle {
+  display: none;
+  align-items: center;
+  gap: 0.3rem;
+  appearance: none;
+  padding: 0.34rem 0.75rem 0.34rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--text);
+  cursor: pointer;
+}
+.toc-toggle:hover {
+  border-color: var(--accent-strong);
+  color: var(--accent-strong);
+}
+@media (max-width: 1099px) {
+  .toc-toggle {
+    display: inline-flex;
+  }
 }
 .brand {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -154,6 +198,7 @@ a.brand {
   display: inline-flex;
   align-items: center;
   gap: 0.9rem;
+  margin-left: auto;
 }
 .icon-btn {
   display: inline-flex;
@@ -179,29 +224,33 @@ a.brand {
   display: none;
 }
 .nav-toggle,
-.nav-close,
-.nav-backdrop {
+.nav-close {
   display: none;
+}
+/* 드로어 뒤 어둡게 — 사이트 메뉴(우)와 좌측 목차가 함께 쓴다.
+   닫힌 동안은 투명·클릭 통과라 넓은 화면에서도 방해가 없다. */
+.nav-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 19;
+  background: rgb(0 0 0 / 0.42);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.nav-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* 드로어 열림 중 배경 스크롤 잠금 */
+body.nav-locked {
+  overflow: hidden;
 }
 
 @media (max-width: 720px) {
   .nav-toggle {
     display: inline-flex;
     color: var(--text);
-  }
-  .nav-backdrop {
-    display: block;
-    position: fixed;
-    inset: 0;
-    z-index: 19;
-    background: rgb(0 0 0 / 0.42);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
-  }
-  .nav-backdrop.open {
-    opacity: 1;
-    pointer-events: auto;
   }
   .site-nav {
     position: fixed;
@@ -216,13 +265,14 @@ a.brand {
     padding: 3.4rem 1.4rem 1.5rem;
     background: var(--surface);
     border-left: 1px solid var(--border);
+    box-shadow: -12px 0 32px rgb(0 0 0 / 0.15);
     transform: translateX(100%);
-    transition: transform 0.22s ease;
+    transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+    will-change: transform;
     overflow-y: auto;
   }
   .site-nav.open {
     transform: none;
-    box-shadow: -12px 0 32px rgb(0 0 0 / 0.15);
   }
   .nav-close {
     display: block;
@@ -267,9 +317,6 @@ a.brand {
     width: auto;
     height: 1px;
     margin: 0.5rem 0;
-  }
-  body.nav-locked {
-    overflow: hidden;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -526,7 +573,7 @@ button.linklike:hover {
 /* 상단 고정 — 긴 문항에서 스크롤해도 진행률·타이머가 보이도록 */
 .exam-top {
   position: sticky;
-  top: 0;
+  top: var(--top-h);
   z-index: 5;
   background: var(--surface);
   margin: -1.75rem -1.75rem 1.1rem;
@@ -767,7 +814,7 @@ button.linklike:hover {
 @media (min-width: 1080px) {
   #exam.with-sheet .omr {
     position: sticky;
-    top: 1rem;
+    top: calc(var(--top-h) + 1rem);
   }
   /* 화면을 꽉 채우되, 본문보다 지나치게 길어져 아래가 비어 보이지 않도록 상한을 둔다 */
   #exam.with-sheet .omr-sheet {
@@ -1012,15 +1059,141 @@ button.linklike:hover {
   flex-wrap: wrap;
   gap: 0.4rem;
 }
-/* 좌측 고정 목차 — 넓은 화면 전용, 좁으면 상단 칩(.toc)으로 대체 */
+/* 좌측 목차 — 넓은 화면은 본문 옆 고정, 좁은 화면은 헤더의 '목차' 버튼으로 여는 드로어.
+   항목 모양은 두 자리에서 같으므로 여기 모아 두고, 배치만 폭에 따라 갈린다. */
 .side-toc {
   display: none;
+  font-size: 0.9rem;
+}
+.side-toc-title {
+  display: block;
+  margin: 0 0.65rem 0.45rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.side-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.38rem 0.65rem;
+  border-radius: 8px;
+  color: var(--muted);
+  text-decoration: none;
+}
+.side-link em {
+  font-style: normal;
+  font-size: 0.8em;
+}
+.side-link:hover {
+  color: var(--accent-strong);
+}
+.side-link.on {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: 600;
+}
+/* 버튼형 사이드 항목(마이페이지 탭 전환용) — 링크와 같은 모양으로 */
+button.side-link {
+  appearance: none;
+  border: 0;
+  background: none;
+  font: inherit;
+  width: 100%;
+  cursor: pointer;
+}
+/* 현재 영역·과목 아래 펼쳐지는 세부 주제 — 사이드 목차의 두 번째 단 */
+.side-sub {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  margin: 0.25rem 0 0.55rem 0.9rem;
+  padding-left: 0.5rem;
+  border-left: 1px solid var(--border);
+}
+.side-sublink {
+  padding: 0.4rem 0.45rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--muted);
+  text-decoration: none;
+}
+.side-sublink:hover {
+  color: var(--accent-strong);
+}
+/* 지금 읽고 있는 주제 — 스크롤에 따라 따라온다(NoteTopics의 스크롤 스파이) */
+.side-sublink.on {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: 600;
+}
+/* 드로어 닫기(×) — 넓은 화면에선 드로어가 아니므로 숨는다 */
+.toc-close {
+  display: none;
+  position: absolute;
+  top: 0.55rem;
+  right: 0.9rem;
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 0.2rem 0.4rem;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--muted);
+  cursor: pointer;
+}
+.toc-close:hover {
+  color: var(--text);
+}
+/* 좁은 화면 — 좌측에서 밀려 나오는 드로어. 영역·과목과 그 세부 주제로 바로 이동한다 */
+@media (max-width: 1099px) {
+  .side-toc.as-drawer {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 20;
+    width: min(82vw, 19rem);
+    padding: 3.1rem 1rem calc(1.5rem + env(safe-area-inset-bottom, 0px));
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    /* 그림자는 닫혀 있을 때부터 달아 둔다 — 열리는 순간 튀어나오면 덜컥거려 보인다 */
+    box-shadow: 12px 0 32px rgb(0 0 0 / 0.15);
+    transform: translateX(-100%);
+    /* 감속 곡선(ease-out) — 빠르게 나와 부드럽게 멈춘다 */
+    transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+    will-change: transform;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .side-toc.as-drawer.open {
+    transform: none;
+  }
+  .side-toc.as-drawer .toc-close {
+    display: block;
+  }
+  /* 손가락으로 찍는 자리 — 넓은 화면보다 넉넉하게 */
+  .side-toc.as-drawer .side-link {
+    padding: 0.6rem 0.65rem;
+    font-size: 1rem;
+  }
+  .side-toc.as-drawer .side-sublink {
+    padding: 0.5rem 0.5rem;
+    font-size: 0.9rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .side-toc {
+    transition: none;
+  }
 }
 @media (min-width: 1100px) {
   /* 셸 폭 안에서 좌측 목차 + 본문 2컬럼 — 개념 노트·마이페이지 공용 */
   main.side-layout {
     display: grid;
-    grid-template-columns: 11rem minmax(0, 1fr);
+    grid-template-columns: 12.5rem minmax(0, 1fr);
     gap: 1.5rem;
   }
   /* 사이드 목차가 hidden이면(비로그인 마이페이지) 그리드에서 빠져 본문이 1열로
@@ -1032,52 +1205,20 @@ button.linklike:hover {
     display: block;
     align-self: start;
     position: sticky;
-    top: 1.25rem;
+    top: calc(var(--top-h) + 0.75rem);
     margin-top: 1rem;
     padding: 0.5rem 0;
-    font-size: 0.9rem;
+    /* 세부 주제까지 펼치면 26개까지 늘어난다 — 화면을 넘기면 목차만 스크롤 */
+    max-height: calc(100vh - var(--top-h) - 1.75rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
   }
-  .side-toc-title {
-    display: block;
-    margin: 0 0.65rem 0.45rem;
-    font-size: 0.78rem;
-    color: var(--muted);
-  }
-  .side-link {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 0.5rem;
-    padding: 0.38rem 0.65rem;
-    border-radius: 8px;
-    color: var(--muted);
-    text-decoration: none;
-  }
-  .side-link em {
-    font-style: normal;
-    font-size: 0.8em;
-  }
-  .side-link:hover {
-    color: var(--accent-strong);
-  }
-  .side-link.on {
-    background: var(--accent-soft);
-    color: var(--accent-strong);
-    font-weight: 600;
-  }
-  /* 사이드 목차가 있으면 상단 칩·탭은 중복이라 숨긴다 */
+  /* 사이드 목차가 있으면 상단 칩·탭·주제 바로가기는 중복이라 숨긴다 */
   .side-body .toc,
-  .side-body .tabs {
+  .side-body .tabs,
+  .topic-jumps-box {
     display: none;
-  }
-  /* 버튼형 사이드 항목(마이페이지 탭 전환용) — 링크와 같은 모양으로 */
-  button.side-link {
-    appearance: none;
-    border: 0;
-    background: none;
-    font: inherit;
-    width: 100%;
-    cursor: pointer;
   }
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -1145,12 +1286,6 @@ button.linklike:hover {
   display: flex;
   flex-wrap: wrap;
   gap: 0 1rem;
-}
-/* 넓은 화면에선 접기 UI 자체가 불필요 — 여는 것은 인라인 스크립트가 맡는다 */
-@media (min-width: 1100px) {
-  .topic-jumps-box > summary {
-    display: none;
-  }
 }
 .topic-jump {
   padding: 0.3em 0;
@@ -1358,9 +1493,10 @@ button.toc-chip {
   align-items: baseline;
   /* 제목 → 실기 뱃지 → (오른쪽 끝) 개념 글 링크. 뱃지가 가운데로 밀려나지 않게 space-between을 쓰지 않는다 */
   gap: 0.45rem;
-  /* 스크롤 중에도 현재 주제가 남아 있게 — 패널 배경을 깔아 본문이 비쳐 보이지 않게 한다 */
+  /* 스크롤 중에도 현재 주제가 남아 있게 — 패널 배경을 깔아 본문이 비쳐 보이지 않게 한다.
+     고정 헤더 바로 밑에 붙는다 */
   position: sticky;
-  top: 0;
+  top: var(--top-h);
   z-index: 4;
   margin: 0 0 0.35rem;
   padding: 0.55rem 0 0.4rem;
