@@ -56,7 +56,12 @@ export type Topic = {
   intro: string;
   post?: string;
 };
-export const TOPICS: Record<string, Topic> = topicNotes;
+/**
+ * JSON을 import하면 subject·area가 리터럴 유니온이 아니라 string으로 넓어져 타입이 맞지 않는다.
+ * 타입은 단언으로 좁히되, 실제 검사는 바로 아래 런타임 게이트가 맡는다 — 단언을 믿는 게 아니라
+ * 값을 직접 확인하는 쪽이 오타를 잡는 유일한 수단이다.
+ */
+export const TOPICS = topicNotes as Record<string, Topic>;
 const TOPIC_KEYS = Object.keys(TOPICS) as [string, ...string[]];
 
 /** 주제 정의가 깨지면(과목·영역 오타) 빌드에서 잡는다 */
