@@ -1,35 +1,58 @@
 ---
-import { AREAS, AREA_SLUGS, DIFFICULTIES } from "../../content.config";
-import { loadBank, loadPractical, topicsOf } from "../../lib/bank";
-import NoteTopics from "../../components/NoteTopics.astro";
-import SiteHeader from "../../components/SiteHeader.astro";
-import SiteFooter from "../../components/SiteFooter.astro";
-import "../../styles/global.css";
+import {
+  AREAS_BY_EXAM,
+  AREA_SLUGS,
+  DIFFICULTIES,
+  EXAMS,
+  EXAM_FORMAT,
+  EXAM_SLUGS,
+  examPath,
+  type Area,
+  type Exam,
+} from "../../../content.config";
+import { loadBank, loadPractical, topicsOf } from "../../../lib/bank";
+import NoteTopics from "../../../components/NoteTopics.astro";
+import SiteHeader from "../../../components/SiteHeader.astro";
+import SiteFooter from "../../../components/SiteFooter.astro";
+import "../../../styles/global.css";
 
 // 개념 노트 영역 상세 — 한 영역의 해설을 개념 글(주제)별로 읽는 페이지.
 // URL은 한글 인코딩을 피해 영문 슬러그(/notes/os/ 등)를 쓴다.
+// 시험 × 영역의 모든 조합. 정처기는 접두어 없이(/notes/os/), 정보보안기사는 /sec/notes/system/ 으로 나간다.
 export function getStaticPaths() {
-  return AREAS.map((area) => ({ params: { area: AREA_SLUGS[area] }, props: { area } }));
+  return EXAMS.flatMap((exam) =>
+    AREAS_BY_EXAM[exam].map((area) => ({
+      params: { exam: EXAM_SLUGS[exam], area: AREA_SLUGS[area] },
+      props: { exam, area },
+    })),
+  );
 }
 
-const { area } = Astro.props as { area: (typeof AREAS)[number] };
+const { exam, area } = Astro.props as { exam: Exam; area: Area };
+// 두 시험의 튜플 타입이 유니온이라 그대로 두면 배열 메서드의 인자가 never가 된다
+const AREAS = AREAS_BY_EXAM[exam] as readonly Area[];
+const px = examPath(exam);
+const examLabel = EXAM_FORMAT[exam].label;
 
-const bank = await loadBank();
+const bank = (await loadBank()).filter((q) => q.exam === exam);
 // 실기 문항도 같은 주제에 붙는다 — 개념 노트는 필기·실기를 나누지 않고 주제 하나로 모은다.
-const pbank = await loadPractical();
+const pbank = (await loadPractical()).filter((q) => q.exam === exam);
 
 const qs = bank.filter((q) => q.area === area);
 const ps = pbank.filter((q) => q.area === area);
 // 주제 순서는 topic-notes.json의 정의 순서(기초 → 심화)를 따른다.
-const topics = topicsOf(area).map((t) => ({
+const topics = topicsOf(area, exam).map((t) => ({
   ...t,
   questions: qs.filter((q) => q.topic === t.key),
   practical: ps.filter((q) => q.topic === t.key),
 }));
 
-const countByArea = Object.fromEntries(AREAS.map((a) => [a, bank.filter((q) => q.area === a).length]));
+// 문항이 아직 없는 시험(#29 전의 정보보안기사)에서는 0만 늘어서므로 주제 수를 대신 센다
+const countByArea = Object.fromEntries(
+  AREAS.map((a) => [a, bank.length > 0 ? bank.filter((q) => q.area === a).length : topicsOf(a, exam).length]),
+);
 // 사이드 목차는 모든 영역의 주제를 담는다 — 다른 영역도 접힌 채로 있다가 그 자리에서 펼쳐진다
-const topicsByArea = Object.fromEntries(AREAS.map((a) => [a, topicsOf(a)]));
+const topicsByArea = Object.fromEntries(AREAS.map((a) => [a, topicsOf(a, exam)]));
 // 사이드 목차에서 위아래로 고정될 줄 수 — '전체' 한 줄 + 영역들
 const SIDE_N = AREAS.length + 1;
 // 난이도 칩은 이 페이지에 실제로 놓인 카드 수와 맞아야 한다 — 필기 해설 + 실기 확인 문제
@@ -51,7 +74,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>daily.quiz — 개념 노트 · {area}</title>
+    {/* Astro의 <title>은 표현식 뒤 텍스트를 버린다 — 한 덩어리 문자열로 넘긴다 */}
+    <title>{`daily.quiz — ${examLabel} 개념 노트 · ${area}`}</title>
     <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
     <meta
       name="description"
@@ -59,7 +83,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     />
   </head>
   <body>
-    <SiteHeader current="notes" toc="영역" />
+    <SiteHeader current="notes" exam={exam} toc="영역" />
 
     {/* 읽기 진행률 — 화면 최상단 얇은 바 */}
     <div class="read-progress" aria-hidden="true"><i id="read-fill"></i></div>
@@ -83,12 +107,12 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         {/* '전체'와 영역 줄은 목차 안에서 위아래로 붙어 고정된다 — 주제를 아무리 스크롤해도
             영역 전환은 항상 한 번에 닿는다(--i/--j는 그 줄이 쌓일 위·아래 칸 수). */}
         <div class="side-row" style={`--i: 0; --j: ${SIDE_N - 1}`}>
-          <a class="side-link side-all" href={`${base}/notes/`}><span class="side-label">전체</span> <em>{bank.length}</em></a>
+          <a class="side-link side-all" href={`${base}${px}/notes/`}><span class="side-label">전체</span> <em>{bank.length}</em></a>
         </div>
         {/* 영역 밑의 세부 주제 — 넓은 화면은 그 자리에서 펼치고, 드로어에선 2단으로 밀려 들어온다 */}
         {AREAS.map((a, k) => {
           const cur = a === area;
-          const href = `${base}/notes/${AREA_SLUGS[a]}/`;
+          const href = `${base}${px}/notes/${AREA_SLUGS[a]}/`;
           return (
             <Fragment>
               <div class={`side-row${cur ? " on" : ""}`} style={`--i: ${k + 1}; --j: ${SIDE_N - 2 - k}`}>
@@ -128,14 +152,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         <section class="panel">
           <h1>{area}</h1>
           <p class="lead">
-            <a class="lead-link" href={`${base}/notes/`}>개념 노트</a> 안의 {area} 영역 —
+            <a class="lead-link" href={`${base}${px}/notes/`}>개념 노트</a> 안의 {area} 영역 —
             해설 {qs.length}문항을 {topics.length}개 주제로 모았습니다.
             {ps.length > 0 && <> 같은 주제에 실기 확인 문제 {ps.length}개가 함께 붙어 있습니다.</>}
           </p>
           {/* 좁은 화면 전용 — 영역 이동 칩(한 줄 가로 스크롤) */}
           <nav class="toc" aria-label="영역 이동">
             {AREAS.map((a) => (
-              <a class={`toc-chip${a === area ? " on" : ""}`} href={`${base}/notes/${AREA_SLUGS[a]}/`}>
+              <a class={`toc-chip${a === area ? " on" : ""}`} href={`${base}${px}/notes/${AREA_SLUGS[a]}/`}>
                 {a} <em>{countByArea[a]}</em>
               </a>
             ))}
@@ -167,14 +191,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
           {/* 이전/다음 영역 이동 */}
           <nav class="area-nav">
             {prevArea ? (
-              <a href={`${base}/notes/${AREA_SLUGS[prevArea]}/`}><small>이전 영역</small>← {prevArea}</a>
+              <a href={`${base}${px}/notes/${AREA_SLUGS[prevArea]}/`}><small>이전 영역</small>← {prevArea}</a>
             ) : (
-              <a href={`${base}/notes/`}><small>목차</small>← 전체 영역</a>
+              <a href={`${base}${px}/notes/`}><small>목차</small>← 전체 영역</a>
             )}
             {nextArea ? (
-              <a class="next" href={`${base}/notes/${AREA_SLUGS[nextArea]}/`}><small>다음 영역</small>{nextArea} →</a>
+              <a class="next" href={`${base}${px}/notes/${AREA_SLUGS[nextArea]}/`}><small>다음 영역</small>{nextArea} →</a>
             ) : (
-              <a class="next" href={`${base}/notes/`}><small>목차</small>전체 영역 →</a>
+              <a class="next" href={`${base}${px}/notes/`}><small>목차</small>전체 영역 →</a>
             )}
           </nav>
         </section>

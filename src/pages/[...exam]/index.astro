@@ -1,12 +1,24 @@
 ---
-import { AREAS, DIFFICULTIES, SUBJECTS } from "../content.config";
-import { loadBank } from "../lib/bank";
-import SiteHeader from "../components/SiteHeader.astro";
-import SiteFooter from "../components/SiteFooter.astro";
-import "../styles/global.css";
+import { DIFFICULTIES, EXAMS, EXAM_FORMAT, EXAM_SLUGS, examPath, type Exam } from "../../content.config";
+import { areasOf, loadBank, subjectsOf } from "../../lib/bank";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import "../../styles/global.css";
+
+// 한 벌의 파일이 시험 수만큼 라우트를 낸다 — 정처기는 `/`, 정보보안기사는 `/sec/`.
+// 개념 노트·실기와 같은 방식이다(중간 위치 rest 파라미터, params.exam이 undefined면 접두어가 없다).
+export function getStaticPaths() {
+  return EXAMS.map((exam) => ({ params: { exam: EXAM_SLUGS[exam] }, props: { exam } }));
+}
+const { exam } = Astro.props as { exam: Exam };
+const px = examPath(exam);
+const format = EXAM_FORMAT[exam];
 
 // 문제 은행 전체를 빌드 타임에 굽는다 — 서버 없이 클라이언트 JS만으로 동작.
-const bank = await loadBank();
+// 은행은 두 시험이 공유하므로 반드시 이 화면의 시험으로 걸러야 한다.
+const bank = (await loadBank()).filter((q) => q.exam === exam);
+const SUBJECTS = subjectsOf(exam);
+const AREAS = areasOf(exam);
 const countBySubject = Object.fromEntries(
   SUBJECTS.map((s) => [s, bank.filter((q) => q.subject === s).length]),
 );
@@ -16,6 +28,8 @@ const countByArea = Object.fromEntries(
 const countByDiff = Object.fromEntries(
   DIFFICULTIES.map((d) => [d, bank.filter((q) => q.difficulty === d).length]),
 );
+// 모의고사 편성 — 과목당 문항 수는 시험 형식에서 온다
+const mockTotal = format.written.perSubject * SUBJECTS.length;
 
 // 오답 리뷰의 "관련 글" 링크 — daily.mcp 블로그의 글 상세 URL
 const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
@@ -26,25 +40,25 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>daily.quiz — 정처기 필기 개념 문제</title>
+    <title>daily.quiz — {format.label} 필기 개념 문제</title>
     <link rel="icon" href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/favicon.svg`} type="image/svg+xml" />
     <meta
       name="description"
-      content="정보처리기사 필기 빈출 개념을 4지선다로 풀고, 즉시 채점과 오답 해설을 받는 연습장. daily.mcp 블로그의 개념 글과 연결됩니다."
+      content={`${format.label} 필기 빈출 개념을 4지선다로 풀고, 즉시 채점과 오답 해설을 받는 연습장. daily.mcp 블로그의 개념 글과 연결됩니다.`}
     />
   </head>
   <body>
-    <SiteHeader current="quiz" />
+    <SiteHeader current="quiz" exam={exam} />
 
     <main>
       {/* ── 1. 설정 화면 ── */}
       <section id="setup" class="panel">
-        <h1>정처기 필기 연습</h1>
+        <h1>{exam} 필기 연습</h1>
         <p class="lead">
           시험 과목이나 영역을 고르면 문제를 섞어 출제합니다. 제출하면 바로 채점하고,
           틀린 문제는 해설과 함께 개념 글로 이어집니다.
           풀기 전에 개념부터 훑고 싶다면
-          <a class="lead-link" href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/notes/`}>개념 노트</a>를 펴 보세요.
+          <a class="lead-link" href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}${px}/notes/`}>개념 노트</a>를 펴 보세요.
         </p>
         <fieldset class="areas">
           <legend>시험 과목</legend>
@@ -114,8 +128,9 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         <div class="mock-box">
           <h2>모의고사</h2>
           <p class="mock-desc">
-            실제 필기 형식 그대로 — 5과목 × 20문항, 총 100문항을 150분 안에 풉니다.
-            과목별 40점 미만이면 과락, 과락 없이 평균 60점 이상이면 합격입니다.
+            실제 필기 형식 그대로 — {SUBJECTS.length}과목 × {format.written.perSubject}문항,
+            총 {mockTotal}문항을 {format.written.minutes}분 안에 풉니다.
+            과목별 {format.written.subjectPass}점 미만이면 과락, 과락 없이 평균 {format.written.averagePass}점 이상이면 합격입니다.
             오른쪽 답안 표기란에 실제 OMR처럼 문항별 ①~④를 마킹하고, 번호를 눌러 곧장 이동합니다.
             문항을 건너뛰고 나중에 돌아올 수 있습니다.
           </p>
@@ -191,7 +206,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 
     {/* 문제 은행 주입 — 빌드 타임 데이터, 런타임 요청 없음 */}
     <script is:inline type="application/json" id="bank" set:html={JSON.stringify(bank)} />
-    <script is:inline type="application/json" id="config" set:html={JSON.stringify({ blogPostBase: BLOG_POST_BASE, areas: AREAS, subjects: SUBJECTS })} />
+    <script is:inline type="application/json" id="config" set:html={JSON.stringify({ blogPostBase: BLOG_POST_BASE, areas: AREAS, subjects: SUBJECTS, examSlug: EXAM_SLUGS[exam] ?? "", written: format.written })} />
 
     <script>
       type Q = {
@@ -207,15 +222,22 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         relatedPost?: string; // 선택 — 글이 아직 없는 문항은 해설로 완결
       };
 
-      import { supabase } from "../lib/supabase";
-      import { onAuth, authSession, requireLogin, errorText } from "../lib/auth";
-      import { toast } from "../lib/toast";
+      import { supabase } from "../../lib/supabase";
+      import { onAuth, authSession, requireLogin, errorText } from "../../lib/auth";
+      import { toast } from "../../lib/toast";
 
       const bank: Q[] = JSON.parse(document.getElementById("bank")!.textContent!);
-      const { blogPostBase, subjects: SUBJECT_LIST } = JSON.parse(document.getElementById("config")!.textContent!) as {
+      const { blogPostBase, subjects: SUBJECT_LIST, examSlug, written } = JSON.parse(document.getElementById("config")!.textContent!) as {
         blogPostBase: string;
         subjects: string[];
+        examSlug: string; // 정처기는 "" — 기존 저장 키를 그대로 쓴다
+        written: { perSubject: number; minutes: number; subjectPass: number; averagePass: number };
       };
+
+      // 저장 키는 시험별로 갈라야 한다 — 오답노트를 한 통에 두면 이 화면의 은행에 없는 id가
+      // 불러오는 순간 걸러지고 그대로 다시 저장돼 다른 시험의 기록이 지워진다.
+      // 정처기는 접미어가 없어 기존 사용자의 저장분이 그대로 이어진다.
+      const keyOf = (base: string) => (examSlug ? `${base}.${examSlug}` : base);
 
       const $ = <T extends HTMLElement>(sel: string) => document.querySelector(sel) as T;
       // innerHTML 템플릿에 끼워 넣는 코드 블록용 — C 코드의 <, & 등이 태그로 해석되지 않게
@@ -227,10 +249,10 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       let cur = 0;
       let mode: "practice" | "mock" = "practice";
 
-      // ── 타이머 — 모의고사는 150분 카운트다운, 연습은 경과 시간 카운트업 ──
-      const MOCK_MINUTES = 150;
-      // 실제 필기 그대로 — 5과목 × 20문항 = 100문항
-      const MOCK_PER_SUBJECT = 20;
+      // ── 타이머 — 모의고사는 제한 시간 카운트다운, 연습은 경과 시간 카운트업 ──
+      // 시험 형식(EXAM_FORMAT[exam].written)에서 온다 — 상수로 박아 두면 시험이 늘 때마다 물린다.
+      const MOCK_MINUTES = written.minutes;
+      const MOCK_PER_SUBJECT = written.perSubject;
       let startedAt = 0;
       let deadline = 0;
       let timerId: ReturnType<typeof setInterval> | undefined;
@@ -347,7 +369,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       };
 
       // ── 오답노트 — localStorage 누적, 서버·계정 없음(기기 로컬 전용) ──
-      const NOTE_KEY = "daily.quiz.wrong-note.v1";
+      const NOTE_KEY = keyOf("daily.quiz.wrong-note.v1");
       type Note = Record<string, { n: number; at: number }>; // id → 틀린 횟수, 마지막 오답 시각
       const bankById = new Map(bank.map((q) => [q.id, q]));
 
@@ -381,7 +403,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 
       // ── 진행 중 풀이 자동 저장 — 새로고침·탭 닫기로 답안이 날아가지 않도록 ──
       // 문항 본문은 은행에 이미 있으므로 id만 남긴다. 모의고사는 마감 시각까지 실제 시각 기준으로 이어간다.
-      const SESSION_KEY = "daily.quiz.session.v1";
+      const SESSION_KEY = keyOf("daily.quiz.session.v1");
       type Saved = {
         ids: string[];
         picked: (number | null)[]; // 미표기는 null — JSON 배열에 undefined를 담을 수 없다
@@ -700,25 +722,25 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 
         const subjects = $("#subjects");
         if (mode === "mock") {
-          // 과목별 채점 — 40점 미만 과락, 과락 없이 평균 60점 이상 합격
+          // 과목별 채점 — 과목별 과락선 미만이면 과락, 과락 없이 평균 합격선 이상이면 합격
           const perSubject = SUBJECT_LIST.map((sj, i) => {
             const qs = session.map((q, qi) => ({ q, qi })).filter(({ q }) => q.subject === sj);
             const ok = qs.filter(({ q, qi }) => picked[qi] === q.answer).length;
             const score = qs.length ? Math.round((ok / qs.length) * 100) : 0;
-            return { no: i + 1, subject: sj, ok, total: qs.length, score, fail: score < 40 };
+            return { no: i + 1, subject: sj, ok, total: qs.length, score, fail: score < written.subjectPass };
           });
           const avg = Math.round(perSubject.reduce((s, p) => s + p.score, 0) / perSubject.length);
           const failed = perSubject.filter((p) => p.fail);
-          const pass = avg >= 60 && failed.length === 0;
+          const pass = avg >= written.averagePass && failed.length === 0;
           $("#score").textContent = `평균 ${avg}점 — ${pass ? "합격" : "불합격"}`;
           setScoreBar(avg, pass);
           $("#verdict").textContent = [
             timedOut ? "시간이 종료되어 자동 제출되었습니다." : "",
             failed.length
-              ? `과락(40점 미만): ${failed.map((p) => `${p.no}과목 ${p.subject}`).join(", ")}.`
-              : avg >= 60
-                ? "과락 없이 평균 60점을 넘겼습니다."
-                : "과락은 없지만 평균이 60점에 못 미칩니다.",
+              ? `과락(${written.subjectPass}점 미만): ${failed.map((p) => `${p.no}과목 ${p.subject}`).join(", ")}.`
+              : avg >= written.averagePass
+                ? `과락 없이 평균 ${written.averagePass}점을 넘겼습니다.`
+                : `과락은 없지만 평균이 ${written.averagePass}점에 못 미칩니다.`,
             "아래에서 틀린 문항만 복기하세요.",
           ].filter(Boolean).join(" ");
           subjects.innerHTML = perSubject

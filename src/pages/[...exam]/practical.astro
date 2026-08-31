@@ -1,18 +1,35 @@
 ---
-import { DIFFICULTIES, PRACTICAL_KINDS } from "../content.config";
-import { loadPractical } from "../lib/bank";
-import SiteHeader from "../components/SiteHeader.astro";
-import SiteFooter from "../components/SiteFooter.astro";
 import {
-  PRACTICAL_MINUTES,
-  PRACTICAL_PASS,
-  PRACTICAL_POINT,
-  PRACTICAL_TOTAL,
-} from "../lib/practical-grade";
-import "../styles/global.css";
+  DIFFICULTIES,
+  EXAMS,
+  EXAM_FORMAT,
+  EXAM_SLUGS,
+  PRACTICAL_KINDS,
+  examPath,
+  type Exam,
+} from "../../content.config";
+import { loadPractical } from "../../lib/bank";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import { PRACTICAL_FORMAT, maxPoints } from "../../lib/practical-grade";
+import "../../styles/global.css";
 
 // 실기 문항 은행 — 필기와 같이 빌드 타임에 구워 서버 없이 동작한다.
-const bank = await loadPractical();
+//
+// 개념 노트와 같은 방식으로 시험마다 한 벌씩 낸다. 정처기는 접두어 없이 /practical/ 로
+// (기존 URL 유지), 정보보안기사는 /sec/practical/ 로 나간다.
+export function getStaticPaths() {
+  return EXAMS.map((exam) => ({ params: { exam: EXAM_SLUGS[exam] }, props: { exam } }));
+}
+
+const { exam } = Astro.props as { exam: Exam };
+const px = examPath(exam);
+const examLabel = EXAM_FORMAT[exam].label;
+// 두 시험이 한 은행을 쓰므로 반드시 거른다 — 거르지 않으면 다른 시험 문항이 섞인다
+const bank = (await loadPractical()).filter((q) => q.exam === exam);
+// 시험 형식은 상수가 아니라 시험이 정한다 — 문항 수·시간·합격선·배점이 시험마다 다르다
+const fmt = PRACTICAL_FORMAT[exam];
+const fmtMax = maxPoints(fmt);
 const countByKind = Object.fromEntries(
   PRACTICAL_KINDS.map((k) => [k, bank.filter((q) => q.kind === k).length]),
 );
@@ -27,24 +44,24 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>daily.quiz — 정처기 실기 필답 연습</title>
+    <title>{`daily.quiz — ${examLabel} 실기 필답 연습`}</title>
     <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
     <meta
       name="description"
-      content="정보처리기사 실기 필답형 연습장. 단답·코드 출력·SQL을 직접 입력해 자동 채점하고, 약술형은 모범답안과 대조해 자가 채점합니다."
+      content={`${examLabel} 실기 필답형 연습장. 자동 채점되는 유형은 직접 입력해 채점하고, 서술형은 모범답안과 대조해 자가 채점합니다.`}
     />
   </head>
   <body>
-    <SiteHeader current="practical" />
+    <SiteHeader current="practical" exam={exam} />
 
     <main>
       {/* ── 1. 설정 화면 ── */}
       <section id="setup" class="panel">
-        <h1>정처기 실기 필답 연습</h1>
+        <h1>{`${examLabel} 실기 필답 연습`}</h1>
         <p class="lead">
           보기 없이 답을 직접 씁니다. 단답·계산·코드 출력·SQL은 자동 채점하고,
-          약술형은 모범답안과 나란히 놓고 스스로 채점합니다.
-          개념부터 훑고 싶다면 <a class="lead-link" href={`${base}/notes/`}>개념 노트</a>를 펴 보세요.
+          모범답안이 있는 유형은 나란히 놓고 스스로 채점합니다.
+          개념부터 훑고 싶다면 <a class="lead-link" href={`${base}${px}/notes/`}>개념 노트</a>를 펴 보세요.
         </p>
 
         <fieldset class="areas">
@@ -53,9 +70,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
             <input type="radio" name="kind" value="전체" checked />
             <span>전체 <em>{bank.length}</em></span>
           </label>
-          {PRACTICAL_KINDS.map((k) => (
+          {/* 유형 목록은 두 시험의 것을 합쳐 두므로, 이 은행에 실제로 있는 유형만 내보낸다 */}
+          {PRACTICAL_KINDS.filter((k) => countByKind[k] > 0).map((k) => (
             <label class="area-opt">
-              <input type="radio" name="kind" value={k} disabled={countByKind[k] === 0} />
+              <input type="radio" name="kind" value={k} />
               <span>{k} <em>{countByKind[k]}</em></span>
             </label>
           ))}
@@ -103,15 +121,17 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         <div class="mock-box">
           <h2>실기 모의고사</h2>
           <p class="mock-desc">
-            실제 실기 형식 그대로 — 필답형 {PRACTICAL_TOTAL}문항을 {PRACTICAL_MINUTES}분 안에 풉니다.
-            문항당 {PRACTICAL_POINT}점, {PRACTICAL_PASS}점 이상이면 합격입니다.
-            부분 점수가 없어 다답형은 모든 답란을 맞혀야 정답입니다.
+            실제 실기 형식 그대로 — 필답형 {fmt.total}문항을 {fmt.minutes}분 안에 풉니다.
+            {fmt.uniformPoint
+              ? `문항당 ${fmt.uniformPoint}점, ${fmtMax}점 만점에 ${fmt.pass}점 이상이면 합격입니다.`
+              : `${fmtMax}점 만점에 ${fmt.pass}점 이상이면 합격입니다.`}
+            {!fmt.partialCredit?.length && " 부분 점수가 없어 다답형은 모든 답란을 맞혀야 정답입니다."}
           </p>
-          <button id="start-mock" class="primary" disabled={bank.length < PRACTICAL_TOTAL}>
+          <button id="start-mock" class="primary" disabled={bank.length < fmt.total}>
             모의고사 시작
           </button>
-          {bank.length < PRACTICAL_TOTAL && (
-            <p class="mock-desc">문항이 {PRACTICAL_TOTAL}개 이상 쌓이면 열립니다 (현재 {bank.length}개).</p>
+          {bank.length < fmt.total && (
+            <p class="mock-desc">문항이 {fmt.total}개 이상 쌓이면 열립니다 (현재 {bank.length}개).</p>
           )}
         </div>
       </section>
@@ -141,7 +161,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
               <button id="prev" class="ghost" disabled>이전</button>
               <button id="next" class="primary">다음</button>
             </div>
-            <p class="kbd-hint"><kbd>Enter</kbd> 다음 문항 · <kbd>Shift</kbd>+<kbd>Enter</kbd> 이전 · 약술형은 <kbd>Ctrl</kbd>+<kbd>Enter</kbd>로 이동(<kbd>Enter</kbd>는 줄바꿈)</p>
+            <p class="kbd-hint"><kbd>Enter</kbd> 다음 문항 · <kbd>Shift</kbd>+<kbd>Enter</kbd> 이전 · 서술 유형은 <kbd>Ctrl</kbd>+<kbd>Enter</kbd>로 이동(<kbd>Enter</kbd>는 줄바꿈)</p>
           </div>
 
           {/* 답안 작성 현황 — 실제 답안지처럼 쓴 답을 한눈에 훑고, 번호로 곧장 이동한다 */}
@@ -175,17 +195,18 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     <SiteFooter />
 
     <script is:inline type="application/json" id="bank" set:html={JSON.stringify(bank)} />
+    <span id="exam-name" hidden data-slug={EXAM_SLUGS[exam] ?? ""}>{exam}</span>
 
     <script>
       import {
         gradeQuestion,
         countKeywords,
-        PRACTICAL_TOTAL,
-        PRACTICAL_POINT,
-        PRACTICAL_PASS,
-        PRACTICAL_MINUTES,
-      } from "../lib/practical-grade";
-      import { toast } from "../lib/toast";
+        maxPoints,
+        scoreSession,
+        isSelfGraded,
+        PRACTICAL_FORMAT,
+      } from "../../lib/practical-grade";
+      import { toast } from "../../lib/toast";
 
       type P = {
         id: string;
@@ -205,19 +226,27 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       };
 
       const bank: P[] = JSON.parse(document.getElementById("bank")!.textContent!);
+      // 시험 형식(문항 수·시간·합격선·배점)은 서버가 정해 심어 준다 — 시험마다 다르다
+      const examEl = document.getElementById("exam-name")!;
+      const examFmt = PRACTICAL_FORMAT[examEl.textContent!];
+      const examSlug = examEl.dataset.slug ?? ""; // 정처기는 "" — 저장 키에 접미어가 붙지 않는다
+      const examMax = maxPoints(examFmt);
       const $ = <T extends HTMLElement>(sel: string) => document.querySelector(sel) as T;
       const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
       const setup = $("#setup"), exam = $("#exam"), result = $("#result");
 
       let session: P[] = [];
       let inputs: string[][] = [];      // 문항별 답란 입력값
-      let selfGrade: (boolean | undefined)[] = []; // 약술형 자가 채점 결과
+      let selfGrade: (boolean | undefined)[] = []; // 자가 채점 결과
+      // 자가 채점 유형 판정은 채점기가 갖는다(약술형만 보던 자리가 네 군데 있었다)
       let cur = 0;
       let mode: "practice" | "mock" = "practice";
       let startedAt = Date.now();
       let deadline = 0;
 
       // ── 사용자가 인정시킨 표기 — 자동 채점이 놓친 동의어를 로컬에 쌓는다 ──
+      // 시험별로 가르지 않는다 — 키가 `${문항id}#${답란}`이라 시험을 넘어 고유하고,
+      // 한 통에 두어도 서로 덮어쓰지 않는다(불러올 때 은행으로 거르지 않는다).
       const EXTRA_KEY = "daily.quiz.practical.extra.v1";
       type Extras = Record<string, string[]>; // `${id}#${blank}` → 허용 표기 목록
       const loadExtras = (): Extras => {
@@ -238,7 +267,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       const extrasOf = (q: P) => q.answers.map((_, i) => extras[`${q.id}#${i}`] ?? []);
 
       // ── 이어서 풀기 ──
-      const SAVE_KEY = "daily.quiz.practical.session.v1";
+      // 이어서 풀기는 시험별로 가른다 — 한 통이면 한쪽에서 새로 시작할 때
+      // 다른 시험의 저장분이 조용히 덮여 사라진다. 정처기는 접미어가 없어 기존 저장분을 잇는다.
+      const SAVE_KEY = examSlug ? `daily.quiz.practical.session.v1.${examSlug}` : "daily.quiz.practical.session.v1";
       type Saved = {
         ids: string[];
         inputs: string[][];
@@ -305,7 +336,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
           el.textContent = fmt(Math.floor((Date.now() - startedAt) / 1000));
         }
       };
-      const startTimer = (from = Date.now(), until = from + PRACTICAL_MINUTES * 60 * 1000) => {
+      const startTimer = (from = Date.now(), until = from + examFmt.minutes * 60 * 1000) => {
         startedAt = from;
         deadline = until;
         $("#timer").hidden = false;
@@ -404,7 +435,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
         const box = $("#q-answer");
         box.innerHTML = "";
-        if (q.kind === "약술형") {
+        if (isSelfGraded(q.kind)) {
           const ta = document.createElement("textarea");
           ta.className = "pa-textarea";
           ta.rows = 7;
@@ -460,7 +491,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       const startSession = (pool: P[]) => {
         if (!pool.length) return;
         session = pool;
-        inputs = session.map((q) => (q.kind === "약술형" ? [""] : q.answers.map(() => "")));
+        inputs = session.map((q) => (isSelfGraded(q.kind) ? [""] : q.answers.map(() => "")));
         selfGrade = session.map(() => undefined);
         cur = 0;
         setup.hidden = true;
@@ -471,7 +502,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       };
 
       // ── 채점 ──
-      const isAuto = (q: P) => q.kind !== "약술형";
+      const isAuto = (q: P) => !isSelfGraded(q.kind);
       const gradeOf = (i: number) => {
         const q = session[i];
         if (!isAuto(q)) return { ok: selfGrade[i] === true, blanks: [] as { input: string; ok: boolean }[] };
@@ -495,19 +526,30 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         const correct = session.filter((_, i) => gradeOf(i).ok).length;
         const pending = session.filter((q, i) => !isAuto(q) && selfGrade[i] === undefined).length;
         const pct = Math.round((correct / total) * 100);
-        const points = mode === "mock" ? correct * PRACTICAL_POINT : null;
-        const pass = points === null ? pct >= PRACTICAL_PASS : points >= PRACTICAL_PASS;
+        // 모의고사 점수는 시험 형식이 정한다 — 유형별 배점·부분 점수·선택 문항까지 채점기가 처리한다
+        const scored =
+          mode === "mock"
+            ? scoreSession(
+                session.map((q, i) => {
+                  const g = gradeOf(i);
+                  return { kind: q.kind, ok: g.ok, ratio: "ratio" in g ? g.ratio : g.ok ? 1 : 0 };
+                }),
+                examFmt,
+              )
+            : null;
+        const points = scored?.points ?? null;
+        const pass = scored ? scored.pass : pct >= examFmt.pass;
 
         $("#score").textContent =
-          points === null
+          scored === null
             ? `${total}문항 중 ${correct}문항 정답 (${pct}점)`
-            : `${points}점 / 100점 · ${correct} / ${total}문항`;
+            : `${scored.points}점 / ${examMax}점 · ${correct} / ${total}문항`;
         setScoreBar(pct, pass);
         $("#verdict").textContent =
           mode === "mock"
             ? pass
-              ? `합격선 ${PRACTICAL_PASS}점을 넘겼습니다.`
-              : `합격선 ${PRACTICAL_PASS}점에 ${PRACTICAL_PASS - (points ?? 0)}점 모자랍니다.`
+              ? `합격선 ${examFmt.pass}점을 넘겼습니다.`
+              : `합격선 ${examFmt.pass}점에 ${examFmt.pass - (points ?? 0)}점 모자랍니다.`
             : pct === 100
               ? "전부 맞혔습니다."
               : pct >= 60
@@ -517,7 +559,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         const note = $("#selfgrade-note");
         note.hidden = pending === 0;
         $("#selfgrade-info").textContent =
-          `약술형 ${pending}문항이 아직 채점되지 않았습니다 — 모범답안과 견줘 O / X를 눌러 주세요.`;
+          `자가 채점 ${pending}문항이 남았습니다 — 모범답안과 견줘 O / X를 눌러 주세요.`;
       };
 
       const renderResult = (timedOut = false) => {
@@ -666,7 +708,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
       $("#start-mock").addEventListener("click", () => {
         mode = "mock";
-        startSession(shuffle(bank).slice(0, PRACTICAL_TOTAL));
+        startSession(shuffle(bank).slice(0, examFmt.total));
       });
 
       $("#prev").addEventListener("click", () => {

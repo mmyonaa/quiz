@@ -194,6 +194,46 @@ a.brand {
   height: 1rem;
   background: var(--border);
 }
+
+/* 시험 전환 — 정처기 / 정보보안기사. 두 개뿐이라 드롭다운 대신 붙은 탭 두 개로 둔다 */
+.exam-switch {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 2px;
+  gap: 2px;
+}
+.exam-tab {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.8rem;
+  line-height: 1;
+  padding: 0.36rem 0.62rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.exam-tab:hover {
+  color: var(--accent-strong);
+}
+.exam-tab.on {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+/* 좁은 화면 드로어에서는 메뉴가 세로로 쌓이므로 전환도 한 줄을 다 쓴다 */
+@media (max-width: 760px) {
+  .exam-switch {
+    width: 100%;
+    justify-content: stretch;
+  }
+  .exam-tab {
+    flex: 1;
+    text-align: center;
+    font-size: 0.86rem;
+    /* 드로어에서는 주 내비게이션이므로 손가락이 닿을 높이(44px)를 확보한다 */
+    padding: 0.9rem 0.5rem;
+  }
+}
 .top-actions {
   display: inline-flex;
   align-items: center;

@@ -1,32 +1,58 @@
 ---
-import { SUBJECTS, SUBJECT_SLUGS, DIFFICULTIES } from "../../../content.config";
-import { loadBank, loadPractical, topicsOfSubject, areasOfSubject } from "../../../lib/bank";
-import NoteTopics from "../../../components/NoteTopics.astro";
-import SiteHeader from "../../../components/SiteHeader.astro";
-import SiteFooter from "../../../components/SiteFooter.astro";
-import "../../../styles/global.css";
+import {
+  SUBJECTS_BY_EXAM,
+  SUBJECT_SLUGS,
+  DIFFICULTIES,
+  EXAMS,
+  EXAM_FORMAT,
+  EXAM_SLUGS,
+  examPath,
+  type Exam,
+  type Subject,
+} from "../../../../content.config";
+import { loadBank, loadPractical, topicsOfSubject, areasOfSubject } from "../../../../lib/bank";
+import NoteTopics from "../../../../components/NoteTopics.astro";
+import SiteHeader from "../../../../components/SiteHeader.astro";
+import SiteFooter from "../../../../components/SiteFooter.astro";
+import "../../../../styles/global.css";
 
 // 개념 노트 과목 상세 — 실제 시험 과목 단위로 읽는 페이지.
 // 영역 페이지(/notes/<area>/)와 본문은 같고 묶는 축만 다르다(NoteTopics 공용).
+// 시험 × 과목의 모든 조합. 두 시험 다 5과목이라 10개 라우트가 난다.
 export function getStaticPaths() {
-  return SUBJECTS.map((subject) => ({ params: { subject: SUBJECT_SLUGS[subject] }, props: { subject } }));
+  return EXAMS.flatMap((exam) =>
+    SUBJECTS_BY_EXAM[exam].map((subject) => ({
+      params: { exam: EXAM_SLUGS[exam], subject: SUBJECT_SLUGS[subject] },
+      props: { exam, subject },
+    })),
+  );
 }
 
-const { subject } = Astro.props as { subject: (typeof SUBJECTS)[number] };
+const { exam, subject } = Astro.props as { exam: Exam; subject: Subject };
+// 두 시험의 튜플 타입이 유니온이라 그대로 두면 배열 메서드의 인자가 never가 된다
+const SUBJECTS = SUBJECTS_BY_EXAM[exam] as readonly Subject[];
+const px = examPath(exam);
+const examLabel = EXAM_FORMAT[exam].label;
 
-const bank = await loadBank();
-const pbank = await loadPractical();
+const bank = (await loadBank()).filter((q) => q.exam === exam);
+const pbank = (await loadPractical()).filter((q) => q.exam === exam);
 const qs = bank.filter((q) => q.subject === subject);
 const ps = pbank.filter((q) => q.subject === subject);
-const topics = topicsOfSubject(subject).map((t) => ({
+const topics = topicsOfSubject(subject, exam).map((t) => ({
   ...t,
   questions: qs.filter((q) => q.topic === t.key),
   practical: ps.filter((q) => q.topic === t.key),
 }));
 
-const countBySubject = Object.fromEntries(SUBJECTS.map((s) => [s, bank.filter((q) => q.subject === s).length]));
+// 문항이 아직 없는 시험(#29 전의 정보보안기사)에서는 0만 늘어서므로 주제 수를 대신 센다
+const countBySubject = Object.fromEntries(
+  SUBJECTS.map((s) => [
+    s,
+    bank.length > 0 ? bank.filter((q) => q.subject === s).length : topicsOfSubject(s, exam).length,
+  ]),
+);
 // 사이드 목차는 모든 과목의 주제를 담는다 — 다른 과목도 접힌 채로 있다가 그 자리에서 펼쳐진다
-const topicsBySubject = Object.fromEntries(SUBJECTS.map((s) => [s, topicsOfSubject(s)]));
+const topicsBySubject = Object.fromEntries(SUBJECTS.map((s) => [s, topicsOfSubject(s, exam)]));
 // 사이드 목차에서 위아래로 고정될 줄 수 — '전체' 한 줄 + 과목들
 const SIDE_N = SUBJECTS.length + 1;
 const cards = [...qs, ...ps];
@@ -48,7 +74,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     {/* Astro의 <title>은 표현식 뒤 텍스트를 버린다 — 한 덩어리 문자열로 넘긴다 */}
-    <title>{`daily.quiz — 개념 노트 · ${no}과목 ${subject}`}</title>
+    <title>{`daily.quiz — ${examLabel} 개념 노트 · ${no}과목 ${subject}`}</title>
     <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
     <meta
       name="description"
@@ -56,7 +82,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     />
   </head>
   <body>
-    <SiteHeader current="notes" toc="과목" />
+    <SiteHeader current="notes" exam={exam} toc="과목" />
 
     {/* 읽기 진행률 — 화면 최상단 얇은 바 */}
     <div class="read-progress" aria-hidden="true"><i id="read-fill"></i></div>
@@ -80,12 +106,12 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         {/* '전체'와 과목 줄은 목차 안에서 위아래로 붙어 고정된다 — 주제를 아무리 스크롤해도
             과목 전환은 항상 한 번에 닿는다(--i/--j는 그 줄이 쌓일 위·아래 칸 수). */}
         <div class="side-row" style={`--i: 0; --j: ${SIDE_N - 1}`}>
-          <a class="side-link side-all" href={`${base}/notes/`}><span class="side-label">전체</span> <em>{bank.length}</em></a>
+          <a class="side-link side-all" href={`${base}${px}/notes/`}><span class="side-label">전체</span> <em>{bank.length}</em></a>
         </div>
         {/* 과목 밑의 세부 주제 — 넓은 화면은 그 자리에서 펼치고, 드로어에선 2단으로 밀려 들어온다 */}
         {SUBJECTS.map((s, i) => {
           const cur = s === subject;
-          const href = `${base}/notes/s/${SUBJECT_SLUGS[s]}/`;
+          const href = `${base}${px}/notes/s/${SUBJECT_SLUGS[s]}/`;
           return (
             <Fragment>
               <div class={`side-row${cur ? " on" : ""}`} style={`--i: ${i + 1}; --j: ${SIDE_N - 2 - i}`}>
@@ -125,15 +151,15 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         <section class="panel">
           <h1><span class="subj-no">{no}과목</span> {subject}</h1>
           <p class="lead">
-            <a class="lead-link" href={`${base}/notes/`}>개념 노트</a> 안의 {no}과목 —
+            <a class="lead-link" href={`${base}${px}/notes/`}>개념 노트</a> 안의 {no}과목 —
             해설 {qs.length}문항을 {topics.length}개 주제로 모았습니다.
             {ps.length > 0 && <> 같은 주제에 실기 확인 문제 {ps.length}개가 함께 붙어 있습니다.</>}
-            영역으로는 {areasOfSubject(subject).join(" · ")}에 걸쳐 있습니다.
+            영역으로는 {areasOfSubject(subject, exam).join(" · ")}에 걸쳐 있습니다.
           </p>
           {/* 좁은 화면 전용 — 과목 이동 칩 */}
           <nav class="toc" aria-label="과목 이동">
             {SUBJECTS.map((s, i) => (
-              <a class={`toc-chip${s === subject ? " on" : ""}`} href={`${base}/notes/s/${SUBJECT_SLUGS[s]}/`}>
+              <a class={`toc-chip${s === subject ? " on" : ""}`} href={`${base}${px}/notes/s/${SUBJECT_SLUGS[s]}/`}>
                 {i + 1}과목 <em>{countBySubject[s]}</em>
               </a>
             ))}
@@ -165,14 +191,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
           {/* 이전/다음 과목 이동 */}
           <nav class="area-nav">
             {prev ? (
-              <a href={`${base}/notes/s/${SUBJECT_SLUGS[prev]}/`}><small>이전 과목</small>← {no - 1}과목</a>
+              <a href={`${base}${px}/notes/s/${SUBJECT_SLUGS[prev]}/`}><small>이전 과목</small>← {no - 1}과목</a>
             ) : (
-              <a href={`${base}/notes/`}><small>목차</small>← 전체</a>
+              <a href={`${base}${px}/notes/`}><small>목차</small>← 전체</a>
             )}
             {next ? (
-              <a class="next" href={`${base}/notes/s/${SUBJECT_SLUGS[next]}/`}><small>다음 과목</small>{no + 1}과목 →</a>
+              <a class="next" href={`${base}${px}/notes/s/${SUBJECT_SLUGS[next]}/`}><small>다음 과목</small>{no + 1}과목 →</a>
             ) : (
-              <a class="next" href={`${base}/notes/`}><small>목차</small>전체 →</a>
+              <a class="next" href={`${base}${px}/notes/`}><small>목차</small>전체 →</a>
             )}
           </nav>
         </section>

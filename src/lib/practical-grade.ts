@@ -42,19 +42,26 @@ export const matchBlank = (input: string, accepted: string[], extra: string[] = 
 export type BlankResult = { input: string; ok: boolean };
 
 /**
- * 문항 채점 — 실기는 부분 점수가 거의 없다.
- * 다답형이라도 답란을 모두 맞혀야 정답으로 본다(blanks에는 칸별 정오를 남겨 복기용으로 쓴다).
+ * 문항 채점 — 답란별 정오와 함께 맞힌 비율(ratio)을 돌려준다.
+ *
+ * ok는 "답란을 모두 맞혔는가"다. 시험에 따라 부분 점수를 주기도 하므로 비율을 함께 낸다 —
+ * 부분 점수를 어디에 줄지는 채점기가 아니라 시험 형식(PRACTICAL_FORMAT.partialCredit)이 정한다.
  */
 export const gradeQuestion = (
   answers: string[][],
   inputs: string[],
   extras: string[][] = [],
-): { ok: boolean; blanks: BlankResult[] } => {
+): { ok: boolean; blanks: BlankResult[]; ratio: number } => {
   const blanks = answers.map((accepted, i) => ({
     input: inputs[i] ?? "",
     ok: matchBlank(inputs[i] ?? "", accepted, extras[i] ?? []),
   }));
-  return { ok: blanks.length > 0 && blanks.every((b) => b.ok), blanks };
+  const hit = blanks.filter((b) => b.ok).length;
+  return {
+    ok: blanks.length > 0 && hit === blanks.length,
+    blanks,
+    ratio: blanks.length > 0 ? hit / blanks.length : 0,
+  };
 };
 
 /**
@@ -66,8 +73,106 @@ export const countKeywords = (input: string, keywords: string[]): string[] => {
   return keywords.filter((k) => got.includes(normalize(k)));
 };
 
-/** 실기 점수 — 20문항 × 5점 = 100점, 60점 이상 합격 */
-export const PRACTICAL_TOTAL = 20;
-export const PRACTICAL_POINT = 5;
-export const PRACTICAL_PASS = 60;
-export const PRACTICAL_MINUTES = 150;
+/**
+ * 시험별 실기 형식 — 문항 수·시간·합격선·배점.
+ *
+ * 이 파일은 브라우저로도 번들되므로 astro:content를 끌어오는 content.config.ts에 의존하지 않는다.
+ * 반대로 content.config.ts가 여기를 읽어 EXAM_FORMAT을 조립한다(값의 단일 정의는 여기다).
+ *
+ * 정처기는 20문항 × 5점 균일이라 uniformPoint 하나면 끝난다.
+ * 정보보안기사는 유형마다 배점이 다르고(3·12·16점), 실무형은 2문항 중 1문항만 답한다 —
+ * 그래서 출제 문항 수(18)와 채점 문항 수(17)가 다르다. 근거는 이슈 #33.
+ */
+export type PracticalComposition = {
+  kind: string;
+  /** 제시되는 문항 수 */
+  asked: number;
+  /** 그중 실제로 채점되는 문항 수(생략하면 asked 전부) */
+  choose?: number;
+  /** 문항당 배점 */
+  points: number;
+};
+
+export type PracticalFormat = {
+  /** 출제 문항 수 */
+  total: number;
+  minutes: number;
+  /** 합격선(100점 만점 기준) */
+  pass: number;
+  /** 모든 문항의 배점이 같을 때만 쓴다 */
+  uniformPoint?: number;
+  composition?: PracticalComposition[];
+  /** 부분 점수를 주는 유형 — 답란을 맞힌 비율만큼 점수를 준다 */
+  partialCredit?: string[];
+};
+
+export const PRACTICAL_FORMAT: Record<string, PracticalFormat> = {
+  정처기: { total: 20, minutes: 150, pass: 60, uniformPoint: 5 },
+  정보보안기사: {
+    total: 18,
+    minutes: 180,
+    pass: 60,
+    composition: [
+      { kind: "단답형", asked: 12, points: 3 },
+      { kind: "서술형", asked: 4, points: 12 },
+      { kind: "실무형", asked: 2, choose: 1, points: 16 },
+    ],
+    partialCredit: ["단답형"],
+  },
+};
+
+/**
+ * 문자열 대조로 채점할 수 없어 사용자가 스스로 매기는 유형.
+ * 이 목록의 정의를 여기 두는 이유는 소비처 셋이 모두 이 파일에만 닿을 수 있어서다 —
+ * 스키마(content.config.ts)·화면의 클라이언트 스크립트·병합 스크립트.
+ * 자가 채점 유형을 늘릴 때 고칠 자리는 여기 하나다.
+ */
+export const SELF_GRADED = ["약술형", "서술형", "실무형"] as const;
+export const isSelfGraded = (kind: string): boolean => (SELF_GRADED as readonly string[]).includes(kind);
+
+/** 한 문항의 채점 결과 — 점수 계산에 필요한 것만 추린 모양 */
+export type ScoredQuestion = { kind: string; ok: boolean; ratio: number };
+
+/** 유형별 배점. 균일 배점 시험은 유형을 보지 않는다 */
+const pointsOf = (fmt: PracticalFormat, kind: string): number =>
+  fmt.uniformPoint ?? fmt.composition?.find((c) => c.kind === kind)?.points ?? 0;
+
+/** 만점 — 선택 문항이 있는 유형은 실제로 채점되는 수만 센다 */
+export const maxPoints = (fmt: PracticalFormat): number =>
+  fmt.uniformPoint !== undefined
+    ? fmt.uniformPoint * fmt.total
+    : (fmt.composition ?? []).reduce((sum, c) => sum + (c.choose ?? c.asked) * c.points, 0);
+
+/**
+ * 모의고사 점수 집계.
+ *
+ * 두 가지가 균일 배점 시험과 다르다.
+ *   1) 부분 점수 — partialCredit에 든 유형은 답란을 맞힌 비율만큼 받는다.
+ *   2) 선택 문항 — 실무형처럼 choose가 있는 유형은 제시된 것 중 잘한 것부터 choose개만 센다.
+ *      실제 시험에서 응시자가 유리한 쪽을 골라 답하는 것과 같은 결과가 된다.
+ */
+export const scoreSession = (
+  graded: ScoredQuestion[],
+  fmt: PracticalFormat,
+): { points: number; max: number; pass: boolean } => {
+  const earn = (g: ScoredQuestion) => {
+    const p = pointsOf(fmt, g.kind);
+    return fmt.partialCredit?.includes(g.kind) ? p * g.ratio : g.ok ? p : 0;
+  };
+
+  let points = 0;
+  const chooseKinds = new Map((fmt.composition ?? []).filter((c) => c.choose).map((c) => [c.kind, c.choose!]));
+  for (const g of graded) if (!chooseKinds.has(g.kind)) points += earn(g);
+  for (const [kind, take] of chooseKinds) {
+    const best = graded
+      .filter((g) => g.kind === kind)
+      .map(earn)
+      .sort((a, b) => b - a)
+      .slice(0, take);
+    points += best.reduce((a, b) => a + b, 0);
+  }
+
+  points = Math.round(points);
+  const max = maxPoints(fmt);
+  return { points, max, pass: points >= fmt.pass };
+};

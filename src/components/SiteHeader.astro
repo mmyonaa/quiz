@@ -1,18 +1,33 @@
 ---
 import AuthBox from "./AuthBox.astro";
+import { DEFAULT_EXAM, EXAMS, EXAM_FORMAT, examPath, type Exam } from "../content.config";
 
 // 사이트 공용 헤더 — 데스크톱은 인라인 메뉴, 모바일은 햄버거 → 오른쪽 드로어.
 // 스크롤해도 메뉴에 닿을 수 있게 상단 고정이며, 높이는 --top-h로 알려 준다
 // (sticky 주제 제목·앵커 오프셋이 이 값을 쓴다).
 // current: 현재 페이지 키("quiz" | "notes" | "my") — 활성 메뉴 표시에 쓴다.
 // toc: 좌측 목차(.side-toc.as-drawer)를 가진 페이지가 넘기는 라벨 — 좁은 화면용 여는 버튼이 붙는다.
-const { current = "", toc = "" } = Astro.props as { current?: string; toc?: string };
+// exam: 지금 보고 있는 시험. 메뉴와 시험 전환 링크가 이 값을 따라간다.
+const {
+  current = "",
+  toc = "",
+  exam = DEFAULT_EXAM,
+} = Astro.props as { current?: string; toc?: string; exam?: Exam };
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const px = examPath(exam);
+// 필기·실기·개념 노트 모두 시험별 라우트를 갖는다(#36에서 필기까지 옮겼다).
 const links = [
-  { key: "quiz", href: `${base}/`, label: "필기 문제" },
-  { key: "practical", href: `${base}/practical/`, label: "실기 필답" },
-  { key: "notes", href: `${base}/notes/`, label: "개념 노트" },
+  { key: "quiz", href: `${base}${px}/`, label: "필기 문제" },
+  { key: "practical", href: `${base}${px}/practical/`, label: "실기 필답" },
+  { key: "notes", href: `${base}${px}/notes/`, label: "개념 노트" },
 ];
+// 시험 전환 — 어느 시험의 개념 노트를 보는지 고른다
+const examTabs = EXAMS.map((e) => ({
+  exam: e,
+  label: EXAM_FORMAT[e].label,
+  href: `${base}${examPath(e)}/notes/`,
+  on: e === exam,
+}));
 ---
 
 {/* 저장된 테마를 첫 페인트 전에 적용 — 다크 사용자의 흰 화면 번쩍임 방지 */}
@@ -47,6 +62,12 @@ const links = [
       {links.map((l) => (
         <a class="nav-link" href={l.href} aria-current={current === l.key ? "page" : undefined}>{l.label}</a>
       ))}
+      <span class="nav-sep" aria-hidden="true"></span>
+      <span class="exam-switch" role="group" aria-label="시험 선택">
+        {examTabs.map((t) => (
+          <a class={`exam-tab${t.on ? " on" : ""}`} href={t.href} aria-current={t.on ? "true" : undefined}>{t.label}</a>
+        ))}
+      </span>
       <span class="nav-sep" aria-hidden="true"></span>
       <AuthBox />
       <a class="nav-link" href="https://mmyonaa.github.io/blog/" target="_blank" rel="noopener">daily.mcp →</a>

@@ -11,7 +11,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 // 채점기의 normalize를 그대로 쓴다. 점검용으로 베껴 쓰면 두 규칙이 반드시 어긋난다.
-import { normalize } from "../src/lib/practical-grade.ts";
+import { normalize, isSelfGraded, PRACTICAL_FORMAT } from "../src/lib/practical-grade.ts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const BANK = join(root, "src/data/practical.json");
@@ -19,12 +19,16 @@ const TOPIC_NOTES = join(root, "src/data/topic-notes.json");
 const WRITTEN = join(root, "src/data/questions.json");
 
 const DIFFS = new Set(["하", "중", "상"]);
-const KINDS = new Set(["단답형", "계산형", "코드형", "SQL형", "약술형"]);
+const KINDS = new Set(["단답형", "계산형", "코드형", "SQL형", "약술형", "서술형", "실무형"]);
 const ORDER = ["id", "topic", "difficulty", "kind", "question", "code", "answers", "labels", "modelAnswer", "keywords", "explanation"];
 const FIELDS = new Set(ORDER);
 const REQUIRED = ["id", "topic", "difficulty", "kind", "question", "answers", "explanation"];
 
 const read = (p) => JSON.parse(readFileSync(p, "utf8"));
+/** content.config.ts의 DEFAULT_EXAM과 같은 값 — topic-notes.json에서 exam을 생략하면 이 시험이다 */
+const DEFAULT_EXAM = "정처기";
+const loadTopics = () =>
+  Object.fromEntries(Object.entries(read(TOPIC_NOTES)).map(([k, t]) => [k, { exam: DEFAULT_EXAM, ...t }]));
 /** 발문만으로는 코드형이 서로 같아 보인다("다음 코드의 출력은?") — 제시문까지 묶어 비교한다 */
 const stem = (q) => `${q.question?.trim()} ${q.code?.trim() ?? ""}`;
 
@@ -38,20 +42,30 @@ const check = (q, seenIds, seenStems, topics) => {
 
   if (!/^p-[a-z0-9-]+$/.test(q.id)) e.push("id는 p-로 시작하는 kebab-case");
   if (seenIds.has(q.id)) e.push("id 중복");
-  if (!topics[q.topic]) e.push(`topic이 topic-notes.json에 없음: ${q.topic}`);
+  const t = topics[q.topic];
+  if (!t) e.push(`topic이 topic-notes.json에 없음: ${q.topic}`);
   if (!DIFFS.has(q.difficulty)) e.push(`difficulty 불명 ${q.difficulty}`);
   if (!KINDS.has(q.kind)) e.push(`kind 불명 ${q.kind}`);
   if (q.question.length < 10) e.push("question 10자 미만");
   if (q.explanation.length < 20) e.push("explanation 20자 미만");
   if (seenStems.has(stem(q))) e.push("기존 문항과 발문·제시문이 동일");
 
-  if (q.kind === "약술형") {
-    if (q.answers.length) e.push("약술형은 answers를 비운다(자가 채점)");
-    if (!q.modelAnswer) e.push("약술형은 modelAnswer가 필요");
-    if (!q.keywords?.length) e.push("약술형은 keywords가 필요");
+  if (isSelfGraded(q.kind)) {
+    if (q.answers.length) e.push(`${q.kind}은 answers를 비운다(자가 채점)`);
+    if (!q.modelAnswer) e.push(`${q.kind}은 modelAnswer가 필요`);
+    if (!q.keywords?.length) e.push(`${q.kind}은 keywords가 필요`);
   } else {
     if (!q.answers.length) e.push("답란이 하나도 없음");
-    if (q.modelAnswer || q.keywords) e.push("modelAnswer·keywords는 약술형 전용");
+    if (q.modelAnswer || q.keywords) e.push("modelAnswer·keywords는 자가 채점 유형 전용");
+  }
+
+  // 시험 형식에 없는 유형은 배점이 0이라 모의고사에서 점수가 사라진다 — 조용히 새는 자리라 여기서 막는다
+  if (t) {
+    const fmt = PRACTICAL_FORMAT[t.exam];
+    if (fmt?.composition && !fmt.composition.some((c) => c.kind === q.kind)) {
+      const ok = fmt.composition.map((c) => c.kind).join("·");
+      e.push(`${t.exam} 실기에 없는 유형 ${q.kind} (배점 0점이 된다 — 쓸 수 있는 유형: ${ok})`);
+    }
   }
   if ((q.kind === "코드형" || q.kind === "SQL형") && !q.code) e.push(`${q.kind}은 제시문(code)이 필요`);
   if (q.labels && q.labels.length !== q.answers.length) e.push(`labels ${q.labels.length}개 vs 답란 ${q.answers.length}개`);
@@ -72,7 +86,7 @@ const check = (q, seenIds, seenStems, topics) => {
 
 const merge = (paths, dry) => {
   const bank = read(BANK);
-  const topics = read(TOPIC_NOTES);
+  const topics = loadTopics();
   const seenIds = new Set(bank.map((q) => q.id));
   const seenStems = new Set(bank.map(stem));
 
@@ -115,7 +129,7 @@ const merge = (paths, dry) => {
 /** 현황 리포트 — "다음에 어느 주제를 낼까"를 고르기 위한 것 */
 const report = () => {
   const bank = read(BANK);
-  const topics = read(TOPIC_NOTES);
+  const topics = loadTopics();
   const written = read(WRITTEN);
   const per = (arr) => arr.reduce((m, q) => ({ ...m, [q.topic]: (m[q.topic] ?? 0) + 1 }), {});
   const mine = per(bank);
@@ -123,15 +137,35 @@ const report = () => {
   const keys = Object.keys(topics);
   const covered = keys.filter((k) => mine[k]);
 
-  const tally = (key) =>
-    Object.entries(bank.reduce((m, q) => ({ ...m, [q[key]]: (m[q[key]] ?? 0) + 1 }), {}))
+  const tally = (pool, key) =>
+    Object.entries(pool.reduce((m, q) => ({ ...m, [q[key]]: (m[q[key]] ?? 0) + 1 }), {}))
       .map(([k, v]) => `${k} ${v}`)
       .join(" · ");
-  console.log(
-    `실기 ${bank.length}문항 · 주제 ${covered.length}/${keys.length} 보유 · 모의고사 ${Math.floor(bank.length / 20)}세트분(20문항/세트)`,
-  );
-  console.log(`  유형: ${tally("kind")}`);
-  console.log(`  난이도: ${tally("difficulty")}`);
+
+  // 시험마다 형식이 다르므로(문항 수·유형 구성) 현황도 시험별로 나눠 본다
+  for (const exam of [...new Set(Object.values(topics).map((t) => t.exam))]) {
+    const mine = bank.filter((q) => topics[q.topic]?.exam === exam);
+    const ks = keys.filter((k) => topics[k].exam === exam);
+    const fmt = PRACTICAL_FORMAT[exam];
+    const sets = fmt ? Math.floor(mine.length / fmt.total) : 0;
+    console.log(
+      `[${exam}] 실기 ${mine.length}문항 · 주제 ${ks.filter((k) => bank.some((q) => q.topic === k)).length}/${ks.length} 보유 · 모의고사 ${sets}세트분(${fmt?.total ?? "?"}문항/세트)`,
+    );
+    if (mine.length) {
+      console.log(`  유형: ${tally(mine, "kind")}`);
+      console.log(`  난이도: ${tally(mine, "difficulty")}`);
+    }
+    // 유형별로 한 세트를 채울 만큼 있는지 — 모자라면 모의고사 편성이 깨진다
+    if (fmt?.composition) {
+      const short = fmt.composition
+        .map((c) => {
+          const have = mine.filter((q) => q.kind === c.kind).length;
+          return have < c.asked ? `${c.kind} ${have}/${c.asked}` : null;
+        })
+        .filter(Boolean);
+      if (short.length) console.log(`  한 세트에 모자란 유형: ${short.join(" · ")}`);
+    }
+  }
   console.log("");
 
   // 실기가 없는 주제 = 다음 출제 후보. 필기 문항이 많은 주제일수록 시험 비중이 크다.
@@ -142,7 +176,7 @@ const report = () => {
   for (const k of todo) {
     const t = topics[k];
     const flag = /[A-Za-z]/.test(t.intro) ? "  " : "! ";
-    console.log(`  ${flag} ${String(w[k] ?? 0).padStart(2)}문항  ${k.padEnd(28)} ${t.area} · ${t.title}`);
+    console.log(`  ${flag} ${String(w[k] ?? 0).padStart(2)}문항  ${k.padEnd(30)} [${t.exam}] ${t.area} · ${t.title}`);
   }
 };
 
