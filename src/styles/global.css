@@ -26,6 +26,19 @@
   font-size: 16px;
   color-scheme: light;
 }
+
+/* 시험별 액센트 — 두 시험을 색으로 갈라 "지금 어느 시험을 보고 있는지"를 헤더·버튼·표식이
+   한꺼번에 말하게 한다. 정처기는 기존 코랄 그대로가 기본값이고, 정보보안기사(data-exam="sec",
+   라우트가 <html>에 심는다)만 블루로 덮는다. 바꾸는 것은 액센트 4종뿐이다 —
+   면·글자·테두리는 두 시험이 같은 뉴트럴을 쓰고, 정답·합격의 초록(--ok)도 공유한다.
+   덮어쓰는 블록은 라이트/다크 각각의 원본 바로 뒤에 둔다(뒤에 몰아 두면 라이트 값이
+   같은 특정도의 다크 값을 이긴다). */
+:root[data-exam="sec"] {
+  --accent: #3b74e8;
+  --accent-strong: #2a5fd6;
+  --accent-contrast: #ffffff;
+  --accent-soft: #e7eefc;
+}
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #14151b;
@@ -44,6 +57,13 @@
     --ok-soft: #17302a;
     color-scheme: dark;
   }
+  :root[data-exam="sec"]:not([data-theme="light"]) {
+    /* 다크 블루는 밝기를 올려 어두운 면 위에서 6:1을 넘긴다 — 버튼 글자는 코랄과 같은 방식으로 뒤집는다 */
+    --accent: #7aa7f5;
+    --accent-strong: #7aa7f5;
+    --accent-contrast: #0d182b;
+    --accent-soft: #1a2438;
+  }
 }
 :root[data-theme="dark"] {
   --bg: #14151b;
@@ -59,6 +79,13 @@
   --ok: #45c39a;
   --ok-soft: #17302a;
   color-scheme: dark;
+}
+:root[data-theme="dark"][data-exam="sec"] {
+  /* 다크 블루는 밝기를 올려 어두운 면 위에서 6:1을 넘긴다 — 버튼 글자는 코랄과 같은 방식으로 뒤집는다 */
+  --accent: #7aa7f5;
+  --accent-strong: #7aa7f5;
+  --accent-contrast: #0d182b;
+  --accent-soft: #1a2438;
 }
 
 * {
