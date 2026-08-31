@@ -355,6 +355,34 @@
     "2026-08-25-sorting-algorithms-comparison": {
       "sha": "8fc512ab746de5b7863a618f8bb393adfa4eb10c",
       "section": "jeongcheogi"
+    },
+    "2026-08-26-entra-id-cve-2026-69836": {
+      "sha": "a10195edd32c8208fabbf639ed2af2a05f2c7dae",
+      "section": "security"
+    },
+    "2026-08-27-claude-skills-api-ga": {
+      "sha": "12ebeb01b8b842c0e52e81283538a986a65f6d7d",
+      "section": "mcp"
+    },
+    "2026-08-28-mcp-tool-structured-output": {
+      "sha": "371c926efdb1e6d73a5094dbd3879174c1fca162",
+      "section": "mcp"
+    },
+    "2026-08-29-binary-tree-traversal": {
+      "sha": "57d2ff779c74ae83e8e1aa4dff776581d1b86988",
+      "section": "jeongcheogi"
+    },
+    "2026-08-30-arp-spoofing": {
+      "sha": "ddfee64616f23843a532f7896c3be95351d7b5ca",
+      "section": "boangisa"
+    },
+    "2026-08-30-chaindrop-npm-supply-chain-worm": {
+      "sha": "825e3a9b9f94017865be00442a27247e3066581e",
+      "section": "security"
+    },
+    "2026-08-30-linux-permission-setuid": {
+      "sha": "267702e178d3fc9436db8a9a3000785835090fa6",
+      "section": "boangisa"
     }
   }
 }
