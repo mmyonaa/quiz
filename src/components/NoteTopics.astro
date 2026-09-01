@@ -36,6 +36,12 @@ const { topics, blogPostBase } = Astro.props as {
   blogPostBase: string;
 };
 
+/** 도입부의 강조 표기 — **…**만 굵게 편다. 나머지 문자는 그대로 이스케이프해
+    포인터 *p, 시프트 <<, 논리 && 같은 본문 기호가 마크업으로 새지 않게 한다. */
+const ESC: Record<string, string> = { "&": "&amp;", "<": "&lt;", ">": "&gt;" };
+const md = (s: string) =>
+  s.replace(/[&<>]/g, (c) => ESC[c]).replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+
 /** 답란 이름 — 다답형은 ①② 같은 라벨이 있고, 단일 답란은 그냥 "정답" */
 const blankLabel = (q: PQ, i: number) =>
   q.labels?.[i] ?? (q.answers.length > 1 ? `${i + 1}번 답란` : "정답");
@@ -60,9 +66,9 @@ const blankLabel = (q: PQ, i: number) =>
       <div class="topic-intro">
         {intro.split("\n\n").map((block) =>
           block.startsWith("- ") ? (
-            <ul>{block.split("\n").map((li) => <li>{li.slice(2)}</li>)}</ul>
+            <ul>{block.split("\n").map((li) => <li set:html={md(li.slice(2))} />)}</ul>
           ) : (
-            <p>{block}</p>
+            <p set:html={md(block)} />
           ),
         )}
       </div>
