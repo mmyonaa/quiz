@@ -487,6 +487,9 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         setup.hidden = true;
         result.hidden = true;
         exam.hidden = false;
+        // 시작 버튼은 설정 화면 아래쪽에 있다 — 그 스크롤 자리를 그대로 두면
+        // 문항이 헤더 밑에서 시작한다. 그만두기·채점과 같이 맨 위에서 연다.
+        window.scrollTo(0, 0);
         startTimer(); // 시작 버튼을 누른 순간부터 잰다
         renderQuestion();
       };
@@ -668,7 +671,20 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         void body.offsetWidth;
         body.classList.add("swap");
         $("#q-text").focus({ preventScroll: true });
+        keepQuestionInView();
       };
+
+      /**
+       * 문항 제목부터 보이게 — 스크롤을 내린 자리에서 '다음'을 누르면 고정 헤더와
+       * 진행바(.exam-top)가 제목을 덮은 채로 다음 문항이 시작된다(모바일에서 특히 심하다).
+       * 가려졌을 때만 끌어올린다 — 이미 보이면 화면이 튀지 않는 편이 낫다.
+       */
+      function keepQuestionInView() {
+        const body = $("#q-body");
+        if (body.getBoundingClientRect().top < $(".exam-top").getBoundingClientRect().bottom) {
+          body.scrollIntoView({ block: "start" });
+        }
+      }
 
       // 점수 바 — 표시 직후 폭을 채워 트랜지션이 걸리도록 두 프레임 뒤에 적용
       const setScoreBar = (pct: number, pass: boolean) => {
