@@ -59,69 +59,11 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
       <section id="setup" class="panel">
         <h1>{exam} 필기 연습</h1>
         <p class="lead">
-          시험 과목이나 영역을 고르면 문제를 섞어 출제합니다. 제출하면 바로 채점하고,
-          틀린 문제는 해설과 함께 개념 글로 이어집니다.
-          풀기 전에 개념부터 훑고 싶다면
-          <a class="lead-link" href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}${px}/notes/`}>개념 노트</a>를 펴 보세요.
+          문제를 섞어 출제하고 바로 채점합니다. 틀린 문제는 해설과 함께
+          <a class="lead-link" href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}${px}/notes/`}>개념 노트</a>로 이어집니다.
         </p>
-        <fieldset class="areas">
-          <legend>시험 과목</legend>
-          <label class="area-opt">
-            <input type="radio" name="scope" value="전체" checked />
-            <span>전체 <em>{bank.length}</em></span>
-          </label>
-          {SUBJECTS.map((s, i) => (
-            <label class="area-opt">
-              <input type="radio" name="scope" value={`과목:${s}`} />
-              <span>{i + 1}과목 {s} <em>{countBySubject[s]}</em></span>
-            </label>
-          ))}
-        </fieldset>
-        <fieldset class="areas">
-          <legend>영역</legend>
-          {AREAS.map((a) => (
-            <label class="area-opt">
-              <input type="radio" name="scope" value={`영역:${a}`} />
-              <span>{a} <em>{countByArea[a]}</em></span>
-            </label>
-          ))}
-        </fieldset>
-        <fieldset class="diffs">
-          <legend>난이도</legend>
-          <label class="area-opt">
-            <input type="radio" name="diff" value="전체" checked />
-            <span>전체</span>
-          </label>
-          {DIFFICULTIES.map((d) => (
-            <label class="area-opt">
-              <input type="radio" name="diff" value={d} />
-              <span>{d} <em>{countByDiff[d]}</em></span>
-            </label>
-          ))}
-        </fieldset>
-        <fieldset class="counts">
-          <legend>문제 수</legend>
-          {[5, 10, 15].map((n, i) => (
-            <label class="area-opt">
-              <input type="radio" name="count" value={n} checked={i === 1} />
-              <span>{n}문제</span>
-            </label>
-          ))}
-        </fieldset>
-        <fieldset class="counts">
-          <legend>채점 방식</legend>
-          <label class="area-opt">
-            <input type="radio" name="grade" value="after" checked />
-            <span>제출 후 한꺼번에</span>
-          </label>
-          <label class="area-opt">
-            <input type="radio" name="grade" value="instant" />
-            <span>고르면 바로 확인</span>
-          </label>
-        </fieldset>
-        <button id="start" class="primary">시작하기</button>
 
-        {/* 중단된 풀이 — localStorage 자동 저장분이 있으면 이어서 풀 수 있게 안내 */}
+        {/* 중단된 풀이 — 있으면 무엇보다 먼저 잡아야 할 일이라 카드 위에 둔다 */}
         <div id="resume-box" class="note-box resume" hidden>
           <span id="resume-info"></span>
           <span class="note-actions">
@@ -130,26 +72,91 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
           </span>
         </div>
 
-        {/* 오답노트 — localStorage 누적, 기기 로컬 전용 */}
-        <div id="note-box" class="note-box" hidden>
-          <span id="note-info"></span>
-          <span class="note-actions">
-            <button id="start-note" class="ghost">오답만 다시 풀기</button>
-            <button id="note-clear" class="linklike">비우기</button>
-          </span>
-        </div>
+        {/* 무엇을 할지부터 고른다 — 조건은 고른 뒤에 (#44) */}
+        <div class="mode-cards">
+          <section class="mode-card">
+            <h2>빠른 연습</h2>
+            <p class="mode-desc" id="quick-summary"></p>
+            <button id="start" class="primary">시작하기</button>
+            <details class="opts">
+              <summary>조건 바꾸기</summary>
+            <fieldset class="areas">
+              <legend>시험 과목</legend>
+              <label class="area-opt">
+                <input type="radio" name="scope" value="전체" checked />
+                <span>전체 <em>{bank.length}</em></span>
+              </label>
+              {SUBJECTS.map((s, i) => (
+                <label class="area-opt">
+                  <input type="radio" name="scope" value={`과목:${s}`} />
+                  <span>{i + 1}과목 {s} <em>{countBySubject[s]}</em></span>
+                </label>
+              ))}
+            </fieldset>
+            <fieldset class="areas">
+              <legend>영역</legend>
+              {AREAS.map((a) => (
+                <label class="area-opt">
+                  <input type="radio" name="scope" value={`영역:${a}`} />
+                  <span>{a} <em>{countByArea[a]}</em></span>
+                </label>
+              ))}
+            </fieldset>
+            <fieldset class="diffs">
+              <legend>난이도</legend>
+              <label class="area-opt">
+                <input type="radio" name="diff" value="전체" checked />
+                <span>전체</span>
+              </label>
+              {DIFFICULTIES.map((d) => (
+                <label class="area-opt">
+                  <input type="radio" name="diff" value={d} />
+                  <span>{d} <em>{countByDiff[d]}</em></span>
+                </label>
+              ))}
+            </fieldset>
+            <fieldset class="counts">
+              <legend>문제 수</legend>
+              {[5, 10, 15].map((n, i) => (
+                <label class="area-opt">
+                  <input type="radio" name="count" value={n} checked={i === 1} />
+                  <span>{n}문제</span>
+                </label>
+              ))}
+            </fieldset>
+            <fieldset class="counts">
+              <legend>채점 방식</legend>
+              <label class="area-opt">
+                <input type="radio" name="grade" value="after" checked />
+                <span>제출 후 한꺼번에</span>
+              </label>
+              <label class="area-opt">
+                <input type="radio" name="grade" value="instant" />
+                <span>고르면 바로 확인</span>
+              </label>
+            </fieldset>
+            </details>
+          </section>
 
-        {/* 모의고사 — 실제 필기 형식 모사 */}
-        <div class="mock-box">
-          <h2>모의고사</h2>
-          <p class="mock-desc">
-            실제 필기 형식 그대로 — {SUBJECTS.length}과목 × {format.written.perSubject}문항,
-            총 {mockTotal}문항을 {format.written.minutes}분 안에 풉니다.
-            과목별 {format.written.subjectPass}점 미만이면 과락, 과락 없이 평균 {format.written.averagePass}점 이상이면 합격입니다.
-            오른쪽 답안 표기란에 실제 OMR처럼 문항별 ①~④를 마킹하고, 번호를 눌러 곧장 이동합니다.
-            문항을 건너뛰고 나중에 돌아올 수 있습니다.
-          </p>
-          <button id="start-mock" class="primary">모의고사 시작</button>
+          <section class="mode-card">
+            <h2>모의고사</h2>
+            <p class="mode-desc">
+              {SUBJECTS.length}과목 × {format.written.perSubject}문항 · 총 {mockTotal}문항 · {format.written.minutes}분<br />
+              과목별 {format.written.subjectPass}점 미만 과락, 과락 없이 평균 {format.written.averagePass}점이면 합격.
+              실제 OMR처럼 답안 표기란에 마킹하며 문항을 건너뛸 수 있습니다.
+            </p>
+            <button id="start-mock" class="primary">모의고사 시작</button>
+          </section>
+
+          {/* 오답 복습 — 비어 있어도 카드는 남긴다. 여기가 무엇을 담는 자리인지 말해야 한다 */}
+          <section class="mode-card" id="note-box">
+            <h2>오답 복습</h2>
+            <p class="mode-desc" id="note-info"></p>
+            <span class="mode-actions">
+              <button id="start-note" class="primary">오답만 다시 풀기</button>
+              <button id="note-clear" class="linklike">비우기</button>
+            </span>
+          </section>
         </div>
       </section>
 
@@ -420,18 +427,34 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
         const note = readNote();
         const count = Object.keys(note).length;
         const due = dueIds(note).length;
-        const box = $("#note-box");
-        box.hidden = count === 0;
-        if (count > 0) {
-          // 쌓인 양이 아니라 "오늘 뭘 할지"를 먼저 말한다
-          $("#note-info").textContent = due
-            ? `오늘 복습할 오답 ${due}문제 — 오답노트에 모두 ${count}문제.`
-            : `오답노트에 ${count}문제 — 오늘 복습할 몫은 없습니다.`;
-          ($("#start-note") as HTMLButtonElement).textContent = due
-            ? `오늘 몫 ${due}문제 풀기`
-            : "그래도 다시 풀기";
-        }
+        // 쌓인 양이 아니라 "오늘 뭘 할지"를 먼저 말한다. 비어 있어도 카드는 남긴다 —
+        // 여기가 무엇을 담는 자리인지 알려 주는 것도 화면의 일이다.
+        $("#note-info").textContent =
+          count === 0
+            ? "아직 쌓인 오답이 없습니다. 틀린 문제가 여기 모입니다."
+            : due
+              ? `오늘 복습할 오답 ${due}문제 — 오답노트에 모두 ${count}문제.`
+              : `오답노트에 ${count}문제 — 오늘 복습할 몫은 없습니다.`;
+        const startNote = $("#start-note") as HTMLButtonElement;
+        startNote.disabled = count === 0;
+        startNote.textContent = due
+          ? `오늘 몫 ${due}문제 풀기`
+          : count
+            ? "그래도 다시 풀기"
+            : "오답만 다시 풀기";
+        ($("#note-clear") as HTMLButtonElement).hidden = count === 0;
         $("#retry-note").hidden = count === 0;
+      };
+
+      // 조건을 접어 두었으므로 무엇으로 시작할지는 카드가 대신 말해야 한다
+      const paintQuickSummary = () => {
+        const scope = (document.querySelector('input[name="scope"]:checked') as HTMLInputElement).value;
+        const diff = (document.querySelector('input[name="diff"]:checked') as HTMLInputElement).value;
+        const count = (document.querySelector('input[name="count"]:checked') as HTMLInputElement).value;
+        const [, name] = scope === "전체" ? ["", ""] : scope.split(":");
+        $("#quick-summary").textContent =
+          `${scope === "전체" ? "전체 범위" : name} · 난이도 ${diff} · ${count}문제 · ` +
+          `${gradeIsInstant() ? "고르면 바로 확인" : "제출 후 채점"}`;
       };
 
       // 채점 방식은 기기에 기억한다 — 매번 기본값으로 되돌아가면 고른 줄 알고 풀다 어긋난다
@@ -456,6 +479,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
       });
       const gradeIsInstant = () =>
         (document.querySelector('input[name="grade"]:checked') as HTMLInputElement).value === "instant";
+      setup.addEventListener("change", paintQuickSummary);
 
       // ── 진행 중 풀이 자동 저장 — 새로고침·탭 닫기로 답안이 날아가지 않도록 ──
       // 문항 본문은 은행에 이미 있으므로 id만 남긴다. 모의고사는 마감 시각까지 실제 시각 기준으로 이어간다.
@@ -1094,6 +1118,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
 
       refreshNoteUI();
       refreshResumeUI();
+      paintQuickSummary();
     </script>
   </body>
 </html>
