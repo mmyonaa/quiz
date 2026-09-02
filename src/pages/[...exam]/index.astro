@@ -242,6 +242,15 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
       import { supabase } from "../../lib/supabase";
       import { onAuth, authSession, requireLogin, errorText } from "../../lib/auth";
       import { toast } from "../../lib/toast";
+      import {
+        dueIds,
+        loadNote,
+        markRight,
+        markWrong,
+        noteKey,
+        saveNote,
+        type Note,
+      } from "../../lib/wrong-note";
 
       const bank: Q[] = JSON.parse(document.getElementById("bank")!.textContent!);
       const { blogPostBase, subjects: SUBJECT_LIST, areas: AREA_LIST, areaSlugs, notesBase, examSlug, written } = JSON.parse(document.getElementById("config")!.textContent!) as {
@@ -391,36 +400,37 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
           });
       };
 
-      // ── 오답노트 — localStorage 누적, 서버·계정 없음(기기 로컬 전용) ──
-      const NOTE_KEY = keyOf("daily.quiz.wrong-note.v1");
-      type Note = Record<string, { n: number; at: number }>; // id → 틀린 횟수, 마지막 오답 시각
+      // ── 오답노트 — 규칙(간격 반복)은 lib/wrong-note.ts가 갖는다.
+      // 개념 노트의 확인 문제도 같은 통·같은 규칙을 쓴다(#41 #43).
+      const NOTE_KEY = noteKey(examSlug);
       const bankById = new Map(bank.map((q) => [q.id, q]));
 
-      const loadNote = (): Note => {
-        try {
-          const raw = JSON.parse(localStorage.getItem(NOTE_KEY) ?? "{}") as Note;
-          // 은행에서 빠진(개정·삭제된) 문제는 정리
-          return Object.fromEntries(Object.entries(raw).filter(([id]) => bankById.has(id)));
-        } catch {
-          return {};
-        }
-      };
-      const saveNote = (note: Note) => {
-        try {
-          localStorage.setItem(NOTE_KEY, JSON.stringify(note));
-        } catch {
-          /* 시크릿 모드 등 저장 불가 환경은 조용히 무시 */
-        }
-      };
+      // 은행에서 빠진(개정·삭제된) 문제는 읽는 김에 정리한다
+      const readNote = (): Note =>
+        Object.fromEntries(Object.entries(loadNote(NOTE_KEY)).filter(([id]) => bankById.has(id)));
 
-      const noteQuestions = (): Q[] =>
-        Object.keys(loadNote()).map((id) => bankById.get(id)!);
+      /** 오답만 다시 풀기 — 오늘 몫부터. 오늘 몫이 없으면 노트 전체를 연다(빈손으로 돌려보내지 않는다) */
+      const noteQuestions = (): Q[] => {
+        const note = readNote();
+        const due = dueIds(note);
+        return (due.length ? due : Object.keys(note)).map((id) => bankById.get(id)!);
+      };
 
       const refreshNoteUI = () => {
-        const count = Object.keys(loadNote()).length;
+        const note = readNote();
+        const count = Object.keys(note).length;
+        const due = dueIds(note).length;
         const box = $("#note-box");
         box.hidden = count === 0;
-        if (count > 0) $("#note-info").textContent = `오답노트에 ${count}문제가 쌓여 있습니다.`;
+        if (count > 0) {
+          // 쌓인 양이 아니라 "오늘 뭘 할지"를 먼저 말한다
+          $("#note-info").textContent = due
+            ? `오늘 복습할 오답 ${due}문제 — 오답노트에 모두 ${count}문제.`
+            : `오답노트에 ${count}문제 — 오늘 복습할 몫은 없습니다.`;
+          ($("#start-note") as HTMLButtonElement).textContent = due
+            ? `오늘 몫 ${due}문제 풀기`
+            : "그래도 다시 풀기";
+        }
         $("#retry-note").hidden = count === 0;
       };
 
@@ -791,24 +801,27 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
 
         recordWrongAnswers(); // 로그인 시 DB 오답 기록 (#6)
 
-        // 오답노트 갱신 — 답하고 틀리면 누적, 맞히면(어느 모드든) 제거. 무응답은 노트에 넣지 않는다.
-        const note = loadNote();
-        let added = 0, cleared = 0;
+        // 오답노트 갱신 — 틀리면 담고 간격을 되돌리며, 맞히면 다음 복습으로 미룬다.
+        // 마지막 단계를 통과하면 그때 졸업한다. 무응답은 노트를 건드리지 않는다.
+        const note = readNote();
+        let added = 0, spaced = 0, cleared = 0;
         session.forEach((q, i) => {
           if (picked[i] === undefined) return;
           if (picked[i] !== q.answer) {
             if (!note[q.id]) added++;
-            note[q.id] = { n: (note[q.id]?.n ?? 0) + 1, at: Date.now() };
-          } else if (note[q.id]) {
-            delete note[q.id];
-            cleared++;
+            markWrong(note, q.id);
+          } else {
+            const r = markRight(note, q.id);
+            if (r === "spaced") spaced++;
+            else if (r === "cleared") cleared++;
           }
         });
-        saveNote(note);
+        saveNote(NOTE_KEY, note);
         const remain = Object.keys(note).length;
         const parts: string[] = [];
         if (added) parts.push(`오답 ${added}문제를 오답노트에 담았습니다`);
-        if (cleared) parts.push(`${cleared}문제를 오답노트에서 지웠습니다`);
+        if (spaced) parts.push(`${spaced}문제는 다음 복습으로 미뤘습니다`);
+        if (cleared) parts.push(`${cleared}문제를 오답노트에서 졸업시켰습니다`);
         $("#note-status").textContent =
           remain === 0
             ? cleared
@@ -1022,7 +1035,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
       });
 
       $("#note-clear").addEventListener("click", () => {
-        saveNote({});
+        saveNote(NOTE_KEY, {});
         refreshNoteUI();
       });
 

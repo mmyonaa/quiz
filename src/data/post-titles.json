@@ -95,5 +95,6 @@
   "2026-08-30-arp-spoofing": "ARP 스푸핑 — 스위치 환경에서 어떻게 스니핑하나",
   "2026-08-30-chaindrop-npm-supply-chain-worm": "ChainDrop — npm 패키지 하나 설치했다가 CI/CD 자격증명이 통째로 털린 이유",
   "2026-08-30-linux-permission-setuid": "리눅스 파일 권한과 SetUID·SetGID·스티키 비트",
-  "2026-08-31-model-hardware-standard": "에이전트가 로봇팔을 쥔다 — Anthropic Model Hardware Standard 뜯어보기"
+  "2026-08-31-model-hardware-standard": "에이전트가 로봇팔을 쥔다 — Anthropic Model Hardware Standard 뜯어보기",
+  "2026-09-01-sql-injection": "SQL 인젝션 — 원리와 근본 방어"
 }

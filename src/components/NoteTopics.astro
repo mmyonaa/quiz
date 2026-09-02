@@ -140,6 +140,7 @@ const blankLabel = (q: PQ, i: number) =>
       import { supabase } from "../lib/supabase";
       import { onAuth, authSession, requireLogin, errorText } from "../lib/auth";
       import { toast } from "../lib/toast";
+      import { loadNote, markRight, markWrong, noteKey, saveNote } from "../lib/wrong-note";
 
       const $ = <T extends HTMLElement>(sel: string) => document.querySelector(sel) as T;
 
@@ -195,27 +196,24 @@ const blankLabel = (q: PQ, i: number) =>
         }),
       );
 
-      // ── 오답노트 연결 (#41) — 확인 문제에서 틀리면 담고, 맞히면 지운다 ──
-      // 필기 연습 결과와 같은 규칙·같은 통이다. 어디서 틀렸든 한 곳에 쌓여야
-      // '오답만 다시 풀기'가 사용자의 오답 전부를 뽑는다.
+      // ── 오답노트 연결 (#41) — 확인 문제에서 틀리면 담고, 맞히면 다음 복습으로 미룬다 ──
+      // 필기 연습 결과와 같은 통·같은 규칙이다(규칙은 lib/wrong-note.ts가 갖는다).
+      // 어디서 틀렸든 한 곳에 쌓여야 '오답만 다시 풀기'가 사용자의 오답 전부를 뽑는다.
       // 저장 키는 라우트가 <html>에 심는 시험 슬러그를 따른다(정처기는 접미어가 없다).
-      const examSlug = document.documentElement.dataset.exam ?? "";
-      const NOTE_KEY = examSlug
-        ? `daily.quiz.wrong-note.v1.${examSlug}`
-        : "daily.quiz.wrong-note.v1";
-      type Note = Record<string, { n: number; at: number }>; // id → 틀린 횟수, 마지막 오답 시각
+      const NOTE_KEY = noteKey(document.documentElement.dataset.exam ?? "");
 
       const noteWrong = (id: string, wrong: boolean) => {
-        try {
-          const note = JSON.parse(localStorage.getItem(NOTE_KEY) ?? "{}") as Note;
-          if (wrong) note[id] = { n: (note[id]?.n ?? 0) + 1, at: Date.now() };
-          else if (note[id]) delete note[id];
-          else return; // 맞혔는데 노트에 없던 문항 — 알릴 것이 없다
-          localStorage.setItem(NOTE_KEY, JSON.stringify(note));
-          toast(wrong ? "오답노트에 담았습니다" : "오답노트에서 지웠습니다");
-        } catch {
-          /* 시크릿 모드 등 저장 불가 환경 — 확인 문제 자체는 그대로 동작한다 */
+        const note = loadNote(NOTE_KEY);
+        if (wrong) {
+          markWrong(note, id);
+          saveNote(NOTE_KEY, note);
+          toast("오답노트에 담았습니다");
+          return;
         }
+        const r = markRight(note, id);
+        if (r === "none") return; // 맞혔는데 노트에 없던 문항 — 알릴 것이 없다
+        saveNote(NOTE_KEY, note);
+        toast(r === "cleared" ? "오답노트에서 졸업했습니다" : "다음 복습으로 미뤘습니다");
       };
 
       // ── 확인 문제 — 정답은 가린 채 시작, 선지 선택 또는 '정답만 보기'로 공개 ──
