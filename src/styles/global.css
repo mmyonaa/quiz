@@ -685,6 +685,19 @@ button.linklike:hover {
   font-weight: 600;
 }
 
+/* 실기 결과의 두 축 분해 — 영역과 유형이 각각 다른 것을 말하므로 이름표를 붙인다 (#42) */
+.bd-label {
+  margin: 0 0 0.4rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+#breakdown .subjects {
+  margin-bottom: 1rem;
+}
+#breakdown .bd-label + .subjects + .bd-label {
+  margin-top: 0.1rem;
+}
+
 /* 연습 결과의 약점 CTA — 진단 바로 아래에서 다음 행동으로 잇는다.
    점수 → 진단 → 행동 → 근거(해설) 순서를 만드는 층이다. */
 .weak-cta {

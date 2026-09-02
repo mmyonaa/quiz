@@ -1,5 +1,6 @@
 ---
 import {
+  AREA_SLUGS,
   DIFFICULTIES,
   EXAMS,
   EXAM_FORMAT,
@@ -8,7 +9,7 @@ import {
   examPath,
   type Exam,
 } from "../../content.config";
-import { loadPractical } from "../../lib/bank";
+import { areasOf, loadPractical } from "../../lib/bank";
 import SiteHeader from "../../components/SiteHeader.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
 import { PRACTICAL_FORMAT, maxPoints } from "../../lib/practical-grade";
@@ -37,6 +38,11 @@ const countByDiff = Object.fromEntries(
   DIFFICULTIES.map((d) => [d, bank.filter((q) => q.difficulty === d).length]),
 );
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+// 결과 화면의 분해·약점 CTA가 쓰는 축 — 영역은 개념 노트로 잇고(영문 슬러그), 유형은 이 은행에 있는 것만
+const AREAS = areasOf(exam);
+const NOTES_BASE = `${base}${px}/notes/`;
+const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
+const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
 ---
 
 <!doctype html>
@@ -185,6 +191,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         <div id="selfgrade-note" class="note-box" hidden>
           <span id="selfgrade-info"></span>
         </div>
+        <div id="breakdown" hidden></div>
+        <div id="weak-cta" class="weak-cta" hidden></div>
         <div id="review"></div>
         <div class="exam-nav">
           <button id="retry" class="primary">다시 풀기</button>
@@ -195,6 +203,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     <SiteFooter />
 
     <script is:inline type="application/json" id="bank" set:html={JSON.stringify(bank)} />
+    <script is:inline type="application/json" id="config" set:html={JSON.stringify({ areas: AREAS, kinds: KINDS_IN_BANK, areaSlugs: AREA_SLUG_MAP, notesBase: NOTES_BASE })} />
     <span id="exam-name" hidden data-slug={EXAM_SLUGS[exam] ?? ""}>{exam}</span>
 
     <script>
@@ -226,6 +235,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       };
 
       const bank: P[] = JSON.parse(document.getElementById("bank")!.textContent!);
+      const { areas: AREA_LIST, kinds: KIND_LIST, areaSlugs, notesBase } = JSON.parse(
+        document.getElementById("config")!.textContent!,
+      ) as {
+        areas: string[];
+        kinds: string[];
+        areaSlugs: Record<string, string>; // 영역 → 개념 노트 URL 슬러그
+        notesBase: string;
+      };
       // 시험 형식(문항 수·시간·합격선·배점)은 서버가 정해 심어 준다 — 시험마다 다르다
       const examEl = document.getElementById("exam-name")!;
       const examFmt = PRACTICAL_FORMAT[examEl.textContent!];
@@ -560,6 +577,63 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         note.hidden = pending === 0;
         $("#selfgrade-info").textContent =
           `자가 채점 ${pending}문항이 남았습니다 — 모범답안과 견줘 O / X를 눌러 주세요.`;
+
+        // ── 분해 — 영역과 유형 두 축 (#42) ──
+        // 필기(#38)와 같은 규칙이다. 연습은 5·10·20문항이라 축당 표본이 1~2문제고, 백분율로
+        // 적으면 0점·100점으로 튀어 진단이 아니라 소음이 된다. "맞은 수 / 나온 수"를 1급
+        // 정보로 두고 막대만 비율로 채운다. 두 축은 서로 다른 것을 말한다 — 영역은 개념이
+        // 약한 곳(그래서 개념 노트로 잇는다), 유형은 답을 쓰는 방식이 약한 곳이다.
+        // 이 함수는 자가 채점 O/X를 누를 때마다 다시 불리므로 분해도 함께 갱신된다.
+        type Row = { name: string; ok: number; total: number; wrong: number };
+        const tally = (of: (q: P) => string, order: string[]): Row[] =>
+          order
+            .map((name) => {
+              const mine = session.map((q, i) => ({ q, i })).filter(({ q }) => of(q) === name);
+              const ok = mine.filter(({ i }) => gradeOf(i).ok).length;
+              return { name, ok, total: mine.length, wrong: mine.length - ok };
+            })
+            .filter((r) => r.total > 0)
+            .sort((a, b) => b.wrong - a.wrong);
+        const rows = (list: Row[]) =>
+          list
+            .map(
+              (r) => `
+              <div class="subj${r.wrong ? " weak" : ""}" style="--w:${Math.round((r.ok / r.total) * 100)}%">
+                <span class="subj-area">${esc(r.name)}</span>
+                <span class="subj-count mono">${r.ok} / ${r.total}문항</span>
+                <span class="subj-score">${r.wrong ? `${r.wrong}개 틀림` : "전부 맞힘"}</span>
+              </div>`,
+            )
+            .join("");
+        const byArea = tally((q) => q.area, AREA_LIST);
+        const byKind = tally((q) => q.kind, KIND_LIST);
+        // 줄이 하나뿐인 축은 점수를 되풀이할 뿐이다 — 그 축만 접는다
+        const parts = [
+          byArea.length > 1 ? `<p class="bd-label">영역</p><div class="subjects">${rows(byArea)}</div>` : "",
+          byKind.length > 1 ? `<p class="bd-label">문항 유형</p><div class="subjects">${rows(byKind)}</div>` : "",
+        ].filter(Boolean);
+        const bd = $("#breakdown");
+        bd.innerHTML = parts.join("");
+        bd.hidden = parts.length === 0;
+
+        // 약점 CTA — 연습에서만. 모의고사 직후는 합격 판정을 읽는 자리다.
+        const cta = $("#weak-cta");
+        cta.innerHTML =
+          mode === "mock"
+            ? ""
+            : byArea
+                .filter((r) => r.wrong > 0)
+                .slice(0, 2)
+                .map(
+                  (r) => `
+              <div class="weak-row">
+                <span class="weak-name">${esc(r.name)}</span>
+                <button type="button" class="ghost" data-area="${esc(r.name)}">${total}문항 더 풀기</button>
+                <a class="weak-note" href="${notesBase}${areaSlugs[r.name] ?? ""}/">개념 노트 →</a>
+              </div>`,
+                )
+                .join("");
+        cta.hidden = cta.innerHTML.trim() === "";
       };
 
       const renderResult = (timedOut = false) => {
@@ -709,6 +783,17 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       $("#start-mock").addEventListener("click", () => {
         mode = "mock";
         startSession(shuffle(bank).slice(0, examFmt.total));
+      });
+
+      // 약점 CTA의 "더 풀기" — 그 영역만 다시 뽑아 방금과 같은 문항 수로 이어 푼다
+      $("#weak-cta").addEventListener("click", (e) => {
+        const btn = (e.target as HTMLElement).closest("button[data-area]") as HTMLButtonElement | null;
+        if (!btn) return;
+        const pool = bank.filter((q) => q.area === btn.dataset.area);
+        if (!pool.length) return;
+        const n = session.length;
+        mode = "practice";
+        startSession(shuffle(pool).slice(0, n));
       });
 
       $("#prev").addEventListener("click", () => {
