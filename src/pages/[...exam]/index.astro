@@ -1,5 +1,5 @@
 ---
-import { DIFFICULTIES, EXAMS, EXAM_FORMAT, EXAM_SLUGS, examPath, type Exam } from "../../content.config";
+import { AREA_SLUGS, DIFFICULTIES, EXAMS, EXAM_FORMAT, EXAM_SLUGS, examPath, type Exam } from "../../content.config";
 import { areasOf, loadBank, subjectsOf } from "../../lib/bank";
 import SiteHeader from "../../components/SiteHeader.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
@@ -33,6 +33,10 @@ const mockTotal = format.written.perSubject * SUBJECTS.length;
 
 // 오답 리뷰의 "관련 글" 링크 — daily.mcp 블로그의 글 상세 URL
 const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
+
+// 결과 화면의 약점 CTA가 영역별 개념 노트로 잇는다 — URL은 한글을 피해 영문 슬러그를 쓴다
+const NOTES_BASE = `${import.meta.env.BASE_URL.replace(/\/$/, "")}${px}/notes/`;
+const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
 ---
 
 <!doctype html>
@@ -190,6 +194,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         <p id="elapsed" class="elapsed"></p>
         <p id="verdict" class="lead"></p>
         <div id="subjects" class="subjects" hidden></div>
+        <div id="weak-cta" class="weak-cta" hidden></div>
         <div id="review-tools" class="review-tools" hidden>
           <button id="only-wrong" class="toc-chip" type="button" aria-pressed="false">틀린 문제만 보기</button>
         </div>
@@ -206,7 +211,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 
     {/* 문제 은행 주입 — 빌드 타임 데이터, 런타임 요청 없음 */}
     <script is:inline type="application/json" id="bank" set:html={JSON.stringify(bank)} />
-    <script is:inline type="application/json" id="config" set:html={JSON.stringify({ blogPostBase: BLOG_POST_BASE, areas: AREAS, subjects: SUBJECTS, examSlug: EXAM_SLUGS[exam] ?? "", written: format.written })} />
+    <script is:inline type="application/json" id="config" set:html={JSON.stringify({ blogPostBase: BLOG_POST_BASE, areas: AREAS, subjects: SUBJECTS, areaSlugs: AREA_SLUG_MAP, notesBase: NOTES_BASE, examSlug: EXAM_SLUGS[exam] ?? "", written: format.written })} />
 
     <script>
       type Q = {
@@ -227,9 +232,12 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       import { toast } from "../../lib/toast";
 
       const bank: Q[] = JSON.parse(document.getElementById("bank")!.textContent!);
-      const { blogPostBase, subjects: SUBJECT_LIST, examSlug, written } = JSON.parse(document.getElementById("config")!.textContent!) as {
+      const { blogPostBase, subjects: SUBJECT_LIST, areas: AREA_LIST, areaSlugs, notesBase, examSlug, written } = JSON.parse(document.getElementById("config")!.textContent!) as {
         blogPostBase: string;
         subjects: string[];
+        areas: string[];
+        areaSlugs: Record<string, string>; // 영역 → 개념 노트 URL 슬러그
+        notesBase: string;
         examSlug: string; // 정처기는 "" — 기존 저장 키를 그대로 쓴다
         written: { perSubject: number; minutes: number; subjectPass: number; averagePass: number };
       };
@@ -770,12 +778,57 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
             )
             .join("");
           subjects.hidden = false;
+          $("#weak-cta").hidden = true; // 모의고사는 과락 문구가 판정을 대신한다
         } else {
           $("#score").textContent = `${correct} / ${total} (${pct}점)`;
           setScoreBar(pct, pct >= 60);
           $("#verdict").textContent =
             pct >= 60 ? "합격권입니다. 틀린 문제만 다져두세요." : "아직 위험합니다. 오답 해설과 개념 글을 먼저 읽어보세요.";
-          subjects.hidden = true;
+
+          // 영역별 분해 — 연습은 과목이 아니라 영역으로 가른다. 개념 노트가 영역으로 갈려 있어
+          // "약한 영역 → 그 영역 개념 노트"가 한 줄로 이어지기 때문이다(모의고사는 합격 판정이
+          // 목적이라 과목·과락 축을 그대로 둔다).
+          // 연습은 5·10·15문항이라 영역당 표본이 1~2문제다. 백분율로 적으면 0점·100점으로 튀어
+          // 진단이 아니라 소음이 되므로, "맞은 수 / 나온 수"를 1급 정보로 두고 막대만 비율로 채운다.
+          const perArea = AREA_LIST.map((a) => {
+            const mine = session.map((q, i) => ({ q, i })).filter(({ q }) => q.area === a);
+            const ok = mine.filter(({ q, i }) => picked[i] === q.answer).length;
+            return { area: a, ok, total: mine.length, wrong: mine.length - ok };
+          }).filter((r) => r.total > 0);
+          const weak = perArea.filter((r) => r.wrong > 0).sort((a, b) => b.wrong - a.wrong);
+
+          // 영역을 골라 푼 세션은 쪼갤 것이 없다 — 한 줄짜리 분해는 점수를 되풀이할 뿐이다
+          if (perArea.length > 1) {
+            subjects.innerHTML = [...perArea]
+              .sort((a, b) => b.wrong - a.wrong)
+              .map(
+                (r) => `
+              <div class="subj${r.wrong ? " weak" : ""}" style="--w:${Math.round((r.ok / r.total) * 100)}%">
+                <span class="subj-area">${r.area}</span>
+                <span class="subj-count mono">${r.ok} / ${r.total}문항</span>
+                <span class="subj-score">${r.wrong ? `${r.wrong}개 틀림` : "전부 맞힘"}</span>
+              </div>`,
+              )
+              .join("");
+            subjects.hidden = false;
+          } else {
+            subjects.hidden = true;
+          }
+
+          // 약점 CTA — 가장 많이 틀린 영역 둘에 "더 풀기 / 개념 노트"를 붙여 다음 행동을 준다
+          const cta = $("#weak-cta");
+          cta.innerHTML = weak
+            .slice(0, 2)
+            .map(
+              (r) => `
+              <div class="weak-row">
+                <span class="weak-name">${r.area}</span>
+                <button type="button" class="ghost" data-area="${r.area}">${total}문제 더 풀기</button>
+                <a class="weak-note" href="${notesBase}${areaSlugs[r.area] ?? ""}/">개념 노트 →</a>
+              </div>`,
+            )
+            .join("");
+          cta.hidden = weak.length === 0;
         }
 
         const review = $("#review");
@@ -810,8 +863,12 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         // 연습 모드는 정답까지 모두 나열되므로 오답만 추리는 필터를 붙인다(모의고사는 이미 오답만)
         const wrongCount = session.filter((q, i) => picked[i] !== q.answer).length;
         const onlyWrong = $("#only-wrong") as HTMLButtonElement;
-        review.classList.remove("only-wrong");
-        onlyWrong.setAttribute("aria-pressed", "false");
+        // 해설은 "왜 틀렸나"의 근거지 결과 화면의 본문이 아니다 — 틀린 게 있으면 오답만 펼친
+        // 상태로 열고, 전체는 토글로 되돌린다.
+        const collapse = wrongCount > 0;
+        review.classList.toggle("only-wrong", collapse);
+        onlyWrong.setAttribute("aria-pressed", String(collapse));
+        onlyWrong.classList.toggle("on", collapse);
         onlyWrong.textContent = `틀린 문제만 보기 (${wrongCount})`;
         $("#review-tools").hidden = mode === "mock" || wrongCount === 0 || wrongCount === total;
 
@@ -854,6 +911,17 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       };
       $("#start-note").addEventListener("click", startNoteSession);
       $("#retry-note").addEventListener("click", startNoteSession);
+
+      // 약점 CTA의 "더 풀기" — 그 영역만 다시 뽑아 방금과 같은 문항 수로 이어 푼다
+      $("#weak-cta").addEventListener("click", (e) => {
+        const btn = (e.target as HTMLElement).closest("button[data-area]") as HTMLButtonElement | null;
+        if (!btn) return;
+        const pool = bank.filter((q) => q.area === btn.dataset.area);
+        if (pool.length === 0) return;
+        const n = session.length;
+        mode = "practice";
+        startSession(shuffle(pool).slice(0, n));
+      });
 
       $("#save-q").addEventListener("click", () => toggleSave(session[cur].id));
 

@@ -658,10 +658,13 @@ button.linklike:hover {
 .subj > * {
   position: relative;
 }
-.subj.fail {
+/* .fail은 모의고사의 과락, .weak는 연습에서 틀린 문항이 있는 영역 — 뜻은 다르고 표식은 같다 */
+.subj.fail,
+.subj.weak {
   border-color: color-mix(in srgb, var(--accent) 42%, var(--border));
 }
-.subj.fail::before {
+.subj.fail::before,
+.subj.weak::before {
   background: var(--accent-soft);
 }
 .subj-area {
@@ -676,9 +679,48 @@ button.linklike:hover {
   min-width: 5.5em;
   text-align: right;
 }
-.subj.fail .subj-score {
+.subj.fail .subj-score,
+.subj.weak .subj-score {
   color: var(--accent-strong);
   font-weight: 600;
+}
+
+/* 연습 결과의 약점 CTA — 진단 바로 아래에서 다음 행동으로 잇는다.
+   점수 → 진단 → 행동 → 근거(해설) 순서를 만드는 층이다. */
+.weak-cta {
+  display: grid;
+  gap: 0.5rem;
+  margin: -0.75rem 0 1.5rem;
+}
+.weak-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border));
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  font-size: 0.92rem;
+}
+.weak-name {
+  flex: 1;
+  font-weight: 600;
+}
+/* 좁은 화면 — 영역 이름 길이에 따라 링크만 흘러내려 줄 높이가 들쭉날쭉해진다.
+   이름에 한 줄을 통째로 주면 "이름 / 행동 두 개"로 늘 같은 모양이 된다. */
+@media (max-width: 560px) {
+  .weak-name {
+    flex-basis: 100%;
+  }
+}
+.weak-note {
+  color: var(--accent-strong);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.weak-note:hover {
+  text-decoration: underline;
 }
 
 /* ── 풀이 화면 ── */
