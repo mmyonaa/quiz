@@ -1101,6 +1101,76 @@ button.linklike:hover {
   background: var(--accent);
   color: var(--accent-contrast);
 }
+/* ── 바로 확인 모드 (#40) — 고른 순간 정오를 보기 위에 얹고, 아래에 해설을 편다 ── */
+.choice.correct {
+  border-color: var(--ok);
+  background: var(--ok-soft);
+  font-weight: 600;
+}
+.choice.correct .choice-num {
+  border-color: var(--ok);
+  background: var(--ok);
+  color: var(--surface);
+}
+.choice.miss {
+  border-color: var(--accent-strong);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+/* 고른 보기라 .choice.on의 채운 원을 그대로 물려받는다 — 글자색까지 덮으면
+   같은 계열 색이 겹쳐 번호가 사라진다(액센트 위에는 accent-contrast를 쓴다). */
+.choice.miss .choice-num {
+  border-color: var(--accent-strong);
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+/* 잠긴 보기 — 흐리게 죽이지 않는다. 답을 확인한 뒤에도 선지는 읽을 것이라서. */
+.choice:disabled {
+  cursor: default;
+}
+.choice:disabled:not(.correct):not(.miss):hover {
+  border-color: var(--border);
+}
+.choice:disabled:not(.correct):not(.miss):hover .choice-num {
+  border-color: var(--muted);
+  color: var(--muted);
+}
+.q-feedback {
+  margin: 0 0 1.25rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+.q-feedback.hit {
+  border-color: color-mix(in srgb, var(--ok) 40%, var(--border));
+  background: var(--ok-soft);
+}
+.q-feedback.miss {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  background: var(--accent-soft);
+}
+.fb-verdict {
+  margin: 0 0 0.45rem;
+  font-weight: 700;
+}
+.q-feedback.hit .fb-verdict {
+  color: var(--ok);
+}
+.q-feedback.miss .fb-verdict {
+  color: var(--accent-strong);
+}
+.q-feedback .rv-a,
+.q-feedback .rv-x {
+  margin: 0 0 0.4rem;
+}
+.q-feedback .rv-a b {
+  color: var(--ok);
+}
+.q-feedback .rv-x:last-child,
+.q-feedback .rv-link {
+  margin-bottom: 0;
+}
 .exam-nav {
   display: flex;
   justify-content: flex-end;
