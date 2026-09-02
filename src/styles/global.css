@@ -1788,6 +1788,38 @@ button.toc-chip {
   .chip-row .toc-chip {
     padding: 0.5em 1em; /* 터치 타깃 보강 */
   }
+
+  /* ── 풀이 화면의 주 액션을 엄지 자리로 (#39) ──
+     '이전/다음'이 카드 안 우하단에 인라인으로 있어, 긴 지문을 읽고 나면 손을 화면 위쪽으로
+     다시 올려야 했다. 화면 밑에 붙여 두면 스크롤 위치와 무관하게 늘 같은 자리에서 눌린다.
+     #exam 안으로 한정한다 — 결과 화면('다시 풀기')도 같은 .exam-nav를 쓰는데, 그쪽은
+     복기를 다 읽고 나서 누르는 마무리 버튼이라 밑에 붙일 이유가 없다. */
+  #exam .exam-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 16; /* top-bar(17)·드로어(19~20)·토스트(25) 아래, 본문 위 */
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.9rem calc(0.6rem + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+  }
+  /* 남는 폭을 둘이 나눠 갖는다 — 작은 버튼을 겨냥하지 않아도 되게 */
+  #exam .exam-nav .ghost,
+  #exam .exam-nav .primary {
+    flex: 1;
+  }
+  /* 페이지 맨 끝(푸터)이 바에 가리지 않게 자리를 비운다 — 패널이 아니라 문서 끝에 줘야 한다.
+     패널에 주면 짧은 문항에서 카드 안에 빈 공간만 생기고, 정작 밑에 깔린 푸터는 그대로 가린다. */
+  body:has(#exam:not([hidden])) {
+    padding-bottom: 4.75rem;
+  }
+  /* 최상단/최하단 이동 버튼이 바와 겹친다 — 풀이 중에만 바 높이만큼 올린다 */
+  body:has(#exam:not([hidden])) .scroll-nav {
+    bottom: calc(4.6rem + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 /* 개념 노트 목차 — 영역 카드 */
