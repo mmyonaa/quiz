@@ -1,5 +1,5 @@
 ---
-import { DIFFICULTIES, EXAMS, EXAM_FORMAT, EXAM_SLUGS, examPath, type Exam } from "../../content.config";
+import { AREA_SLUGS, DIFFICULTIES, EXAMS, EXAM_FORMAT, EXAM_SLUGS, examPath, type Exam } from "../../content.config";
 import { areasOf, loadBank, subjectsOf } from "../../lib/bank";
 import SiteHeader from "../../components/SiteHeader.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
@@ -33,6 +33,10 @@ const mockTotal = format.written.perSubject * SUBJECTS.length;
 
 // 오답 리뷰의 "관련 글" 링크 — daily.mcp 블로그의 글 상세 URL
 const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
+
+// 결과 화면의 약점 CTA가 영역별 개념 노트로 잇는다 — URL은 한글을 피해 영문 슬러그를 쓴다
+const NOTES_BASE = `${import.meta.env.BASE_URL.replace(/\/$/, "")}${px}/notes/`;
+const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
 ---
 
 <!doctype html>
@@ -55,58 +59,11 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       <section id="setup" class="panel">
         <h1>{exam} 필기 연습</h1>
         <p class="lead">
-          시험 과목이나 영역을 고르면 문제를 섞어 출제합니다. 제출하면 바로 채점하고,
-          틀린 문제는 해설과 함께 개념 글로 이어집니다.
-          풀기 전에 개념부터 훑고 싶다면
-          <a class="lead-link" href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}${px}/notes/`}>개념 노트</a>를 펴 보세요.
+          문제를 섞어 출제하고 바로 채점합니다. 틀린 문제는 해설과 함께
+          <a class="lead-link" href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}${px}/notes/`}>개념 노트</a>로 이어집니다.
         </p>
-        <fieldset class="areas">
-          <legend>시험 과목</legend>
-          <label class="area-opt">
-            <input type="radio" name="scope" value="전체" checked />
-            <span>전체 <em>{bank.length}</em></span>
-          </label>
-          {SUBJECTS.map((s, i) => (
-            <label class="area-opt">
-              <input type="radio" name="scope" value={`과목:${s}`} />
-              <span>{i + 1}과목 {s} <em>{countBySubject[s]}</em></span>
-            </label>
-          ))}
-        </fieldset>
-        <fieldset class="areas">
-          <legend>영역</legend>
-          {AREAS.map((a) => (
-            <label class="area-opt">
-              <input type="radio" name="scope" value={`영역:${a}`} />
-              <span>{a} <em>{countByArea[a]}</em></span>
-            </label>
-          ))}
-        </fieldset>
-        <fieldset class="diffs">
-          <legend>난이도</legend>
-          <label class="area-opt">
-            <input type="radio" name="diff" value="전체" checked />
-            <span>전체</span>
-          </label>
-          {DIFFICULTIES.map((d) => (
-            <label class="area-opt">
-              <input type="radio" name="diff" value={d} />
-              <span>{d} <em>{countByDiff[d]}</em></span>
-            </label>
-          ))}
-        </fieldset>
-        <fieldset class="counts">
-          <legend>문제 수</legend>
-          {[5, 10, 15].map((n, i) => (
-            <label class="area-opt">
-              <input type="radio" name="count" value={n} checked={i === 1} />
-              <span>{n}문제</span>
-            </label>
-          ))}
-        </fieldset>
-        <button id="start" class="primary">시작하기</button>
 
-        {/* 중단된 풀이 — localStorage 자동 저장분이 있으면 이어서 풀 수 있게 안내 */}
+        {/* 중단된 풀이 — 있으면 무엇보다 먼저 잡아야 할 일이라 카드 위에 둔다 */}
         <div id="resume-box" class="note-box resume" hidden>
           <span id="resume-info"></span>
           <span class="note-actions">
@@ -115,26 +72,91 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           </span>
         </div>
 
-        {/* 오답노트 — localStorage 누적, 기기 로컬 전용 */}
-        <div id="note-box" class="note-box" hidden>
-          <span id="note-info"></span>
-          <span class="note-actions">
-            <button id="start-note" class="ghost">오답만 다시 풀기</button>
-            <button id="note-clear" class="linklike">비우기</button>
-          </span>
-        </div>
+        {/* 무엇을 할지부터 고른다 — 조건은 고른 뒤에 (#44) */}
+        <div class="mode-cards">
+          <section class="mode-card">
+            <h2>빠른 연습</h2>
+            <p class="mode-desc" id="quick-summary"></p>
+            <button id="start" class="primary">시작하기</button>
+            <details class="opts">
+              <summary>조건 바꾸기</summary>
+            <fieldset class="areas">
+              <legend>시험 과목</legend>
+              <label class="area-opt">
+                <input type="radio" name="scope" value="전체" checked />
+                <span>전체 <em>{bank.length}</em></span>
+              </label>
+              {SUBJECTS.map((s, i) => (
+                <label class="area-opt">
+                  <input type="radio" name="scope" value={`과목:${s}`} />
+                  <span>{i + 1}과목 {s} <em>{countBySubject[s]}</em></span>
+                </label>
+              ))}
+            </fieldset>
+            <fieldset class="areas">
+              <legend>영역</legend>
+              {AREAS.map((a) => (
+                <label class="area-opt">
+                  <input type="radio" name="scope" value={`영역:${a}`} />
+                  <span>{a} <em>{countByArea[a]}</em></span>
+                </label>
+              ))}
+            </fieldset>
+            <fieldset class="diffs">
+              <legend>난이도</legend>
+              <label class="area-opt">
+                <input type="radio" name="diff" value="전체" checked />
+                <span>전체</span>
+              </label>
+              {DIFFICULTIES.map((d) => (
+                <label class="area-opt">
+                  <input type="radio" name="diff" value={d} />
+                  <span>{d} <em>{countByDiff[d]}</em></span>
+                </label>
+              ))}
+            </fieldset>
+            <fieldset class="counts">
+              <legend>문제 수</legend>
+              {[5, 10, 15].map((n, i) => (
+                <label class="area-opt">
+                  <input type="radio" name="count" value={n} checked={i === 1} />
+                  <span>{n}문제</span>
+                </label>
+              ))}
+            </fieldset>
+            <fieldset class="counts">
+              <legend>채점 방식</legend>
+              <label class="area-opt">
+                <input type="radio" name="grade" value="after" checked />
+                <span>제출 후 한꺼번에</span>
+              </label>
+              <label class="area-opt">
+                <input type="radio" name="grade" value="instant" />
+                <span>고르면 바로 확인</span>
+              </label>
+            </fieldset>
+            </details>
+          </section>
 
-        {/* 모의고사 — 실제 필기 형식 모사 */}
-        <div class="mock-box">
-          <h2>모의고사</h2>
-          <p class="mock-desc">
-            실제 필기 형식 그대로 — {SUBJECTS.length}과목 × {format.written.perSubject}문항,
-            총 {mockTotal}문항을 {format.written.minutes}분 안에 풉니다.
-            과목별 {format.written.subjectPass}점 미만이면 과락, 과락 없이 평균 {format.written.averagePass}점 이상이면 합격입니다.
-            오른쪽 답안 표기란에 실제 OMR처럼 문항별 ①~④를 마킹하고, 번호를 눌러 곧장 이동합니다.
-            문항을 건너뛰고 나중에 돌아올 수 있습니다.
-          </p>
-          <button id="start-mock" class="primary">모의고사 시작</button>
+          <section class="mode-card">
+            <h2>모의고사</h2>
+            <p class="mode-desc">
+              {SUBJECTS.length}과목 × {format.written.perSubject}문항 · 총 {mockTotal}문항 · {format.written.minutes}분<br />
+              과목별 {format.written.subjectPass}점 미만 과락, 과락 없이 평균 {format.written.averagePass}점이면 합격.
+              실제 OMR처럼 답안 표기란에 마킹하며 문항을 건너뛸 수 있습니다.
+            </p>
+            <button id="start-mock" class="primary">모의고사 시작</button>
+          </section>
+
+          {/* 오답 복습 — 비어 있어도 카드는 남긴다. 여기가 무엇을 담는 자리인지 말해야 한다 */}
+          <section class="mode-card" id="note-box">
+            <h2>오답 복습</h2>
+            <p class="mode-desc" id="note-info"></p>
+            <span class="mode-actions">
+              <button id="start-note" class="primary">오답만 다시 풀기</button>
+              <button id="note-clear" class="linklike">비우기</button>
+            </span>
+          </section>
         </div>
       </section>
 
@@ -158,6 +180,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
               <h2 id="q-text" tabindex="-1"></h2>
               <pre id="q-code" class="q-code mono" hidden></pre>
               <ol id="q-choices" class="choices"></ol>
+              <div id="q-feedback" class="q-feedback" hidden></div>
             </div>
             <div class="exam-nav">
               <button id="quit" class="linklike quit">그만두고 나가기</button>
@@ -190,6 +213,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         <p id="elapsed" class="elapsed"></p>
         <p id="verdict" class="lead"></p>
         <div id="subjects" class="subjects" hidden></div>
+        <div id="weak-cta" class="weak-cta" hidden></div>
         <div id="review-tools" class="review-tools" hidden>
           <button id="only-wrong" class="toc-chip" type="button" aria-pressed="false">틀린 문제만 보기</button>
         </div>
@@ -206,7 +230,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 
     {/* 문제 은행 주입 — 빌드 타임 데이터, 런타임 요청 없음 */}
     <script is:inline type="application/json" id="bank" set:html={JSON.stringify(bank)} />
-    <script is:inline type="application/json" id="config" set:html={JSON.stringify({ blogPostBase: BLOG_POST_BASE, areas: AREAS, subjects: SUBJECTS, examSlug: EXAM_SLUGS[exam] ?? "", written: format.written })} />
+    <script is:inline type="application/json" id="config" set:html={JSON.stringify({ blogPostBase: BLOG_POST_BASE, areas: AREAS, subjects: SUBJECTS, areaSlugs: AREA_SLUG_MAP, notesBase: NOTES_BASE, examSlug: EXAM_SLUGS[exam] ?? "", written: format.written })} />
 
     <script>
       type Q = {
@@ -225,11 +249,23 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       import { supabase } from "../../lib/supabase";
       import { onAuth, authSession, requireLogin, errorText } from "../../lib/auth";
       import { toast } from "../../lib/toast";
+      import {
+        dueIds,
+        loadNote,
+        markRight,
+        markWrong,
+        noteKey,
+        saveNote,
+        type Note,
+      } from "../../lib/wrong-note";
 
       const bank: Q[] = JSON.parse(document.getElementById("bank")!.textContent!);
-      const { blogPostBase, subjects: SUBJECT_LIST, examSlug, written } = JSON.parse(document.getElementById("config")!.textContent!) as {
+      const { blogPostBase, subjects: SUBJECT_LIST, areas: AREA_LIST, areaSlugs, notesBase, examSlug, written } = JSON.parse(document.getElementById("config")!.textContent!) as {
         blogPostBase: string;
         subjects: string[];
+        areas: string[];
+        areaSlugs: Record<string, string>; // 영역 → 개념 노트 URL 슬러그
+        notesBase: string;
         examSlug: string; // 정처기는 "" — 기존 저장 키를 그대로 쓴다
         written: { perSubject: number; minutes: number; subjectPass: number; averagePass: number };
       };
@@ -248,6 +284,9 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       let picked: number[] = []; // 문항별 사용자 선택
       let cur = 0;
       let mode: "practice" | "mock" = "practice";
+      // 채점 방식 — 연습에서만 갈린다. 고른 순간 정오와 해설을 펴거나(instant),
+      // 지금까지처럼 제출할 때 한꺼번에 채점한다. 모의고사는 실제 시험 재현이라 늘 후자다.
+      let instant = false;
 
       // ── 타이머 — 모의고사는 제한 시간 카운트다운, 연습은 경과 시간 카운트업 ──
       // 시험 형식(EXAM_FORMAT[exam].written)에서 온다 — 상수로 박아 두면 시험이 늘 때마다 물린다.
@@ -368,38 +407,79 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           });
       };
 
-      // ── 오답노트 — localStorage 누적, 서버·계정 없음(기기 로컬 전용) ──
-      const NOTE_KEY = keyOf("daily.quiz.wrong-note.v1");
-      type Note = Record<string, { n: number; at: number }>; // id → 틀린 횟수, 마지막 오답 시각
+      // ── 오답노트 — 규칙(간격 반복)은 lib/wrong-note.ts가 갖는다.
+      // 개념 노트의 확인 문제도 같은 통·같은 규칙을 쓴다(#41 #43).
+      const NOTE_KEY = noteKey(examSlug);
       const bankById = new Map(bank.map((q) => [q.id, q]));
 
-      const loadNote = (): Note => {
-        try {
-          const raw = JSON.parse(localStorage.getItem(NOTE_KEY) ?? "{}") as Note;
-          // 은행에서 빠진(개정·삭제된) 문제는 정리
-          return Object.fromEntries(Object.entries(raw).filter(([id]) => bankById.has(id)));
-        } catch {
-          return {};
-        }
-      };
-      const saveNote = (note: Note) => {
-        try {
-          localStorage.setItem(NOTE_KEY, JSON.stringify(note));
-        } catch {
-          /* 시크릿 모드 등 저장 불가 환경은 조용히 무시 */
-        }
-      };
+      // 은행에서 빠진(개정·삭제된) 문제는 읽는 김에 정리한다
+      const readNote = (): Note =>
+        Object.fromEntries(Object.entries(loadNote(NOTE_KEY)).filter(([id]) => bankById.has(id)));
 
-      const noteQuestions = (): Q[] =>
-        Object.keys(loadNote()).map((id) => bankById.get(id)!);
+      /** 오답만 다시 풀기 — 오늘 몫부터. 오늘 몫이 없으면 노트 전체를 연다(빈손으로 돌려보내지 않는다) */
+      const noteQuestions = (): Q[] => {
+        const note = readNote();
+        const due = dueIds(note);
+        return (due.length ? due : Object.keys(note)).map((id) => bankById.get(id)!);
+      };
 
       const refreshNoteUI = () => {
-        const count = Object.keys(loadNote()).length;
-        const box = $("#note-box");
-        box.hidden = count === 0;
-        if (count > 0) $("#note-info").textContent = `오답노트에 ${count}문제가 쌓여 있습니다.`;
+        const note = readNote();
+        const count = Object.keys(note).length;
+        const due = dueIds(note).length;
+        // 쌓인 양이 아니라 "오늘 뭘 할지"를 먼저 말한다. 비어 있어도 카드는 남긴다 —
+        // 여기가 무엇을 담는 자리인지 알려 주는 것도 화면의 일이다.
+        $("#note-info").textContent =
+          count === 0
+            ? "아직 쌓인 오답이 없습니다. 틀린 문제가 여기 모입니다."
+            : due
+              ? `오늘 복습할 오답 ${due}문제 — 오답노트에 모두 ${count}문제.`
+              : `오답노트에 ${count}문제 — 오늘 복습할 몫은 없습니다.`;
+        const startNote = $("#start-note") as HTMLButtonElement;
+        startNote.disabled = count === 0;
+        startNote.textContent = due
+          ? `오늘 몫 ${due}문제 풀기`
+          : count
+            ? "그래도 다시 풀기"
+            : "오답만 다시 풀기";
+        ($("#note-clear") as HTMLButtonElement).hidden = count === 0;
         $("#retry-note").hidden = count === 0;
       };
+
+      // 조건을 접어 두었으므로 무엇으로 시작할지는 카드가 대신 말해야 한다
+      const paintQuickSummary = () => {
+        const scope = (document.querySelector('input[name="scope"]:checked') as HTMLInputElement).value;
+        const diff = (document.querySelector('input[name="diff"]:checked') as HTMLInputElement).value;
+        const count = (document.querySelector('input[name="count"]:checked') as HTMLInputElement).value;
+        const [, name] = scope === "전체" ? ["", ""] : scope.split(":");
+        $("#quick-summary").textContent =
+          `${scope === "전체" ? "전체 범위" : name} · 난이도 ${diff} · ${count}문제 · ` +
+          `${gradeIsInstant() ? "고르면 바로 확인" : "제출 후 채점"}`;
+      };
+
+      // 채점 방식은 기기에 기억한다 — 매번 기본값으로 되돌아가면 고른 줄 알고 풀다 어긋난다
+      const GRADE_KEY = keyOf("daily.quiz.grade.v1");
+      const gradePref = (() => {
+        try {
+          return localStorage.getItem(GRADE_KEY) === "instant";
+        } catch {
+          return false; // 시크릿 모드 등 — 기본값(제출 후)으로 연다
+        }
+      })();
+      document.querySelectorAll<HTMLInputElement>('input[name="grade"]').forEach((el) => {
+        el.checked = (el.value === "instant") === gradePref;
+        el.addEventListener("change", () => {
+          if (!el.checked) return;
+          try {
+            localStorage.setItem(GRADE_KEY, el.value);
+          } catch {
+            /* 저장 불가 환경은 이번 세션에만 적용된다 */
+          }
+        });
+      });
+      const gradeIsInstant = () =>
+        (document.querySelector('input[name="grade"]:checked') as HTMLInputElement).value === "instant";
+      setup.addEventListener("change", paintQuickSummary);
 
       // ── 진행 중 풀이 자동 저장 — 새로고침·탭 닫기로 답안이 날아가지 않도록 ──
       // 문항 본문은 은행에 이미 있으므로 id만 남긴다. 모의고사는 마감 시각까지 실제 시각 기준으로 이어간다.
@@ -409,6 +489,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         picked: (number | null)[]; // 미표기는 null — JSON 배열에 undefined를 담을 수 없다
         cur: number;
         mode: "practice" | "mock";
+        instant?: boolean; // 없으면 제출 후 채점 — 이 기능 이전에 저장된 풀이가 그대로 이어진다
         startedAt: number;
         deadline: number;
       };
@@ -420,6 +501,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
             picked: Array.from({ length: session.length }, (_, i) => picked[i] ?? null),
             cur,
             mode,
+            instant,
             startedAt,
             deadline,
           };
@@ -470,6 +552,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         picked = s.picked.map((v) => (v === null ? undefined : v)) as number[];
         cur = Math.min(Math.max(0, s.cur), session.length - 1);
         mode = s.mode;
+        instant = s.instant ?? false;
         recorded = false;
         setup.hidden = true;
         result.hidden = true;
@@ -504,7 +587,34 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         return a;
       };
 
+      /**
+       * 바로 확인 모드 — 고른 순간 정오·정답·해설을 보기 아래에 편다.
+       * 보기는 잠근다. 답을 본 뒤 고쳐 고를 수 있으면 "맞혔다"가 사실이 아니게 된다.
+       */
+      const revealAnswer = () => {
+        const q = session[cur];
+        const my = picked[cur];
+        const hit = my === q.answer;
+        $("#q-choices")
+          .querySelectorAll<HTMLButtonElement>(".choice")
+          .forEach((b, j) => {
+            b.disabled = true;
+            b.classList.toggle("correct", j === q.answer);
+            b.classList.toggle("miss", j === my && !hit);
+          });
+        const fb = $("#q-feedback");
+        fb.className = `q-feedback ${hit ? "hit" : "miss"}`;
+        fb.innerHTML = `
+          <p class="fb-verdict">${hit ? "정답입니다" : "틀렸습니다"}</p>
+          ${hit ? "" : `<p class="rv-a">내 답: ${q.choices[my!]}<br/>정답: <b>${q.choices[q.answer]}</b></p>`}
+          <p class="rv-x">${q.explanation}</p>
+          ${q.relatedPost ? `<p class="rv-link"><a href="${blogPostBase}${q.relatedPost}/" target="_blank" rel="noopener">개념 글 다시 읽기 →</a></p>` : ""}
+        `;
+        fb.hidden = false;
+      };
+
       const selectChoice = (i: number) => {
+        if (instant && picked[cur] !== undefined) return; // 이미 확인한 문항은 잠겨 있다
         picked[cur] = i;
         $("#q-choices")
           .querySelectorAll(".choice")
@@ -513,6 +623,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
             b.setAttribute("aria-pressed", String(j === i));
           });
         ($("#next") as HTMLButtonElement).disabled = false;
+        if (instant) revealAnswer();
         syncOMR(); // 답안지 표기 갱신
         persist();
       };
@@ -656,6 +767,10 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           li.appendChild(btn);
           ol.appendChild(li);
         });
+        const fb = $("#q-feedback");
+        fb.hidden = true;
+        fb.innerHTML = "";
+        if (instant && picked[cur] !== undefined) revealAnswer(); // 되돌아온 문항은 편 채로
         ($("#prev") as HTMLButtonElement).disabled = cur === 0;
         const next = $("#next") as HTMLButtonElement;
         // 모의고사는 실제 시험처럼 건너뛰기 허용, 연습 모드는 답해야 진행
@@ -710,24 +825,27 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 
         recordWrongAnswers(); // 로그인 시 DB 오답 기록 (#6)
 
-        // 오답노트 갱신 — 답하고 틀리면 누적, 맞히면(어느 모드든) 제거. 무응답은 노트에 넣지 않는다.
-        const note = loadNote();
-        let added = 0, cleared = 0;
+        // 오답노트 갱신 — 틀리면 담고 간격을 되돌리며, 맞히면 다음 복습으로 미룬다.
+        // 마지막 단계를 통과하면 그때 졸업한다. 무응답은 노트를 건드리지 않는다.
+        const note = readNote();
+        let added = 0, spaced = 0, cleared = 0;
         session.forEach((q, i) => {
           if (picked[i] === undefined) return;
           if (picked[i] !== q.answer) {
             if (!note[q.id]) added++;
-            note[q.id] = { n: (note[q.id]?.n ?? 0) + 1, at: Date.now() };
-          } else if (note[q.id]) {
-            delete note[q.id];
-            cleared++;
+            markWrong(note, q.id);
+          } else {
+            const r = markRight(note, q.id);
+            if (r === "spaced") spaced++;
+            else if (r === "cleared") cleared++;
           }
         });
-        saveNote(note);
+        saveNote(NOTE_KEY, note);
         const remain = Object.keys(note).length;
         const parts: string[] = [];
         if (added) parts.push(`오답 ${added}문제를 오답노트에 담았습니다`);
-        if (cleared) parts.push(`${cleared}문제를 오답노트에서 지웠습니다`);
+        if (spaced) parts.push(`${spaced}문제는 다음 복습으로 미뤘습니다`);
+        if (cleared) parts.push(`${cleared}문제를 오답노트에서 졸업시켰습니다`);
         $("#note-status").textContent =
           remain === 0
             ? cleared
@@ -770,12 +888,57 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
             )
             .join("");
           subjects.hidden = false;
+          $("#weak-cta").hidden = true; // 모의고사는 과락 문구가 판정을 대신한다
         } else {
           $("#score").textContent = `${correct} / ${total} (${pct}점)`;
           setScoreBar(pct, pct >= 60);
           $("#verdict").textContent =
             pct >= 60 ? "합격권입니다. 틀린 문제만 다져두세요." : "아직 위험합니다. 오답 해설과 개념 글을 먼저 읽어보세요.";
-          subjects.hidden = true;
+
+          // 영역별 분해 — 연습은 과목이 아니라 영역으로 가른다. 개념 노트가 영역으로 갈려 있어
+          // "약한 영역 → 그 영역 개념 노트"가 한 줄로 이어지기 때문이다(모의고사는 합격 판정이
+          // 목적이라 과목·과락 축을 그대로 둔다).
+          // 연습은 5·10·15문항이라 영역당 표본이 1~2문제다. 백분율로 적으면 0점·100점으로 튀어
+          // 진단이 아니라 소음이 되므로, "맞은 수 / 나온 수"를 1급 정보로 두고 막대만 비율로 채운다.
+          const perArea = AREA_LIST.map((a) => {
+            const mine = session.map((q, i) => ({ q, i })).filter(({ q }) => q.area === a);
+            const ok = mine.filter(({ q, i }) => picked[i] === q.answer).length;
+            return { area: a, ok, total: mine.length, wrong: mine.length - ok };
+          }).filter((r) => r.total > 0);
+          const weak = perArea.filter((r) => r.wrong > 0).sort((a, b) => b.wrong - a.wrong);
+
+          // 영역을 골라 푼 세션은 쪼갤 것이 없다 — 한 줄짜리 분해는 점수를 되풀이할 뿐이다
+          if (perArea.length > 1) {
+            subjects.innerHTML = [...perArea]
+              .sort((a, b) => b.wrong - a.wrong)
+              .map(
+                (r) => `
+              <div class="subj${r.wrong ? " weak" : ""}" style="--w:${Math.round((r.ok / r.total) * 100)}%">
+                <span class="subj-area">${r.area}</span>
+                <span class="subj-count mono">${r.ok} / ${r.total}문항</span>
+                <span class="subj-score">${r.wrong ? `${r.wrong}개 틀림` : "전부 맞힘"}</span>
+              </div>`,
+              )
+              .join("");
+            subjects.hidden = false;
+          } else {
+            subjects.hidden = true;
+          }
+
+          // 약점 CTA — 가장 많이 틀린 영역 둘에 "더 풀기 / 개념 노트"를 붙여 다음 행동을 준다
+          const cta = $("#weak-cta");
+          cta.innerHTML = weak
+            .slice(0, 2)
+            .map(
+              (r) => `
+              <div class="weak-row">
+                <span class="weak-name">${r.area}</span>
+                <button type="button" class="ghost" data-area="${r.area}">${total}문제 더 풀기</button>
+                <a class="weak-note" href="${notesBase}${areaSlugs[r.area] ?? ""}/">개념 노트 →</a>
+              </div>`,
+            )
+            .join("");
+          cta.hidden = weak.length === 0;
         }
 
         const review = $("#review");
@@ -810,8 +973,12 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
         // 연습 모드는 정답까지 모두 나열되므로 오답만 추리는 필터를 붙인다(모의고사는 이미 오답만)
         const wrongCount = session.filter((q, i) => picked[i] !== q.answer).length;
         const onlyWrong = $("#only-wrong") as HTMLButtonElement;
-        review.classList.remove("only-wrong");
-        onlyWrong.setAttribute("aria-pressed", "false");
+        // 해설은 "왜 틀렸나"의 근거지 결과 화면의 본문이 아니다 — 틀린 게 있으면 오답만 펼친
+        // 상태로 열고, 전체는 토글로 되돌린다.
+        const collapse = wrongCount > 0;
+        review.classList.toggle("only-wrong", collapse);
+        onlyWrong.setAttribute("aria-pressed", String(collapse));
+        onlyWrong.classList.toggle("on", collapse);
         onlyWrong.textContent = `틀린 문제만 보기 (${wrongCount})`;
         $("#review-tools").hidden = mode === "mock" || wrongCount === 0 || wrongCount === total;
 
@@ -835,6 +1002,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           return;
         }
         mode = "practice";
+        instant = gradeIsInstant();
         startSession(shuffle(pool).slice(0, count));
       });
 
@@ -844,16 +1012,30 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
           shuffle(bank.filter((q) => q.subject === s)).slice(0, MOCK_PER_SUBJECT),
         );
         mode = "mock";
+        instant = false; // 실제 시험 재현 — 푸는 도중에는 정답을 보지 않는다
         startSession(paper, false);
       });
 
       // 오답만 다시 풀기 — 설정 화면·결과 화면 양쪽에서 진입
       const startNoteSession = () => {
         mode = "practice";
+        instant = gradeIsInstant();
         startSession(noteQuestions());
       };
       $("#start-note").addEventListener("click", startNoteSession);
       $("#retry-note").addEventListener("click", startNoteSession);
+
+      // 약점 CTA의 "더 풀기" — 그 영역만 다시 뽑아 방금과 같은 문항 수로 이어 푼다
+      $("#weak-cta").addEventListener("click", (e) => {
+        const btn = (e.target as HTMLElement).closest("button[data-area]") as HTMLButtonElement | null;
+        if (!btn) return;
+        const pool = bank.filter((q) => q.area === btn.dataset.area);
+        if (pool.length === 0) return;
+        const n = session.length;
+        mode = "practice";
+        instant = gradeIsInstant();
+        startSession(shuffle(pool).slice(0, n));
+      });
 
       $("#save-q").addEventListener("click", () => toggleSave(session[cur].id));
 
@@ -877,7 +1059,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
       });
 
       $("#note-clear").addEventListener("click", () => {
-        saveNote({});
+        saveNote(NOTE_KEY, {});
         refreshNoteUI();
       });
 
@@ -936,6 +1118,7 @@ const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 
       refreshNoteUI();
       refreshResumeUI();
+      paintQuickSummary();
     </script>
   </body>
 </html>

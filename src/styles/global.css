@@ -658,10 +658,13 @@ button.linklike:hover {
 .subj > * {
   position: relative;
 }
-.subj.fail {
+/* .fail은 모의고사의 과락, .weak는 연습에서 틀린 문항이 있는 영역 — 뜻은 다르고 표식은 같다 */
+.subj.fail,
+.subj.weak {
   border-color: color-mix(in srgb, var(--accent) 42%, var(--border));
 }
-.subj.fail::before {
+.subj.fail::before,
+.subj.weak::before {
   background: var(--accent-soft);
 }
 .subj-area {
@@ -676,9 +679,120 @@ button.linklike:hover {
   min-width: 5.5em;
   text-align: right;
 }
-.subj.fail .subj-score {
+.subj.fail .subj-score,
+.subj.weak .subj-score {
   color: var(--accent-strong);
   font-weight: 600;
+}
+
+/* ── 홈의 모드 카드 (#44) — 조건 폼이 아니라 "무엇을 할지"부터 고르게 한다 ── */
+.mode-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 0.8rem;
+  margin-top: 1.25rem;
+}
+.mode-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 1.1rem 1.15rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+.mode-card h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+.mode-desc {
+  margin: 0;
+  flex: 1; /* 설명 길이가 달라도 버튼 줄이 카드마다 같은 높이에 선다 */
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+.mode-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+/* 조건 — 카드 안에 접어 둔다. 기본값으로 바로 시작할 수 있으니 펼칠 이유가 있을 때만 편다 */
+.opts {
+  width: 100%;
+}
+.opts > summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 0.85rem;
+  list-style: none;
+}
+.opts > summary::-webkit-details-marker {
+  display: none;
+}
+.opts > summary::before {
+  content: "▸ ";
+}
+.opts[open] > summary::before {
+  content: "▾ ";
+}
+.opts > summary:hover {
+  color: var(--accent-strong);
+}
+.opts fieldset {
+  margin-top: 0.9rem;
+}
+
+/* 실기 결과의 두 축 분해 — 영역과 유형이 각각 다른 것을 말하므로 이름표를 붙인다 (#42) */
+.bd-label {
+  margin: 0 0 0.4rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+#breakdown .subjects {
+  margin-bottom: 1rem;
+}
+#breakdown .bd-label + .subjects + .bd-label {
+  margin-top: 0.1rem;
+}
+
+/* 연습 결과의 약점 CTA — 진단 바로 아래에서 다음 행동으로 잇는다.
+   점수 → 진단 → 행동 → 근거(해설) 순서를 만드는 층이다. */
+.weak-cta {
+  display: grid;
+  gap: 0.5rem;
+  margin: -0.75rem 0 1.5rem;
+}
+.weak-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border));
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  font-size: 0.92rem;
+}
+.weak-name {
+  flex: 1;
+  font-weight: 600;
+}
+/* 좁은 화면 — 영역 이름 길이에 따라 링크만 흘러내려 줄 높이가 들쭉날쭉해진다.
+   이름에 한 줄을 통째로 주면 "이름 / 행동 두 개"로 늘 같은 모양이 된다. */
+@media (max-width: 560px) {
+  .weak-name {
+    flex-basis: 100%;
+  }
+}
+.weak-note {
+  color: var(--accent-strong);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.weak-note:hover {
+  text-decoration: underline;
 }
 
 /* ── 풀이 화면 ── */
@@ -1058,6 +1172,76 @@ button.linklike:hover {
   border-color: var(--accent-strong);
   background: var(--accent);
   color: var(--accent-contrast);
+}
+/* ── 바로 확인 모드 (#40) — 고른 순간 정오를 보기 위에 얹고, 아래에 해설을 편다 ── */
+.choice.correct {
+  border-color: var(--ok);
+  background: var(--ok-soft);
+  font-weight: 600;
+}
+.choice.correct .choice-num {
+  border-color: var(--ok);
+  background: var(--ok);
+  color: var(--surface);
+}
+.choice.miss {
+  border-color: var(--accent-strong);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+/* 고른 보기라 .choice.on의 채운 원을 그대로 물려받는다 — 글자색까지 덮으면
+   같은 계열 색이 겹쳐 번호가 사라진다(액센트 위에는 accent-contrast를 쓴다). */
+.choice.miss .choice-num {
+  border-color: var(--accent-strong);
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+/* 잠긴 보기 — 흐리게 죽이지 않는다. 답을 확인한 뒤에도 선지는 읽을 것이라서. */
+.choice:disabled {
+  cursor: default;
+}
+.choice:disabled:not(.correct):not(.miss):hover {
+  border-color: var(--border);
+}
+.choice:disabled:not(.correct):not(.miss):hover .choice-num {
+  border-color: var(--muted);
+  color: var(--muted);
+}
+.q-feedback {
+  margin: 0 0 1.25rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+.q-feedback.hit {
+  border-color: color-mix(in srgb, var(--ok) 40%, var(--border));
+  background: var(--ok-soft);
+}
+.q-feedback.miss {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  background: var(--accent-soft);
+}
+.fb-verdict {
+  margin: 0 0 0.45rem;
+  font-weight: 700;
+}
+.q-feedback.hit .fb-verdict {
+  color: var(--ok);
+}
+.q-feedback.miss .fb-verdict {
+  color: var(--accent-strong);
+}
+.q-feedback .rv-a,
+.q-feedback .rv-x {
+  margin: 0 0 0.4rem;
+}
+.q-feedback .rv-a b {
+  color: var(--ok);
+}
+.q-feedback .rv-x:last-child,
+.q-feedback .rv-link {
+  margin-bottom: 0;
 }
 .exam-nav {
   display: flex;
@@ -1745,6 +1929,38 @@ button.toc-chip {
   .toc .toc-chip,
   .chip-row .toc-chip {
     padding: 0.5em 1em; /* 터치 타깃 보강 */
+  }
+
+  /* ── 풀이 화면의 주 액션을 엄지 자리로 (#39) ──
+     '이전/다음'이 카드 안 우하단에 인라인으로 있어, 긴 지문을 읽고 나면 손을 화면 위쪽으로
+     다시 올려야 했다. 화면 밑에 붙여 두면 스크롤 위치와 무관하게 늘 같은 자리에서 눌린다.
+     #exam 안으로 한정한다 — 결과 화면('다시 풀기')도 같은 .exam-nav를 쓰는데, 그쪽은
+     복기를 다 읽고 나서 누르는 마무리 버튼이라 밑에 붙일 이유가 없다. */
+  #exam .exam-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 16; /* top-bar(17)·드로어(19~20)·토스트(25) 아래, 본문 위 */
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.9rem calc(0.6rem + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+  }
+  /* 남는 폭을 둘이 나눠 갖는다 — 작은 버튼을 겨냥하지 않아도 되게 */
+  #exam .exam-nav .ghost,
+  #exam .exam-nav .primary {
+    flex: 1;
+  }
+  /* 페이지 맨 끝(푸터)이 바에 가리지 않게 자리를 비운다 — 패널이 아니라 문서 끝에 줘야 한다.
+     패널에 주면 짧은 문항에서 카드 안에 빈 공간만 생기고, 정작 밑에 깔린 푸터는 그대로 가린다. */
+  body:has(#exam:not([hidden])) {
+    padding-bottom: 4.75rem;
+  }
+  /* 최상단/최하단 이동 버튼이 바와 겹친다 — 풀이 중에만 바 높이만큼 올린다 */
+  body:has(#exam:not([hidden])) .scroll-nav {
+    bottom: calc(4.6rem + env(safe-area-inset-bottom, 0px));
   }
 }
 

@@ -140,6 +140,7 @@ const blankLabel = (q: PQ, i: number) =>
       import { supabase } from "../lib/supabase";
       import { onAuth, authSession, requireLogin, errorText } from "../lib/auth";
       import { toast } from "../lib/toast";
+      import { loadNote, markRight, markWrong, noteKey, saveNote } from "../lib/wrong-note";
 
       const $ = <T extends HTMLElement>(sel: string) => document.querySelector(sel) as T;
 
@@ -195,6 +196,26 @@ const blankLabel = (q: PQ, i: number) =>
         }),
       );
 
+      // ── 오답노트 연결 (#41) — 확인 문제에서 틀리면 담고, 맞히면 다음 복습으로 미룬다 ──
+      // 필기 연습 결과와 같은 통·같은 규칙이다(규칙은 lib/wrong-note.ts가 갖는다).
+      // 어디서 틀렸든 한 곳에 쌓여야 '오답만 다시 풀기'가 사용자의 오답 전부를 뽑는다.
+      // 저장 키는 라우트가 <html>에 심는 시험 슬러그를 따른다(정처기는 접미어가 없다).
+      const NOTE_KEY = noteKey(document.documentElement.dataset.exam ?? "");
+
+      const noteWrong = (id: string, wrong: boolean) => {
+        const note = loadNote(NOTE_KEY);
+        if (wrong) {
+          markWrong(note, id);
+          saveNote(NOTE_KEY, note);
+          toast("오답노트에 담았습니다");
+          return;
+        }
+        const r = markRight(note, id);
+        if (r === "none") return; // 맞혔는데 노트에 없던 문항 — 알릴 것이 없다
+        saveNote(NOTE_KEY, note);
+        toast(r === "cleared" ? "오답노트에서 졸업했습니다" : "다음 복습으로 미뤘습니다");
+      };
+
       // ── 확인 문제 — 정답은 가린 채 시작, 선지 선택 또는 '정답만 보기'로 공개 ──
       document.querySelectorAll<HTMLOListElement>(".cn-choices").forEach((ol) => {
         const answer = Number(ol.dataset.answer);
@@ -207,6 +228,9 @@ const blankLabel = (q: PQ, i: number) =>
             if (chosen !== null && chosen !== answer && i === chosen) li.classList.add("bad");
           });
           if (revealBtn) revealBtn.hidden = true;
+          // '정답만 보기'(chosen === null)는 답을 고른 적이 없으니 오답으로 치지 않는다
+          const id = (ol.closest(".cn") as HTMLElement | null)?.dataset.id;
+          if (chosen !== null && id) noteWrong(id, chosen !== answer);
         };
         [...ol.querySelectorAll<HTMLButtonElement>(".cn-choice")].forEach((b, i) =>
           b.addEventListener("click", () => reveal(i)),
