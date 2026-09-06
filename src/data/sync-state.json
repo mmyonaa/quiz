@@ -141,7 +141,7 @@
       "section": "algo"
     },
     "2026-07-23-claude-billing-error": {
-      "sha": "34b4c07398752a2029891d28a9b46f4f5db3a71f",
+      "sha": "3894dc0b9f6d2e37cec9f41f4e8e8360d8beb612",
       "section": "security"
     },
     "2026-07-23-nginx-https-lets-encrypt": {
@@ -149,19 +149,19 @@
       "section": "web"
     },
     "2026-07-23-pm2-zero-downtime-reload": {
-      "sha": "62eaf49c00a45c27d09b5c0c3b792682819758b2",
+      "sha": "7823a460b9c865afb2cc6622f0a4f993fd892c18",
       "section": "web"
     },
     "2026-07-23-ponytail-lazy-agent-ruleset": {
-      "sha": "bd54dd16045a096965c4bdd0ed42e5bfc657412b",
+      "sha": "a17be40e103aaeb7ec701b99e5fd4bb6b5344061",
       "section": "mcp"
     },
     "2026-07-23-symmetric-asymmetric": {
-      "sha": "efe31fd082ef6b36311986fffc9f3afbf957b210",
+      "sha": "9f414e7fbad48d45e12b6ca8e854f53843d69c6e",
       "section": "jeongcheogi"
     },
     "2026-07-23-url-slug": {
-      "sha": "42267804a63a37175e817cf89480e01f7830e357",
+      "sha": "4b8d57e231be149451c204d7655cf52eb74fd62d",
       "section": "web"
     },
     "2026-07-23-what-is-nginx": {
@@ -169,7 +169,7 @@
       "section": "web"
     },
     "2026-07-23-what-is-pm2": {
-      "sha": "5039c065bcaa5cf3f3f45d3a1599f834817326b8",
+      "sha": "13f3b8d9becb78ccde50a18ac0c08c4725990fbb",
       "section": "web"
     },
     "2026-07-26-astro-css-scoped-styles": {
@@ -301,7 +301,7 @@
       "section": "mcp"
     },
     "2026-08-16-mcp-tool-annotations": {
-      "sha": "72666078655be4e72c769ace6ad7e797f9f49fe3",
+      "sha": "db0b83daf9b2140c159ad99831e7db0363a41fe0",
       "section": "mcp"
     },
     "2026-08-16-postgres-rls-supabase": {
@@ -382,6 +382,34 @@
     },
     "2026-08-30-linux-permission-setuid": {
       "sha": "267702e178d3fc9436db8a9a3000785835090fa6",
+      "section": "boangisa"
+    },
+    "2026-08-31-model-hardware-standard": {
+      "sha": "f159752fbcea84d267be64bf6d1700d7a5b9b719",
+      "section": "mcp"
+    },
+    "2026-09-01-sql-injection": {
+      "sha": "64445108e045983af7629540da55e40d36c044e0",
+      "section": "boangisa"
+    },
+    "2026-09-02-mcp-resource-vs-tool": {
+      "sha": "e45c1976c4f6e51c0ad2f161e837d19ba59c60bd",
+      "section": "mcp"
+    },
+    "2026-09-03-graph-traversal-bfs-dfs": {
+      "sha": "a4ea853930c212c42ba8d847d5de6105c9b25baf",
+      "section": "jeongcheogi"
+    },
+    "2026-09-04-jfrog-artifactory-auth-bypass-cve-2026-82329": {
+      "sha": "9306b8a0fdf8c0a96692a727de1fbb7870150080",
+      "section": "security"
+    },
+    "2026-09-05-agent-plugins-1-0": {
+      "sha": "376d232e560c85cd709114213183e7e72938992b",
+      "section": "mcp"
+    },
+    "2026-09-06-block-cipher-modes": {
+      "sha": "1d74b3c941d488c5ccef1015a7dfba5f452b3037",
       "section": "boangisa"
     }
   }
