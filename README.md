@@ -63,6 +63,10 @@ npm run check          # astro check — .astro 파일까지 보는 타입 게�
 main push 시 GitHub Actions(`.github/workflows/deploy.yml`)가 GitHub Pages로 배포한다.
 Supabase 키는 Actions 시크릿(`SUPABASE_URL`, `SUPABASE_ANON_KEY`)으로 주입된다.
 
+Supabase 무료 플랜은 **7일간 DB 활동이 없으면 프로젝트를 일시정지**하고, 그러면 로그인·오답노트가
+함께 멈춘다. `supabase-keepalive.yml`이 매일 실제 테이블을 한 번 읽어 이를 막는다 — 헬스체크
+엔드포인트는 DB를 건드리지 않아 활동으로 집계되지 않으므로 핑 대상을 테이블에서 옮기지 말 것.
+
 ## 버전
 
 [유의적 버전](https://semver.org/lang/ko/)을 따르며, 변경 기록은 [CHANGELOG.md](CHANGELOG.md)에 남긴다.
