@@ -8,6 +8,7 @@
 
 ## 기능
 
+- **홈**: 연습 · 모의고사 · 오답노트를 모드 카드로 먼저 고르고, 조건 설정은 고른 뒤에 온다
 - **필기 연습 모드**: 영역·문항 수·난이도를 골라 출제, 즉시 채점과 해설.
   채점 방식은 **제출 후 한꺼번에**(기본)와 **고르면 바로 확인** 중 고르며 기기에 기억된다 —
   바로 확인은 고른 순간 정오·정답·해설을 그 자리에 펴고 보기를 잠근다(모의고사는 늘 제출 후다)
@@ -33,6 +34,10 @@
 유저 데이터(북마크·오답 기록)만 Supabase에 저장하며 RLS로 사용자별 격리한다.
 
 - **문제 은행**: 필기 `src/data/questions.json`, 실기 `src/data/practical.json` — 콘텐츠 컬렉션 + zod 스키마(`src/content.config.ts`)가 발행 게이트. 스키마 위반 문제는 빌드가 실패한다.
+  규모는 정처기 필기 515 · 실기 49, 정보보안기사 필기 360 · 실기 18 (주제 137개).
+- **문항 추가**: 초안 JSON을 `scripts/written-merge.mjs`(필기) · `scripts/practical-merge.mjs`(실기)로
+  병합한다. 은행에 **쓰이기 전에** 검증하고, 특히 zod가 원리상 못 보는 것 — 문항 사이의 id·발문
+  중복 — 을 잡는다. `--dry`는 검증만, `--report`는 은행 현황과 다음에 낼 주제를 고른다.
 - **실기 채점**: `src/lib/practical-grade.ts` — 시험별 실기 형식(`PRACTICAL_FORMAT`)의 단일 정의를 갖는다.
   브라우저로도 번들되므로 `content.config.ts`에 의존하지 않고, 반대로 그쪽이 여기를 읽는다.
   표기 요동(대소문자·띄어쓰기·전각·낱말 하이픈)을 정규화로 흡수하고, 뜻이 같은 다른 낱말은 문항이 허용 표기 목록으로 나열한다. 그래도 새는 표기는 사용자가 "이 표기도 정답 처리"로 로컬에 덧붙인다.
@@ -54,8 +59,10 @@
 npm install
 cp .env.example .env   # Supabase URL·anon key (없어도 문제 풀이는 동작)
 npm run dev            # http://localhost:4322/quiz/ (블로그 dev 4321과 분리)
-npm run build
+npm run build          # prebuild로 blog-sync --check가 먼저 돈다 — 죽은 글 링크는 빌드 실패
+npm run preview        # 빌드 결과를 4322로 서빙
 npm run check          # astro check — .astro 파일까지 보는 타입 게이트
+npm run sync-report    # 블로그 싱크 리포트를 로컬에서 뽑아 본다(주간 워크플로와 같은 내용)
 ```
 
 ## 배포
@@ -66,6 +73,9 @@ Supabase 키는 Actions 시크릿(`SUPABASE_URL`, `SUPABASE_ANON_KEY`)으로 주
 Supabase 무료 플랜은 **7일간 DB 활동이 없으면 프로젝트를 일시정지**하고, 그러면 로그인·오답노트가
 함께 멈춘다. `supabase-keepalive.yml`이 매일 실제 테이블을 한 번 읽어 이를 막는다 — 헬스체크
 엔드포인트는 DB를 건드리지 않아 활동으로 집계되지 않으므로 핑 대상을 테이블에서 옮기지 말 것.
+
+`sync-report.yml`은 매주 월요일 블로그 싱크 리포트를 이슈로 올린다(죽은 링크 · 글 개정 ·
+문항 커버리지 갭).
 
 ## 버전
 
