@@ -110,6 +110,12 @@ html {
 }
 body {
   margin: 0;
+  /* 본문이 짧아도 푸터가 화면 하단에 붙게 — 세로로 쌓고 푸터에 margin-top:auto를 준다.
+     dvh는 모바일 주소창이 접힐 때 생기는 빈틈을 없앤다(미지원 브라우저는 위 vh를 쓴다). */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
   background: var(--bg);
   color: var(--text);
   font-family: "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo",
@@ -1332,7 +1338,8 @@ button.linklike:hover {
 
 .foot {
   max-width: var(--shell);
-  margin: 0 auto;
+  /* 위 auto가 남는 세로 공간을 모두 먹어 푸터를 바닥으로 민다 — 좌우 auto는 가운데 정렬 유지 */
+  margin: auto auto 0;
   padding: 1.5rem 1.25rem 2.5rem;
   color: var(--muted);
   font-size: 0.82rem;
