@@ -28,6 +28,8 @@ const countByArea = Object.fromEntries(
 const countByDiff = Object.fromEntries(
   DIFFICULTIES.map((d) => [d, bank.filter((q) => q.difficulty === d).length]),
 );
+// 은행 현황 줄 — 이 시험이 지금 몇 문항·몇 주제를 들고 있는지
+const topicCount = new Set(bank.map((q) => q.topic)).size;
 // 모의고사 편성 — 과목당 문항 수는 시험 형식에서 온다
 const mockTotal = format.written.perSubject * SUBJECTS.length;
 
@@ -56,7 +58,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
 
     <main>
       {/* ── 1. 설정 화면 ── */}
-      <section id="setup" class="panel">
+      <section id="setup" class="panel flat">
         <h1>{exam} 필기 연습</h1>
         <p class="lead">
           문제를 섞어 출제하고 바로 채점합니다. 틀린 문제는 해설과 함께
@@ -74,12 +76,13 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
 
         {/* 무엇을 할지부터 고른다 — 조건은 고른 뒤에 (#44) */}
         <div class="mode-cards">
-          <section class="mode-card">
+          <section class="mode-card hero">
             <h2>빠른 연습</h2>
             <p class="mode-desc" id="quick-summary"></p>
             <button id="start" class="primary">시작하기</button>
-            <details class="opts">
-              <summary>조건 바꾸기</summary>
+            <details class="opts" open>
+              <summary>출제 조건</summary>
+              <div class="opt-rows">
             <fieldset class="areas">
               <legend>시험 과목</legend>
               <label class="area-opt">
@@ -135,6 +138,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
                 <span>고르면 바로 확인</span>
               </label>
             </fieldset>
+              </div>
             </details>
           </section>
 
@@ -145,7 +149,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
               과목별 {format.written.subjectPass}점 미만 과락, 과락 없이 평균 {format.written.averagePass}점이면 합격.
               실제 OMR처럼 답안 표기란에 마킹하며 문항을 건너뛸 수 있습니다.
             </p>
-            <button id="start-mock" class="primary">모의고사 시작</button>
+            <button id="start-mock" class="ghost">모의고사 시작</button>
           </section>
 
           {/* 오답 복습 — 비어 있어도 카드는 남긴다. 여기가 무엇을 담는 자리인지 말해야 한다 */}
@@ -153,11 +157,38 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
             <h2>오답 복습</h2>
             <p class="mode-desc" id="note-info"></p>
             <span class="mode-actions">
-              <button id="start-note" class="primary">오답만 다시 풀기</button>
+              <button id="start-note" class="ghost">오답만 다시 풀기</button>
               <button id="note-clear" class="linklike">비우기</button>
             </span>
           </section>
         </div>
+
+        {/* 조건 패널은 넓은 화면에서만 펴 둔다 — 좁은 화면에서 펼쳐 두면 칩이 화면을 채워
+            모의고사·오답 줄이 접히는 곳 아래로 밀려난다. 첫 페인트 전에 접어야 깜빡이지 않으므로
+            인라인으로 둔다(사용자가 직접 펴면 그대로 남는다). */}
+        <script is:inline>
+          if (window.matchMedia("(max-width: 700px)").matches) {
+            document.currentScript.parentElement.querySelector("details.opts").open = false;
+          }
+        </script>
+
+        {/* 학습 기록 — 최근 일주일의 출석부. 기록이 없는 첫 방문에는 통째로 접힌다
+            (빈 상태를 보여 줄 만큼 중요한 자리가 아니다). */}
+        <section id="history" class="history" hidden>
+          <div class="history-head">
+            <h2>학습 기록</h2>
+            <p class="history-sum" data-role="sum"></p>
+          </div>
+          <ol class="history-days" data-role="days"></ol>
+        </section>
+
+        {/* 은행 현황 — 이 화면에서 고를 수 있는 것의 규모. 숫자는 mono로 세운다 */}
+        <p class="bank-line">
+          문제 은행 <b class="mono">{bank.length}</b>문항 ·
+          <b class="mono">{AREAS.length}</b>영역 ·
+          <b class="mono">{topicCount}</b>주제 ·
+          난이도 <b class="mono">하 {countByDiff["하"]} · 중 {countByDiff["중"]} · 상 {countByDiff["상"]}</b>
+        </p>
       </section>
 
       {/* ── 2. 풀이 화면 ── */}
@@ -207,7 +238,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
       </section>
 
       {/* ── 3. 결과 화면 ── */}
-      <section id="result" class="panel" hidden>
+      <section id="result" class="panel flat" hidden>
         <h1 id="score" tabindex="-1"></h1>
         <div class="score-bar"><i id="score-fill"></i></div>
         <p id="elapsed" class="elapsed"></p>
@@ -249,6 +280,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
       import { supabase } from "../../lib/supabase";
       import { onAuth, authSession, requireLogin, errorText } from "../../lib/auth";
       import { toast } from "../../lib/toast";
+      import { paintHistory, recordDay } from "../../lib/history";
       import {
         dueIds,
         loadNote,
@@ -443,8 +475,16 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
             ? "그래도 다시 풀기"
             : "오답만 다시 풀기";
         ($("#note-clear") as HTMLButtonElement).hidden = count === 0;
+        // 오늘 복습할 몫이 있으면 이 카드가 주 행동이다 — 재방문자가 할 일은 거의 늘 이쪽이다
+        $("#note-box").classList.toggle("due", due > 0);
         $("#retry-note").hidden = count === 0;
       };
+
+      // ── 학습 기록 — 최근 일주일의 출석부 ──
+      // 문항 단위 기록은 오답노트가 갖고 있다. 여기가 답하는 것은 "요즘 하고 있는가" 하나다.
+      // 실기 홈도 같은 통을 보므로 그리는 일은 lib에 한 벌만 둔다.
+      const HISTORY_KEY = keyOf("daily.quiz.history.v1");
+      const refreshHistory = () => paintHistory(HISTORY_KEY, $("#history"));
 
       // 조건을 접어 두었으므로 무엇으로 시작할지는 카드가 대신 말해야 한다
       const paintQuickSummary = () => {
@@ -605,7 +645,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
         const fb = $("#q-feedback");
         fb.className = `q-feedback ${hit ? "hit" : "miss"}`;
         fb.innerHTML = `
-          <p class="fb-verdict">${hit ? "정답입니다" : "틀렸습니다"}</p>
+          <p class="fb-verdict"><i class="fb-mark" aria-hidden="true">${hit ? "○" : "✕"}</i>${hit ? "정답" : "오답"}</p>
           ${hit ? "" : `<p class="rv-a">내 답: ${q.choices[my!]}<br/>정답: <b>${q.choices[q.answer]}</b></p>`}
           <p class="rv-x">${q.explanation}</p>
           ${q.relatedPost ? `<p class="rv-link"><a href="${blogPostBase}${q.relatedPost}/" target="_blank" rel="noopener">개념 글 다시 읽기 →</a></p>` : ""}
@@ -623,6 +663,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
             b.setAttribute("aria-pressed", String(j === i));
           });
         ($("#next") as HTMLButtonElement).disabled = false;
+        renderProgress(); // 눈금에 "답했음"을 바로 반영
         if (instant) revealAnswer();
         syncOMR(); // 답안지 표기 갱신
         persist();
@@ -733,17 +774,48 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
         if (mode === "mock" && !exam.hidden) ($("#omr") as HTMLDetailsElement).open = e.matches;
       });
 
+      /**
+       * 진행 표시 — 연습은 문항 수만큼 눈금으로 끊는다. 이어진 막대는 "얼마나 왔나"만
+       * 말하지만, 눈금은 "어디에 답했고 어디가 비었나"까지 말한다. 100문항 모의고사는
+       * 눈금이 4px짜리 소음이 되므로 이어진 막대로 남긴다(그쪽은 답안지가 그 일을 한다).
+       */
+      const TICK_MAX = 20;
+      const renderProgress = () => {
+        const bar = $("#pbar");
+        const pct = ((cur + 1) / session.length) * 100;
+        const ticks = session.length <= TICK_MAX;
+        bar.classList.toggle("ticks", ticks);
+        $("#pbar-fill").hidden = ticks;
+        if (ticks) {
+          if (bar.querySelectorAll(".tick").length !== session.length) {
+            bar.querySelectorAll(".tick").forEach((t) => t.remove());
+            session.forEach(() => {
+              const t = document.createElement("i");
+              t.className = "tick";
+              bar.appendChild(t);
+            });
+          }
+          bar.querySelectorAll(".tick").forEach((t, i) => {
+            t.classList.toggle("done", picked[i] !== undefined);
+            t.classList.toggle("cur", i === cur);
+          });
+        } else {
+          $("#pbar-fill").style.width = `${pct}%`;
+        }
+        bar.setAttribute("aria-valuenow", String(Math.round(pct)));
+        bar.setAttribute("aria-valuetext", `${session.length}문항 중 ${cur + 1}번째`);
+      };
+
       const renderQuestion = () => {
         const q = session[cur];
         $("#progress").textContent = `${cur + 1} / ${session.length}`;
-        const pct = ((cur + 1) / session.length) * 100;
-        $("#pbar-fill").style.width = `${pct}%`;
-        $("#pbar").setAttribute("aria-valuenow", String(Math.round(pct)));
-        $("#pbar").setAttribute("aria-valuetext", `${session.length}문항 중 ${cur + 1}번째`);
+        renderProgress();
         $("#exam-area").textContent = q.area;
         $("#exam-diff").textContent = q.difficulty;
         $("#exam-diff").dataset.level = q.difficulty;
-        $("#q-text").textContent = q.question;
+        // 문항 번호는 왼쪽 여백에 거는 표식이라 화면 낭독에서는 빼 둔다(진행률이 이미 읽어 준다)
+        $("#q-text").innerHTML =
+          `<span class="q-no mono" aria-hidden="true">${cur + 1}</span>${esc(q.question)}`;
         const codeEl = $("#q-code");
         codeEl.hidden = !q.code;
         codeEl.textContent = q.code ?? "";
@@ -825,6 +897,10 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
 
         recordWrongAnswers(); // 로그인 시 DB 오답 기록 (#6)
 
+        // 학습 기록 — 답한 문항만 센다(건너뛴 문항은 푼 것이 아니다)
+        recordDay(HISTORY_KEY, picked.filter((v) => v !== undefined).length, correct);
+        refreshHistory();
+
         // 오답노트 갱신 — 틀리면 담고 간격을 되돌리며, 맞히면 다음 복습으로 미룬다.
         // 마지막 단계를 통과하면 그때 졸업한다. 무응답은 노트를 건드리지 않는다.
         const note = readNote();
@@ -866,7 +942,11 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
           const avg = Math.round(perSubject.reduce((s, p) => s + p.score, 0) / perSubject.length);
           const failed = perSubject.filter((p) => p.fail);
           const pass = avg >= written.averagePass && failed.length === 0;
-          $("#score").textContent = `평균 ${avg}점 — ${pass ? "합격" : "불합격"}`;
+          // 점수는 숫자 하나를 세우고 판정은 채점 표시로 — 문장 한 줄로 뭉치면 어디를 볼지 알 수 없다
+          $("#score").innerHTML =
+            `<span class="score-sub">평균</span>` +
+            `<span class="score-main"><b class="score-n mono">${avg}</b>점</span>` +
+            `<span class="score-verdict ${pass ? "pass" : "fail"}">${pass ? "○ 합격" : "✕ 불합격"}</span>`;
           setScoreBar(avg, pass);
           $("#verdict").textContent = [
             timedOut ? "시간이 종료되어 자동 제출되었습니다." : "",
@@ -877,20 +957,25 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
                 : `과락은 없지만 평균이 ${written.averagePass}점에 못 미칩니다.`,
             "아래에서 틀린 문항만 복기하세요.",
           ].filter(Boolean).join(" ");
+          // 과락선을 표 위에 실제 선으로 긋는다 — 행마다 --pass 자리에 세로선이 선다
+          subjects.className = "subjects with-pass";
           subjects.innerHTML = perSubject
             .map(
               (p) => `
-              <div class="subj${p.fail ? " fail" : ""}" style="--w:${p.score}%">
+              <div class="subj${p.fail ? " fail" : ""}" style="--w:${p.score}%; --pass:${written.subjectPass}%">
                 <span class="subj-area">${p.no}과목 ${p.subject}</span>
                 <span class="subj-count mono">${p.ok} / ${p.total}</span>
                 <span class="subj-score">${p.score}점${p.fail ? " · 과락" : ""}</span>
               </div>`,
             )
-            .join("");
+            .join("") +
+            `<p class="subj-legend">세로선 = 과목별 과락선 ${written.subjectPass}점</p>`;
           subjects.hidden = false;
           $("#weak-cta").hidden = true; // 모의고사는 과락 문구가 판정을 대신한다
         } else {
-          $("#score").textContent = `${correct} / ${total} (${pct}점)`;
+          $("#score").innerHTML =
+            `<span class="score-main"><b class="score-n mono">${pct}</b>점</span>` +
+            `<span class="score-sub">${correct} / ${total}문항</span>`;
           setScoreBar(pct, pct >= 60);
           $("#verdict").textContent =
             pct >= 60 ? "합격권입니다. 틀린 문제만 다져두세요." : "아직 위험합니다. 오답 해설과 개념 글을 먼저 읽어보세요.";
@@ -909,6 +994,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
 
           // 영역을 골라 푼 세션은 쪼갤 것이 없다 — 한 줄짜리 분해는 점수를 되풀이할 뿐이다
           if (perArea.length > 1) {
+            subjects.className = "subjects"; // 연습에는 과락선이 없다(영역별 표본이 1~2문항이라 선을 그을 축이 아니다)
             subjects.innerHTML = [...perArea]
               .sort((a, b) => b.wrong - a.wrong)
               .map(
@@ -927,7 +1013,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
 
           // 약점 CTA — 가장 많이 틀린 영역 둘에 "더 풀기 / 개념 노트"를 붙여 다음 행동을 준다
           const cta = $("#weak-cta");
-          cta.innerHTML = weak
+          cta.innerHTML = (weak.length ? `<p class="section-label">이어서 할 일</p>` : "") + weak
             .slice(0, 2)
             .map(
               (r) => `
@@ -950,7 +1036,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
           const card = document.createElement("article");
           card.className = wrong ? "rv wrong" : "rv";
           card.innerHTML = `
-            <p class="rv-q"><span class="badge">${q.area}</span> <span class="badge diff" data-level="${q.difficulty}">${q.difficulty}</span> ${q.question}</p>
+            <p class="rv-q"><span class="rv-mark mono" aria-hidden="true">${wrong ? "✕" : "○"}</span> <span class="badge">${q.area}</span> <span class="badge diff" data-level="${q.difficulty}">${q.difficulty}</span> <span class="rv-qt">${esc(q.question)}</span></p>
             ${q.code ? `<pre class="q-code mono">${esc(q.code)}</pre>` : ""}
             <p class="rv-a">${wrong ? `내 답: ${unanswered ? "무응답" : q.choices[picked[i]]}<br/>` : ""}정답: <b>${q.choices[q.answer]}</b></p>
             <p class="rv-x">${q.explanation}</p>
@@ -1118,6 +1204,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
 
       refreshNoteUI();
       refreshResumeUI();
+      refreshHistory();
       paintQuickSummary();
     </script>
   </body>

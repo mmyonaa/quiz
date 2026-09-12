@@ -62,7 +62,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
 
     <main>
       {/* ── 1. 설정 화면 ── */}
-      <section id="setup" class="panel">
+      <section id="setup" class="panel flat">
         <h1>{`${examLabel} 실기 필답 연습`}</h1>
         <p class="lead">
           보기 없이 답을 직접 씁니다. 단답·계산·코드 출력·SQL은 자동 채점하고,
@@ -81,12 +81,13 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
 
         {/* 필기 홈과 같은 구조 — 무엇을 할지부터 고르고 조건은 접어 둔다 (#44) */}
         <div class="mode-cards">
-          <section class="mode-card">
+          <section class="mode-card hero">
             <h2>필답 연습</h2>
             <p class="mode-desc" id="pool-info"></p>
             <button id="start" class="primary">연습 시작</button>
-            <details class="opts">
-              <summary>조건 바꾸기</summary>
+            <details class="opts" open>
+              <summary>출제 조건</summary>
+              <div class="opt-rows">
             <fieldset class="areas">
               <legend>문항 유형</legend>
               <label class="area-opt">
@@ -125,6 +126,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
                 </label>
               ))}
             </fieldset>
+              </div>
             </details>
           </section>
 
@@ -138,11 +140,35 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
               {!fmt.partialCredit?.length && " 부분 점수가 없어 다답형은 모든 답란을 맞혀야 정답입니다."}
               {bank.length < fmt.total && ` 문항이 ${fmt.total}개 이상 쌓이면 열립니다(현재 ${bank.length}개).`}
             </p>
-            <button id="start-mock" class="primary" disabled={bank.length < fmt.total}>
+            <button id="start-mock" class="ghost" disabled={bank.length < fmt.total}>
               모의고사 시작
             </button>
           </section>
         </div>
+
+        {/* 조건 패널은 넓은 화면에서만 펴 둔다 — 좁은 화면에서 펼쳐 두면 칩이 화면을 채워
+            모의고사·오답 줄이 접히는 곳 아래로 밀려난다. 첫 페인트 전에 접어야 깜빡이지 않으므로
+            인라인으로 둔다(사용자가 직접 펴면 그대로 남는다). */}
+        <script is:inline>
+          if (window.matchMedia("(max-width: 700px)").matches) {
+            document.currentScript.parentElement.querySelector("details.opts").open = false;
+          }
+        </script>
+
+        {/* 학습 기록 — 필기와 같은 통을 본다. "오늘 얼마나 했나"는 필기·실기를 합친 값이다 */}
+        <section id="history" class="history" hidden>
+          <div class="history-head">
+            <h2>학습 기록</h2>
+            <p class="history-sum" data-role="sum"></p>
+          </div>
+          <ol class="history-days" data-role="days"></ol>
+        </section>
+
+        <p class="bank-line">
+          실기 은행 <b class="mono">{bank.length}</b>문항 ·
+          유형 <b class="mono">{PRACTICAL_KINDS.filter((k) => countByKind[k] > 0).length}</b>종 ·
+          모의고사 <b class="mono">{fmt.total}</b>문항 / <b class="mono">{fmt.minutes}</b>분
+        </p>
       </section>
 
       {/* ── 2. 풀이 화면 — 답안 작성란이 늘 붙으므로 2단 배치를 켠 채로 둔다 ── */}
@@ -186,7 +212,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
       </section>
 
       {/* ── 3. 결과 화면 ── */}
-      <section id="result" class="panel" hidden>
+      <section id="result" class="panel flat" hidden>
         <h1 id="score" tabindex="-1"></h1>
         <div class="score-bar"><i id="score-fill"></i></div>
         <p id="elapsed" class="elapsed"></p>
@@ -219,6 +245,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
         PRACTICAL_FORMAT,
       } from "../../lib/practical-grade";
       import { toast } from "../../lib/toast";
+      import { paintHistory, recordDay } from "../../lib/history";
 
       type P = {
         id: string;
@@ -290,6 +317,16 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
       // 이어서 풀기는 시험별로 가른다 — 한 통이면 한쪽에서 새로 시작할 때
       // 다른 시험의 저장분이 조용히 덮여 사라진다. 정처기는 접미어가 없어 기존 저장분을 잇는다.
       const SAVE_KEY = examSlug ? `daily.quiz.practical.session.v1.${examSlug}` : "daily.quiz.practical.session.v1";
+      // 학습 기록은 필기와 한 통을 쓴다(시험별로만 갈린다) — 오늘 푼 양은 필기·실기를 합친 값이다
+      const HISTORY_KEY = examSlug ? `daily.quiz.history.v1.${examSlug}` : "daily.quiz.history.v1";
+      // 자가 채점은 결과 화면을 연 뒤에도 정답 수를 바꾼다 — 같은 세션을 두 번 세지 않도록
+      // "지난번에 적은 것과의 차이"만 기록에 반영한다.
+      let recorded: { n: number; ok: number } | null = null;
+      const syncHistory = (n: number, ok: number) => {
+        recordDay(HISTORY_KEY, n - (recorded?.n ?? 0), ok - (recorded?.ok ?? 0));
+        recorded = { n, ok };
+        paintHistory(HISTORY_KEY, document.getElementById("history"));
+      };
       type Saved = {
         ids: string[];
         inputs: string[][];
@@ -448,7 +485,9 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
         $("#exam-kind").textContent = q.kind;
         $("#exam-diff").textContent = q.difficulty;
         $("#exam-diff").dataset.level = q.difficulty;
-        $("#q-text").textContent = q.question;
+        // 문항 번호는 왼쪽 여백에 거는 표식이라 화면 낭독에서는 뺀다(진행률이 이미 읽어 준다)
+        $("#q-text").innerHTML =
+          `<span class="q-no mono" aria-hidden="true">${cur + 1}</span>${esc(q.question)}`;
         const codeEl = $("#q-code");
         codeEl.hidden = !q.code;
         codeEl.textContent = q.code ?? "";
@@ -511,6 +550,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
       const startSession = (pool: P[]) => {
         if (!pool.length) return;
         session = pool;
+        recorded = null; // 새 세션 — 기록은 이 회차 몫부터 다시 센다
         inputs = session.map((q) => (isSelfGraded(q.kind) ? [""] : q.answers.map(() => "")));
         selfGrade = session.map(() => undefined);
         cur = 0;
@@ -560,10 +600,16 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
         const points = scored?.points ?? null;
         const pass = scored ? scored.pass : pct >= examFmt.pass;
 
-        $("#score").textContent =
+        // 숫자 하나를 세우고 나머지는 옆에 붙인다 — 필기 성적표와 같은 꼴
+        $("#score").innerHTML =
           scored === null
-            ? `${total}문항 중 ${correct}문항 정답 (${pct}점)`
-            : `${scored.points}점 / ${examMax}점 · ${correct} / ${total}문항`;
+            ? `<span class="score-main"><b class="score-n mono">${pct}</b>점</span>` +
+              `<span class="score-sub">${correct} / ${total}문항</span>`
+            : `<span class="score-main"><b class="score-n mono">${scored.points}</b>점</span>` +
+              `<span class="score-sub">/ ${examMax}점 · ${correct} / ${total}문항</span>` +
+              `<span class="score-verdict ${pass ? "pass" : "fail"}">${pass ? "○ 합격" : "✕ 불합격"}</span>`;
+        // 학습 기록 — 자가 채점으로 정답 수가 오르내리므로 지난번에 적은 것과의 차이만 반영한다
+        syncHistory(total, correct);
         setScoreBar(pct, pass);
         $("#verdict").textContent =
           mode === "mock"
@@ -883,6 +929,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
 
       paintPool();
       paintResume();
+      paintHistory(HISTORY_KEY, document.getElementById("history"));
     </script>
   </body>
 </html>

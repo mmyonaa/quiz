@@ -4,12 +4,15 @@
   /* daily.mcp 블로그와 같은 계열의 쿨 뉴트럴 + 코랄 액센트.
      --accent는 면·테두리·표식용, --accent-strong은 본문 텍스트와 버튼 바탕용이다
      (코랄 원색은 흰 배경에서 3.5:1이라 본문 대비에 못 미친다). */
-  --bg: #f7f8fb;
+  /* 읽는 화면의 바탕은 종이 쪽으로 살짝 데워 둔다 — 푸른 회색 위의 검정 글자는
+     화면처럼 읽히고, 이 사이트에서 오래 머무는 일은 '읽기'다. 카드는 흰 종이 한 장
+     그대로 두어 바탕과 갈린다. 색상환을 옮기는 것이 아니라 온도만 바꾼 값들이다. */
+  --bg: #f8f7f4;
   --surface: #ffffff;
-  --surface-2: #eef0f5;
-  --text: #24252e;
-  --muted: #686b76;
-  --border: #e6e8ef;
+  --surface-2: #f0ede7;
+  --text: #262520;
+  --muted: #6b6960;
+  --border: #e7e3da;
   --accent: #ee4f6a;
   --accent-strong: #d0324e;
   --accent-contrast: #ffffff;
@@ -17,7 +20,43 @@
   /* 정답·합격 표시 전용. 풀잎 초록 대신 코랄과 맞물리는 제이드로 낮췄다. */
   --ok: #0a7d5f;
   --ok-soft: #e4f4ee;
+  /* 오답·과락 전용. 브랜드 액센트에서 갈라 둔다 — 정보보안기사는 액센트가 블루라
+     "3개 틀림"도 오답 답안도 과락 행도 브랜드색으로 칠해져, 실패가 화면에서 읽히지
+     않았다. 시험이 바뀌어도 이 두 값만은 붉은 쪽에 남는다(정처기는 기존 코랄 그대로라
+     그쪽 화면은 변하지 않는다). */
+  --wrong: #d0324e;
+  --wrong-soft: #fceaee;
+  --wrong-contrast: #ffffff;
+  /* ── 타입 스케일 ──
+     고유 font-size가 24종까지 불어나 있었다(0.68·0.7·0.72·0.74·0.75·0.76·0.78·0.79·0.8·0.82…).
+     "조금 작게"를 매번 새 숫자로 정한 값들이라 같은 층위의 글자가 화면마다 달랐다.
+     7단으로 수렴한다 — 새 크기가 필요하면 단을 늘리지 말고 가까운 단을 쓴다. */
+  --t-2xs: 0.75rem;
+  --t-xs: 0.8125rem;
+  --t-sm: 0.875rem;
+  --t-base: 1rem;
+  --t-lg: 1.125rem;
+  --t-xl: 1.375rem;
+  --t-2xl: 1.75rem;
+  --t-3xl: 2.5rem; /* 결과 점수처럼 화면의 주인공이 되는 숫자 전용 */
+  /* ── 간격 ── 4px 배수. 레이아웃의 세로 리듬(패널·섹션·카드 사이)이 이 값을 탄다.
+     컴포넌트 안쪽 여백은 글자 크기를 따라야 해서 em으로 남겨 둔다. */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  /* ── 모서리 ── 알약(--r-pill)은 뱃지·칩·토글처럼 "작고 상태를 나타내는 것"에만.
+     버튼까지 알약이면 버튼이 태그처럼 보인다. */
+  --r-sm: 8px;
+  --r-pill: 999px;
   --radius: 10px;
+  /* ── 읽기 폭 ── 한글 본문은 한 줄 40~45자에서 가장 덜 지친다(16px 기준 ≈ 42rem).
+     이 값이 없어 해설·개념 본문·4지선다가 셸 전폭(1140px, 65자+)으로 흘렀다.
+     문장으로만 된 것은 --measure, 막대·표가 섞인 성적표는 --measure-wide를 쓴다. */
+  --measure: 42rem;
+  --measure-wide: 52rem;
   /* 페이지 셸 폭 — daily.mcp(--shell-width: 1240px)와 동일 */
   --shell: 77.5rem;
   /* 고정 헤더 높이 — SiteHeader가 실측값으로 덮어쓴다(로그인 여부·줄바꿈으로 달라진다).
@@ -55,6 +94,9 @@
     --accent-soft: #2b1a20;
     --ok: #45c39a;
     --ok-soft: #17302a;
+    --wrong: #ef7c8e;
+    --wrong-soft: #2b1a20;
+    --wrong-contrast: #1c0e12;
     color-scheme: dark;
   }
   :root[data-exam="sec"]:not([data-theme="light"]) {
@@ -78,6 +120,9 @@
   --accent-soft: #2b1a20;
   --ok: #45c39a;
   --ok-soft: #17302a;
+  --wrong: #ef7c8e;
+  --wrong-soft: #2b1a20;
+  --wrong-contrast: #1c0e12;
   color-scheme: dark;
 }
 :root[data-theme="dark"][data-exam="sec"] {
@@ -126,8 +171,24 @@ body {
   word-break: keep-all;
   overflow-wrap: break-word;
 }
+/* ── mono의 자리 ──
+   이 사이트에서 mono는 장식이 아니라 역할이다 — 세는 것·재는 것·표기하는 것
+   (문항 번호, 1/10, 타이머, 점수, 과목 코드, 은행 개수)이 mono를 쓰고, 읽는 문장은
+   Pretendard가 쓴다. 두 벌이 갈려 있으면 숫자가 문장 속에서 저절로 도드라진다.
+   tabular-nums는 타이머·점수가 1초마다 자릿수 폭 때문에 흔들리는 것을 막는다. */
 .mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+}
+/* 개수 표시 — 목차·칩·설정의 <em>은 전부 "몇 개인가"다. 기울임 대신 mono 숫자로 세운다 */
+.side-link em,
+.toc-chip em,
+.area-opt em,
+.tab em {
+  font-style: normal;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.92em;
 }
 
 /* 상단 고정 — 스크롤을 내려도 메뉴·테마·목차 버튼에 닿는다 */
@@ -157,10 +218,10 @@ body {
   appearance: none;
   padding: 0.34rem 0.75rem 0.34rem 0.6rem;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--surface);
   font: inherit;
-  font-size: 0.85rem;
+  font-size: var(--t-sm);
   color: var(--text);
   cursor: pointer;
 }
@@ -190,7 +251,7 @@ body {
 .sister {
   color: var(--muted);
   text-decoration: none;
-  font-size: 0.85rem;
+  font-size: var(--t-sm);
 }
 .sister:hover {
   color: var(--accent-strong);
@@ -213,7 +274,7 @@ a.brand {
 .nav-link {
   color: var(--muted);
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: var(--t-sm);
 }
 .nav-link:hover {
   color: var(--accent-strong);
@@ -232,17 +293,17 @@ a.brand {
 .exam-switch {
   display: inline-flex;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   padding: 2px;
   gap: 2px;
 }
 .exam-tab {
   color: var(--muted);
   text-decoration: none;
-  font-size: 0.8rem;
+  font-size: var(--t-xs);
   line-height: 1;
   padding: 0.36rem 0.62rem;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   white-space: nowrap;
 }
 .exam-tab:hover {
@@ -262,7 +323,7 @@ a.brand {
   .exam-tab {
     flex: 1;
     text-align: center;
-    font-size: 0.86rem;
+    font-size: var(--t-sm);
     /* 드로어에서는 주 내비게이션이므로 손가락이 닿을 높이(44px)를 확보한다 */
     padding: 0.9rem 0.5rem;
   }
@@ -394,7 +455,7 @@ body.nav-locked {
     border: 0;
     background: none;
     padding: 0.2rem 0.4rem;
-    font-size: 1.5rem;
+    font-size: var(--t-xl);
     line-height: 1;
     color: var(--muted);
     cursor: pointer;
@@ -406,7 +467,7 @@ body.nav-locked {
   .site-nav .sister,
   .site-nav .auth-user,
   .site-nav .linklike {
-    font-size: 1rem;
+    font-size: var(--t-base);
     padding: 0.55rem 0.25rem;
   }
   .site-nav .linklike {
@@ -416,13 +477,13 @@ body.nav-locked {
   .site-nav .auth-user {
     max-width: none;
     color: var(--muted);
-    font-size: 0.85rem;
+    font-size: var(--t-sm);
     padding-bottom: 0.15rem;
   }
   .site-nav .auth-btn {
     margin: 0.35rem 0;
     padding: 0.55em 1.2em;
-    font-size: 0.9rem;
+    font-size: var(--t-sm);
   }
   .nav-sep {
     width: auto;
@@ -445,9 +506,19 @@ body.nav-locked {
 }
 
 main {
+  /* body가 세로 flex라 좌우 auto 여백이 stretch를 끈다 — width:100%로 셸 폭을 채운 뒤
+     max-width로 자른다(이게 없으면 내용 폭만큼만 좁아져 헤더와 어긋난다) */
+  width: 100%;
   max-width: var(--shell);
   margin: 0 auto;
-  padding: 0 1.25rem 3rem;
+  /* 헤더와 본문 사이의 숨 — 고정 헤더 바로 밑에서 글이 시작하면 둘이 한 덩어리로 붙어
+     보이고, 스크롤 중에는 본문이 헤더 밑을 스치며 지나가는 것이 더 급해 보인다. */
+  padding: var(--s-5) 1.25rem 3rem;
+}
+@media (max-width: 700px) {
+  main {
+    padding-top: var(--s-4);
+  }
 }
 .panel {
   --pad: 1.75rem; /* 칩 행 블리드 등에서 참조하는 패널 안쪽 여백 */
@@ -455,11 +526,38 @@ main {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: var(--pad);
-  margin-top: 1rem;
+  margin-top: var(--s-4);
+}
+/* 카드 안의 카드를 끊는다 — 설정·결과 화면은 흰 패널 하나가 그 안의 카드(모드 카드·
+   과목 행·복기 카드)를 통째로 감싸고 있었다. 테두리가 테두리를 감싸면 위계가 아니라
+   겹이 된다. 최상위는 면을 갖지 않고 페이지 자체가 바탕이 되며, 카드는 "고를 수 있는
+   것" 한 겹에만 남는다. 풀이 화면(#exam)은 문항 하나에 집중시키는 카드라 그대로 둔다. */
+.panel.flat {
+  --pad: 0;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+/* ── 화면의 폭과 글의 폭은 다른 문제다 ──
+   화면(패널·표·줄)은 헤더·푸터와 같은 셸 폭을 그대로 쓴다. 폭을 통째로 줄이면 화면이
+   헤더보다 좁아져 한 페이지가 두 축으로 읽히고, 남는 자리가 통째로 빈 여백이 된다.
+   읽기 폭은 **머리글·설명처럼 몇 줄로 끝나는 글**에만 건다 — 이런 글은 짧아서 폭을 잘라도
+   "끊긴" 것으로 보이지 않는다.
+
+   반대로 **본문(개념 해설·복기 해설)에는 걸지 않는다.** 본문이 놓이는 판은 넓고, 거기서
+   글만 42rem에서 멈추면 줄이 판 한가운데에서 끊긴 것처럼 보인다(괘선은 판 끝까지 가는데
+   글만 중간에서 서니 더 그렇다). 본문의 줄 길이는 그 글이 놓인 판이 정한다 — 개념 노트는
+   목차 옆의 종이가, 풀이 화면은 카드 안의 문항 열이 이미 읽기 폭으로 서 있다. */
+.lead,
+.mode-desc,
+#verdict,
+.pa-model,
+.omr-hint {
+  max-width: var(--measure);
 }
 h1 {
   margin: 0 0 0.5rem;
-  font-size: 1.45rem;
+  font-size: var(--t-2xl);
   letter-spacing: -0.01em;
 }
 .lead {
@@ -474,7 +572,7 @@ fieldset {
   margin: 0 0 1.25rem;
 }
 legend {
-  font-size: 0.8rem;
+  font-size: var(--t-xs);
   color: var(--muted);
   margin-bottom: 0.5rem;
   padding: 0;
@@ -497,8 +595,8 @@ legend {
   display: inline-block;
   padding: 0.42em 0.9em;
   border: 1px solid var(--border);
-  border-radius: 999px;
-  font-size: 0.9rem;
+  border-radius: var(--r-pill);
+  font-size: var(--t-sm);
   background: var(--bg);
 }
 .area-opt em {
@@ -522,7 +620,8 @@ legend {
 button.primary {
   appearance: none;
   border: 0;
-  border-radius: 999px;
+  /* 알약은 뱃지·칩·토글의 모양이다 — 버튼까지 알약이면 버튼이 태그처럼 보인다 */
+  border-radius: var(--radius);
   background: var(--accent-strong);
   color: var(--accent-contrast);
   font: inherit;
@@ -530,8 +629,10 @@ button.primary {
   padding: 0.65em 1.6em;
   cursor: pointer;
 }
+/* 비활성 — 흐린 액센트로 두면 대비는 미달인데 눌릴 것처럼 보인다. 중립으로 내린다 */
 button.primary:disabled {
-  opacity: 0.4;
+  background: var(--surface-2);
+  color: var(--muted);
   cursor: not-allowed;
 }
 button.primary:not(:disabled):hover {
@@ -549,8 +650,8 @@ button.primary:not(:disabled):hover {
   padding: 0.8rem 1rem;
   border: 1px dashed var(--border);
   border-radius: var(--radius);
-  background: var(--bg);
-  font-size: 0.9rem;
+  background: var(--surface);
+  font-size: var(--t-sm);
   color: var(--muted);
 }
 .note-actions {
@@ -561,11 +662,11 @@ button.primary:not(:disabled):hover {
 button.ghost {
   appearance: none;
   font: inherit;
-  font-size: 0.9rem;
+  font-size: var(--t-sm);
   font-weight: 600;
   padding: 0.5em 1.2em;
   border: 1px solid var(--accent);
-  border-radius: 999px;
+  border-radius: var(--radius);
   background: transparent;
   color: var(--accent-strong);
   cursor: pointer;
@@ -573,13 +674,21 @@ button.ghost {
 button.ghost:hover {
   background: var(--accent-soft);
 }
+button.ghost:disabled {
+  border-color: var(--border);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+button.ghost:disabled:hover {
+  background: transparent;
+}
 button.linklike {
   appearance: none;
   border: 0;
   padding: 0;
   background: none;
   font: inherit;
-  font-size: 0.85rem;
+  font-size: var(--t-sm);
   color: var(--muted);
   cursor: pointer;
   text-decoration: underline;
@@ -596,7 +705,7 @@ button.linklike:hover {
 }
 .note-status {
   margin: 0.25rem 0 1rem;
-  font-size: 0.88rem;
+  font-size: var(--t-sm);
   color: var(--muted);
 }
 .note-status:empty {
@@ -614,32 +723,39 @@ button.linklike:hover {
 }
 .mock-box h2 {
   margin: 0 0 0.35rem;
-  font-size: 1.05rem;
+  font-size: var(--t-base);
 }
 .mock-desc {
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: var(--t-sm);
   margin: 0 0 1rem;
 }
 .timer {
   color: var(--muted);
   font-weight: 600;
 }
+/* 모의고사 타이머 — "시간을 재고 있다"는 사실은 경고가 아니다. 색 대신 굵기로 세우고,
+   붉은색은 시간이 촉박할 때(.timer.low)를 위해 아껴 둔다. */
 .timer.mock {
-  color: var(--accent-strong);
+  color: var(--text);
+  font-weight: 700;
 }
 .elapsed {
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: var(--t-sm);
   margin: -0.25rem 0 0.75rem;
 }
 .exam-nav .quit {
   margin-right: auto;
 }
+/* ── 성적표의 과목 표 ──
+   카드 여러 장이 아니라 한 장의 표다. 행마다 테두리를 두르면 과목끼리 비교가 안 되고
+   점수 막대(::before)가 칸 안에 갇힌다 — 괘선으로만 끊어 한 벌로 읽히게 한다. */
 .subjects {
   display: grid;
-  gap: 0.4rem;
+  gap: 0;
   margin-bottom: 1.5rem;
+  border-top: 1px solid var(--border);
 }
 .subj {
   position: relative;
@@ -647,11 +763,12 @@ button.linklike:hover {
   display: flex;
   align-items: center;
   gap: 0.9rem;
-  padding: 0.55rem 0.9rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  font-size: 0.92rem;
+  padding: 0.6rem 0.6rem 0.6rem 0.5rem;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  background: none;
+  font-size: var(--t-sm);
 }
 /* 과목 점수만큼 배경을 채워 한눈에 비교 */
 .subj::before {
@@ -661,17 +778,33 @@ button.linklike:hover {
   width: var(--w, 0%);
   background: var(--ok-soft);
 }
+/* 과락선 — 모의고사에서만. "몇 점인가"보다 "넘겼는가"가 먼저 읽혀야 하는 시험이라,
+   합격선을 표 위에 실제 선으로 긋는다(숫자만으로는 매번 머릿속에서 비교해야 한다). */
+.subjects.with-pass .subj::after {
+  content: "";
+  position: absolute;
+  left: var(--pass, 40%);
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--wrong);
+  opacity: 0.45;
+}
+.subj-legend {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--t-2xs);
+}
 .subj > * {
   position: relative;
 }
-/* .fail은 모의고사의 과락, .weak는 연습에서 틀린 문항이 있는 영역 — 뜻은 다르고 표식은 같다 */
-.subj.fail,
-.subj.weak {
-  border-color: color-mix(in srgb, var(--accent) 42%, var(--border));
-}
+/* .fail은 모의고사의 과락, .weak는 연습에서 틀린 문항이 있는 영역 — 뜻은 다르고 표식은 같다.
+   표식은 채운 막대의 색과 오른쪽 글자('과락'·'N개 틀림')가 맡는다. */
 .subj.fail::before,
 .subj.weak::before {
-  background: var(--accent-soft);
+  background: var(--wrong-soft);
 }
 .subj-area {
   flex: 1;
@@ -679,7 +812,7 @@ button.linklike:hover {
 }
 .subj-count {
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: var(--t-sm);
 }
 .subj-score {
   min-width: 5.5em;
@@ -687,36 +820,101 @@ button.linklike:hover {
 }
 .subj.fail .subj-score,
 .subj.weak .subj-score {
-  color: var(--accent-strong);
+  color: var(--wrong);
   font-weight: 600;
 }
 
 /* ── 홈의 모드 카드 (#44) — 조건 폼이 아니라 "무엇을 할지"부터 고르게 한다 ── */
+/* ── 무엇을 할지 고르는 차림표 ──
+   흰 카드 넉 장을 쌓아 두면 "무엇부터 하라"는 말이 카드 모양으로는 나오지 않는다.
+   모서리·테두리·면을 걷고 괘선으로 끊은 목록으로 바꾼다 — 줄마다 할 일의 이름이
+   왼쪽에, 그 일을 시작하는 버튼이 오른쪽 끝에 서는 한 벌의 차림표. */
 .mode-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
-  gap: 0.8rem;
-  margin-top: 1.25rem;
+  grid-template-columns: 1fr;
+  gap: 0;
+  margin-top: var(--s-5);
+  border-top: 1px solid var(--border);
 }
 .mode-card {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.6rem;
-  padding: 1.1rem 1.15rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--s-5);
+  row-gap: 0.4rem;
+  padding: 0.95rem 0 1rem;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  background: none;
+}
+.mode-card > h2,
+.mode-card > .mode-desc {
+  grid-column: 1;
+}
+/* 행동은 오른쪽 끝에 세로로 가운데 — 제목·설명이 몇 줄이든 버튼 자리는 한 곳이다 */
+.mode-card > .primary,
+.mode-card > .ghost,
+.mode-card > .mode-actions {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  justify-self: end;
+}
+.mode-card > .opts {
+  grid-column: 1 / -1;
+  margin-top: 0.35rem;
+}
+@media (max-width: 700px) {
+  .mode-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mode-card > .primary,
+  .mode-card > .ghost,
+  .mode-card > .mode-actions {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+    margin-top: 0.35rem;
+  }
 }
 .mode-card h2 {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: var(--t-base);
+}
+/* 주 행동 — 줄을 한 단 키우고 숨을 더 준다. 칸을 넓히는 대신 글자로 앞선다 */
+.mode-card.hero {
+  padding: 1.2rem 0 1.3rem;
+}
+.mode-card.hero h2 {
+  font-size: var(--t-xl);
+  letter-spacing: -0.01em;
+}
+.mode-card.hero .primary {
+  font-size: var(--t-base);
+  padding: 0.75em 1.9em;
+}
+/* 오늘 복습할 몫이 있으면 오답 줄이 주 행동을 넘겨받는다 — 재방문자가 할 일은 거의 늘
+   이쪽이다. 그 사실은 채워진 버튼 하나로 충분하다(왼쪽 브랜드색 막대는 걷었다). */
+/* 채워진 버튼은 한 화면에 하나다 — 오답 줄이 주 행동을 가져가면 빠른 연습은 한 단 내려선다 */
+.mode-cards:has(.mode-card.due) .mode-card.hero > .primary {
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent-strong);
+}
+.mode-card.due .ghost {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+  color: var(--accent-contrast);
+}
+.mode-card.due .ghost:hover {
+  filter: brightness(1.06);
+  background: var(--accent-strong);
 }
 .mode-desc {
   margin: 0;
   flex: 1; /* 설명 길이가 달라도 버튼 줄이 카드마다 같은 높이에 선다 */
   color: var(--muted);
-  font-size: 0.88rem;
+  font-size: var(--t-sm);
   line-height: 1.55;
 }
 .mode-actions {
@@ -731,7 +929,7 @@ button.linklike:hover {
 .opts > summary {
   cursor: pointer;
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: var(--t-sm);
   list-style: none;
 }
 .opts > summary::-webkit-details-marker {
@@ -746,15 +944,40 @@ button.linklike:hover {
 .opts > summary:hover {
   color: var(--accent-strong);
 }
+/* 조건 패널의 배치 — 칩이 많은 묶음(시험 과목·영역)만 줄을 통째로 쓰고, 서넛뿐인
+   묶음(난이도·문항 수·채점 방식)은 한 줄에 나란히 선다. 각자 한 줄씩 차지하면 칩 세 개를
+   위해 세 줄이 나가 화면이 세로로 길어지고, 조건을 한눈에 훑을 수도 없다.
+   컨테이너를 따로 두는 이유: <details>에 display:flex를 줘도 소용없다 —
+   summary를 뺀 나머지 자식은 브라우저가 익명 박스에 담아 그 안에서 블록으로 쌓는다. */
+.opt-rows {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  column-gap: var(--s-6);
+}
+/* 펴 둔 채로 한 화면에 들어와야 하므로 묶음 사이 숨은 최소한만 */
+.opt-rows fieldset {
+  margin-bottom: 0.75rem;
+}
+.opt-rows > .areas {
+  flex: 1 0 100%;
+}
+/* fieldset은 flex 아이템이 되어도 auto 폭이 내용으로 줄지 않는다 — 내용 폭으로 못 박는다 */
+.opt-rows > .diffs,
+.opt-rows > .counts {
+  flex: 0 1 auto;
+  width: max-content;
+  max-width: 100%;
+}
 .opts fieldset {
-  margin-top: 0.9rem;
+  margin-top: 0.7rem;
 }
 
 /* 실기 결과의 두 축 분해 — 영역과 유형이 각각 다른 것을 말하므로 이름표를 붙인다 (#42) */
 .bd-label {
   margin: 0 0 0.4rem;
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: var(--t-sm);
 }
 #breakdown .subjects {
   margin-bottom: 1rem;
@@ -765,21 +988,36 @@ button.linklike:hover {
 
 /* 연습 결과의 약점 CTA — 진단 바로 아래에서 다음 행동으로 잇는다.
    점수 → 진단 → 행동 → 근거(해설) 순서를 만드는 층이다. */
+/* 구획 이름 — 성적표 안에서 "여기부터 다른 이야기"를 여는 작은 mono 라벨.
+   괘선만으로 끊으면 표와 행동 목록이 같은 표로 이어져 보인다. */
+.section-label {
+  margin: 0 0 0.4rem;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--t-2xs);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
 .weak-cta {
   display: grid;
-  gap: 0.5rem;
-  margin: -0.75rem 0 1.5rem;
+  gap: 0;
+  margin: 0 0 1.5rem;
+}
+/* 구획 이름 다음 줄에서 표가 시작된다 — 라벨 위로 선이 지나가지 않게 첫 줄이 선을 갖는다 */
+.section-label + .weak-row {
+  border-top: 1px solid var(--border);
 }
 .weak-row {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 0.6rem;
-  padding: 0.6rem 0.9rem;
-  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border));
-  border-radius: var(--radius);
-  background: var(--accent-soft);
-  font-size: 0.92rem;
+  padding: 0.7rem 0 0.75rem;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  background: none;
+  font-size: var(--t-sm);
 }
 .weak-name {
   flex: 1;
@@ -801,7 +1039,106 @@ button.linklike:hover {
   text-decoration: underline;
 }
 
+/* ── 학습 기록 — 최근 일주일 출석부 ──
+   잔디밭이 아니라 출석부다. 날짜별 숫자를 먼저 적고 막대는 그 숫자를 눈으로 잴 수 있게
+   거드는 역할만 한다 — 빈 날도 바닥선으로 자리를 지켜야 "빠진 날"이 보인다. */
+.history {
+  margin-top: var(--s-5);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--border);
+}
+.history-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+.history-head h2 {
+  margin: 0;
+  font-size: var(--t-sm);
+  font-weight: 700;
+}
+.history-sum {
+  margin: 0 0 0 auto;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--t-xs);
+  text-align: right;
+}
+.history-days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.35rem;
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+}
+.hday {
+  display: grid;
+  grid-template-rows: auto 1.7rem auto;
+  justify-items: center;
+  gap: 0.3rem;
+}
+.hday-n {
+  font-size: var(--t-xs);
+  color: var(--muted);
+}
+.hday.on .hday-n {
+  color: var(--text);
+  font-weight: 600;
+}
+.hday-bar {
+  align-self: end;
+  width: 100%;
+  height: var(--h);
+  min-height: 2px; /* 안 푼 날의 바닥선 — 빠진 날도 자리를 지킨다 */
+  border-radius: 1px;
+  background: var(--border);
+}
+.hday.on .hday-bar {
+  background: color-mix(in srgb, var(--accent) 55%, var(--border));
+}
+.hday.today.on .hday-bar {
+  background: var(--accent);
+}
+.hday-w {
+  font-size: var(--t-2xs);
+  color: var(--muted);
+}
+/* 좁은 화면 — 제목과 요약이 한 줄에 같이 서면 요약이 화면 밖으로 밀린다 */
+@media (max-width: 600px) {
+  .history-head {
+    flex-wrap: wrap;
+  }
+  .history-sum {
+    flex: 1 1 100%;
+    margin-left: 0;
+    text-align: left;
+  }
+}
+.hday.today .hday-w {
+  color: var(--text);
+  font-weight: 700;
+}
+
+/* 은행 현황 — 이 시험이 지금 들고 있는 것의 규모. 화면 맨 아래에 조용히 적는다 */
+.bank-line {
+  margin: var(--s-4) 0 0;
+  color: var(--muted);
+  font-size: var(--t-xs);
+}
+.bank-line b {
+  color: var(--text);
+  font-weight: 600;
+}
+
 /* ── 풀이 화면 ── */
+/* 연습은 문항 하나에 집중하는 한 단이다 — 셸 전폭(1140px)에서 4지선다를 읽으면
+   눈이 줄 끝에서 줄 머리로 돌아오는 거리가 너무 멀다. 읽기 폭 + 패널 여백까지만 쓴다.
+   모의고사(.with-sheet)는 오른쪽에 답안지가 서므로 폭을 그대로 둔다. */
+/* 풀이 화면 — 문항은 카드를 가득 채운다. 가운데로 모아 좌우 여백을 두면 흰 카드 안에
+   쓰지 않는 자리가 남아 화면이 성기어 보인다(종이 비유보다 이 화면에서는 "다 쓴다"가 낫다).
+   줄 길이는 카드가 정한다. */
 /* 상단 고정 — 긴 문항에서 스크롤해도 진행률·타이머가 보이도록 */
 .exam-top {
   position: sticky;
@@ -813,28 +1150,57 @@ button.linklike:hover {
   border-radius: var(--radius) var(--radius) 0 0;
   border-bottom: 1px solid var(--border);
 }
+/* 시험지 머리 — 왼쪽에 "몇 번째 / 몇 분 지났나", 오른쪽에 이 문항의 꼬리표.
+   셋을 고르게 흩뿌리면(space-between) 타이머가 화면 한가운데에 홀로 떠 버린다. */
 .exam-head {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   margin-bottom: 0;
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: var(--t-sm);
 }
+.exam-head #progress {
+  margin-right: 0.9rem;
+}
+.exam-head .exam-tools {
+  margin-left: auto;
+}
+/* 진행 — 연습은 문항 수만큼 눈금으로 끊는다. 이어진 막대는 "얼마나 왔나"만 말하지만
+   눈금은 "어디에 답했고 어디가 비었나"까지 말한다(모의고사는 답안지가 그 일을 하고
+   100칸이면 눈금이 소음이 되므로 이어진 막대로 남는다). */
 .pbar {
+  display: flex;
+  gap: 2px;
   height: 4px;
   margin-top: 0.7rem;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--border);
   overflow: hidden;
+}
+.pbar.ticks {
+  background: none;
 }
 #pbar-fill {
   display: block;
   height: 100%;
   width: 0;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--accent);
   transition: width 0.25s ease;
+}
+.pbar .tick {
+  flex: 1;
+  height: 100%;
+  border-radius: 1px;
+  background: var(--border);
+  transition: background 0.15s ease;
+}
+/* 답한 문항 — 액센트를 눌러 깐다. 지금 문항만 원색이라 위치가 한눈에 잡힌다 */
+.pbar .tick.done {
+  background: color-mix(in srgb, var(--accent) 45%, var(--border));
+}
+.pbar .tick.cur {
+  background: var(--accent);
 }
 .timer.low {
   animation: timer-pulse 1.2s ease-in-out infinite;
@@ -863,6 +1229,15 @@ button.linklike:hover {
     grid-template-columns: minmax(0, 1fr) 13rem;
     align-items: start;
   }
+  /* 상단 진행·시간 줄은 카드 가장자리까지 번져 나가는데(.exam-top의 음수 마진), 2단에서는
+     그 오른쪽 번짐이 열 경계를 넘어 답안 작성란 앞을 덮는다. 오른쪽만 열 끝에서 멈춘다. */
+  #exam.with-sheet .exam-top {
+    margin-right: 0;
+    padding-right: 0;
+    border-top-right-radius: 0;
+  }
+  /* 문항 열은 답안지 앞까지 그대로 쓴다. 여기서 읽기 폭으로 한 번 더 자르면 문항과
+     답안지 사이에 쓰지 않는 빈 띠가 생긴다 — 줄 길이는 이 열이 이미 정하고 있다. */
 }
 .omr {
   border: 1px solid var(--border);
@@ -870,7 +1245,7 @@ button.linklike:hover {
   /* 본문 패널보다 한 톤 눌러 별도의 답안지처럼 보이게 — 라이트/다크 모두에서 성립 */
   background: color-mix(in srgb, var(--text) 4%, var(--surface));
   padding: 0.85rem 0.9rem 0.75rem;
-  font-size: 0.85rem;
+  font-size: var(--t-sm);
 }
 .omr-head {
   display: flex;
@@ -903,13 +1278,13 @@ button.linklike:hover {
   transform: rotate(90deg);
 }
 .omr-count {
-  font-size: 0.8rem;
+  font-size: var(--t-xs);
 }
 .omr-legend {
   display: flex;
   gap: 0.85rem;
   margin: 0.7rem 0 0.5rem;
-  font-size: 0.72rem;
+  font-size: var(--t-2xs);
   color: var(--muted);
 }
 .omr-legend span {
@@ -937,7 +1312,7 @@ button.linklike:hover {
 }
 .omr-subject {
   margin: 0.7rem 0 0.35rem;
-  font-size: 0.7rem;
+  font-size: var(--t-2xs);
   font-weight: 600;
   letter-spacing: 0.04em;
   color: var(--muted);
@@ -952,7 +1327,7 @@ button.linklike:hover {
   align-items: center;
   gap: 0.4rem;
   padding: 0.08rem 0.2rem;
-  border-radius: 6px;
+  border-radius: var(--r-sm);
 }
 .omr-row.here {
   background: var(--accent-soft);
@@ -961,7 +1336,7 @@ button.linklike:hover {
   appearance: none;
   flex: 0 0 1.85rem;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.72rem;
+  font-size: var(--t-2xs);
   text-align: right;
   padding: 0.2em 0.15em;
   border: 0;
@@ -992,7 +1367,7 @@ button.linklike:hover {
   height: 1.75rem;
   display: grid;
   place-items: center;
-  font-size: 0.74rem;
+  font-size: var(--t-2xs);
   line-height: 1;
   border: 1px solid var(--border);
   border-radius: 50%;
@@ -1020,7 +1395,7 @@ button.linklike:hover {
 }
 .omr-hint {
   margin: 0.6rem 0 0;
-  font-size: 0.7rem;
+  font-size: var(--t-2xs);
   line-height: 1.5;
   color: var(--muted);
 }
@@ -1034,13 +1409,13 @@ button.linklike:hover {
   }
   .omr-no {
     flex: 0 0 2.1rem;
-    font-size: 0.8rem;
+    font-size: var(--t-xs);
     padding: 0.45em 0.15em;
   }
   .omr-bub {
     width: 2.1rem;
     height: 2.1rem;
-    font-size: 0.9rem;
+    font-size: var(--t-sm);
   }
 }
 @media (min-width: 1080px) {
@@ -1074,17 +1449,18 @@ button.linklike:hover {
   }
   .timer.low {
     animation: none;
-    color: var(--accent-strong);
+    color: var(--wrong);
   }
 }
+/* 과목·영역 꼬리표 — 복기 카드가 아홉 장이면 알약이 열여덟 개 깔린다. 알약은 눈을
+   끄는 장치인데 모든 카드에 빠짐없이 붙으면 아무것도 끌지 못하면서 화면만 얼룩진다.
+   "이 문항이 어디 것인가"는 상태가 아니라 메타 정보다 — 면을 걷고 글자만 남긴다. */
 .badge {
   display: inline-block;
-  padding: 0.15em 0.7em;
-  border-radius: 999px;
-  background: var(--accent-soft);
-  color: var(--accent-strong);
-  font-size: 0.78rem;
+  color: var(--muted);
+  font-size: var(--t-xs);
   font-weight: 600;
+  letter-spacing: 0.02em;
 }
 /* 코드 해석 문항의 코드 블록 — 프로그래밍 영역 */
 .q-code {
@@ -1093,7 +1469,7 @@ button.linklike:hover {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--bg);
-  font-size: 0.85rem;
+  font-size: var(--t-sm);
   line-height: 1.55;
   overflow-x: auto;
   white-space: pre;
@@ -1101,36 +1477,83 @@ button.linklike:hover {
 .cn-q .q-code,
 .rv .q-code {
   margin: 0.2rem 0 0.7rem;
-  background: var(--surface);
+  background: var(--bg);
 }
 
-/* 난이도 뱃지 — 하=안정색, 중=중립, 상=강조색 */
+/* 난이도 — 정답의 초록도 브랜드의 액센트도 빌리지 않는다. 초록은 주석이 밝혀 둔 대로
+   정답·합격 전용이고, '상'은 틀렸다는 뜻이 아니다. 중립으로 두고 '상'만 글자를 세운다. */
+/* 난이도 — 면을 걷은 뒤로는 '확인 문제 하'처럼 앞뒤 라벨과 같은 글자로 보여 어디까지가
+   라벨이고 어디부터가 난이도인지 구분되지 않았다. 색을 빌리지 않고 테두리만 두른 작은
+   칸으로 세운다(정답의 초록도 브랜드 액센트도 쓰지 않는다 — '상'은 틀렸다는 뜻이 아니다).
+   '상'만 글자를 세워 셋 중 어느 단인지 한눈에 읽히게 한다. */
 .badge.diff {
-  background: var(--bg);
-  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5em;
+  padding: 0.1em 0.45em;
   border: 1px solid var(--border);
-}
-.badge.diff[data-level="하"] {
-  color: var(--ok);
-  border-color: var(--ok);
-  background: var(--ok-soft);
+  border-radius: var(--r-pill);
+  color: var(--muted);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.4;
 }
 .badge.diff[data-level="상"] {
-  color: var(--accent-strong);
-  border-color: var(--accent-strong);
-  background: var(--accent-soft);
+  border-color: var(--muted);
+  color: var(--text);
+  font-weight: 700;
+}
+/* 문항 번호를 본문 왼쪽 여백에 건다 — 문제집 조판. 번호가 글줄 앞에 끼어들지 않고
+   왼쪽에 기둥처럼 서서, 발문·보기·해설이 한 문항의 묶음으로 읽힌다. */
+#q-body {
+  position: relative;
+  padding-left: 2.2rem;
+}
+.q-no {
+  position: absolute;
+  left: 0;
+  top: 0.1em;
+  width: 1.7rem;
+  text-align: right;
+  font-size: var(--t-base);
+  font-weight: 700;
+  color: var(--muted);
+}
+.q-no::after {
+  content: ".";
+}
+/* 좁은 화면에선 여백을 낼 자리가 없다 — 번호를 발문 앞으로 들인다 */
+@media (max-width: 700px) {
+  #q-body {
+    padding-left: 0;
+  }
+  .q-no {
+    position: static;
+    display: inline;
+    width: auto;
+    margin-right: 0.35em;
+  }
 }
 #q-text {
-  margin: 0 0 1.1rem;
-  font-size: 1.1rem;
-  line-height: 1.55;
+  /* 화면에서 가장 먼저 읽어야 할 문장이다 — 보기와 한 단 차이(0.125rem)로는
+     어느 쪽이 문제고 어느 쪽이 답인지 글자 크기가 말해 주지 않았다. */
+  margin: 0 0 1.25rem;
+  font-size: var(--t-xl);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
 }
+/* ── 보기 — 문제집의 답지처럼 괘선으로 가른다 ──
+   테두리+모서리+면을 두른 박스 네 개는 흰 패널 안에 카드가 또 겹치는 꼴이었다.
+   "고를 수 있다"는 신호는 박스가 아니라 마킹 원(OMR의 ①~④와 같은 장치)과 왼쪽
+   표시줄이 낸다. 칸 사이 여백을 없애 네 줄이 한 장의 답지로 읽히게 한다. */
 .choices {
   list-style: none;
-  margin: 0 0 1.25rem;
+  margin: 0 0 1.35rem;
   padding: 0;
   display: grid;
-  gap: 0.55rem;
+  gap: 0;
+  border-top: 1px solid var(--border);
 }
 .choice {
   display: flex;
@@ -1139,17 +1562,18 @@ button.linklike:hover {
   width: 100%;
   text-align: left;
   font: inherit;
-  padding: 0.7em 1em;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg);
+  padding: 0.8em 0.8em 0.8em 0.7em;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  background: none;
   color: var(--text);
   cursor: pointer;
-  min-height: 44px;
+  min-height: 48px;
   transition: border-color 0.15s ease, background 0.15s ease;
 }
 .choice:hover {
-  border-color: var(--accent-strong);
+  background: var(--surface-2);
 }
 .choice-num {
   flex: none;
@@ -1159,7 +1583,8 @@ button.linklike:hover {
   place-items: center;
   border: 1.5px solid var(--muted);
   border-radius: 50%;
-  font-size: 0.8em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.78em;
   font-weight: 600;
   color: var(--muted);
   transition: inherit;
@@ -1169,7 +1594,6 @@ button.linklike:hover {
   color: var(--accent-strong);
 }
 .choice.on {
-  border-color: var(--accent-strong);
   background: var(--accent-soft);
   color: var(--accent-strong);
   font-weight: 600;
@@ -1179,10 +1603,14 @@ button.linklike:hover {
   background: var(--accent);
   color: var(--accent-contrast);
 }
-/* ── 바로 확인 모드 (#40) — 고른 순간 정오를 보기 위에 얹고, 아래에 해설을 편다 ── */
+/* ── 바로 확인 모드 (#40) — 고른 순간 정오를 보기 위에 얹고, 아래에 해설을 편다 ──
+   채점 표시(○/✕)를 줄 끝에 찍는다. 색만으로 정오를 말하면 색각 이상에서 두 줄이
+   같은 회색으로 보이고, 표시가 있으면 흑백 인쇄·스크린샷에서도 읽힌다. */
 .choice.correct {
-  border-color: var(--ok);
   background: var(--ok-soft);
+  /* 고른 보기가 정답이면 .on의 액센트 글자색을 물려받아 초록 면 위에 브랜드색 글자가 얹힌다 —
+     정오의 색은 액센트가 아니라 --ok/--wrong이므로 여기서 되돌린다. */
+  color: var(--ok);
   font-weight: 600;
 }
 .choice.correct .choice-num {
@@ -1191,52 +1619,78 @@ button.linklike:hover {
   color: var(--surface);
 }
 .choice.miss {
-  border-color: var(--accent-strong);
-  background: var(--accent-soft);
-  color: var(--accent-strong);
+  background: var(--wrong-soft);
+  color: var(--wrong);
 }
 /* 고른 보기라 .choice.on의 채운 원을 그대로 물려받는다 — 글자색까지 덮으면
    같은 계열 색이 겹쳐 번호가 사라진다(액센트 위에는 accent-contrast를 쓴다). */
 .choice.miss .choice-num {
-  border-color: var(--accent-strong);
-  background: var(--accent);
-  color: var(--accent-contrast);
+  border-color: var(--wrong);
+  background: var(--wrong);
+  color: var(--wrong-contrast);
+}
+.choice.correct::after,
+.choice.miss::after {
+  margin-left: auto;
+  padding-left: 0.5em;
+  font-size: 1.05em;
+  line-height: 1;
+}
+.choice.correct::after {
+  content: "○";
+  color: var(--ok);
+}
+.choice.miss::after {
+  content: "✕";
+  color: var(--wrong);
 }
 /* 잠긴 보기 — 흐리게 죽이지 않는다. 답을 확인한 뒤에도 선지는 읽을 것이라서. */
 .choice:disabled {
   cursor: default;
 }
 .choice:disabled:not(.correct):not(.miss):hover {
-  border-color: var(--border);
+  background: none;
 }
 .choice:disabled:not(.correct):not(.miss):hover .choice-num {
   border-color: var(--muted);
   color: var(--muted);
 }
+/* 채점 결과 — 판 하나를 통째로 칠하지 않는다. 틀렸을 때 해설 전체가 --wrong-soft로
+   덮이면 이 화면에서 가장 값진 글(왜 틀렸는지)이 '실패 색 박스' 안에 갇힌다.
+   정오는 왼쪽 규칙과 채점 표시(○/✕)가 말하고, 본문은 읽기 좋은 중립으로 남는다. */
 .q-feedback {
   margin: 0 0 1.25rem;
-  padding: 0.9rem 1.1rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface-2);
+  padding: 0.1rem 0 0.15rem;
+  border: 0;
+  border-radius: 0;
+  background: none;
 }
-.q-feedback.hit {
-  border-color: color-mix(in srgb, var(--ok) 40%, var(--border));
-  background: var(--ok-soft);
-}
-.q-feedback.miss {
-  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
-  background: var(--accent-soft);
-}
+/* 판정 — 문장이 아니라 표식이다. mono로 세워 본문 타이포와 층을 가른다 */
 .fb-verdict {
-  margin: 0 0 0.45rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.4em;
+  margin: 0 0 0.5rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--t-xs);
   font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.fb-mark {
+  font-size: var(--t-base);
+  line-height: 1;
+}
+/* 해설은 이 화면의 본문이다 — 줄 높이를 문장 기준으로 준다(폭은 문항 열이 이미 잡았다) */
+.q-feedback .rv-x {
+  font-size: var(--t-base);
+  color: var(--text);
+  line-height: 1.75;
 }
 .q-feedback.hit .fb-verdict {
   color: var(--ok);
 }
 .q-feedback.miss .fb-verdict {
-  color: var(--accent-strong);
+  color: var(--wrong);
 }
 .q-feedback .rv-a,
 .q-feedback .rv-x {
@@ -1254,11 +1708,14 @@ button.linklike:hover {
   justify-content: flex-end;
 }
 
-/* 중단된 풀이 안내 — 오답노트 박스와 같은 꼴이되 되돌아갈 곳임을 강조 */
+/* 중단된 풀이 안내 — 액센트 면도 왼쪽 브랜드색 막대도 쓰지 않는다. 아래 차림표와 같은
+   괘선 줄로 두고, 되돌아갈 곳이라는 말은 '이어서 풀기' 버튼이 한다. */
 .note-box.resume {
-  border-style: solid;
-  border-color: var(--accent-strong);
-  background: var(--accent-soft);
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  padding: 0.9rem 0 1rem;
+  background: none;
   color: var(--text);
 }
 
@@ -1276,7 +1733,7 @@ button.linklike:hover {
 .score-bar {
   height: 8px;
   margin: 0.4rem 0 0.9rem;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--border);
   overflow: hidden;
 }
@@ -1284,49 +1741,116 @@ button.linklike:hover {
   display: block;
   height: 100%;
   width: 0;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--ok);
   transition: width 0.6s ease;
 }
 #score-fill.fail {
-  background: var(--accent);
+  background: var(--wrong);
+}
+/* 점수 — 화면에서 가장 먼저 읽혀야 할 숫자인데 h1 기본값이라 본문과 한 단 차이였다 */
+/* 성적표 — 문장만이 아니라 막대·표가 섞이므로 본문보다 한 단 넓은 폭을 쓴다 */
+
+/* 점수 — 이 화면의 주인공은 숫자 하나다. 문장에 섞어 두면 "7 / 10 (70점)"이 통째로
+   한 덩어리 글이 되어 어디를 봐야 할지 알 수 없다. 숫자만 mono로 크게 세우고
+   나머지(단위·문항 수·합격 여부)는 그 옆에 작게 붙인다. */
+#score {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  font-size: var(--t-lg);
+  line-height: 1.15;
+  margin-bottom: var(--s-2);
+}
+/* 숫자와 단위는 한 덩어리다 — 사이가 벌어지면 "10 점"이 아니라 두 조각으로 읽힌다 */
+.score-main {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.1em;
+}
+.score-n {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--t-3xl);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+.score-sub {
+  color: var(--muted);
+  font-size: var(--t-sm);
+  font-weight: 400;
+}
+/* 합격 판정 — 정오 표시와 같은 표식을 쓴다. 한 사이트 안에서 "됐다/안 됐다"의 기호는 하나다 */
+.score-verdict {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--t-sm);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.score-verdict.pass {
+  color: var(--ok);
+}
+.score-verdict.fail {
+  color: var(--wrong);
 }
 #verdict {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--s-5);
 }
+/* 복기 — 열 문항이면 카드 열 장이 쌓인다. 면과 테두리를 걷고 괘선으로 끊어
+   한 장의 채점표로 읽히게 하고, 틀린 문항만 왼쪽에 표시줄을 세워 훑을 때 걸리게 한다. */
 .rv {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1rem 1.15rem;
-  margin-bottom: 0.8rem;
-  background: var(--surface);
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  padding: 1rem 0 1.1rem;
+  margin-bottom: 0;
+  background: none;
 }
-/* 오답만 테두리 전체를 물들인다 — 좌측 색 띠 없이도 목록에서 바로 찾힌다 */
-.rv.wrong {
-  border-color: color-mix(in srgb, var(--accent) 42%, var(--border));
-}
+/* 틀린 문항의 표식은 줄머리의 ✕ 하나다 — 왼쪽 색 막대는 쓰지 않는다 */
 .rv-q {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.4rem;
   margin: 0 0 0.5rem;
   font-weight: 600;
 }
+/* 채점 표시 — 보기·해설에서 쓰는 ○/✕와 같은 기호 */
+.rv-mark {
+  flex: none;
+  color: var(--ok);
+}
+/* 발문은 한 덩어리로 — 뱃지와 같은 줄에서 시작하되 좁아지면 통째로 다음 줄로 내려간다 */
+.rv-qt {
+  flex: 1 1 14rem;
+}
+.rv.wrong .rv-mark {
+  color: var(--wrong);
+}
 .rv-a {
   margin: 0 0 0.5rem;
-  font-size: 0.92rem;
+  font-size: var(--t-sm);
 }
 .rv.wrong .rv-a {
-  color: var(--accent-strong);
+  color: var(--wrong);
 }
 .rv .rv-a b {
   color: var(--ok);
 }
 .rv-x {
+  /* 해설을 muted로 두면 "부가 설명"으로 보이지만, 오답 복기에서 이건 본문이다 */
   margin: 0 0 0.5rem;
-  color: var(--muted);
-  font-size: 0.92rem;
+  color: var(--text);
+  font-size: var(--t-sm);
+  line-height: 1.7;
 }
 .rv-link {
   margin: 0;
-  font-size: 0.88rem;
+  font-size: var(--t-sm);
 }
 .rv-link a {
   color: var(--accent-strong);
@@ -1337,12 +1861,13 @@ button.linklike:hover {
 }
 
 .foot {
+  width: 100%; /* main과 같은 이유 — 좌우 auto 여백이 stretch를 끈다 */
   max-width: var(--shell);
   /* 위 auto가 남는 세로 공간을 모두 먹어 푸터를 바닥으로 민다 — 좌우 auto는 가운데 정렬 유지 */
   margin: auto auto 0;
   padding: 1.5rem 1.25rem 2.5rem;
   color: var(--muted);
-  font-size: 0.82rem;
+  font-size: var(--t-xs);
 }
 .foot a {
   color: inherit;
@@ -1352,7 +1877,7 @@ button.linklike:hover {
 }
 .foot-copy {
   margin: 0;
-  font-size: 0.78rem;
+  font-size: var(--t-xs);
   opacity: 0.8;
 }
 
@@ -1367,14 +1892,14 @@ button.linklike:hover {
 .side-toc {
   display: none;
   /* 목차는 본문을 읽는 동안 곁눈으로 보는 자리 — 본문보다 한 단계 작게 둔다 */
-  font-size: 0.85rem;
+  font-size: var(--t-sm);
   /* 검색창 높이 — 고정된 영역 줄이 이만큼 아래에서부터 쌓인다 */
   --search-h: 2.6rem;
 }
 .side-toc-title {
   display: block;
   margin: 0 0.65rem 0.45rem;
-  font-size: 0.78rem;
+  font-size: var(--t-xs);
   color: var(--muted);
 }
 .side-link {
@@ -1383,7 +1908,7 @@ button.linklike:hover {
   align-items: baseline;
   gap: 0.5rem;
   padding: 0.38rem 0.65rem;
-  border-radius: 8px;
+  border-radius: var(--r-sm);
   color: var(--muted);
   text-decoration: none;
 }
@@ -1413,7 +1938,7 @@ button.side-link {
 .side-row {
   display: flex;
   align-items: center;
-  border-radius: 8px;
+  border-radius: var(--r-sm);
   /* 위아래 고정(sticky)이 어긋나지 않으려면 줄 높이가 모두 같아야 한다 */
   height: var(--row-h, 2.15rem);
   background: var(--bg);
@@ -1452,7 +1977,7 @@ button.side-link {
   align-self: stretch;
   appearance: none;
   border: 0;
-  border-radius: 8px;
+  border-radius: var(--r-sm);
   background: none;
   padding: 0;
   color: var(--muted);
@@ -1511,8 +2036,8 @@ button.side-link {
 }
 .side-sublink {
   padding: 0.38rem 0.45rem;
-  border-radius: 6px;
-  font-size: 0.79rem;
+  border-radius: var(--r-sm);
+  font-size: var(--t-xs);
   line-height: 1.45;
   color: var(--muted);
   text-decoration: none;
@@ -1546,7 +2071,7 @@ button.side-link {
 .side-toc .side-sub-wrap::-webkit-scrollbar-thumb {
   /* 투명 테두리 + background-clip으로 막대를 얇게 — 그만큼 여백이 생겨 덜 답답하다 */
   border: 3px solid transparent;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--border);
   background-clip: content-box;
 }
@@ -1565,7 +2090,7 @@ button.side-link {
   border: 0;
   background: none;
   padding: 0.2rem 0.4rem;
-  font-size: 1.5rem;
+  font-size: var(--t-xl);
   line-height: 1;
   color: var(--muted);
   cursor: pointer;
@@ -1618,7 +2143,7 @@ button.side-link {
   }
   .side-toc.as-drawer .side-link {
     padding: 0.6rem 0.65rem;
-    font-size: 0.92rem;
+    font-size: var(--t-sm);
   }
   /* 2단 드로어 — 하위 주제는 아코디언이 아니라 오른쪽에서 밀려 들어오는 두 번째 판이다.
      한 화면에 영역 6줄 또는 주제 목록 하나만 놓여, 목록이 길어져도 화면이 넘치지 않는다. */
@@ -1655,7 +2180,7 @@ button.side-link {
     padding: 0 0.55rem;
     appearance: none;
     border: 0;
-    border-radius: 8px;
+    border-radius: var(--r-sm);
     background: none;
     font: inherit;
     font-weight: 600;
@@ -1668,7 +2193,7 @@ button.side-link {
   }
   .side-toc.as-drawer .side-sublink {
     padding: 0.48rem 0.5rem;
-    font-size: 0.85rem;
+    font-size: var(--t-sm);
   }
   /* 손가락으로 찍는 화살표 — 링크와 겹치지 않게 넉넉히 */
   .side-toc.as-drawer .side-caret {
@@ -1693,10 +2218,10 @@ button.side-link {
   height: 100%;
   padding: 0 0.65rem;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--r-sm);
   background: var(--surface);
   font: inherit;
-  font-size: 0.82rem;
+  font-size: var(--t-xs);
   color: var(--text);
 }
 #toc-search::placeholder {
@@ -1711,7 +2236,7 @@ button.side-link {
 }
 .side-empty {
   margin: 0.6rem 0.65rem;
-  font-size: 0.85rem;
+  font-size: var(--t-sm);
   color: var(--muted);
 }
 /* 검색 중 — 접기·고정을 모두 풀고 결과를 한 줄로 늘어놓는다.
@@ -1741,7 +2266,7 @@ button.side-link {
     background: var(--bg);
     /* 목록 글자에 맞춰 낮춘 값(사용자 요청). 16px 미만이라 iOS는 입력할 때 화면을 확대하고
        블러 후에도 되돌리지 않는다 — 확대가 거슬리면 여기를 1rem으로 되돌릴 것. */
-    font-size: 0.9rem;
+    font-size: var(--t-sm);
     padding: 0 0.6rem;
   }
   .side-search {
@@ -1756,6 +2281,11 @@ button.side-link {
     transition: none;
   }
 }
+/* 읽는 열 — 목차 옆 그리드 열을 그대로 채운다. 줄 길이는 열이 아니라 글에서 잡는다
+   (.topic-intro·.cn-x 등이 --measure로 잘린다) — 괘선·제목·목차 줄은 열 끝까지 간다. */
+.side-body {
+  width: 100%;
+}
 @media (min-width: 1100px) {
   /* 셸 폭 안에서 좌측 목차 + 본문 2컬럼 — 개념 노트·마이페이지 공용 */
   main.side-layout {
@@ -1769,12 +2299,22 @@ button.side-link {
   main.side-layout > .side-body {
     grid-column: 2;
   }
+  /* 다만 그렇게 못 박으면 사이드가 없는 화면에는 13rem짜리 빈 열이 통째로 남는다.
+     목차가 hidden일 때만 한 열로 접는다 — 목차가 있는 화면의 폭은 그대로다. */
+  main.side-layout:has(> .side-toc[hidden]) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  main.side-layout:has(> .side-toc[hidden]) > .side-body {
+    grid-column: 1;
+  }
   .side-toc {
     display: block;
     align-self: start;
     position: sticky;
     top: calc(var(--top-h) + 0.75rem);
-    margin-top: 1.5rem;
+    /* main이 위 여백을 가지므로 여기서는 패널(.panel의 margin-top)과 같은 값만 준다 —
+       그래야 목차 첫 줄과 본문 첫 줄이 같은 선에서 시작한다 */
+    margin-top: var(--s-4);
     /* 세로 여백을 두면 고정된 줄 위로 그 여백만큼 주제가 비쳐 지나간다 — 여백은 margin으로 준다 */
     padding: 0;
     /* 세부 주제까지 펼치면 26개까지 늘어난다 — 화면을 넘기면 목차만 스크롤 */
@@ -1816,9 +2356,9 @@ button.side-link {
   display: inline-block;
   padding: 0.42em 0.9em;
   border: 1px solid var(--border);
-  border-radius: 999px;
-  font-size: 0.9rem;
-  background: var(--bg);
+  border-radius: var(--r-pill);
+  font-size: var(--t-sm);
+  background: var(--surface);
   color: var(--text);
   text-decoration: none;
 }
@@ -1851,7 +2391,7 @@ button.side-link {
   list-style: none;
   cursor: pointer;
   user-select: none;
-  font-size: 0.88rem;
+  font-size: var(--t-sm);
   color: var(--muted);
 }
 .topic-jumps-box > summary::-webkit-details-marker {
@@ -1875,15 +2415,14 @@ button.side-link {
 }
 .topic-jump {
   padding: 0.3em 0;
-  font-size: 0.88rem;
+  font-size: var(--t-sm);
   color: var(--muted);
   text-decoration: none;
 }
 .topic-jump::before {
   content: "#";
   margin-right: 0.25em;
-  color: var(--accent-strong);
-  opacity: 0.7;
+  color: var(--muted);
 }
 .topic-jump:hover {
   color: var(--accent-strong);
@@ -1925,9 +2464,9 @@ button.toc-chip {
   .panel {
     --pad: 1.15rem;
   }
-  /* 시작 버튼 — 주변 칩(0.9rem)에 비해 혼자 커서 화면을 지배했다 */
+  /* 시작 버튼 — 주변 칩(--t-sm)에 비해 혼자 커서 화면을 지배했다 */
   button.primary {
-    font-size: 0.95rem;
+    font-size: var(--t-sm);
     padding: 0.62em 1.35em;
   }
   .toc {
@@ -1971,29 +2510,35 @@ button.toc-chip {
   }
 }
 
-/* 개념 노트 목차 — 영역 카드 */
+/* ── 개념 노트 목차 ──
+   이 페이지가 하는 일은 목차다. 카드를 격자로 깔면 고를 것이 열 몇 장 쌓인 진열대가 되고,
+   "과목 다섯 → 영역 여섯"이라는 순서가 사라진다. 괘선으로 끊은 목록으로 둔다 —
+   목차의 형식은 원래 목록이고, 줄로 늘어서야 위아래 순서가 읽힌다. */
 .area-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-  gap: 0.8rem;
+  gap: 0;
+  border-top: 1px solid var(--border);
 }
 .area-card {
   display: block;
-  padding: 1.05rem 1.2rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg);
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+  padding: 0.85rem 0.5rem 0.9rem;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
   color: var(--text);
   text-decoration: none;
-  transition: border-color 0.15s ease;
+  transition: background 0.15s ease;
 }
+/* 호버는 면과 제목 색으로만 알린다 — 목차 줄 왼쪽의 색 바는 "지금 여기"(현재 영역)의
+   표식과 헷갈리고, 줄을 훑을 때마다 색 막대가 따라다녀 목록이 소란스러워진다 */
 .area-card:hover {
-  border-color: var(--accent-strong);
+  background: var(--surface-2);
 }
 .area-card h2 {
   margin: 0 0 0.3rem;
-  font-size: 1.05rem;
+  font-size: var(--t-base);
 }
 .area-card h2 em {
   font-style: normal;
@@ -2007,7 +2552,23 @@ button.toc-chip {
 .ac-meta {
   margin: 0;
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: var(--t-sm);
+}
+
+/* 비로그인 마이페이지의 기기 기록 — 관문과 로그인 버튼 사이에 끼는 한 덩어리 */
+.local-note {
+  margin: var(--s-5) 0;
+}
+.local-note .group-title {
+  margin-top: 0;
+}
+.local-note .subj-count {
+  min-width: 9rem;
+  text-align: right;
+}
+.local-note .my-hint {
+  display: block;
+  margin: var(--s-2) 0 0;
 }
 
 /* 읽기 진행률 — 화면 최상단 얇은 바(개념 노트 상세) */
@@ -2037,10 +2598,10 @@ button.toc-chip {
   max-width: calc(100vw - 2rem);
   padding: 0.6em 1.15em;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--surface);
   color: var(--text);
-  font-size: 0.88rem;
+  font-size: var(--t-sm);
   box-shadow: 0 4px 16px rgb(0 0 0 / 0.18);
   white-space: nowrap;
   overflow: hidden;
@@ -2082,7 +2643,7 @@ button.toc-chip {
   margin-top: 1.5rem;
   padding-top: 1.25rem;
   border-top: 1px solid var(--border);
-  font-size: 0.95rem;
+  font-size: var(--t-base);
 }
 .area-nav a {
   flex: 1;
@@ -2091,14 +2652,14 @@ button.toc-chip {
   padding: 0.7rem 1rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: var(--bg);
+  background: var(--surface);
   color: var(--text);
   font-weight: 600;
   text-decoration: none;
 }
 .area-nav a small {
   display: block;
-  font-size: 0.75rem;
+  font-size: var(--t-2xs);
   font-weight: 400;
   color: var(--muted);
 }
@@ -2111,7 +2672,7 @@ button.toc-chip {
 }
 .area-title {
   margin: 0 0 1rem;
-  font-size: 1.2rem;
+  font-size: var(--t-lg);
   scroll-margin-top: 1rem;
 }
 .topic {
@@ -2132,14 +2693,20 @@ button.toc-chip {
   z-index: 4;
   margin: 0 0 0.35rem;
   padding: 0.55rem 0 0.4rem;
+  /* 스크롤 중에도 제목 뒤로 본문이 비치지 않게 면을 깐다 — 그 면은 제목이 놓인 바탕과
+     같은 색이어야 한다. 흰 종이(.panel) 위에서 --bg를 깔면 제목 뒤에만 각진 회색 띠가
+     생긴다(과목 페이지에서 실제로 그랬다). 바탕이 페이지인 flat 패널에서만 --bg다. */
   background: var(--surface);
   border-bottom: 1px solid var(--border);
-  font-size: 1rem;
+  font-size: var(--t-base);
+}
+.panel.flat .topic-title {
+  background: var(--bg);
 }
 .topic-link {
   flex: none;
   margin-left: auto;
-  font-size: 0.85rem;
+  font-size: var(--t-sm);
   font-weight: 400;
   color: var(--accent-strong);
   text-decoration: none;
@@ -2174,18 +2741,27 @@ button.toc-chip {
   margin: 0 0 1.1rem;
   padding: 0 0 1rem;
   border-bottom: 1px solid var(--border);
-  font-size: 1rem;
+  font-size: var(--t-base);
   line-height: 1.78;
   color: var(--text);
 }
-/* 개념 항목 카드 — 좌측 색상 보더 없이 담백한 면 카드 */
+/* 도입부는 아래에 선을 긋고(.topic-intro의 border-bottom), 개념 항목은 저마다 위에 선을
+   긋는다(.cn의 border-top) — 그 둘이 만나는 첫 항목에서만 가로선이 두 겹으로 겹쳐 보였다.
+   경계는 하나면 된다. 도입부가 그은 선을 살리고 첫 항목의 것을 걷는다. */
+.topic-intro + .cn {
+  border-top: 0;
+}
+/* 개념 항목 — 한 영역에 51개가 늘어선다. 그걸 전부 면 카드로 두면 같은 크기의 흰 박스가
+   쉰한 장 쌓여 어느 것도 도드라지지 않고, 읽는 물건이 아니라 목록처럼 보인다.
+   면과 그림자를 걷고 괘선으로만 끊는다 — 노트에 줄을 그어 가며 읽는 꼴이 된다. */
 .cn {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 0.85rem 1.05rem;
-  margin-bottom: 0.6rem;
-  background: var(--bg);
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  padding: 0.9rem 0 1rem;
+  margin-bottom: 0;
+  background: none;
+  box-shadow: none;
 }
 /* 저장 별 — float로 첫 줄만 비켜가게 하고, 히트 영역은 44px 이상 확보 */
 .cn-save {
@@ -2195,7 +2771,7 @@ button.toc-chip {
   display: grid;
   place-items: center;
   margin: -0.5rem -0.6rem 0 0.35rem;
-  font-size: 1.15rem;
+  font-size: var(--t-lg);
 }
 /* 마이페이지 '저장한 개념' 카드 — 해설이 본문이므로 강조 보더 없이 */
 .rv.note {
@@ -2203,18 +2779,19 @@ button.toc-chip {
 }
 .rv.note .rv-x {
   color: var(--text);
-  font-size: 0.95rem;
+  font-size: var(--t-base);
 }
 .cn-x {
   margin: 0;
-  font-size: 1rem;
+  font-size: var(--t-base);
   line-height: 1.75;
 }
 .cn-q {
   margin-top: 0.35rem;
-  font-size: 0.9rem;
+  font-size: var(--t-sm);
 }
 /* summary — 행 전체가 44px급 터치 타깃, 커스텀 화살표(flex가 기본 마커를 지움) */
+/* '확인 문제'는 읽는 문장이 아니라 여는 손잡이다 — mono 라벨로 본문과 층을 가른다 */
 .cn-q summary {
   display: flex;
   align-items: center;
@@ -2224,6 +2801,9 @@ button.toc-chip {
   cursor: pointer;
   user-select: none;
   color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--t-xs);
+  letter-spacing: 0.04em;
 }
 .cn-q summary::-webkit-details-marker {
   display: none;
@@ -2244,9 +2824,17 @@ button.toc-chip {
   border-top: 1px dashed var(--border);
   padding-top: 0.6rem;
 }
+/* 문제집의 발문 표식 — 개념 설명과 확인 문제를 글머리 하나로 가른다 */
+.cn-question::before {
+  content: "Q.";
+  margin-right: 0.45em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 400;
+  color: var(--muted);
+}
 .cn-question {
   margin: 0.6rem 0 0.5rem;
-  font-size: 0.98rem;
+  font-size: var(--t-base);
   line-height: 1.7;
   font-weight: 600;
 }
@@ -2264,7 +2852,7 @@ button.toc-chip {
   font: inherit;
   background: none;
   border: 1px solid transparent;
-  border-radius: 8px;
+  border-radius: var(--r-sm);
   padding: 0.4em 0.55em;
   margin: 0.1rem 0;
   color: inherit;
@@ -2289,10 +2877,10 @@ button.toc-chip {
 }
 .cn-choices li.bad,
 .cn-choices li.bad .cn-choice {
-  color: var(--accent-strong);
+  color: var(--wrong);
 }
 .cn-choices li.bad .cn-choice {
-  background: var(--accent-soft);
+  background: var(--wrong-soft);
 }
 /* 번호(리스트 마커)까지 물들면 면이 어긋나 보인다 — 색은 글자만 */
 .cn-choices li.ans,
@@ -2307,7 +2895,7 @@ button.toc-chip {
 .kbd-hint {
   display: none;
   margin: 0.9rem 0 0;
-  font-size: 0.78rem;
+  font-size: var(--t-xs);
   color: var(--muted);
 }
 @media (hover: hover) and (pointer: fine) {
@@ -2342,15 +2930,25 @@ kbd {
 }
 .auth-user {
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: var(--t-sm);
   max-width: 9rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.auth-btn {
-  font-size: 0.8rem;
+/* 헤더 로그인 — 액센트 아웃라인이면 페이지의 주 행동(시작하기·오답 풀기)과 같은 색으로
+   맞선다. 한 화면에서 액센트를 채우거나 두르는 자리는 하나여야 해서 중립으로 내린다. */
+button.ghost.auth-btn {
+  font-size: var(--t-xs);
   padding: 0.35em 0.95em;
+  border-color: var(--border);
+  color: var(--text);
+  font-weight: 600;
+}
+button.ghost.auth-btn:hover {
+  border-color: var(--accent-strong);
+  color: var(--accent-strong);
+  background: none;
 }
 a.brand {
   color: inherit;
@@ -2368,7 +2966,7 @@ a.brand {
   border: 0;
   background: none;
   font: inherit;
-  font-size: 1.1rem;
+  font-size: var(--t-lg);
   line-height: 1;
   padding: 0 0.15em;
   color: var(--muted);
@@ -2396,11 +2994,11 @@ a.brand {
 .tab {
   appearance: none;
   font: inherit;
-  font-size: 0.9rem;
+  font-size: var(--t-sm);
   padding: 0.42em 0.9em;
   border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--bg);
+  border-radius: var(--r-pill);
+  background: var(--surface);
   color: var(--text);
   cursor: pointer;
 }
@@ -2427,20 +3025,20 @@ a.brand {
 }
 .my-hint {
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: var(--t-sm);
 }
 select.sort {
   font: inherit;
-  font-size: 0.85rem;
+  font-size: var(--t-sm);
   padding: 0.3em 0.6em;
   border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--bg);
+  border-radius: var(--r-sm);
+  background: var(--surface);
   color: var(--text);
 }
 .rv-meta {
   margin: 0 0 0.5rem;
-  font-size: 0.8rem;
+  font-size: var(--t-xs);
   color: var(--muted);
 }
 /* 삭제·해제 버튼 — 본문과 겹치지 않게 카드 하단 오른쪽에 정적 배치 */
@@ -2457,7 +3055,7 @@ select.sort {
 /* ── 시험 과목 — 영역 위 계층 ── */
 .group-title {
   margin: 1.6rem 0 0.7rem;
-  font-size: 0.82rem;
+  font-size: var(--t-xs);
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--muted);
@@ -2467,42 +3065,44 @@ select.sort {
 }
 .subject-cards {
   display: grid;
-  gap: 0.6rem;
+  gap: 0;
+  border-top: 1px solid var(--border);
 }
 .subject-card {
   display: block;
-  padding: 0.85rem 1.05rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
+  padding: 0.8rem 0.5rem 0.85rem;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  background: none;
   color: inherit;
   text-decoration: none;
-  transition: border-color 0.15s ease;
+  transition: background 0.15s ease;
 }
 .subject-card:hover {
-  border-color: var(--accent-strong);
+  background: var(--surface-2);
+}
+.subject-card:hover h3 {
+  color: var(--accent-strong);
 }
 .subject-card h3 {
   margin: 0 0 0.2rem;
-  font-size: 1rem;
+  font-size: var(--t-base);
 }
 .subject-card em {
   font-style: normal;
   font-weight: 400;
-  font-size: 0.82rem;
+  font-size: var(--t-xs);
   color: var(--muted);
 }
-/* 과목 번호 — 제목 앞의 작은 배지 */
+/* 과목 번호 — 순서지 강조가 아니다. 면을 걷고 글자만 남긴다 */
 .subj-no {
   display: inline-block;
-  margin-right: 0.35rem;
-  padding: 0.1em 0.5em;
-  border-radius: 999px;
-  background: var(--accent-soft);
-  color: var(--accent-strong);
-  font-size: 0.72em;
+  margin-right: 0.4rem;
+  color: var(--muted);
+  font-size: 0.8em;
   font-weight: 700;
-  vertical-align: middle;
+  vertical-align: baseline;
 }
 
 /* ══ 실기 필답 ══════════════════════════════════════════════════
@@ -2514,7 +3114,7 @@ select.sort {
   flex-wrap: wrap;
 }
 .pool-info {
-  font-size: 0.82rem;
+  font-size: var(--t-xs);
   color: var(--muted);
 }
 
@@ -2534,7 +3134,7 @@ select.sort {
 .pa-label {
   flex: 0 0 auto;
   min-width: 1.6rem;
-  font-size: 0.9rem;
+  font-size: var(--t-sm);
   font-weight: 600;
   color: var(--muted);
 }
@@ -2545,7 +3145,7 @@ select.sort {
   color: var(--text);
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--r-sm);
   padding: 0.7em 0.9em;
 }
 .pa-textarea {
@@ -2566,7 +3166,7 @@ select.sort {
 .pa-preview {
   flex: 1;
   min-width: 0;
-  font-size: 0.75rem;
+  font-size: var(--t-2xs);
   color: var(--text);
   white-space: nowrap;
   overflow: hidden;
@@ -2583,7 +3183,7 @@ select.sort {
   border-radius: var(--radius);
   padding: 1.1rem 1.2rem;
   margin-bottom: 0.9rem;
-  background: var(--bg);
+  background: var(--surface);
 }
 .pa-card-head {
   display: flex;
@@ -2593,29 +3193,29 @@ select.sort {
   margin-bottom: 0.6rem;
 }
 .pa-mark {
-  font-size: 0.72rem;
+  font-size: var(--t-2xs);
   font-weight: 700;
   padding: 0.25em 0.7em;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
 }
 .pa-mark.ok {
   background: var(--ok-soft);
   color: var(--ok);
 }
 .pa-mark.no {
-  background: var(--accent-soft);
-  color: var(--accent-strong);
+  background: var(--wrong-soft);
+  color: var(--wrong);
 }
 .pa-mark.pending {
   background: var(--border);
   color: var(--muted);
 }
 .pa-no {
-  font-size: 0.8rem;
+  font-size: var(--t-xs);
   color: var(--muted);
 }
 .pa-topic {
-  font-size: 0.75rem;
+  font-size: var(--t-2xs);
   color: var(--muted);
   margin-left: auto;
 }
@@ -2638,18 +3238,18 @@ select.sort {
   align-items: center;
   gap: 0.5rem;
   flex-wrap: wrap;
-  font-size: 0.88rem;
+  font-size: var(--t-sm);
   padding: 0.5em 0.75em;
-  border-radius: 8px;
+  border-radius: var(--r-sm);
 }
 .pa-blank.ok {
   background: var(--ok-soft);
 }
 .pa-blank.no {
-  background: var(--accent-soft);
+  background: var(--wrong-soft);
 }
 .pa-blank-label {
-  font-size: 0.75rem;
+  font-size: var(--t-2xs);
   color: var(--muted);
   flex: 0 0 auto;
 }
@@ -2672,10 +3272,10 @@ select.sort {
   appearance: none;
   margin-left: auto;
   font: inherit;
-  font-size: 0.72rem;
+  font-size: var(--t-2xs);
   padding: 0.3em 0.75em;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--surface);
   color: var(--muted);
   cursor: pointer;
@@ -2686,7 +3286,7 @@ select.sort {
 }
 .pa-alt {
   margin: 0.5rem 0 0;
-  font-size: 0.75rem;
+  font-size: var(--t-2xs);
   color: var(--muted);
   line-height: 1.6;
 }
@@ -2703,24 +3303,24 @@ select.sort {
 }
 .pa-brief-col h4 {
   margin: 0 0 0.35rem;
-  font-size: 0.75rem;
+  font-size: var(--t-2xs);
   color: var(--muted);
   font-weight: 600;
 }
 .pa-mine-text,
 .pa-model {
   margin: 0;
-  font-size: 0.88rem;
+  font-size: var(--t-sm);
   line-height: 1.75;
   padding: 0.7em 0.9em;
-  border-radius: 8px;
+  border-radius: var(--r-sm);
   background: var(--surface);
   border: 1px solid var(--border);
   white-space: pre-wrap;
 }
 .pa-kw {
   margin: 0.4rem 0 0;
-  font-size: 0.75rem;
+  font-size: var(--t-2xs);
   color: var(--muted);
 }
 .pa-self {
@@ -2728,16 +3328,16 @@ select.sort {
   align-items: center;
   gap: 0.5rem;
   margin-top: 0.8rem;
-  font-size: 0.8rem;
+  font-size: var(--t-xs);
   color: var(--muted);
 }
 .pa-self-btn {
   appearance: none;
   font: inherit;
-  font-size: 0.8rem;
+  font-size: var(--t-xs);
   padding: 0.35em 1em;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--surface);
   color: var(--muted);
   cursor: pointer;
@@ -2752,14 +3352,14 @@ select.sort {
   font-weight: 700;
 }
 .pa-self-btn.no[aria-pressed="true"] {
-  background: var(--accent-soft);
-  border-color: var(--accent-strong);
-  color: var(--accent-strong);
+  background: var(--wrong-soft);
+  border-color: var(--wrong);
+  color: var(--wrong);
   font-weight: 700;
 }
 .pa-exp {
   margin: 0.85rem 0 0;
-  font-size: 0.86rem;
+  font-size: var(--t-sm);
   line-height: 1.8;
   color: var(--muted);
   padding-top: 0.75rem;
@@ -2775,20 +3375,30 @@ select.sort {
 /* 이 주제가 실기에서 어떤 형태로 나오는지 — 개념을 읽는 자리에서 바로 알려 준다 */
 .topic-pa-badge {
   flex: none;
-  font-size: 0.68rem;
+  font-size: var(--t-2xs);
   font-weight: 600;
   letter-spacing: 0.01em;
   padding: 0.2em 0.6em;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   border: 1px solid var(--border);
   color: var(--muted);
   background: var(--surface-2);
   white-space: nowrap;
 }
-/* 실기 카드 — 색 띠 대신 한 톤 눌린 면으로 필기 해설 카드와 구분한다.
-   초록은 정답·합격 의미로만 남기고 실기 브랜딩에서는 뺐다. */
-.cn-pa {
+/* 실기 항목 — 면으로 구분하던 자리다. 항목이 카드에서 괘선으로 바뀌면서 좌우 여백이
+   사라져, 눌린 면이 글자에 그대로 맞닿고 모서리도 각지게 남았다. 면을 걷고 왼쪽
+   표시줄로 필기 해설과 가른다(초록은 정답·합격 의미로만 남기므로 여기서는 중립이다). */
+/* 실기 항목 — 왼쪽 막대 대신 손잡이의 '실기'를 태그로 세워 가른다. 항목 자체는 필기
+   해설과 같은 괘선 줄로 두고, 다른 것은 "여기서는 고르지 않고 직접 쓴다"는 사실뿐이다. */
+.pa-tag {
+  display: inline-block;
+  margin-right: 0.35em;
+  padding: 0.1em 0.45em;
+  border-radius: var(--r-sm);
   background: var(--surface-2);
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: 0;
 }
 .cn-pa .cn-q {
   margin-top: 0;
@@ -2803,13 +3413,13 @@ select.sort {
 .cn-pa-ans {
   margin-top: 0.5rem;
   padding: 0.75rem 0.9rem;
-  border-radius: 8px;
+  border-radius: var(--r-sm);
   border: 1px solid var(--border);
-  background: var(--surface);
+  background: var(--bg);
 }
 .cn-pa-line {
   margin: 0 0 0.35rem;
-  font-size: 0.92rem;
+  font-size: var(--t-sm);
   line-height: 1.7;
 }
 .cn-pa-key {
@@ -2819,12 +3429,12 @@ select.sort {
      3.4rem은 "1번 답란" 기준이라 한 글자 라벨에서 빈칸이 크게 떴다. */
   min-width: 2.4rem;
   margin-right: 0.6rem;
-  font-size: 0.74rem;
+  font-size: var(--t-2xs);
   color: var(--muted);
 }
 .cn-pa-alt {
   margin: 0.45rem 0 0;
-  font-size: 0.76rem;
+  font-size: var(--t-2xs);
   line-height: 1.6;
   color: var(--muted);
 }
@@ -2832,7 +3442,7 @@ select.sort {
   margin-top: 0.7rem;
   padding-top: 0.7rem;
   border-top: 1px solid var(--border);
-  font-size: 0.88rem;
+  font-size: var(--t-sm);
   color: var(--muted);
 }
 .cn-pa-reveal {

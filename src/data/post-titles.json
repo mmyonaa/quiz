@@ -96,5 +96,16 @@
   "2026-08-30-chaindrop-npm-supply-chain-worm": "ChainDrop — npm 패키지 하나 설치했다가 CI/CD 자격증명이 통째로 털린 이유",
   "2026-08-30-linux-permission-setuid": "리눅스 파일 권한과 SetUID·SetGID·스티키 비트",
   "2026-08-31-model-hardware-standard": "에이전트가 로봇팔을 쥔다 — Anthropic Model Hardware Standard 뜯어보기",
-  "2026-09-01-sql-injection": "SQL 인젝션 — 원리와 근본 방어"
+  "2026-09-01-sql-injection": "SQL 인젝션 — 원리와 근본 방어",
+  "2026-09-02-mcp-resource-vs-tool": "MCP에서 Resource로 만들지 Tool로 만들지 — 기준은 부작용이다",
+  "2026-09-03-graph-traversal-bfs-dfs": "그래프 탐색 — BFS와 DFS는 무엇이 다른가",
+  "2026-09-04-jfrog-artifactory-auth-bypass-cve-2026-82329": "JFrog Artifactory 인증 우회 — 저장소 관리자 권한이 4일 만에 뚫린 이유",
+  "2026-09-05-agent-plugins-1-0": "Agent Plugins 1.0 — MCP와 Skill을 한 상자에 담는 표준, 그런데 감독자는 누구인가",
+  "2026-09-06-block-cipher-modes": "블록 암호 운영 모드 — ECB, CBC, CTR은 무엇이 다른가",
+  "2026-09-07-mcp-prompts": "MCP Prompts — 서버가 미리 만든 프롬프트를 내려주는 세 번째 primitive",
+  "2026-09-08-process-synchronization": "프로세스 동기화 — 임계구역, 뮤텍스, 세마포어",
+  "2026-09-09-vscode-github-dev-oauth-token-theft": "github.dev, 링크 클릭 한 번으로 GitHub 토큰이 넘어간 이유",
+  "2026-09-10-superpowers-claude-code-skill-growth": "Superpowers — 절차를 강제하는 Claude Code 스킬이 가장 빨리 자란 이유",
+  "2026-09-11-risk-management": "위험 관리 — 자산·위협·취약점을 저울에 올리는 법",
+  "2026-09-12-mcp-completions-capability": "MCP Completions — 프롬프트 인자가 스스로 후보를 알려주는 법"
 }

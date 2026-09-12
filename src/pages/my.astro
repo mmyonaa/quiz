@@ -1,4 +1,5 @@
 ---
+import { EXAMS, EXAM_SLUGS } from "../content.config";
 import { loadBank } from "../lib/bank";
 import SiteHeader from "../components/SiteHeader.astro";
 import "../styles/global.css";
@@ -9,6 +10,8 @@ const bank = await loadBank();
 
 const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+// 비로그인 관문이 "이 기기에 이미 쌓인 것"을 말하려면 시험별 저장 키를 알아야 한다
+const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: EXAM_SLUGS[e] ? `/${EXAM_SLUGS[e]}` : "" }));
 ---
 
 <!doctype html>
@@ -34,13 +37,33 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
       <div class="side-body">
       {/* 비로그인 관문 */}
-      <section id="gate" class="panel" hidden>
+      <section id="gate" class="panel flat" hidden>
         <h1>마이페이지</h1>
         <p class="lead">오답 기록과 저장한 문제는 계정에 보관됩니다. 로그인하면 어느 기기에서든 이어서 볼 수 있어요.</p>
+
+        {/* 이 기기에 이미 쌓인 것 — 로그인의 이유를 추상적으로 말하는 대신 눈앞의 기록으로 말한다.
+            비어 있으면 통째로 숨고, 관문은 원래의 문장 하나 + 버튼 하나로 돌아간다. */}
+        <div id="local-note" class="local-note" hidden>
+          <h2 class="group-title">이 기기에 쌓인 오답노트</h2>
+          <div class="subjects">
+            {EXAM_LIST.map(({ exam, slug, path }) => (
+              <div class="subj local-row" data-slug={slug} hidden>
+                <span class="subj-area">{exam}</span>
+                <span class="subj-count" data-role="due"></span>
+                <span class="subj-score" data-role="total"></span>
+                <a class="weak-note" href={`${base}${path}/`}>풀러 가기 →</a>
+              </div>
+            ))}
+          </div>
+          <p class="my-hint">
+            기기에만 있는 기록이라 브라우저를 지우면 함께 사라집니다. 로그인하면 계정에 남습니다.
+          </p>
+        </div>
+
         <button id="gate-login" class="primary" type="button">Google로 로그인</button>
       </section>
 
-      <section id="my" class="panel" hidden>
+      <section id="my" class="panel flat" hidden>
         <h1>마이페이지</h1>
         <div class="tabs" role="tablist">
           <button id="tab-wrong" class="tab on" type="button" role="tab">오답노트 <em data-count="wrong"></em></button>
@@ -85,6 +108,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     <script>
       import { supabase } from "../lib/supabase";
       import { onAuth, authSession, loginWithGoogle, errorText } from "../lib/auth";
+      import { dueIds, loadNote, noteKey } from "../lib/wrong-note";
 
       type Q = {
         id: string;
@@ -280,8 +304,27 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       $("#wrong-sort").addEventListener("change", renderWrongs);
       $("#gate-login").addEventListener("click", loginWithGoogle);
 
+      // 관문의 "이 기기에 쌓인 오답노트" — localStorage만 읽는다(계정과 무관한 기기 기록)
+      const paintLocalNote = () => {
+        const rows = [...document.querySelectorAll<HTMLElement>(".local-row")];
+        let any = false;
+        rows.forEach((row) => {
+          const note = loadNote(noteKey(row.dataset.slug ?? ""));
+          const total = Object.keys(note).length;
+          const due = dueIds(note).length;
+          row.hidden = total === 0;
+          if (total === 0) return;
+          any = true;
+          row.querySelector('[data-role="due"]')!.textContent = due ? `오늘 복습할 ${due}문제` : "오늘 몫 없음";
+          row.querySelector('[data-role="total"]')!.textContent = `모두 ${total}문제`;
+          row.classList.toggle("weak", due > 0);
+        });
+        $("#local-note").hidden = !any;
+      };
+
       onAuth((s) => {
         $("#gate").hidden = !!s;
+        if (!s) paintLocalNote();
         $("#my").hidden = !s;
         $("#side-menu").hidden = !s; // 비로그인 관문에서는 사이드 메뉴도 숨긴다
         if (s) load();
