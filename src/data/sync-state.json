@@ -409,8 +409,36 @@
       "section": "mcp"
     },
     "2026-09-06-block-cipher-modes": {
-      "sha": "1d74b3c941d488c5ccef1015a7dfba5f452b3037",
+      "sha": "42b4e578e61e0b6590c28b2a1ad01c1144d6ca9a",
       "section": "boangisa"
+    },
+    "2026-09-07-mcp-prompts": {
+      "sha": "12b8cf63f0dfc8d20a46d05466b85bdb0e383afc",
+      "section": "mcp"
+    },
+    "2026-09-08-process-synchronization": {
+      "sha": "54e137d93a6989feb1bd0a6309f895999d3cfe8e",
+      "section": "jeongcheogi"
+    },
+    "2026-09-09-vscode-github-dev-oauth-token-theft": {
+      "sha": "d8b6d9d4994edf31b684c639417c8164fe832c51",
+      "section": "security"
+    },
+    "2026-09-10-superpowers-claude-code-skill-growth": {
+      "sha": "cfca215a95fb3784e97b44896ed66ccc855b51ac",
+      "section": "mcp"
+    },
+    "2026-09-11-risk-management": {
+      "sha": "6c3233c2ccef7404b525332c7037f1793cf23602",
+      "section": "boangisa"
+    },
+    "2026-09-12-mcp-completions-capability": {
+      "sha": "1e75a1f8c88522d78c83f4cc5de94dd7a483f074",
+      "section": "mcp"
+    },
+    "2026-09-13-uml-diagrams": {
+      "sha": "381652c18721855a8bc61822c26ee79ff9309df8",
+      "section": "jeongcheogi"
     }
   }
 }
