@@ -439,6 +439,34 @@
     "2026-09-13-uml-diagrams": {
       "sha": "381652c18721855a8bc61822c26ee79ff9309df8",
       "section": "jeongcheogi"
+    },
+    "2026-09-14-patch-tuesday-september-2026-zero-days": {
+      "sha": "2cbf6f5a8a987e5a9dc809203f40ae230d2ba430",
+      "section": "security"
+    },
+    "2026-09-15-compose-hot-reload-mcp-agent": {
+      "sha": "1dfecf7ebeea0de49f02c69d262d17b025e60570",
+      "section": "mcp"
+    },
+    "2026-09-16-rsa-diffie-hellman": {
+      "sha": "01998d61d6423e939ce6f315ae3761c9e6528ada",
+      "section": "boangisa"
+    },
+    "2026-09-17-mcp-pagination-cursor": {
+      "sha": "8aeff22d3266574d09b31c99032025f532a6785b",
+      "section": "mcp"
+    },
+    "2026-09-18-db-normalization": {
+      "sha": "6c879589cd5b0cc33d93a74b6211202432621066",
+      "section": "jeongcheogi"
+    },
+    "2026-09-19-chrome-v8-zero-day-cve-2026-87491": {
+      "sha": "efeda80cfda3f13128f775773765e4f4ff401245",
+      "section": "security"
+    },
+    "2026-09-20-paper2agent-research-paper-mcp-server": {
+      "sha": "d45b6f9c02da78682bff1add1829b234c5b80034",
+      "section": "mcp"
     }
   }
 }
