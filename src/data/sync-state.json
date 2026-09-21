@@ -472,6 +472,10 @@
     "2026-09-20-paper2agent-research-paper-mcp-server": {
       "sha": "d45b6f9c02da78682bff1add1829b234c5b80034",
       "section": "mcp"
+    },
+    "2026-09-21-windows-auth-sam-lsa": {
+      "sha": "9edfcedaad4c0ed9241e75ecb0dc7aea2b00aabd",
+      "section": "boangisa"
     }
   }
 }
