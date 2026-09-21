@@ -2,9 +2,12 @@
 //
 //   --check   prebuild 게이트: RSS로 relatedPost 실존 검증(없는 글 참조 → 빌드 실패),
 //             post-titles.json 자동 생성. 네트워크 실패 시 경고만 하고 통과(오프라인 빌드 보호).
-//   --report  주간 CI: 블로그 레포 트리(blob sha)와 sync-state.json을 비교해
-//             죽은 링크·개정된 글(재검토 필요)·커버리지 갭(정처기 글인데 문항 없음)을
-//             마크다운으로 출력하고 상태를 갱신한다. 같은 변경은 한 번만 보고된다.
+//   --report  주간 CI: 블로그 레포 트리(blob sha)와 sync-state.json을 비교해 "그 주에 생긴 일"만
+//             — 죽은 링크·개정된 글·새로 생긴 커버리지 갭 — 마크다운으로 출력하고 상태를 갱신한다.
+//             보고한 것은 상태에 남으므로 같은 변경을 다음 주에 또 보고하지 않는다.
+//   --backlog 아직 메워지지 않은 자리 전량(커버리지 갭·글 연결 갭). 주간 이슈를 새로 여는 대신
+//             상시 이슈 하나의 본문을 덮어쓰는 용도라, 갱신된 상태 위에서 돌도록 --report 뒤에 온다.
+//             네트워크를 쓰지 않는다 — sync-state.json이 이미 아는 것만 읽는다.
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -99,9 +102,12 @@ const fetchTree = async () => {
   return shas;
 };
 
+// 섹션은 글을 처음 본 주에 한 번만 읽어 캐시한다. 그래서 여기서 실패를 삼키고 null을 남기면
+// 그 글은 영영 정처기 글로 잡히지 않는다 — 네트워크 문제는 상태를 조용히 오염시키는 대신
+// 실행을 세운다(fetchTree와 같은 규약). 상태를 쓰기 전에 던지므로 다음 주가 다시 시도한다.
 const fetchSection = async (id) => {
   const res = await fetch(`${RAW_BASE}${id}.md`, { signal: AbortSignal.timeout(10_000) });
-  if (!res.ok) return null;
+  if (!res.ok) throw new Error(`raw ${id}.md ${res.status}`);
   const head = (await res.text()).slice(0, 2000);
   return head.match(/^section:\s*"?([a-zA-Z0-9_-]+)"?\s*$/m)?.[1] ?? null;
 };
@@ -126,9 +132,12 @@ const report = async () => {
   const revised = [...refs.keys()].filter(
     (id) => shas.has(id) && state.posts[id] && state.posts[id].sha !== shas.get(id),
   );
+  // 커버리지 갭은 문항을 쓸 때까지 남는 백로그다(전량은 --backlog가 맡는다).
+  // 주간 이슈에는 이번 주에 새로 생긴 것만 싣는다 — 같은 글을 3주 연속 싣던 것이 이슈를 잡음으로 만들었다.
   const gaps = [...shas.keys()].filter(
     (id) => state.posts[id]?.section === "jeongcheogi" && !refs.has(id),
   );
+  const newGaps = gaps.filter((id) => !state.posts[id].gapReported);
 
   const lines = [];
   if (dead.length) {
@@ -141,26 +150,20 @@ const report = async () => {
     for (const id of revised) lines.push(`- \`${id}\` (문항 ${refs.get(id)}개) — 문항·해설이 글과 어긋나지 않는지 확인`);
     lines.push("");
   }
-  if (gaps.length) {
-    lines.push("## 커버리지 갭 — 정처기 글인데 문항이 없음 (문항 제작 후보)", "");
-    for (const id of gaps) lines.push(`- \`${id}\``);
+  if (newGaps.length) {
+    lines.push("## 새 커버리지 갭 — 정처기 글이 올라왔는데 문항이 없음 (문항 제작 후보)", "");
+    for (const id of newGaps) lines.push(`- \`${id}\``);
     lines.push("");
   }
-  // 글 연결 갭 — 도입부만 있고 아직 개념 글이 없는 주제(글감 후보).
-  // 도입부 자체의 누락은 스키마(z.enum)와 topic-notes.json 구조가 이미 막는다.
-  const topics = JSON.parse(readFileSync(TOPIC_NOTES, "utf8"));
-  const bank = JSON.parse(readFileSync(QUESTIONS, "utf8"));
-  const noPost = Object.entries(topics)
-    .filter(([, t]) => !t.post)
-    .map(([key, t]) => [key, t, bank.filter((q) => q.topic === key).length]);
-  if (noPost.length) {
-    lines.push("## 글 연결 갭 — 개념 글이 아직 없는 주제 (블로그 글감 후보)", "");
-    for (const [key, t, n] of noPost) lines.push(`- \`${key}\` — ${t.title} (${t.area}, 문항 ${n}개)`);
-    lines.push("");
+  // 보고했으니 상태를 현재로 갱신 — 같은 개정·같은 갭을 다음 주에 또 보고하지 않는다
+  for (const [id, sha] of shas) {
+    const post = state.posts[id];
+    if (!post) continue;
+    post.sha = sha;
+    // 표시는 갭인 동안만 유지한다. 문항이 생겨 지워졌다가 다시 갭이 되면 새 갭으로 본다.
+    if (gaps.includes(id)) post.gapReported = true;
+    else delete post.gapReported;
   }
-
-  // 보고했으니 상태를 현재로 갱신 — 같은 개정을 다음 주에 또 보고하지 않는다
-  for (const [id, sha] of shas) if (state.posts[id]) state.posts[id].sha = sha;
   for (const id of Object.keys(state.posts)) if (!shas.has(id)) delete state.posts[id];
   writeFileSync(
     STATE,
@@ -179,10 +182,54 @@ const report = async () => {
   console.log(lines.join("\n").trim());
 };
 
+// ── --backlog: 아직 메워지지 않은 자리 전량(상시 이슈 본문) ──
+const backlog = () => {
+  const state = JSON.parse(readFileSync(STATE, "utf8"));
+  const refs = questionRefs();
+  const topics = JSON.parse(readFileSync(TOPIC_NOTES, "utf8"));
+  const bank = JSON.parse(readFileSync(QUESTIONS, "utf8"));
+
+  // 글 목록은 --report가 갱신해 둔 상태에서 온다(네트워크를 다시 치지 않는다).
+  const gaps = Object.entries(state.posts)
+    .filter(([id, p]) => p.section === "jeongcheogi" && !refs.has(id))
+    .map(([id]) => id);
+  // 글 연결 갭 — 도입부만 있고 아직 개념 글이 없는 주제(글감 후보).
+  // 도입부 자체의 누락은 스키마(z.enum)와 topic-notes.json 구조가 이미 막는다.
+  const noPost = Object.entries(topics)
+    .filter(([, t]) => !t.post)
+    .map(([key, t]) => [key, t, bank.filter((q) => q.topic === key).length]);
+
+  if (gaps.length === 0 && noPost.length === 0) {
+    console.log("NO_FINDINGS");
+    return;
+  }
+
+  // en-CA는 YYYY-MM-DD로 찍힌다. 이 워크플로는 KST 월요일 아침에 도니 날짜도 KST로 적는다.
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Seoul" }).format(new Date());
+  const lines = [
+    "<!-- 이 본문은 sync-report.yml이 매주 통째로 덮어쓴다 — 직접 편집해도 다음 실행에 지워진다. -->",
+    `블로그와 문항 은행 사이에 아직 메워지지 않은 자리다. 해소될 때까지 남고, 주간 실행마다`,
+    `현재 상태로 갱신된다. 마지막 갱신: ${today}.`,
+    "",
+  ];
+  if (gaps.length) {
+    lines.push("## 커버리지 갭 — 정처기 글인데 문항이 없음 (문항 제작 후보)", "");
+    for (const id of gaps) lines.push(`- \`${id}\``);
+    lines.push("");
+  }
+  if (noPost.length) {
+    lines.push("## 글 연결 갭 — 개념 글이 아직 없는 주제 (블로그 글감 후보)", "");
+    for (const [key, t, n] of noPost) lines.push(`- \`${key}\` — ${t.title} (${t.area}, 문항 ${n}개)`);
+    lines.push("");
+  }
+  console.log(lines.join("\n").trim());
+};
+
 const mode = process.argv[2];
 if (mode === "--check") await check();
 else if (mode === "--report") await report();
+else if (mode === "--backlog") backlog();
 else {
-  console.error("사용법: node scripts/blog-sync.mjs --check | --report");
+  console.error("사용법: node scripts/blog-sync.mjs --check | --report | --backlog");
   process.exit(1);
 }
