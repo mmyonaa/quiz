@@ -370,7 +370,8 @@
     },
     "2026-08-29-binary-tree-traversal": {
       "sha": "57d2ff779c74ae83e8e1aa4dff776581d1b86988",
-      "section": "jeongcheogi"
+      "section": "jeongcheogi",
+      "gapReported": true
     },
     "2026-08-30-arp-spoofing": {
       "sha": "ddfee64616f23843a532f7896c3be95351d7b5ca",
@@ -398,7 +399,8 @@
     },
     "2026-09-03-graph-traversal-bfs-dfs": {
       "sha": "a4ea853930c212c42ba8d847d5de6105c9b25baf",
-      "section": "jeongcheogi"
+      "section": "jeongcheogi",
+      "gapReported": true
     },
     "2026-09-04-jfrog-artifactory-auth-bypass-cve-2026-82329": {
       "sha": "9306b8a0fdf8c0a96692a727de1fbb7870150080",
@@ -418,7 +420,8 @@
     },
     "2026-09-08-process-synchronization": {
       "sha": "54e137d93a6989feb1bd0a6309f895999d3cfe8e",
-      "section": "jeongcheogi"
+      "section": "jeongcheogi",
+      "gapReported": true
     },
     "2026-09-09-vscode-github-dev-oauth-token-theft": {
       "sha": "d8b6d9d4994edf31b684c639417c8164fe832c51",
@@ -438,7 +441,8 @@
     },
     "2026-09-13-uml-diagrams": {
       "sha": "381652c18721855a8bc61822c26ee79ff9309df8",
-      "section": "jeongcheogi"
+      "section": "jeongcheogi",
+      "gapReported": true
     },
     "2026-09-14-patch-tuesday-september-2026-zero-days": {
       "sha": "2cbf6f5a8a987e5a9dc809203f40ae230d2ba430",
@@ -458,7 +462,8 @@
     },
     "2026-09-18-db-normalization": {
       "sha": "6c879589cd5b0cc33d93a74b6211202432621066",
-      "section": "jeongcheogi"
+      "section": "jeongcheogi",
+      "gapReported": true
     },
     "2026-09-19-chrome-v8-zero-day-cve-2026-87491": {
       "sha": "efeda80cfda3f13128f775773765e4f4ff401245",
@@ -467,6 +472,10 @@
     "2026-09-20-paper2agent-research-paper-mcp-server": {
       "sha": "d45b6f9c02da78682bff1add1829b234c5b80034",
       "section": "mcp"
+    },
+    "2026-09-21-windows-auth-sam-lsa": {
+      "sha": "9edfcedaad4c0ed9241e75ecb0dc7aea2b00aabd",
+      "section": "boangisa"
     }
   }
 }

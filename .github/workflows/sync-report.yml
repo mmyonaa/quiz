@@ -1,7 +1,16 @@
-# 주간 블로그 싱크 리포트 — daily.mcp 글의 변경을 감지해 이슈로 보고한다.
-# ① 죽은 relatedPost(글 삭제·이동) ② 문항이 참조하는 글의 개정(재검토 필요)
-# ③ 정처기 글인데 문항이 없는 커버리지 갭(문항 제작 후보).
-# 보고 후 sync-state.json을 갱신·커밋하므로 같은 변경은 한 번만 보고된다.
+# 주간 블로그 싱크 — daily.mcp 글과 문항 은행의 어긋남을 감지한다.
+#
+# 보고를 둘로 가른다. **사건**은 주간 이슈로, **백로그**는 상시 이슈 하나로.
+# 초판은 둘을 한 이슈에 섞었는데, 그 안의 '글 연결 갭'(문항은 있는데 개념 글이 없는 주제)은
+# 몇 달 단위로 줄어드는 목록이라 99줄이 매주 통째로 복제됐다. 게다가 그 목록이 빌 날이
+# 없으니 NO_FINDINGS 분기가 사실상 죽어, 변경이 하나도 없는 주에도 이슈가 열렸다 —
+# 이슈 5건의 본문 95%가 서로 같았다. "이슈가 떴다 = 볼 게 생겼다"는 신호가 그렇게 죽는다.
+#
+# ① 주간 이슈(그 주에 생긴 일만): 죽은 relatedPost · 문항이 참조하는 글의 개정 ·
+#    새로 생긴 커버리지 갭. 보고한 것은 sync-state.json에 남아 다음 주에 다시 실리지 않으므로
+#    조용한 주에는 이슈가 아예 열리지 않는다.
+# ② 상시 이슈(아직 메워지지 않은 자리 전량): 커버리지 갭 · 글 연결 갭. 매주 같은 이슈의
+#    본문을 덮어쓴다. 남은 자리가 없어지면 닫는다.
 name: Weekly blog sync report
 
 on:
@@ -33,9 +42,31 @@ jobs:
             echo "보고할 변경 없음"
           else
             gh issue create \
-              --title "주간 블로그 싱크 리포트 $(date +%Y-%m-%d)" \
+              --title "주간 블로그 싱크 리포트 $(TZ=Asia/Seoul date +%F)" \
               --body-file report.md \
               --repo "$GITHUB_REPOSITORY"
+          fi
+      # --report가 갱신해 둔 상태 위에서 돌아야 하므로 순서가 중요하다.
+      - name: Update standing backlog issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: "블로그 싱크 백로그 — 커버리지 갭 · 글 연결 갭"
+        run: |
+          node scripts/blog-sync.mjs --backlog > backlog.md
+          # --search는 흐릿하게 맞춘다. 제목이 정확히 같은 것만 골라 엉뚱한 이슈를 덮어쓰지 않는다.
+          num=$(gh issue list --state open --search "\"$TITLE\" in:title" --json number,title \
+            -q ".[] | select(.title == \"$TITLE\") | .number" | head -1)
+          if grep -q "^NO_FINDINGS$" backlog.md; then
+            if [ -n "$num" ]; then
+              gh issue close "$num" --comment "메워지지 않은 자리가 남지 않았다 — 다시 생기면 이 워크플로가 새로 연다."
+            else
+              echo "남은 자리 없음 — 열어 둘 이슈도 없다"
+            fi
+          elif [ -n "$num" ]; then
+            gh issue edit "$num" --body-file backlog.md
+            echo "백로그 이슈 #$num 갱신"
+          else
+            gh issue create --title "$TITLE" --body-file backlog.md --repo "$GITHUB_REPOSITORY"
           fi
       - name: Commit updated sync state
         run: |
