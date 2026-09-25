@@ -13333,5 +13333,80 @@
     ],
     "answer": 0,
     "explanation": "세 영역 21개 분야다 — 관리체계 수립 및 운영 4개(기반 마련·위험 관리·운영·점검 및 개선), 보호대책 요구사항 12개, 개인정보 처리단계별 요구사항 5개(수집·보유 및 이용·제공·파기·정보주체 권리보호). 앞의 두 영역만 받으면 ISMS(80개 인증기준), 셋을 다 받으면 ISMS-P(101개)다. 보호대책 12개를 셀 때 '시스템 및 서비스 운영관리'와 '시스템 및 서비스 보안관리'가 별개라는 점, 2.1이 '정책·조직·자산 관리'라는 점에서 수가 어긋나기 쉽다."
+  },
+  {
+    "id": "ise-ntfs-ads",
+    "area": "시스템 보안",
+    "difficulty": "상",
+    "topic": "sec-windows-security",
+    "question": "NTFS에서 한 파일에 이름 없는 주 스트림 외에 `파일명:스트림명` 형태로 데이터를 더 붙일 수 있어, 탐색기나 일반 dir에는 크기가 드러나지 않아 악성코드 은닉에 악용되는 기능은?",
+    "choices": [
+      "대체 데이터 스트림(ADS)",
+      "저널링(Journaling)",
+      "파일 암호화 시스템(EFS)",
+      "볼륨 섀도 복사본(VSS)"
+    ],
+    "answer": 0,
+    "explanation": "대체 데이터 스트림(ADS)은 NTFS 고유 기능으로, `보고서.txt:evil.exe`처럼 숨은 스트림에 데이터를 담아도 겉보기 파일 크기가 변하지 않는다. `dir /r`로 확인하며, 업로드 필터를 피하는 `shell.asp::$DATA` 우회도 같은 원리다. 저널링은 손상 복구, EFS는 파일 암호화, VSS는 스냅숏 기능으로 은닉과는 관계가 없다."
+  },
+  {
+    "id": "ise-ntfs-mft",
+    "area": "시스템 보안",
+    "difficulty": "중",
+    "topic": "sec-windows-security",
+    "question": "NTFS 볼륨에서 모든 파일과 디렉터리를 하나의 레코드로 등록해 이름·크기·시각·권한 등 메타데이터와 데이터 위치를 관리하며, 삭제된 파일의 흔적이 남아 포렌식 분석의 단서가 되는 구조는?",
+    "choices": [
+      "MFT(Master File Table)",
+      "FAT(File Allocation Table)",
+      "inode 테이블",
+      "레지스트리 하이브"
+    ],
+    "answer": 0,
+    "explanation": "MFT는 NTFS의 핵심 메타데이터 구조로, 볼륨의 모든 객체가 여기에 레코드로 등록된다. 아주 작은 파일은 별도 블록 없이 MFT 레코드 안에 그대로 상주하며, 삭제 후에도 레코드 흔적이 남아 복원과 타임라인 분석의 근거가 된다. FAT은 구형 파일 시스템의 할당표, inode는 유닉스 계열의 대응 구조, 레지스트리 하이브는 윈도우 설정 저장소다."
+  },
+  {
+    "id": "ise-webshell-concept",
+    "area": "애플리케이션 보안",
+    "difficulty": "중",
+    "topic": "sec-web-vulnerability",
+    "question": "파일 업로드 취약점을 통해 서버에 심긴 뒤, 웹 요청으로 원격에서 명령 실행·파일 조작을 수행하게 해 주는 악성 스크립트를 가리키는 말은?",
+    "choices": [
+      "웹셸(Web Shell)",
+      "쿠키(Cookie)",
+      "캡차(CAPTCHA)",
+      "세션 토큰(Session Token)"
+    ],
+    "answer": 0,
+    "explanation": "웹셸은 업로드된 파일이 서버에서 코드로 실행된다는 점을 이용해 공격자에게 원격 제어 통로를 열어 준다. 2021년 Exchange 서버를 노린 ProxyShell 공격에서 IIS에 .aspx 웹셸이 대량으로 심긴 사례가 대표적이다. 확장자가 실행되지 않는 경로에 저장하고 허용 목록으로 검증하는 것이 근본 대응이다."
+  },
+  {
+    "id": "ise-webshell-extension",
+    "area": "애플리케이션 보안",
+    "difficulty": "상",
+    "topic": "sec-web-vulnerability",
+    "question": "IIS(Windows) 기반 웹 서버에 웹셸을 올리려 할 때, 서버가 코드로 실행하는 확장자로 보기 어려운 것은?",
+    "choices": [
+      ".jsp",
+      ".asp",
+      ".aspx",
+      ".asa"
+    ],
+    "answer": 0,
+    "explanation": ".jsp는 톰캣·웹로직 등 자바 기반 서버가 실행하는 확장자로, IIS는 이를 코드로 실행하지 않는다. IIS는 .asp·.aspx·.asa·.cer 등을 ASP로 처리하므로, 공격자는 대상 서버가 무엇으로 도는지 먼저 확인하고 맞는 확장자를 고른다. 서버 환경에 맞지 않는 확장자를 올리면 실행되지 않는다는 점이 웹셸 공격의 전제다."
+  },
+  {
+    "id": "ise-upload-filter-bypass",
+    "area": "애플리케이션 보안",
+    "difficulty": "상",
+    "topic": "sec-web-vulnerability",
+    "question": "확장자 차단 목록(Blacklist)에 의존하는 파일 업로드 검증을 우회하는 기법으로 보기 어려운 것은?",
+    "choices": [
+      "업로드한 파일을 웹에서 실행되지 않는 경로에 저장한다",
+      "옛 IIS의 세미콜론 버그를 이용해 shell.asp;.jpg로 올린다",
+      "Windows가 무시하는 후행 점을 붙여 shell.asp.으로 올린다",
+      "NTFS 대체 데이터 스트림을 이용해 shell.asp::$DATA로 올린다"
+    ],
+    "answer": 0,
+    "explanation": "실행되지 않는 경로에 저장하는 것은 우회 기법이 아니라 방어책이다. 나머지 셋은 검증 로직과 실제 실행 판정 사이의 틈을 파고드는 우회 기법으로, 차단 목록 방식이 근본적으로 불완전한 이유를 보여 준다. 그래서 허용 목록 검증과 실행 불가 경로 저장, 저장 파일명 재생성을 함께 걸어야 한다."
   }
 ]
