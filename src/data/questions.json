@@ -13483,5 +13483,65 @@
     ],
     "answer": 0,
     "explanation": "방화벽 규칙과 NAT는 이 5튜플을 기준으로 통신 흐름을 식별해 동작한다. IP는 목적지 컴퓨터를, 포트는 그 안의 프로그램을 가리키며 둘 다 패킷 헤더에 실려 이동한다. MAC 주소는 같은 네트워크 안의 구간마다 바뀌는 2계층 주소라 5튜플에 들어가지 않는다."
+  },
+  {
+    "id": "ise-parkerian-hexad",
+    "area": "보안 일반",
+    "difficulty": "중",
+    "topic": "sec-cia-triad",
+    "question": "정보보안 3요소(기밀성·무결성·가용성)에 소유(Possession)·진정성(Authenticity)·유용성(Utility)을 더해 여섯으로 확장한 모델을 무엇이라 하는가?",
+    "choices": [
+      "파커리안 헥사드(Parkerian Hexad)",
+      "CIA 삼각형(CIA Triad)",
+      "STRIDE 모델",
+      "PDCA 순환"
+    ],
+    "answer": 0,
+    "explanation": "파커리안 헥사드는 CIA만으로 담기 어려운 면을 보완하려 소유(정보를 보유·통제하고 있는가), 진정성(출처가 진짜인가), 유용성(쓸모 있는 형태로 유지되는가)을 더한 6요소 모델이다. STRIDE는 위협 분류, PDCA는 관리체계 순환 모델로 성격이 다르다."
+  },
+  {
+    "id": "ise-x509-fields",
+    "area": "암호학",
+    "difficulty": "중",
+    "topic": "sec-digital-signature-pki",
+    "question": "X.509 인증서에 포함되는 항목으로 보기 어려운 것은?",
+    "choices": [
+      "인증서 소유자(주체)의 개인키",
+      "인증서 소유자(주체)의 공개키",
+      "인증서를 발급한 CA의 이름과 서명",
+      "인증서의 유효기간(시작·만료 시점)"
+    ],
+    "answer": 0,
+    "explanation": "개인키는 소유자만 비밀로 간직하는 값이라 인증서에 담기지 않는다. X.509에는 버전·일련번호·서명 알고리즘·발급자(CA) 이름·유효기간·주체 이름·주체의 공개키·확장 필드가 담기고 맨 끝에 CA의 서명이 붙는다. '인증서에 든 것은 공개키'라는 점이 핵심이다."
+  },
+  {
+    "id": "ise-lea-arx",
+    "area": "암호학",
+    "difficulty": "상",
+    "topic": "sec-symmetric-asymmetric",
+    "question": "국산 경량 블록 암호 LEA에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "비선형성을 위해 대형 S-box 치환 테이블을 사용한다",
+      "모듈러 덧셈·비트 순환·XOR 세 연산만 쓰는 ARX 구조다",
+      "블록 크기 128비트에 128/192/256비트 키를 지원한다",
+      "IoT·모바일 같은 경량·고속 환경을 겨냥해 설계됐다"
+    ],
+    "answer": 0,
+    "explanation": "LEA는 S-box를 쓰지 않는 것이 특징이다 — 모듈러 덧셈이 주는 비선형성으로 S-box를 대신하는 ARX(Add·Rotate·XOR) 구조라 테이블이 필요 없어 구현이 가볍고 캐시 타이밍 공격에도 강하다. S-box를 쓰는 것은 AES·ARIA 같은 SPN 계열이다."
+  },
+  {
+    "id": "ise-domestic-block-cipher",
+    "area": "암호학",
+    "difficulty": "중",
+    "topic": "sec-symmetric-asymmetric",
+    "question": "국산 블록 암호와 그 특성을 짝지은 것으로 옳지 않은 것은?",
+    "choices": [
+      "HIGHT — 128비트 블록의 SPN 구조로 공공기관 범용 표준",
+      "SEED — Feistel 구조로 인터넷 뱅킹 등에 쓰임",
+      "ARIA — AES와 같은 SPN 구조",
+      "LEA — ARX 기반의 경량·고속 알고리즘"
+    ],
+    "answer": 0,
+    "explanation": "HIGHT는 64비트 블록의 초경량 암호로 RFID·센서 같은 저전력 장치를 겨냥한 것이지 공공 범용 SPN 표준이 아니다. 공공 범용으로 AES와 같은 SPN 구조를 쓰는 것은 ARIA다. SEED는 Feistel, LEA는 ARX 구조라는 짝이 자주 출제된다."
   }
 ]
