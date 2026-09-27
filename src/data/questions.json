@@ -13333,5 +13333,215 @@
     ],
     "answer": 0,
     "explanation": "세 영역 21개 분야다 — 관리체계 수립 및 운영 4개(기반 마련·위험 관리·운영·점검 및 개선), 보호대책 요구사항 12개, 개인정보 처리단계별 요구사항 5개(수집·보유 및 이용·제공·파기·정보주체 권리보호). 앞의 두 영역만 받으면 ISMS(80개 인증기준), 셋을 다 받으면 ISMS-P(101개)다. 보호대책 12개를 셀 때 '시스템 및 서비스 운영관리'와 '시스템 및 서비스 보안관리'가 별개라는 점, 2.1이 '정책·조직·자산 관리'라는 점에서 수가 어긋나기 쉽다."
+  },
+  {
+    "id": "ise-ntfs-ads",
+    "area": "시스템 보안",
+    "difficulty": "상",
+    "topic": "sec-windows-security",
+    "question": "NTFS에서 한 파일에 이름 없는 주 스트림 외에 `파일명:스트림명` 형태로 데이터를 더 붙일 수 있어, 탐색기나 일반 dir에는 크기가 드러나지 않아 악성코드 은닉에 악용되는 기능은?",
+    "choices": [
+      "대체 데이터 스트림(ADS)",
+      "저널링(Journaling)",
+      "파일 암호화 시스템(EFS)",
+      "볼륨 섀도 복사본(VSS)"
+    ],
+    "answer": 0,
+    "explanation": "대체 데이터 스트림(ADS)은 NTFS 고유 기능으로, `보고서.txt:evil.exe`처럼 숨은 스트림에 데이터를 담아도 겉보기 파일 크기가 변하지 않는다. `dir /r`로 확인하며, 업로드 필터를 피하는 `shell.asp::$DATA` 우회도 같은 원리다. 저널링은 손상 복구, EFS는 파일 암호화, VSS는 스냅숏 기능으로 은닉과는 관계가 없다."
+  },
+  {
+    "id": "ise-ntfs-mft",
+    "area": "시스템 보안",
+    "difficulty": "중",
+    "topic": "sec-windows-security",
+    "question": "NTFS 볼륨에서 모든 파일과 디렉터리를 하나의 레코드로 등록해 이름·크기·시각·권한 등 메타데이터와 데이터 위치를 관리하며, 삭제된 파일의 흔적이 남아 포렌식 분석의 단서가 되는 구조는?",
+    "choices": [
+      "MFT(Master File Table)",
+      "FAT(File Allocation Table)",
+      "inode 테이블",
+      "레지스트리 하이브"
+    ],
+    "answer": 0,
+    "explanation": "MFT는 NTFS의 핵심 메타데이터 구조로, 볼륨의 모든 객체가 여기에 레코드로 등록된다. 아주 작은 파일은 별도 블록 없이 MFT 레코드 안에 그대로 상주하며, 삭제 후에도 레코드 흔적이 남아 복원과 타임라인 분석의 근거가 된다. FAT은 구형 파일 시스템의 할당표, inode는 유닉스 계열의 대응 구조, 레지스트리 하이브는 윈도우 설정 저장소다."
+  },
+  {
+    "id": "ise-webshell-concept",
+    "area": "애플리케이션 보안",
+    "difficulty": "중",
+    "topic": "sec-web-vulnerability",
+    "question": "파일 업로드 취약점을 통해 서버에 심긴 뒤, 웹 요청으로 원격에서 명령 실행·파일 조작을 수행하게 해 주는 악성 스크립트를 가리키는 말은?",
+    "choices": [
+      "웹셸(Web Shell)",
+      "쿠키(Cookie)",
+      "캡차(CAPTCHA)",
+      "세션 토큰(Session Token)"
+    ],
+    "answer": 0,
+    "explanation": "웹셸은 업로드된 파일이 서버에서 코드로 실행된다는 점을 이용해 공격자에게 원격 제어 통로를 열어 준다. 2021년 Exchange 서버를 노린 ProxyShell 공격에서 IIS에 .aspx 웹셸이 대량으로 심긴 사례가 대표적이다. 확장자가 실행되지 않는 경로에 저장하고 허용 목록으로 검증하는 것이 근본 대응이다."
+  },
+  {
+    "id": "ise-webshell-extension",
+    "area": "애플리케이션 보안",
+    "difficulty": "상",
+    "topic": "sec-web-vulnerability",
+    "question": "IIS(Windows) 기반 웹 서버에 웹셸을 올리려 할 때, 서버가 코드로 실행하는 확장자로 보기 어려운 것은?",
+    "choices": [
+      ".jsp",
+      ".asp",
+      ".aspx",
+      ".asa"
+    ],
+    "answer": 0,
+    "explanation": ".jsp는 톰캣·웹로직 등 자바 기반 서버가 실행하는 확장자로, IIS는 이를 코드로 실행하지 않는다. IIS는 .asp·.aspx·.asa·.cer 등을 ASP로 처리하므로, 공격자는 대상 서버가 무엇으로 도는지 먼저 확인하고 맞는 확장자를 고른다. 서버 환경에 맞지 않는 확장자를 올리면 실행되지 않는다는 점이 웹셸 공격의 전제다."
+  },
+  {
+    "id": "ise-upload-filter-bypass",
+    "area": "애플리케이션 보안",
+    "difficulty": "상",
+    "topic": "sec-web-vulnerability",
+    "question": "확장자 차단 목록(Blacklist)에 의존하는 파일 업로드 검증을 우회하는 기법으로 보기 어려운 것은?",
+    "choices": [
+      "업로드한 파일을 웹에서 실행되지 않는 경로에 저장한다",
+      "옛 IIS의 세미콜론 버그를 이용해 shell.asp;.jpg로 올린다",
+      "Windows가 무시하는 후행 점을 붙여 shell.asp.으로 올린다",
+      "NTFS 대체 데이터 스트림을 이용해 shell.asp::$DATA로 올린다"
+    ],
+    "answer": 0,
+    "explanation": "실행되지 않는 경로에 저장하는 것은 우회 기법이 아니라 방어책이다. 나머지 셋은 검증 로직과 실제 실행 판정 사이의 틈을 파고드는 우회 기법으로, 차단 목록 방식이 근본적으로 불완전한 이유를 보여 준다. 그래서 허용 목록 검증과 실행 불가 경로 저장, 저장 파일명 재생성을 함께 걸어야 한다."
+  },
+  {
+    "id": "ise-otp-sync-async",
+    "area": "보안 일반",
+    "difficulty": "중",
+    "topic": "sec-identification-authentication",
+    "question": "OTP 생성 방식 중 서버와 토큰이 입력값을 미리 맞춰 두지 않고, 서버가 매 인증마다 새 난수를 던져 그것으로 응답을 계산하게 하는 비동기 방식은?",
+    "choices": [
+      "질의-응답(Challenge-Response) 방식",
+      "시간 동기(TOTP) 방식",
+      "이벤트 동기(HOTP) 방식",
+      "시간과 이벤트를 함께 쓰는 조합 방식"
+    ],
+    "answer": 0,
+    "explanation": "질의-응답은 서버가 준 난수(challenge)를 사용자가 토큰에 입력해 응답을 만드는 비동기 방식이다. 입력값이 매번 서버에서 새로 오므로 시계나 카운터를 맞출 필요가 없어 동기화가 어긋나지 않지만, 사용자가 값을 직접 입력해야 해 번거롭다. 나머지 셋은 양쪽이 공유하는 값(시각·카운터)을 쓰는 동기 방식이다."
+  },
+  {
+    "id": "ise-totp-hotp",
+    "area": "보안 일반",
+    "difficulty": "상",
+    "topic": "sec-identification-authentication",
+    "question": "시간 동기 OTP(TOTP)와 이벤트 동기 OTP(HOTP)의 비교로 옳지 않은 것은?",
+    "choices": [
+      "HOTP는 현재 시각을, TOTP는 카운터를 입력값으로 사용한다",
+      "TOTP는 30~60초마다 값이 만료돼 탈취 후 악용 가능한 시간이 짧다",
+      "HOTP는 시계가 필요 없으나 버튼을 여러 번 누르면 카운터가 서버와 어긋날 수 있다",
+      "TOTP는 서버와 토큰의 시계가 어긋나면 인증에 실패할 수 있다"
+    ],
+    "answer": 0,
+    "explanation": "입력값이 뒤바뀌었다 — TOTP(RFC 6238)가 현재 시각 구간을, HOTP(RFC 4226)가 카운터를 입력으로 쓴다. TOTP는 짧게 만료돼 탈취 악용 시간이 짧은 대신 시계 오차에 약하고, HOTP는 시계가 필요 없는 대신 카운터 불일치와 미리 훔쳐본 값의 지연 악용 위험이 있다."
+  },
+  {
+    "id": "ise-arp-variants",
+    "area": "네트워크 보안",
+    "difficulty": "상",
+    "topic": "sec-arp-spoofing",
+    "question": "ARP 및 그 변형 프로토콜에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "RARP는 IPv6 환경에서 ARP를 대체하는 표준 프로토콜이다",
+      "Gratuitous ARP(GARP)는 요청 없이 자기 IP·MAC을 알려 IP 충돌 감지나 캐시 갱신에 쓰인다",
+      "Proxy ARP는 라우터가 다른 네트워크의 호스트를 대신해 자기 MAC으로 응답하는 방식이다",
+      "IPv6에서는 ARP 대신 ICMPv6 기반의 NDP가 MAC 주소 해석을 맡는다"
+    ],
+    "answer": 0,
+    "explanation": "RARP는 MAC 주소로 IP를 거꾸로 찾던 옛 프로토콜로 지금은 DHCP로 대체됐고, IPv6와는 관계가 없다. IPv6에서 ARP를 대체하는 것은 ICMPv6 기반의 NDP(Neighbor Discovery Protocol)다. GARP·Proxy ARP·NDP 설명은 모두 옳다."
+  },
+  {
+    "id": "ise-well-known-ports",
+    "area": "네트워크 보안",
+    "difficulty": "하",
+    "topic": "sec-network-basics",
+    "question": "SSH 원격 접속 서비스에 기본으로 배정된 잘 알려진 포트(well-known port) 번호는?",
+    "choices": [
+      "22번",
+      "23번",
+      "80번",
+      "443번"
+    ],
+    "answer": 0,
+    "explanation": "SSH는 22번이다. 23번은 평문으로 통신하는 Telnet, 80번은 HTTP, 443번은 HTTPS다. 0~1023번이 표준 서비스에 배정된 잘 알려진 포트로 HTTP 80·HTTPS 443·SSH 22·Telnet 23·DNS 53·SMTP 25·FTP 21이 대표적이며, 1024~49151은 등록 포트, 49152 이상은 클라이언트가 임시로 받는 동적 포트다."
+  },
+  {
+    "id": "ise-five-tuple",
+    "area": "네트워크 보안",
+    "difficulty": "중",
+    "topic": "sec-network-basics",
+    "question": "출발지 IP·출발지 포트·목적지 IP·목적지 포트·프로토콜의 다섯 값으로 하나의 통신 흐름을 유일하게 구분하는 것을 무엇이라 하는가?",
+    "choices": [
+      "5튜플(5-tuple)",
+      "서브넷 마스크",
+      "MAC 주소",
+      "체크섬"
+    ],
+    "answer": 0,
+    "explanation": "방화벽 규칙과 NAT는 이 5튜플을 기준으로 통신 흐름을 식별해 동작한다. IP는 목적지 컴퓨터를, 포트는 그 안의 프로그램을 가리키며 둘 다 패킷 헤더에 실려 이동한다. MAC 주소는 같은 네트워크 안의 구간마다 바뀌는 2계층 주소라 5튜플에 들어가지 않는다."
+  },
+  {
+    "id": "ise-parkerian-hexad",
+    "area": "보안 일반",
+    "difficulty": "중",
+    "topic": "sec-cia-triad",
+    "question": "정보보안 3요소(기밀성·무결성·가용성)에 소유(Possession)·진정성(Authenticity)·유용성(Utility)을 더해 여섯으로 확장한 모델을 무엇이라 하는가?",
+    "choices": [
+      "파커리안 헥사드(Parkerian Hexad)",
+      "CIA 삼각형(CIA Triad)",
+      "STRIDE 모델",
+      "PDCA 순환"
+    ],
+    "answer": 0,
+    "explanation": "파커리안 헥사드는 CIA만으로 담기 어려운 면을 보완하려 소유(정보를 보유·통제하고 있는가), 진정성(출처가 진짜인가), 유용성(쓸모 있는 형태로 유지되는가)을 더한 6요소 모델이다. STRIDE는 위협 분류, PDCA는 관리체계 순환 모델로 성격이 다르다."
+  },
+  {
+    "id": "ise-x509-fields",
+    "area": "암호학",
+    "difficulty": "중",
+    "topic": "sec-digital-signature-pki",
+    "question": "X.509 인증서에 포함되는 항목으로 보기 어려운 것은?",
+    "choices": [
+      "인증서 소유자(주체)의 개인키",
+      "인증서 소유자(주체)의 공개키",
+      "인증서를 발급한 CA의 이름과 서명",
+      "인증서의 유효기간(시작·만료 시점)"
+    ],
+    "answer": 0,
+    "explanation": "개인키는 소유자만 비밀로 간직하는 값이라 인증서에 담기지 않는다. X.509에는 버전·일련번호·서명 알고리즘·발급자(CA) 이름·유효기간·주체 이름·주체의 공개키·확장 필드가 담기고 맨 끝에 CA의 서명이 붙는다. '인증서에 든 것은 공개키'라는 점이 핵심이다."
+  },
+  {
+    "id": "ise-lea-arx",
+    "area": "암호학",
+    "difficulty": "상",
+    "topic": "sec-symmetric-asymmetric",
+    "question": "국산 경량 블록 암호 LEA에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "비선형성을 위해 대형 S-box 치환 테이블을 사용한다",
+      "모듈러 덧셈·비트 순환·XOR 세 연산만 쓰는 ARX 구조다",
+      "블록 크기 128비트에 128/192/256비트 키를 지원한다",
+      "IoT·모바일 같은 경량·고속 환경을 겨냥해 설계됐다"
+    ],
+    "answer": 0,
+    "explanation": "LEA는 S-box를 쓰지 않는 것이 특징이다 — 모듈러 덧셈이 주는 비선형성으로 S-box를 대신하는 ARX(Add·Rotate·XOR) 구조라 테이블이 필요 없어 구현이 가볍고 캐시 타이밍 공격에도 강하다. S-box를 쓰는 것은 AES·ARIA 같은 SPN 계열이다."
+  },
+  {
+    "id": "ise-domestic-block-cipher",
+    "area": "암호학",
+    "difficulty": "중",
+    "topic": "sec-symmetric-asymmetric",
+    "question": "국산 블록 암호와 그 특성을 짝지은 것으로 옳지 않은 것은?",
+    "choices": [
+      "HIGHT — 128비트 블록의 SPN 구조로 공공기관 범용 표준",
+      "SEED — Feistel 구조로 인터넷 뱅킹 등에 쓰임",
+      "ARIA — AES와 같은 SPN 구조",
+      "LEA — ARX 기반의 경량·고속 알고리즘"
+    ],
+    "answer": 0,
+    "explanation": "HIGHT는 64비트 블록의 초경량 암호로 RFID·센서 같은 저전력 장치를 겨냥한 것이지 공공 범용 SPN 표준이 아니다. 공공 범용으로 AES와 같은 SPN 구조를 쓰는 것은 ARIA다. SEED는 Feistel, LEA는 ARX 구조라는 짝이 자주 출제된다."
   }
 ]
