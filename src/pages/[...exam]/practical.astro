@@ -245,6 +245,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
         PRACTICAL_FORMAT,
       } from "../../lib/practical-grade";
       import { toast } from "../../lib/toast";
+      import { md } from "../../lib/md";
       import { paintHistory, recordDay } from "../../lib/history";
 
       type P = {
@@ -487,7 +488,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
         $("#exam-diff").dataset.level = q.difficulty;
         // 문항 번호는 왼쪽 여백에 거는 표식이라 화면 낭독에서는 뺀다(진행률이 이미 읽어 준다)
         $("#q-text").innerHTML =
-          `<span class="q-no mono" aria-hidden="true">${cur + 1}</span>${esc(q.question)}`;
+          `<span class="q-no mono" aria-hidden="true">${cur + 1}</span>${md(q.question)}`;
         const codeEl = $("#q-code");
         codeEl.hidden = !q.code;
         codeEl.textContent = q.code ?? "";
@@ -744,7 +745,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
                  </div>
                  <div class="pa-brief-col">
                    <h4>모범답안</h4>
-                   <p class="pa-model">${esc(q.modelAnswer ?? "")}</p>
+                   <p class="pa-model">${md(q.modelAnswer ?? "")}</p>
                  </div>
                </div>
                <div class="pa-self">
@@ -763,10 +764,10 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
               <span class="badge diff" data-level="${esc(q.difficulty)}">${esc(q.difficulty)}</span>
               <span class="pa-topic">${esc(q.topicTitle)}</span>
             </header>
-            <p class="pa-q">${esc(q.question)}</p>
+            <p class="pa-q">${md(q.question)}</p>
             ${q.code ? `<pre class="q-code mono">${esc(q.code)}</pre>` : ""}
             ${blanksHtml}
-            <p class="pa-exp">${esc(q.explanation)}</p>
+            <p class="pa-exp">${md(q.explanation)}</p>
           `;
           review.appendChild(card);
         });
