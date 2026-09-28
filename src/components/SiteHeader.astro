@@ -219,7 +219,8 @@ const examTabs = EXAMS.map((e) => ({
       links: [...wrap.querySelectorAll<HTMLAnchorElement>(".side-sublink")],
     }));
     const filter = () => {
-      // 제목은 "주제 — 부제"에서 앞부분만 보여주므로, 찾을 때는 title(전체 제목)을 본다
+      // 링크가 굽어 나온 data-search(제목·별칭·도입부)를 훑는다 — 본문 단어로도 주제를 찾는다.
+      // (없으면 옛 방식대로 title·표시 텍스트로 물러선다)
       const q = search.value.trim().toLowerCase();
       sideTocEl.classList.toggle("searching", !!q);
       if (allRow) allRow.hidden = !!q;
@@ -227,7 +228,7 @@ const examTabs = EXAMS.map((e) => ({
       groups.forEach((g) => {
         let hit = 0;
         g.links.forEach((a) => {
-          const on = !q || (a.title || a.textContent || "").toLowerCase().includes(q);
+          const on = !q || (a.dataset.search || a.title || a.textContent || "").toLowerCase().includes(q);
           a.hidden = !on;
           if (on) hit++;
         });

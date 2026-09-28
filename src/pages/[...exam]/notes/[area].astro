@@ -10,7 +10,7 @@ import {
   type Area,
   type Exam,
 } from "../../../content.config";
-import { loadBank, loadPractical, topicsOf } from "../../../lib/bank";
+import { loadBank, loadPractical, topicsOf, topicSearchText } from "../../../lib/bank";
 import NoteTopics from "../../../components/NoteTopics.astro";
 import SiteHeader from "../../../components/SiteHeader.astro";
 import SiteFooter from "../../../components/SiteFooter.astro";
@@ -137,8 +137,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
                 {/* 드로어 2단에서만 보이는 뒤로가기 — 넓은 화면에선 display:none이라 아코디언 격자에서 빠진다 */}
                 <button class="side-back" type="button">← {a}</button>
                 <nav class={`side-sub${cur ? " current" : ""}`} aria-label={`${a} 주제`}>
-                  {topicsByArea[a].map(({ title }, i) => (
-                    <a class="side-sublink" href={cur ? `#t${i}` : `${href}#t${i}`} title={title}>{title.split(" — ")[0]}</a>
+                  {topicsByArea[a].map((t, i) => (
+                    <a class="side-sublink" href={cur ? `#t${i}` : `${href}#t${i}`} title={t.title} data-search={topicSearchText(t)}>{t.title.split(" — ")[0]}</a>
                   ))}
                 </nav>
               </div>

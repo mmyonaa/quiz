@@ -51,6 +51,19 @@ export function topicsOf(area: Area, exam: Exam = DEFAULT_EXAM) {
     .map(([key, t]) => ({ key, ...t }));
 }
 
+/**
+ * 목차 검색이 훑을 텍스트 — 제목·별칭·도입부를 소문자로 이어 붙이고 강조 표기(==·**·` )를 걷어낸다.
+ * 본문(도입부)까지 검색되게 하되, 사이드 목차는 모든 노트 페이지에 실리므로 해설은 넣지 않는다(무게).
+ */
+export function topicSearchText(t: { title: string; intro: string; aliases?: string }) {
+  return [t.title, t.aliases ?? "", t.intro]
+    .join(" ")
+    .replace(/[=*`>|#]/g, " ")
+    .replace(/\s+/g, " ")
+    .toLowerCase()
+    .trim();
+}
+
 /** 한 과목의 주제 목록 — 과목 안에서도 정의 순서를 유지한다. */
 export function topicsOfSubject(subject: Subject, exam: Exam = DEFAULT_EXAM) {
   return Object.entries(TOPICS)

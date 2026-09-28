@@ -145,6 +145,8 @@ export type Topic = {
   title: string;
   intro: string;
   post?: string;
+  /** 목차 검색용 별칭 — 제목·도입부에 없는 약어·영문·동의어를 공백으로 이어 적는다(예: "windows ntfs mft"). */
+  aliases?: string;
 };
 /**
  * JSON을 import하면 subject·area가 리터럴 유니온이 아니라 string으로 넓어져 타입이 맞지 않는다.
