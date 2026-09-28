@@ -2223,13 +2223,15 @@ button.side-link {
 /* 목차 검색 — 91주제가 여섯 영역에 나뉘어 있어, 어느 영역인지 모르는 주제는 목록을 훑어서는 못 찾는다.
    검색 중에는 영역 경계를 넘어 일치하는 주제만 남기고, 영역 줄은 결과의 머리글이 된다. */
 .side-search {
+  position: relative;
   height: var(--search-h);
   padding-bottom: 0.55rem;
 }
 #toc-search {
   width: 100%;
   height: 100%;
-  padding: 0 0.65rem;
+  /* 오른쪽은 지우기 버튼 자리를 비운다 */
+  padding: 0 2rem 0 0.65rem;
   border: 1px solid var(--border);
   border-radius: var(--r-sm);
   background: var(--surface);
@@ -2239,6 +2241,32 @@ button.side-link {
 }
 #toc-search::placeholder {
   color: var(--muted);
+}
+/* 브라우저 기본 검색 지우기(×)는 제각각이라 숨기고, 우리 버튼 하나로 통일한다 */
+#toc-search::-webkit-search-cancel-button {
+  display: none;
+}
+/* 검색어를 지워 원래 목차로 돌아가는 버튼 — 검색어가 있을 때만 뜬다(input의 세로 영역에 맞춘다) */
+.side-search-clear {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0.55rem;
+  width: 2rem;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: var(--t-md);
+  line-height: 1;
+}
+.side-search-clear:hover {
+  color: var(--text);
+}
+.side-search-clear[hidden] {
+  display: none;
 }
 #toc-search:focus-visible {
   /* 목차가 스크롤 상자이고 검색창은 그 맨 위에 붙어 있다 — 바깥으로 그린 포커스 링은

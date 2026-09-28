@@ -209,6 +209,7 @@ const examTabs = EXAMS.map((e) => ({
   // ── 목차 검색 — 영역 경계를 넘어 주제를 찾는다 ──
   // 결과는 새로 그리지 않고 있는 목록을 걸러 낸다(영역 줄이 그대로 결과의 머리글이 된다).
   const search = document.querySelector<HTMLInputElement>("#toc-search");
+  const clearBtn = document.querySelector<HTMLButtonElement>("#toc-search-clear");
   const sideTocEl = document.querySelector<HTMLElement>(".side-toc");
   if (search && sideTocEl) {
     const empty = sideTocEl.querySelector<HTMLElement>(".side-empty");
@@ -224,6 +225,7 @@ const examTabs = EXAMS.map((e) => ({
       const q = search.value.trim().toLowerCase();
       sideTocEl.classList.toggle("searching", !!q);
       if (allRow) allRow.hidden = !!q;
+      if (clearBtn) clearBtn.hidden = !q; // 검색어가 있을 때만 지우기 버튼을 보인다
       let hits = 0;
       groups.forEach((g) => {
         let hit = 0;
@@ -239,14 +241,42 @@ const examTabs = EXAMS.map((e) => ({
       if (empty) empty.hidden = !q || hits > 0;
       if (!q) openPane(currentPane); // 검색을 지우면 원래 아코디언 상태로
     };
-    search.addEventListener("input", filter);
+    // 검색어는 세션에 담아 둔다 — 결과를 눌러 다른 영역·과목 페이지로 넘어가도(전체 페이지 이동)
+    // 검색창이 빈 채로 다시 시작하지 않게. 탭이 열려 있는 동안 유지되고, 지우면 함께 사라진다.
+    const Q_KEY = "daily.quiz.toc-q";
+    const saveQ = () => {
+      try {
+        if (search.value.trim()) sessionStorage.setItem(Q_KEY, search.value);
+        else sessionStorage.removeItem(Q_KEY);
+      } catch {}
+    };
+    search.addEventListener("input", () => {
+      filter();
+      saveQ();
+    });
+    // 지우기 버튼 — 검색어와 저장분을 함께 비우고 원래 목차로 돌아간다
+    clearBtn?.addEventListener("click", () => {
+      search.value = "";
+      filter();
+      saveQ();
+      search.focus();
+    });
     search.addEventListener("keydown", (e) => {
       // Esc는 먼저 검색어를 지운다 — 드로어까지 닫히면 결과를 다시 부르기 번거롭다
       if (e.key !== "Escape" || !search.value) return;
       e.stopPropagation();
       search.value = "";
       filter();
+      saveQ();
     });
+    // 넘어온 페이지에서 저장된 검색어를 되살려 같은 결과를 다시 건다.
+    try {
+      const saved = sessionStorage.getItem(Q_KEY);
+      if (saved) {
+        search.value = saved;
+        filter();
+      }
+    } catch {}
   }
 
   // ── 헤더 높이 공유 — sticky 주제 제목·앵커 오프셋이 --top-h를 참조한다 ──
