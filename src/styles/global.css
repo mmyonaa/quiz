@@ -27,6 +27,11 @@
   --wrong: #d0324e;
   --wrong-soft: #fceaee;
   --wrong-contrast: #ffffff;
+  /* 개념 노트 형광펜 — 액센트에서 떼어 둔 노랑이다. 시험별로 액센트가 코랄/블루로
+     갈리는데 형광펜까지 따라 바뀌면 "직접 그은 필기 표시"가 아니라 브랜드 장식으로
+     읽힌다. 두 시험이 같은 노랑을 쓰고, 종이에 형광펜을 그은 것처럼 보이면 된다. */
+  --hl: #fdf0a6;
+  --hl-text: #3d3406;
   /* ── 타입 스케일 ──
      고유 font-size가 24종까지 불어나 있었다(0.68·0.7·0.72·0.74·0.75·0.76·0.78·0.79·0.8·0.82…).
      "조금 작게"를 매번 새 숫자로 정한 값들이라 같은 층위의 글자가 화면마다 달랐다.
@@ -97,6 +102,10 @@
     --wrong: #ef7c8e;
     --wrong-soft: #2b1a20;
     --wrong-contrast: #1c0e12;
+    /* 형광 노랑을 그대로 두면 어두운 화면에서 타 버린다 — 면은 어두운 호박으로
+       낮추고 글자를 밝은 쪽으로 뒤집는다(액센트를 다루던 방식과 같다). */
+    --hl: #4a3c12;
+    --hl-text: #f7e9b0;
     color-scheme: dark;
   }
   :root[data-exam="sec"]:not([data-theme="light"]) {
@@ -123,6 +132,10 @@
   --wrong: #ef7c8e;
   --wrong-soft: #2b1a20;
   --wrong-contrast: #1c0e12;
+  /* 형광 노랑을 그대로 두면 어두운 화면에서 타 버린다 — 면은 어두운 호박으로
+     낮추고 글자를 밝은 쪽으로 뒤집는다(액센트를 다루던 방식과 같다). */
+  --hl: #4a3c12;
+  --hl-text: #f7e9b0;
   color-scheme: dark;
 }
 :root[data-theme="dark"][data-exam="sec"] {
@@ -2734,6 +2747,51 @@ button.toc-chip {
 }
 .topic-intro li::marker {
   color: var(--muted);
+}
+/* ── 도입부 강조 3층 (#58) ──
+   굵게 하나가 용어·수치·대조 짝·경고를 다 칠하고 있었다. 셋으로 갈라 서로 다른
+   축을 쓴다 — 형광펜은 '면', 용어는 '굵기', 값은 '글꼴'이다. 축이 겹치지 않으므로
+   한 문장에 셋이 같이 있어도 무엇이 무엇인지 구분된다. */
+/* 형광펜 — 외울 한 줄. 주제당 1~2개가 상한이다(여럿이면 형광펜 자체가 무의미해진다) */
+.hl {
+  background: var(--hl);
+  color: var(--hl-text);
+  /* 글자 높이만 감싸는 띠 — 위아래 padding을 키우면 줄간격이 들썩인다 */
+  padding: 0.08em 0.18em;
+  border-radius: 3px;
+  font-weight: 600;
+}
+/* 값·명령·경로 — 숫자와 기호는 눈이 제일 빨리 잡는 물건이라 글꼴로 따로 세운다.
+   `640`, `/etc/shadow`, `rwxr-xr--`처럼 "그대로 외워야 하는 문자열"이 여기 온다.
+   0.9em은 mono가 같은 크기에서 본문보다 커 보이는 것을 되돌리는 값이다. */
+.val {
+  padding: 0.1em 0.3em;
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  font-size: 0.9em;
+  /* 칩은 줄 끝에서 쪼개지면 안 된다 — "5만 명"이 "5만" / "명"으로 갈리면 값 하나가
+     둘로 보인다. 담기는 값이 스무 자 안쪽이라 모바일에서도 줄을 넘지 않는다. */
+  white-space: nowrap;
+}
+/* <code>의 브라우저 기본 글꼴이 monospace라, mono를 떼도 한글이 mono로 남아
+   "1년 이상"의 낱말 사이가 벌어졌다. mono가 붙은 칩만 mono로 두고 나머지는 본문 글꼴로
+   되돌린다(:not으로 특정도를 올려야 뒤에 오는 이 규칙이 .mono를 덮지 않는다). */
+.val:not(.mono) {
+  font-family: inherit;
+}
+/* 시험 포인트 — "무엇이 출제 핵심이다"라고 짚는 문장이 산문 마지막 줄에 묻혀 있었다.
+   배지는 달지 않는다 — 문장 자체가 "출제 핵심이다"로 끝나 라벨이 겹쳐 읽힌다.
+   좌측 보더는 액센트를 쓴다(형광펜과 달리 이건 사이트가 말하는 것이므로 브랜드색이 맞다). */
+.topic-key {
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  background: var(--accent-soft);
+  padding: 0.7em 0.9em;
+}
+/* 형광펜이 시험 포인트 안에 또 있으면 색 띠가 두 겹이 된다 — 안에서는 굵기만 남긴다 */
+.topic-key .hl {
+  background: none;
+  color: inherit;
 }
 .topic-intro {
   /* 장식 없이 제목 바로 아래 흐르는 리드 문단 — 좌측 색 보더는 가로 공간을 먹고

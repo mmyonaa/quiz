@@ -280,6 +280,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
       import { supabase } from "../../lib/supabase";
       import { onAuth, authSession, requireLogin, errorText } from "../../lib/auth";
       import { toast } from "../../lib/toast";
+      import { md } from "../../lib/md";
       import { paintHistory, recordDay } from "../../lib/history";
       import {
         dueIds,
@@ -647,7 +648,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
         fb.innerHTML = `
           <p class="fb-verdict"><i class="fb-mark" aria-hidden="true">${hit ? "○" : "✕"}</i>${hit ? "정답" : "오답"}</p>
           ${hit ? "" : `<p class="rv-a">내 답: ${q.choices[my!]}<br/>정답: <b>${q.choices[q.answer]}</b></p>`}
-          <p class="rv-x">${q.explanation}</p>
+          <p class="rv-x">${md(q.explanation)}</p>
           ${q.relatedPost ? `<p class="rv-link"><a href="${blogPostBase}${q.relatedPost}/" target="_blank" rel="noopener">개념 글 다시 읽기 →</a></p>` : ""}
         `;
         fb.hidden = false;
@@ -815,7 +816,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
         $("#exam-diff").dataset.level = q.difficulty;
         // 문항 번호는 왼쪽 여백에 거는 표식이라 화면 낭독에서는 빼 둔다(진행률이 이미 읽어 준다)
         $("#q-text").innerHTML =
-          `<span class="q-no mono" aria-hidden="true">${cur + 1}</span>${esc(q.question)}`;
+          `<span class="q-no mono" aria-hidden="true">${cur + 1}</span>${md(q.question)}`;
         const codeEl = $("#q-code");
         codeEl.hidden = !q.code;
         codeEl.textContent = q.code ?? "";
@@ -1036,10 +1037,10 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
           const card = document.createElement("article");
           card.className = wrong ? "rv wrong" : "rv";
           card.innerHTML = `
-            <p class="rv-q"><span class="rv-mark mono" aria-hidden="true">${wrong ? "✕" : "○"}</span> <span class="badge">${q.area}</span> <span class="badge diff" data-level="${q.difficulty}">${q.difficulty}</span> <span class="rv-qt">${esc(q.question)}</span></p>
+            <p class="rv-q"><span class="rv-mark mono" aria-hidden="true">${wrong ? "✕" : "○"}</span> <span class="badge">${q.area}</span> <span class="badge diff" data-level="${q.difficulty}">${q.difficulty}</span> <span class="rv-qt">${md(q.question)}</span></p>
             ${q.code ? `<pre class="q-code mono">${esc(q.code)}</pre>` : ""}
             <p class="rv-a">${wrong ? `내 답: ${unanswered ? "무응답" : q.choices[picked[i]]}<br/>` : ""}정답: <b>${q.choices[q.answer]}</b></p>
-            <p class="rv-x">${q.explanation}</p>
+            <p class="rv-x">${md(q.explanation)}</p>
             ${q.relatedPost ? `<p class="rv-link"><a href="${blogPostBase}${q.relatedPost}/" target="_blank" rel="noopener">개념 글 다시 읽기 →</a></p>` : ""}
           `;
           // 복기 카드에서도 문제 저장 토글 (#5)
