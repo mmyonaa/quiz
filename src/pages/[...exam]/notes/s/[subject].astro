@@ -10,7 +10,7 @@ import {
   type Exam,
   type Subject,
 } from "../../../../content.config";
-import { loadBank, loadPractical, topicsOfSubject, areasOfSubject } from "../../../../lib/bank";
+import { loadBank, loadPractical, topicsOfSubject, areasOfSubject, topicSearchText } from "../../../../lib/bank";
 import NoteTopics from "../../../../components/NoteTopics.astro";
 import SiteHeader from "../../../../components/SiteHeader.astro";
 import SiteFooter from "../../../../components/SiteFooter.astro";
@@ -136,8 +136,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
                 {/* 드로어 2단에서만 보이는 뒤로가기 — 넓은 화면에선 display:none이라 아코디언 격자에서 빠진다 */}
                 <button class="side-back" type="button">← {i + 1}과목</button>
                 <nav class={`side-sub${cur ? " current" : ""}`} aria-label={`${s} 주제`}>
-                  {topicsBySubject[s].map(({ title }, j) => (
-                    <a class="side-sublink" href={cur ? `#t${j}` : `${href}#t${j}`} title={title}>{title.split(" — ")[0]}</a>
+                  {topicsBySubject[s].map((t, j) => (
+                    <a class="side-sublink" href={cur ? `#t${j}` : `${href}#t${j}`} title={t.title} data-search={topicSearchText(t)}>{t.title.split(" — ")[0]}</a>
                   ))}
                 </nav>
               </div>
