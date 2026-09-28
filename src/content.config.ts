@@ -173,6 +173,11 @@ const HIGHLIGHT = /==(?=\S)([^=\n]+)(?<=\S)==/g;
 const HIGHLIGHT_MAX = 100;
 const anyEmphasis = /==(?=\S)[^=\n]+(?<=\S)==|\*\*[^*]+\*\*|`[^`\n]+`|^[>|] /m;
 export const unpairedBacktick = (s: string) => ((s.match(/`/g) ?? []).length & 1) === 1;
+/** 상한을 넘는 형광펜을 찾아 돌려준다(없으면 undefined) — 도입부와 해설이 같은 자를 쓴다 */
+export const overlongHighlight = (s: string) => {
+  for (const [, body] of s.matchAll(HIGHLIGHT)) if (body.length > HIGHLIGHT_MAX) return body;
+  return undefined;
+};
 
 /** 주제 정의가 깨지면(시험·과목·영역 오타, 강조 표기 위반) 빌드에서 잡는다 */
 for (const [key, t] of Object.entries(TOPICS)) {
@@ -183,11 +188,11 @@ for (const [key, t] of Object.entries(TOPICS)) {
   if (!areas.includes(t.area)) throw new Error(`주제 ${key}의 area가 ${t.exam}에 없음: ${t.area}`);
   if (unpairedBacktick(t.intro))
     throw new Error(`주제 ${key}의 도입부에 백틱 짝이 맞지 않음 — 값 칩 대신 백틱 글자가 화면에 그대로 나온다`);
-  for (const [, body] of t.intro.matchAll(HIGHLIGHT))
-    if (body.length > HIGHLIGHT_MAX)
-      throw new Error(
-        `주제 ${key}의 형광펜이 ${body.length}자(상한 ${HIGHLIGHT_MAX}) — 설명구는 본문에 두고 외울 낱말에만 칠한다: "${body.slice(0, 40)}…"`,
-      );
+  const long = overlongHighlight(t.intro);
+  if (long)
+    throw new Error(
+      `주제 ${key}의 형광펜이 ${long.length}자(상한 ${HIGHLIGHT_MAX}) — 설명구는 본문에 두고 외울 낱말에만 칠한다: "${long.slice(0, 40)}…"`,
+    );
   if (!anyEmphasis.test(t.intro))
     throw new Error(`주제 ${key}의 도입부에 강조가 하나도 없음 — 이 주제에서 하나만 들고 간다면 무엇인지 ==형광펜==으로 한 줄 칠한다`);
   // 대조표는 칸 수가 줄마다 같아야 한다 — 어긋나면 표가 조용히 어긋난 채로 그려진다
@@ -232,6 +237,11 @@ const quiz = defineCollection({
     // 발문·해설도 md()를 거치므로 백틱이 홀수면 백틱 글자가 화면에 그대로 나온다
     .refine((q) => !unpairedBacktick(q.question + q.explanation), {
       message: "발문이나 해설의 백틱 짝이 맞지 않습니다",
+      path: ["explanation"],
+    })
+    // 해설의 형광펜도 도입부와 같은 상한을 쓴다 — 길면 표시가 아니라 문단이 된다
+    .refine((q) => !overlongHighlight(q.question + "\n" + q.explanation), {
+      message: `발문이나 해설의 형광펜이 ${HIGHLIGHT_MAX}자를 넘습니다 — 함정을 말하는 구절만 칠합니다`,
       path: ["explanation"],
     }),
 });
@@ -293,6 +303,10 @@ const practical = defineCollection({
     // 발문·해설·모범답안도 md()를 거친다 — 백틱이 홀수면 백틱 글자가 화면에 그대로 나온다
     .refine((q) => !unpairedBacktick(q.question + q.explanation + (q.modelAnswer ?? "")), {
       message: "발문·해설·모범답안의 백틱 짝이 맞지 않습니다",
+      path: ["explanation"],
+    })
+    .refine((q) => !overlongHighlight([q.question, q.explanation, q.modelAnswer ?? ""].join("\n")), {
+      message: `발문·해설·모범답안의 형광펜이 ${HIGHLIGHT_MAX}자를 넘습니다 — 함정을 말하는 구절만 칠합니다`,
       path: ["explanation"],
     }),
 });
