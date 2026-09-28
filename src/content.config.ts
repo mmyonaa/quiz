@@ -171,7 +171,7 @@ const TOPIC_KEYS = Object.keys(TOPICS) as [string, ...string[]];
 const HIGHLIGHT = /==(?=\S)([^=\n]+)(?<=\S)==/g;
 /** 형광펜이 이보다 길면 '표시'가 아니라 노란 문단이 되어 눈이 다시 갈 곳을 잃는다 */
 const HIGHLIGHT_MAX = 100;
-const anyEmphasis = /==(?=\S)[^=\n]+(?<=\S)==|\*\*[^*]+\*\*|`[^`\n]+`|^> /m;
+const anyEmphasis = /==(?=\S)[^=\n]+(?<=\S)==|\*\*[^*]+\*\*|`[^`\n]+`|^[>|] /m;
 export const unpairedBacktick = (s: string) => ((s.match(/`/g) ?? []).length & 1) === 1;
 
 /** 주제 정의가 깨지면(시험·과목·영역 오타, 강조 표기 위반) 빌드에서 잡는다 */
@@ -190,6 +190,14 @@ for (const [key, t] of Object.entries(TOPICS)) {
       );
   if (!anyEmphasis.test(t.intro))
     throw new Error(`주제 ${key}의 도입부에 강조가 하나도 없음 — 이 주제에서 하나만 들고 간다면 무엇인지 ==형광펜==으로 한 줄 칠한다`);
+  // 대조표는 칸 수가 줄마다 같아야 한다 — 어긋나면 표가 조용히 어긋난 채로 그려진다
+  for (const block of t.intro.split("\n\n")) {
+    if (!block.startsWith("| ")) continue;
+    const rows = block.split("\n").map((r) => r.replace(/^\s*\|/, "").replace(/\|\s*$/, "").split("|").length);
+    if (rows.length < 2) throw new Error(`주제 ${key}의 대조표에 머리글만 있고 줄이 없음`);
+    if (new Set(rows).size > 1)
+      throw new Error(`주제 ${key}의 대조표 칸 수가 줄마다 다름(${rows.join("·")}) — 모든 줄의 칸 수가 같아야 한다`);
+  }
 }
 
 const quiz = defineCollection({

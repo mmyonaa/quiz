@@ -2779,6 +2779,70 @@ button.toc-chip {
 .val:not(.mono) {
   font-family: inherit;
 }
+/* ── 대조표 ──
+   "A는 …이고 B는 …이다" 식 산문은 견주는 축이 문장 속에 흩어져 있어 눈으로 비교가 안 된다.
+   두 열로 세우면 비교가 공짜가 된다 — 축을 왼쪽에 고정하고 같은 축의 값을 가로로 마주 세운다.
+   면 카드가 아니라 괘선만 쓴다(.cn과 같은 이유 — 도입부 안에서 또 하나의 박스가 되면 안 된다). */
+.cmp-wrap {
+  /* 좁은 화면에서 표가 열을 밀어내지 않고 제 칸 안에서만 가로로 구른다
+     (html이 overflow-x:clip이라 넘치면 스크롤도 없이 소리 없이 잘린다) */
+  overflow-x: auto;
+  margin: 0 0 0.85em;
+}
+.cmp {
+  border-collapse: collapse;
+  width: 100%;
+  /* 좁은 화면에서 열을 욱여넣지 않고 .cmp-wrap 안에서 가로로 구르게 하는 하한 */
+  min-width: 34rem;
+  /* 표는 문장이 아니라 대조표다 — 본문보다 한 단 작게 두어 읽는 흐름과 층을 가른다 */
+  font-size: var(--t-sm);
+  line-height: 1.6;
+}
+/* 칸 하나가 길다고 그 열만 넓어지면 마주 세운 값들이 좌우로 멀어져 비교가 도로 어려워진다.
+   값 열마다 50%를 요구하게 두면, 열이 둘이든 넷이든 브라우저가 남은 폭을 고르게 나눈다
+   (요구 합이 100%를 넘으면 비례 배분된다). 축 열은 1%로 눌러 글자 폭만 차지하게 한다. */
+.cmp thead th:first-child,
+.cmp tbody th {
+  width: 1%;
+}
+.cmp thead th:not(:first-child),
+.cmp td {
+  width: 50%;
+}
+/* 축이 셋 이상이면 열마다 담는 것의 성격이 달라(산문 옆에 O(n²)) 균등 분할이 되레 낭비다 */
+.cmp-wide thead th:not(:first-child),
+.cmp-wide td {
+  width: auto;
+}
+.cmp th,
+.cmp td {
+  padding: 0.5em 0.7em;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+.cmp thead th {
+  /* 견주는 대상의 이름 — 표에서 가장 먼저 눈에 걸려야 하는 줄이다 */
+  border-bottom: 1px solid var(--text);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.cmp thead th:first-child {
+  /* 축 열의 머리는 비워 둔다 — 이름을 붙이면 대상 이름과 같은 층으로 읽힌다 */
+  color: var(--muted);
+  font-weight: 400;
+}
+.cmp tbody th {
+  /* 견주는 축 — 값이 아니라 이름표이므로 톤을 낮추고 줄바꿈을 막아 왼쪽에 고정된 기둥이 된다 */
+  color: var(--muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.cmp tbody tr:last-child th,
+.cmp tbody tr:last-child td {
+  border-bottom: 0;
+}
+
 /* 시험 포인트 — "무엇이 출제 핵심이다"라고 짚는 문장이 산문 마지막 줄에 묻혀 있었다.
    배지는 달지 않는다 — 문장 자체가 "출제 핵심이다"로 끝나 라벨이 겹쳐 읽힌다.
    좌측 보더는 액센트를 쓴다(형광펜과 달리 이건 사이트가 말하는 것이므로 브랜드색이 맞다). */
