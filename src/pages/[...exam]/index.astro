@@ -277,8 +277,6 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
         relatedPost?: string; // 선택 — 글이 아직 없는 문항은 해설로 완결
       };
 
-      import { supabase } from "../../lib/supabase";
-      import { onAuth, authSession, requireLogin, errorText } from "../../lib/auth";
       import { toast } from "../../lib/toast";
       import { md } from "../../lib/md";
       import { paintHistory, recordDay } from "../../lib/history";
@@ -309,6 +307,14 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
       const keyOf = (base: string) => (examSlug ? `${base}.${examSlug}` : base);
 
       const $ = <T extends HTMLElement>(sel: string) => document.querySelector(sel) as T;
+
+      // Supabase·인증은 로그인한 사람의 북마크·오답 기록에만 쓴다. 그런데 이 둘을 모듈
+      // 맨 위에서 정적 import 하고 있었다 — ES 모듈은 import 하나가 실패하면 모듈 전체가
+      // 실행되지 않으므로, 광고 차단·사내 프록시·오프라인·CDN 장애 어느 쪽이든 '시작하기'
+      // 조차 듣지 않았다. 로그인 없이 성립해야 할 풀이가 계정 기능 하나 때문에 통째로 죽은
+      // 것이다(개념 노트도 같은 모양이었다). 동적으로 들이고, 실패하면 저장 별만 걷는다.
+      let supabase: (typeof import("../../lib/supabase"))["supabase"] | null = null;
+      let auth: typeof import("../../lib/auth") | null = null;
       // innerHTML 템플릿에 끼워 넣는 코드 블록용 — C 코드의 <, & 등이 태그로 해석되지 않게
       const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
       const setup = $("#setup"), exam = $("#exam"), result = $("#result");
@@ -375,20 +381,20 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
 
       // 저장 토글 — 성공을 낙관하고 즉시 반영, 실패 시 되돌린다. 반환값: 토글 후 저장 여부(비로그인이면 null)
       const toggleSave = async (qid: string): Promise<boolean | null> => {
-        if (!requireLogin()) return null;
-        const uid = authSession()!.user.id;
+        if (!auth?.requireLogin()) return null;
+        const uid = auth.authSession()!.user.id;
         const wasSaved = savedIds.has(qid);
         if (wasSaved) savedIds.delete(qid);
         else savedIds.add(qid);
         updateSaveStar();
         const { error } = wasSaved
-          ? await supabase.from("saved_questions").delete().eq("user_id", uid).eq("question_id", qid)
-          : await supabase.from("saved_questions").upsert({ user_id: uid, question_id: qid });
+          ? await supabase!.from("saved_questions").delete().eq("user_id", uid).eq("question_id", qid)
+          : await supabase!.from("saved_questions").upsert({ user_id: uid, question_id: qid });
         if (error) {
           if (wasSaved) savedIds.add(qid);
           else savedIds.delete(qid);
           updateSaveStar();
-          alert(errorText("저장에 실패했습니다", error));
+          alert(auth.errorText("저장에 실패했습니다", error));
           return savedIds.has(qid);
         }
         toast(wasSaved ? "저장을 해제했습니다" : "저장했습니다 · 마이페이지에 모아둡니다");
@@ -406,33 +412,44 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
         paintStar($("#save-q"), savedIds.has(session[cur].id));
       };
 
-      // 구독은 updateSaveStar 정의 뒤에 — 인증 상태가 이미 준비됐으면 콜백이 즉시 실행된다
-      onAuth(async (s) => {
-        if (!s) {
-          savedIds = new Set();
+      // 구독은 updateSaveStar 정의 뒤에 — 인증 상태가 이미 준비됐으면 콜백이 즉시 실행된다.
+      // 실패해도 풀이는 그대로 돌아간다 — 눌러도 아무 일 없는 별을 남기느니 별만 걷는다.
+      void (async () => {
+        try {
+          supabase = (await import("../../lib/supabase")).supabase;
+          auth = await import("../../lib/auth");
+        } catch (e) {
+          console.error("인증 모듈을 불러오지 못했습니다 — 저장·오답 기록만 비활성화합니다:", e);
+          $("#save-q").hidden = true;
+          return;
+        }
+        auth.onAuth(async (s) => {
+          if (!s) {
+            savedIds = new Set();
+            updateSaveStar();
+            return;
+          }
+          const { data, error } = await supabase!.from("saved_questions").select("question_id");
+          if (error) {
+            console.error("저장 목록 조회 실패:", error.message);
+            return;
+          }
+          savedIds = new Set((data ?? []).map((r: { question_id: string }) => r.question_id));
           updateSaveStar();
-          return;
-        }
-        const { data, error } = await supabase.from("saved_questions").select("question_id");
-        if (error) {
-          console.error("저장 목록 조회 실패:", error.message);
-          return;
-        }
-        savedIds = new Set((data ?? []).map((r: { question_id: string }) => r.question_id));
-        updateSaveStar();
-      });
+        });
+      })();
 
       // 채점 시 오답을 DB에 기록 — 실패해도 채점 흐름을 막지 않는다(fire-and-forget)
       const recordWrongAnswers = () => {
-        if (recorded || !authSession()) return;
+        if (recorded || !auth?.authSession()) return;
         recorded = true;
-        const uid = authSession()!.user.id;
+        const uid = auth.authSession()!.user.id;
         const rows = session
           .map((q, i) => ({ q, p: picked[i] }))
           .filter(({ q, p }) => p !== undefined && p !== q.answer)
           .map(({ q, p }) => ({ user_id: uid, question_id: q.id, chosen: p }));
         if (rows.length === 0) return;
-        supabase
+        supabase!
           .from("wrong_answers")
           .insert(rows)
           .then(({ error }) => {
