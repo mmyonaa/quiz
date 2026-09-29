@@ -3045,11 +3045,27 @@ button.toc-chip {
 .cn-concept {
   margin: 0.1rem 0 0.7rem;
   padding: 0.6em 0.8em;
-  padding-right: 3.4rem;
   background: var(--surface-2);
   border-radius: var(--r-sm);
   font-size: var(--t-base);
   line-height: 1.7;
+}
+/* 개념 줄 + 난이도·별을 한 줄로 묶어 세로 중앙정렬 — float은 뒤 블록과 중앙을 맞출 수 없다 */
+.cn-crow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.1rem 0 0.7rem;
+}
+.cn-crow .cn-concept {
+  flex: 1;
+  margin: 0;
+}
+.cn-crow .cn-diff,
+.cn-crow .cn-save {
+  float: none;
+  margin: 0;
+  flex-shrink: 0;
 }
 /* 상세 해설 — 선지를 고르거나 '해설 보기'로 열린다. 위의 선지와 점선으로 가른다
    (예전 .cn-q[open]가 하던 구실 — 박스를 더 겹치지 않고 괘선으로만 끊는다). */

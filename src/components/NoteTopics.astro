@@ -100,9 +100,20 @@ const blankLabel = (q: PQ, i: number) =>
           '해설 보기'를 눌러 그 자리서 편다 — 해설이 답을 흘리던 '해설 먼저' 구조를 뒤집었다. */}
       {questions.map((q) => (
         <article class="cn" data-id={q.id} data-diff={q.difficulty}>
-          <button class="save-star cn-save" type="button" title="이 개념 저장" aria-label="이 개념 저장">☆</button>
-          <span class="badge diff cn-diff" data-level={q.difficulty}>{q.difficulty}</span>
-          {q.concept && <p class="cn-concept" set:html={md(q.concept)} />}
+          {/* 개념이 있으면 개념 박스와 난이도·별을 한 줄(flex)로 묶어 세로 중앙정렬한다.
+              없으면(순수 정의형) 예전처럼 문제 첫 줄에 우측으로 띄운다. */}
+          {q.concept ? (
+            <div class="cn-crow">
+              <p class="cn-concept" set:html={md(q.concept)} />
+              <span class="badge diff cn-diff" data-level={q.difficulty}>{q.difficulty}</span>
+              <button class="save-star cn-save" type="button" title="이 개념 저장" aria-label="이 개념 저장">☆</button>
+            </div>
+          ) : (
+            <>
+              <button class="save-star cn-save" type="button" title="이 개념 저장" aria-label="이 개념 저장">☆</button>
+              <span class="badge diff cn-diff" data-level={q.difficulty}>{q.difficulty}</span>
+            </>
+          )}
           <p class="cn-question" set:html={md(q.question)} />
           {q.code && <pre class="q-code mono">{q.code}</pre>}
           {/* 정답은 가려져 있다 — 선지를 골라 자기 점검하거나 '해설 보기'로 편다 */}

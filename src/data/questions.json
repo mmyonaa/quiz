@@ -68,7 +68,6 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "page-replacement",
-    "concept": "LRU는 가장 오래 참조되지 않은 페이지를 교체 대상으로 고른다.",
     "question": "페이지 교체 알고리즘 중 '가장 오랫동안 사용되지 않은 페이지'를 교체 대상으로 고르는 것은?",
     "choices": [
       "FIFO",
@@ -448,7 +447,6 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "deadlock",
-    "concept": "자원에 번호를 매겨 오름차순 요청만 허용하면 환형 대기 조건이 깨진다.",
     "question": "모든 자원에 번호를 매기고 오름차순으로만 요청하게 하는 교착상태 예방 기법이 부정하는 조건은?",
     "choices": [
       "상호 배제",
@@ -464,7 +462,6 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "deadlock",
-    "concept": "은행원 알고리즘은 안전 상태를 유지하며 자원을 내주는 교착상태 회피 기법이다.",
     "question": "은행원 알고리즘(Banker's Algorithm)은 교착상태 처리 방법 중 어느 갈래에 속하는가?",
     "choices": [
       "회피(Avoidance)",
@@ -528,7 +525,6 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "page-replacement",
-    "concept": "OPT는 앞으로 가장 늦게 쓰일 페이지를 교체하는 이론상 최적 알고리즘이다.",
     "question": "'앞으로 가장 오랫동안 사용되지 않을 페이지'를 교체하는, 이론상 최적이지만 실현 불가능한 알고리즘은?",
     "choices": [
       "LRU",
@@ -544,7 +540,6 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "page-replacement",
-    "concept": "Clock(Second-Chance)은 참조 비트를 이용해 LRU를 근사 구현한다.",
     "question": "참조 비트를 이용해 LRU를 근사 구현하는 페이지 교체 알고리즘은?",
     "choices": [
       "FIFO",
@@ -576,7 +571,6 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "process-vs-thread",
-    "concept": "경량 프로세스(LWP)는 스레드를 가리키는 말이다.",
     "question": "'경량 프로세스(LWP, Light Weight Process)'라는 표현이 가리키는 것은?",
     "choices": [
       "프로세스",
@@ -2749,7 +2743,6 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "virtual-memory",
-    "concept": "스래싱은 페이지 교체에 시간을 다 써 시스템 처리량이 급락하는 현상이다.",
     "question": "프로세스가 실제 작업보다 페이지 교체에 더 많은 시간을 쓰며 시스템 처리량이 급락하는 현상은?",
     "choices": [
       "스래싱(thrashing)",
@@ -2765,7 +2758,6 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "virtual-memory",
-    "concept": "워킹셋은 자주 참조하는 페이지 집합을 메모리에 유지해 스래싱을 막는다.",
     "question": "프로세스가 일정 시간 동안 자주 참조하는 페이지들의 집합을 메모리에 유지해 스래싱을 방지하는 기법은?",
     "choices": [
       "워킹셋(working set)",
@@ -3512,7 +3504,6 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "memory-allocation",
-    "concept": "내부 단편화는 할당한 영역이 요청보다 커서 그 안에 남는 낭비다.",
     "question": "20KB 영역에 14KB 프로그램을 배치했을 때 그 영역 안에 남아 쓰이지 못하는 6KB와 같은 낭비를 무엇이라 하는가?",
     "choices": [
       "오버레이",
@@ -4912,7 +4903,6 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "unix-os",
-    "concept": "셸은 사용자 명령을 해석해 커널에 전달하는 명령 해석기다.",
     "question": "다음 설명에 해당하는 UNIX의 구성 요소는?",
     "code": "- 사용자가 입력한 명령을 해석해 커널에 전달한다\n- 하드웨어를 직접 다루지 않고 요청을 넘기는 역할만 한다\n- 사용자가 다른 종류로 바꿔 쓸 수 있으며 여러 구현이 존재한다",
     "choices": [
@@ -5344,7 +5334,6 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "mutual-exclusion",
-    "concept": "임계 구역은 한 번에 한 프로세스만 들어가야 하는 공유 자원 접근 코드 영역이다.",
     "question": "다음 설명에 해당하는 용어는?",
     "code": "- 여러 프로세스가 공유하는 자원에 접근하는 프로그램 코드 구간이다\n- 한 번에 오직 하나의 프로세스만 실행되도록 통제해야 한다\n- 통제에 실패하면 실행 순서에 따라 결과가 달라지는 경쟁 상태가 생긴다",
     "choices": [
@@ -5426,7 +5415,6 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "mutual-exclusion",
-    "concept": "베이커리 알고리즘은 번호표로 순서를 정하는 다중 프로세스 상호배제 소프트웨어 해법이다.",
     "question": "다음 설명에 해당하는 상호배제 알고리즘은?",
     "code": "- 두 프로세스로 제한되지 않고 n개 프로세스로 확장되는 소프트웨어 해법이다\n- 임계 구역에 들어가려는 프로세스는 먼저 번호표를 받는다\n- 번호가 가장 작은 프로세스가 먼저 들어가고, 번호가 같으면 프로세스 번호가 작은 쪽이 우선한다",
     "choices": [
@@ -5524,7 +5512,6 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "linux-admin",
-    "concept": "btmp는 로그인 실패 기록을 담는 바이너리 로그로 lastb로 읽는다.",
     "question": "다음 설명에 해당하는 리눅스 로그 파일은?",
     "code": "- 로그인에 실패한 기록이 쌓이는 이진(binary) 로그 파일이다\n- 무차별 대입 공격 시도를 확인하는 근거가 된다\n- lastb 명령으로 내용을 확인한다",
     "choices": [
@@ -5557,7 +5544,6 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "storage-ha",
-    "concept": "SAN은 파이버 채널 등 전용 망으로 블록 단위 저장을 제공하는 방식이다.",
     "question": "다음 설명에 해당하는 스토리지 연결 방식은?",
     "code": "- 파이버 채널 같은 전용 네트워크로 서버와 스토리지를 연결한다\n- 데이터를 파일이 아닌 블록(block) 단위로 제공한다\n- 성능과 확장성이 가장 뛰어나지만 구축 비용이 크다",
     "choices": [
@@ -5606,7 +5592,6 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "storage-ha",
-    "concept": "HACMP는 클러스터로 장애 시 다른 노드가 이어받게 하는 고가용성 솔루션이다.",
     "question": "다음 설명에 해당하는 고가용성(HA, High Availability) 솔루션은?",
     "code": "- 여러 노드가 공유 디스크를 함께 두고 하나의 클러스터로 묶인다\n- 운영 중인 노드에 장애가 나면 다른 노드가 자원을 넘겨받아 서비스를 이어간다\n- IBM 계열 유닉스 환경에서 쓰이는 클러스터링 솔루션이다",
     "choices": [
@@ -7363,7 +7348,6 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "disk-file-system",
-    "concept": "파일 제어 블록(FCB)은 파일의 속성·위치 등 관리 정보를 담는 구조다.",
     "question": "다음 설명에 해당하는 것은?",
     "code": "운영체제가 파일마다 유지하는 자료구조로, 파일의 이름·디스크상의 위치·크기·접근 권한 같은 관리 정보를 한데 모아 담고 있다.",
     "choices": [
@@ -7380,7 +7364,6 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "storage-ha",
-    "concept": "SDS는 저장을 하드웨어와 분리해 소프트웨어로 관리·제어하는 기술이다.",
     "question": "다음 설명에 해당하는 기술은?",
     "code": "저장 장치의 제어 기능을 하드웨어에서 분리해 소프트웨어로 옮기고, 여러 스토리지를 중앙에서 하나처럼 묶어 관리·할당할 수 있게 한다. SDN이 네트워크에서 한 일을 저장 영역에서 하는 셈이다.",
     "choices": [
@@ -7868,7 +7851,6 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "virtualization-cloud",
-    "concept": "PaaS-TA는 정부 주도로 공개한 국내 개방형 PaaS 표준 플랫폼이다.",
     "question": "국내에서 정부 주도로 만들어 공개한 개방형 클라우드 플랫폼으로, 이름 그대로 PaaS 계층의 표준 플랫폼을 목표로 한 오픈소스는?",
     "choices": [
       "PaaS-TA",
