@@ -104,7 +104,7 @@ const blankLabel = (q: PQ, i: number) =>
               없으면(순수 정의형) 예전처럼 문제 첫 줄에 우측으로 띄운다. */}
           {q.concept ? (
             <div class="cn-crow">
-              <p class="cn-concept" set:html={md(q.concept)} />
+              <p class="cn-concept"><mark class="cn-hl" set:html={md(q.concept)} /></p>
               <span class="badge diff cn-diff" data-level={q.difficulty}>{q.difficulty}</span>
               <button class="save-star cn-save" type="button" title="이 개념 저장" aria-label="이 개념 저장">☆</button>
             </div>

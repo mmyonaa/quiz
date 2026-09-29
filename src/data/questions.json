@@ -83,6 +83,7 @@
     "area": "네트워크",
     "difficulty": "하",
     "topic": "osi-layers",
+    "concept": "TCP·UDP는 전송 계층(4계층) 프로토콜이다.",
     "question": "OSI 7계층의 계층별 역할에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "네트워크 계층(3계층)은 IP 주소를 기준으로 경로를 선택하며 라우터가 대표 장비다",
@@ -98,6 +99,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "tcp-udp",
+    "concept": "TCP는 연결·순서·재전송으로 신뢰성을 보장하고, UDP는 비연결·비신뢰로 가볍고 빠르다.",
     "question": "TCP와 UDP에 대한 설명으로 틀린 것은?",
     "choices": [
       "UDP는 패킷 순서 보장과 재전송을 제공한다",
@@ -113,6 +115,7 @@
     "area": "네트워크",
     "difficulty": "상",
     "topic": "ip-subnetting",
+    "concept": "서브넷 호스트 수 = 2^(32-프리픽스) - 2(네트워크·브로드캐스트 주소 제외).",
     "question": "서브넷 마스크가 /26인 네트워크에서 실제 할당 가능한 호스트 수는?",
     "choices": [
       "64",
@@ -128,6 +131,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "ip-subnetting",
+    "concept": "IPv4 클래스는 A·B·C(호스트용)·D(멀티캐스트)·E(예약)로 나뉜다.",
     "question": "IPv4 클래스풀 주소 체계에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "첫 옥텟이 130인 주소는 B 클래스이며 기본 서브넷 마스크는 255.255.0.0이다",
@@ -633,6 +637,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "osi-layers",
+    "concept": "캡슐화는 상위 계층 데이터에 각 계층이 헤더를 덧씌워 내려보내는 과정이다.",
     "question": "캡슐화(Encapsulation)와 역캡슐화(Decapsulation)에 대한 설명으로 틀린 것은?",
     "choices": [
       "송신 측에서는 데이터가 상위 계층에서 하위 계층으로 내려가며 각 계층의 헤더가 덧붙는다",
@@ -663,6 +668,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "osi-layers",
+    "concept": "종단 간 통신에서 IP 주소는 그대로지만 MAC 주소는 구간마다 바뀐다.",
     "question": "종단 간 통신에서 IP 주소와 MAC 주소의 변화에 대한 설명으로 틀린 것은?",
     "choices": [
       "MAC 주소는 최종 목적지를 나타내므로 중간 라우터를 지나도 변하지 않는다",
@@ -723,6 +729,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "tcp-udp",
+    "concept": "흐름 제어는 수신자 버퍼, 혼잡 제어는 망 혼잡을 기준으로 전송량을 조절한다.",
     "question": "TCP의 흐름 제어(Flow Control)와 혼잡 제어(Congestion Control)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "흐름 제어는 수신 측의 처리 능력에 맞춰 송신량을 조절해 수신 버퍼가 넘치는 것을 막는다",
@@ -768,6 +775,7 @@
     "area": "네트워크",
     "difficulty": "하",
     "topic": "tcp-udp",
+    "concept": "실시간 통신은 재전송 지연보다 속도가 중요해 UDP를 쓴다.",
     "question": "실시간 스트리밍이나 인터넷 전화(VoIP)에 UDP를 쓰는 이유로 가장 적절하지 않은 것은?",
     "choices": [
       "연결 설정(3-way handshake) 과정이 없어 곧바로 데이터를 보내기 시작할 수 있다",
@@ -783,6 +791,7 @@
     "area": "네트워크",
     "difficulty": "상",
     "topic": "ip-subnetting",
+    "concept": "CIDR 프리픽스는 서브넷 마스크에서 1인 비트의 개수다.",
     "question": "서브넷 마스크 255.255.240.0을 CIDR 표기로 바꾸면?",
     "choices": [
       "/18",
@@ -798,6 +807,7 @@
     "area": "네트워크",
     "difficulty": "상",
     "topic": "ip-subnetting",
+    "concept": "호스트부에서 b비트를 빌리면 서브넷이 2^b개 만들어진다.",
     "question": "C 클래스 네트워크에서 호스트부 비트 2개를 빌려 서브네팅하면 만들어지는 서브넷 수는?",
     "choices": [
       "2개",
@@ -813,6 +823,7 @@
     "area": "네트워크",
     "difficulty": "상",
     "topic": "ip-subnetting",
+    "concept": "필요한 호스트 수를 담는 최소 크기(가장 긴 프리픽스)를 고른다 — 호스트 수 = 2^(32-n)-2.",
     "question": "한 서브넷에 호스트 50대를 수용해야 할 때 사용할 수 있는 가장 작은 서브넷(가장 긴 프리픽스)은?",
     "choices": [
       "/26",
@@ -828,6 +839,7 @@
     "area": "네트워크",
     "difficulty": "하",
     "topic": "ip-operations",
+    "concept": "127.0.0.1은 자기 자신을 가리키는 루프백 주소다.",
     "question": "IP 주소 127.0.0.1에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "127.0.0.0/8 대역 전체가 루프백 용도로 예약되어 있다",
@@ -843,6 +855,7 @@
     "area": "네트워크",
     "difficulty": "하",
     "topic": "ip-subnetting",
+    "concept": "호스트부가 모두 0이면 네트워크 주소, 모두 1이면 브로드캐스트 주소다.",
     "question": "IPv4 주소의 네트워크부·호스트부에 대한 설명으로 틀린 것은?",
     "choices": [
       "호스트부 비트가 모두 0인 주소는 그 네트워크의 브로드캐스트 주소로 쓰인다",
@@ -1698,6 +1711,7 @@
     "area": "네트워크",
     "difficulty": "하",
     "topic": "http-status-codes",
+    "concept": "HTTP 상태 코드는 1xx 정보·2xx 성공·3xx 리다이렉트·4xx 클라이언트 오류·5xx 서버 오류다.",
     "question": "HTTP 상태 코드의 첫 자리 숫자별 의미로 틀린 것은?",
     "choices": [
       "2xx — 요청이 정상 처리됨",
@@ -1713,6 +1727,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "http-status-codes",
+    "concept": "401은 인증이 필요할 때, 403은 인증됐으나 권한이 없을 때다.",
     "question": "로그인은 되어 있지만 해당 자원에 접근할 권한이 없는 사용자의 요청에 적합한 HTTP 상태 코드는?",
     "choices": [
       "400 Bad Request",
@@ -1728,6 +1743,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "http-status-codes",
+    "concept": "301은 영구 이동, 302는 임시 이동이다.",
     "question": "301 Moved Permanently와 302 Found의 차이로 옳은 것은?",
     "choices": [
       "둘 다 캐시가 유효하다는 의미다",
@@ -1743,6 +1759,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "http-status-codes",
+    "concept": "5xx는 서버 측 오류로 500 내부 오류·502 잘못된 게이트웨이·503 서비스 불가·504 게이트웨이 타임아웃이다.",
     "question": "게이트웨이(프록시)가 백엔드 서버의 응답을 제한 시간 안에 받지 못했을 때 반환하는 상태 코드는?",
     "choices": [
       "500",
@@ -1758,6 +1775,7 @@
     "area": "네트워크",
     "difficulty": "하",
     "topic": "http-status-codes",
+    "concept": "2xx는 성공으로 200 OK·201 Created·204 No Content가 대표적이다.",
     "question": "HTTP 2xx 상태 코드에 대한 연결이 옳지 않은 것은?",
     "choices": [
       "200 OK — 요청이 정상 처리됨",
@@ -2621,6 +2639,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "routing-sdn",
+    "concept": "RIP은 거리 벡터 방식으로 홉 수를 기준 삼으며 최대 15홉으로 제한된다.",
     "question": "라우팅 프로토콜 RIP에 대한 설명으로 틀린 것은?",
     "choices": [
       "거리 벡터(distance vector) 알고리즘을 사용한다",
@@ -2651,6 +2670,7 @@
     "area": "네트워크",
     "difficulty": "하",
     "topic": "ip-operations",
+    "concept": "IPv6는 128비트 주소를 16진수 여덟 덩어리로 콜론으로 구분해 적는다.",
     "question": "IPv6에 대한 설명으로 틀린 것은?",
     "choices": [
       "주소 길이가 128비트라서 32비트인 IPv4보다 주소 공간이 훨씬 넓다",
@@ -4782,6 +4802,7 @@
     "area": "네트워크",
     "difficulty": "하",
     "topic": "ip-protocol",
+    "concept": "IP 헤더에는 IP 주소·TTL·프로토콜 등이 들고, 포트 번호는 전송 계층의 것이다.",
     "question": "IPv4 헤더에 포함되는 필드가 아닌 것은?",
     "choices": [
       "목적지 포트 번호(Destination Port Number)",
@@ -4797,6 +4818,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "ip-protocol",
+    "concept": "TTL은 라우터를 지날 때마다 1씩 줄어 패킷의 무한 순환을 막는다.",
     "question": "송신 호스트가 TTL(Time To Live)을 64로 설정해 보낸 패킷이 목적지에 도착했을 때 TTL 값이 57이었다. 이 패킷이 거쳐 온 라우터의 수는?",
     "choices": [
       "6개",
@@ -4812,6 +4834,7 @@
     "area": "네트워크",
     "difficulty": "상",
     "topic": "ip-protocol",
+    "concept": "IP 헤더 길이 = 헤더 길이 필드 × 4바이트, 데이터 = 전체 길이 - 헤더 길이.",
     "question": "어떤 IPv4 패킷의 헤더 길이(Header Length) 필드 값이 7이고 전체 패킷 길이(Total Packet Length) 필드 값이 1500일 때, 데이터 부분의 크기는?",
     "choices": [
       "1465바이트",
@@ -4827,6 +4850,7 @@
     "area": "네트워크",
     "difficulty": "상",
     "topic": "ip-protocol",
+    "concept": "단편화된 조각은 중간 라우터가 아니라 최종 목적지에서 재조립된다.",
     "question": "IP 단편화(Fragmentation)와 재조립에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "링크마다 전송 가능한 최대 크기(MTU)가 달라 단편화가 필요하다",
@@ -4858,6 +4882,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "network-topology",
+    "concept": "토폴로지는 성형·버스형·링형·망형으로 구축 비용과 장애 내성이 다르다.",
     "question": "네트워크 토폴로지에 대한 설명으로 틀린 것은?",
     "choices": [
       "버스형(Bus)은 하나의 공용 회선에 노드를 연결해 설치 비용이 적게 든다",
@@ -4873,6 +4898,7 @@
     "area": "네트워크",
     "difficulty": "상",
     "topic": "network-topology",
+    "concept": "완전 연결 망형의 회선 수 = n(n-1)/2.",
     "question": "노드 12개를 모두 서로 직접 연결하는 완전 연결 망형(Mesh)을 구성할 때 필요한 회선 수는?",
     "choices": [
       "55개",
@@ -4888,6 +4914,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "network-topology",
+    "concept": "장비는 허브 1계층·스위치 2계층·라우터 3계층, 게이트웨이는 상위 계층이다.",
     "question": "네트워크 장비와 그 장비가 동작하는 계층의 연결이 옳지 않은 것은?",
     "choices": [
       "라우터(Router) — 네트워크 계층",
@@ -7180,6 +7207,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "error-flow-control",
+    "concept": "ARQ는 오류가 나면 재전송하는 후진 오류 수정 방식이다(FEC는 수신 측 자체 정정).",
     "question": "ARQ(Automatic Repeat reQuest) 방식에 대한 설명으로 틀린 것은?",
     "choices": [
       "정지-대기(Stop-and-Wait) ARQ는 한 프레임을 보낸 뒤 응답이 올 때까지 다음 프레임을 보내지 않는다.",
@@ -7195,6 +7223,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "error-flow-control",
+    "concept": "후진 오류 수정(BEC)은 재전송으로, 전진 오류 수정(FEC)은 수신 측이 스스로 정정한다.",
     "question": "후진 오류 수정(BEC)과 전진 오류 수정(FEC)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "후진 오류 수정은 오류를 검출하면 송신 측에 재전송을 요구한다.",
@@ -7226,6 +7255,7 @@
     "area": "네트워크",
     "difficulty": "상",
     "topic": "error-flow-control",
+    "concept": "오류 검출은 패리티·CRC, 오류 정정은 해밍 코드가 대표적이다.",
     "question": "오류 검출·정정 코드에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "패리티 검사는 오류가 났다는 사실만 알 수 있고 어느 비트인지 찾아 고치지는 못한다.",
@@ -7257,6 +7287,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "network-topology",
+    "concept": "CSMA/CD는 유선의 충돌 감지, CSMA/CA는 무선의 충돌 회피 방식이다.",
     "question": "CSMA/CD와 CSMA/CA에 대한 설명으로 틀린 것은?",
     "choices": [
       "CSMA/CD는 유선 이더넷에서 쓰이며 전송 중 충돌이 감지되면 잠시 기다렸다가 다시 보낸다.",
@@ -7287,6 +7318,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "osi-layers",
+    "concept": "잘 알려진 포트 — HTTP 80·HTTPS 443·SSH 22·Telnet 23·FTP 21·DNS 53·SMTP 25.",
     "question": "응용 계층 프로토콜과 잘 알려진 포트(well-known port) 번호를 잘못 짝지은 것은?",
     "choices": [
       "HTTPS — 443",
@@ -7317,6 +7349,7 @@
     "area": "네트워크",
     "difficulty": "상",
     "topic": "tcp-udp",
+    "concept": "TCP 체크섬은 헤더와 데이터를 함께 검사 대상으로 삼는다.",
     "question": "TCP 헤더의 필드에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "순서 번호(Sequence Number)는 담긴 데이터가 전체 바이트 흐름에서 어느 위치인지 알려 순서를 잡게 한다.",
