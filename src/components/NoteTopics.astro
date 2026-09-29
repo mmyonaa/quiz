@@ -178,64 +178,78 @@ const blankLabel = (q: PQ, i: number) =>
 
 
     <script>
-      import { supabase } from "../lib/supabase";
-      import { onAuth, authSession, requireLogin, errorText } from "../lib/auth";
       import { toast } from "../lib/toast";
       import { loadNote, markRight, markWrong, noteKey, saveNote } from "../lib/wrong-note";
 
       const $ = <T extends HTMLElement>(sel: string) => document.querySelector(sel) as T;
 
       // ── 개념 저장(북마크) — saved_notes 테이블, 해설 카드(문항 id) 단위 ──
-      let savedNotes = new Set<string>();
+      // Supabase는 이 블록에서만 쓰므로 동적으로 들인다. 정적 import로 두면 로딩이 한 번
+      // 실패할 때(광고 차단·사내 프록시·오프라인·CDN 장애) ES 모듈은 통째로 실행되지 않아,
+      // 인증과 아무 상관 없는 난이도 필터·해설 펼치기·모두 펼치기·읽기 진행률까지 함께
+      // 죽었다 — 로그인하지 않은 사람에게도 노트가 정적 문서로 굳어 버린다.
+      // 노트 읽기는 로그인 없이 성립해야 하므로, 실패하면 저장 별만 걷고 나머지는 산다.
       const stars = [...document.querySelectorAll<HTMLButtonElement>(".cn-save")];
       const idOf = (b: HTMLElement) => (b.closest(".cn") as HTMLElement).dataset.id!;
 
-      const paintStars = () => {
-        stars.forEach((b) => {
-          const on = savedNotes.has(idOf(b));
-          b.textContent = on ? "★" : "☆";
-          b.classList.toggle("on", on);
-        });
-      };
+      void (async () => {
+        try {
+          const { supabase } = await import("../lib/supabase");
+          const { onAuth, authSession, requireLogin, errorText } = await import("../lib/auth");
 
-      onAuth(async (s) => {
-        if (!s) {
-          savedNotes = new Set();
-          paintStars();
-          return;
-        }
-        const { data, error } = await supabase.from("saved_notes").select("question_id");
-        if (error) {
-          // 테이블 미적용 등 — 노트 읽기는 계속되어야 하므로 조용히 로그만
-          console.error("저장한 개념 조회 실패:", error.message);
-          return;
-        }
-        savedNotes = new Set((data ?? []).map((r: { question_id: string }) => r.question_id));
-        paintStars();
-      });
+          let savedNotes = new Set<string>();
+          const paintStars = () => {
+            stars.forEach((b) => {
+              const on = savedNotes.has(idOf(b));
+              b.textContent = on ? "★" : "☆";
+              b.classList.toggle("on", on);
+            });
+          };
 
-      stars.forEach((b) =>
-        b.addEventListener("click", async () => {
-          if (!requireLogin()) return;
-          const id = idOf(b);
-          const uid = authSession()!.user.id;
-          const wasSaved = savedNotes.has(id);
-          if (wasSaved) savedNotes.delete(id);
-          else savedNotes.add(id);
-          paintStars(); // 낙관적 반영, 실패 시 되돌림
-          const { error } = wasSaved
-            ? await supabase.from("saved_notes").delete().eq("user_id", uid).eq("question_id", id)
-            : await supabase.from("saved_notes").upsert({ user_id: uid, question_id: id });
-          if (error) {
-            if (wasSaved) savedNotes.add(id);
-            else savedNotes.delete(id);
+          onAuth(async (s) => {
+            if (!s) {
+              savedNotes = new Set();
+              paintStars();
+              return;
+            }
+            const { data, error } = await supabase.from("saved_notes").select("question_id");
+            if (error) {
+              // 테이블 미적용 등 — 노트 읽기는 계속되어야 하므로 조용히 로그만
+              console.error("저장한 개념 조회 실패:", error.message);
+              return;
+            }
+            savedNotes = new Set((data ?? []).map((r: { question_id: string }) => r.question_id));
             paintStars();
-            alert(errorText("저장에 실패했습니다", error));
-            return;
-          }
-          toast(wasSaved ? "저장을 해제했습니다" : "저장했습니다 · 마이페이지에 모아둡니다");
-        }),
-      );
+          });
+
+          stars.forEach((b) =>
+            b.addEventListener("click", async () => {
+              if (!requireLogin()) return;
+              const id = idOf(b);
+              const uid = authSession()!.user.id;
+              const wasSaved = savedNotes.has(id);
+              if (wasSaved) savedNotes.delete(id);
+              else savedNotes.add(id);
+              paintStars(); // 낙관적 반영, 실패 시 되돌림
+              const { error } = wasSaved
+                ? await supabase.from("saved_notes").delete().eq("user_id", uid).eq("question_id", id)
+                : await supabase.from("saved_notes").upsert({ user_id: uid, question_id: id });
+              if (error) {
+                if (wasSaved) savedNotes.add(id);
+                else savedNotes.delete(id);
+                paintStars();
+                alert(errorText("저장에 실패했습니다", error));
+                return;
+              }
+              toast(wasSaved ? "저장을 해제했습니다" : "저장했습니다 · 마이페이지에 모아둡니다");
+            }),
+          );
+        } catch (e) {
+          // 눌러도 아무 일 없는 별을 남기느니 걷는다 — 노트 읽기는 그대로 된다
+          console.error("인증 모듈을 불러오지 못했습니다 — 개념 저장만 비활성화합니다:", e);
+          stars.forEach((b) => (b.hidden = true));
+        }
+      })();
 
       // ── 오답노트 연결 (#41) — 확인 문제에서 틀리면 담고, 맞히면 다음 복습으로 미룬다 ──
       // 필기 연습 결과와 같은 통·같은 규칙이다(규칙은 lib/wrong-note.ts가 갖는다).
