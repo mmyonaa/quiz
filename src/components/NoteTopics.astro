@@ -96,22 +96,25 @@ const blankLabel = (q: PQ, i: number) =>
           ),
         )}
       </div>
+      {/* 카드 = 개념(있으면) → 문제 → 상세 해설(가림). 문제를 먼저 풀고 해설은 선지를 고르거나
+          '해설 보기'를 눌러 그 자리서 편다 — 해설이 답을 흘리던 '해설 먼저' 구조를 뒤집었다. */}
       {questions.map((q) => (
         <article class="cn" data-id={q.id} data-diff={q.difficulty}>
           <button class="save-star cn-save" type="button" title="이 개념 저장" aria-label="이 개념 저장">☆</button>
-          <p class="cn-x" set:html={md(q.explanation)} />
-          <details class="cn-q">
-            <summary>확인 문제 <span class="badge diff" data-level={q.difficulty}>{q.difficulty}</span></summary>
-            <p class="cn-question" set:html={md(q.question)} />
-            {q.code && <pre class="q-code mono">{q.code}</pre>}
-            {/* 정답은 가려져 있다 — 선지를 골라 자기 점검하거나 '정답만 보기' */}
-            <ol class="cn-choices" data-answer={q.answer}>
-              {q.choices.map((c) => (
-                <li><button type="button" class="cn-choice">{c}</button></li>
-              ))}
-            </ol>
-            <button type="button" class="linklike cn-reveal">정답만 보기</button>
-          </details>
+          <span class="badge diff cn-diff" data-level={q.difficulty}>{q.difficulty}</span>
+          {q.concept && <p class="cn-concept" set:html={md(q.concept)} />}
+          <p class="cn-question" set:html={md(q.question)} />
+          {q.code && <pre class="q-code mono">{q.code}</pre>}
+          {/* 정답은 가려져 있다 — 선지를 골라 자기 점검하거나 '해설 보기'로 편다 */}
+          <ol class="cn-choices" data-answer={q.answer}>
+            {q.choices.map((c) => (
+              <li><button type="button" class="cn-choice">{c}</button></li>
+            ))}
+          </ol>
+          <button type="button" class="linklike cn-reveal">해설 보기</button>
+          <div class="cn-exp" hidden>
+            <p class="cn-x" set:html={md(q.explanation)} />
+          </div>
         </article>
       ))}
 
@@ -240,26 +243,35 @@ const blankLabel = (q: PQ, i: number) =>
         toast(r === "cleared" ? "오답노트에서 졸업했습니다" : "다음 복습으로 미뤘습니다");
       };
 
-      // ── 확인 문제 — 정답은 가린 채 시작, 선지 선택 또는 '정답만 보기'로 공개 ──
+      // ── 문제 — 문제·선지를 먼저 보이고, 선지 선택 또는 '해설 보기'로 상세 해설을 그 자리서 편다 ──
       document.querySelectorAll<HTMLOListElement>(".cn-choices").forEach((ol) => {
         const answer = Number(ol.dataset.answer);
-        const revealBtn = ol.parentElement!.querySelector<HTMLElement>(".cn-reveal");
+        const card = ol.closest(".cn") as HTMLElement | null;
+        const revealBtn = card?.querySelector<HTMLElement>(".cn-reveal");
+        const exp = card?.querySelector<HTMLElement>(".cn-exp");
+        // chosen: 고른 선지(자기 채점) / null: '해설 보기'·모두 펼치기(추측 없이 공개)
         const reveal = (chosen: number | null) => {
-          if (ol.classList.contains("done")) return;
+          if (ol.classList.contains("done")) {
+            if (exp) exp.hidden = false; // 이미 채점된 카드도 해설은 다시 펼 수 있다
+            return;
+          }
           ol.classList.add("done");
           [...ol.children].forEach((li, i) => {
             li.classList.toggle("ans", i === answer);
             if (chosen !== null && chosen !== answer && i === chosen) li.classList.add("bad");
           });
           if (revealBtn) revealBtn.hidden = true;
-          // '정답만 보기'(chosen === null)는 답을 고른 적이 없으니 오답으로 치지 않는다
-          const id = (ol.closest(".cn") as HTMLElement | null)?.dataset.id;
+          if (exp) exp.hidden = false;
+          // '해설 보기'(chosen === null)는 답을 고른 적이 없으니 오답으로 치지 않는다
+          const id = card?.dataset.id;
           if (chosen !== null && id) noteWrong(id, chosen !== answer);
         };
         [...ol.querySelectorAll<HTMLButtonElement>(".cn-choice")].forEach((b, i) =>
           b.addEventListener("click", () => reveal(i)),
         );
         revealBtn?.addEventListener("click", () => reveal(null));
+        ol.dataset.bound = "1";
+        (ol as any)._reveal = reveal; // 모두 펼치기에서 재사용
       });
 
       // ── 실기 확인 문제 — 보기가 없으므로 답을 떠올린 뒤 펼쳐 대조한다 ──
@@ -287,11 +299,18 @@ const blankLabel = (q: PQ, i: number) =>
         }),
       );
 
-      // ── 모두 펼치기/접기 ──
+      // ── 모두 펼치기/접기 — 필기 해설(.cn-exp)과 실기 확인 문제(.cn-q)를 함께 여닫는다 ──
       const toggleAll = $("#toggle-all") as HTMLButtonElement;
       let allOpen = false;
       toggleAll.addEventListener("click", () => {
         allOpen = !allOpen;
+        document.querySelectorAll<HTMLElement>(".cn-exp").forEach((exp) => {
+          if (allOpen) {
+            const ol = exp.closest(".cn")?.querySelector<HTMLOListElement>(".cn-choices") as any;
+            if (ol?._reveal) ol._reveal(null);
+            else exp.hidden = false;
+          } else exp.hidden = true;
+        });
         document.querySelectorAll<HTMLDetailsElement>(".cn-q").forEach((d) => (d.open = allOpen));
         toggleAll.textContent = allOpen ? "모두 접기" : "모두 펼치기";
       });
