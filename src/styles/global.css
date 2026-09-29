@@ -2875,8 +2875,7 @@ button.toc-chip {
    배지는 달지 않는다 — 문장 자체가 "출제 핵심이다"로 끝나 라벨이 겹쳐 읽힌다.
    좌측 보더는 액센트를 쓴다(형광펜과 달리 이건 사이트가 말하는 것이므로 브랜드색이 맞다). */
 .topic-key {
-  border-left: 3px solid var(--accent);
-  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  border-radius: var(--r-sm);
   background: var(--accent-soft);
   padding: 0.7em 0.9em;
 }
