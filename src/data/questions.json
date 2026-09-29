@@ -4,6 +4,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "cpu-scheduling",
+    "concept": "스케줄링은 실행 중 뺏는 선점(RR·SRT 등)과 못 뺏는 비선점(FCFS·SJF·HRN)으로 나뉜다.",
     "question": "다음 중 비선점(non-preemptive) 스케줄링 알고리즘에 해당하지 않는 것은?",
     "choices": [
       "FCFS",
@@ -19,6 +20,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "cpu-scheduling",
+    "concept": "HRN 우선순위 = (대기 시간 + 서비스 시간) / 서비스 시간으로, 값이 클수록 먼저 실행한다.",
     "question": "HRN 스케줄링에서 대기 시간 20, 서비스(실행) 시간 5인 프로세스의 우선순위 값은?",
     "choices": [
       "4",
@@ -34,6 +36,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "deadlock",
+    "concept": "교착상태는 상호 배제·점유와 대기·비선점·환형 대기 네 조건이 모두 성립할 때 생긴다.",
     "question": "교착상태(deadlock) 발생의 4가지 필요조건에 해당하지 않는 것은?",
     "choices": [
       "상호 배제",
@@ -49,6 +52,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "process-vs-thread",
+    "concept": "스레드는 코드·데이터·힙은 공유하되 스택과 레지스터는 스레드마다 따로 갖는다.",
     "question": "같은 프로세스에 속한 스레드들에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "스택 영역도 공유하므로 지역 변수와 함수 호출 기록을 서로 그대로 쓴다",
@@ -79,6 +83,7 @@
     "area": "네트워크",
     "difficulty": "하",
     "topic": "osi-layers",
+    "concept": "TCP·UDP는 전송 계층(4계층) 프로토콜이다.",
     "question": "OSI 7계층의 계층별 역할에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "네트워크 계층(3계층)은 IP 주소를 기준으로 경로를 선택하며 라우터가 대표 장비다",
@@ -94,6 +99,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "tcp-udp",
+    "concept": "TCP는 연결·순서·재전송으로 신뢰성을 보장하고, UDP는 비연결·비신뢰로 가볍고 빠르다.",
     "question": "TCP와 UDP에 대한 설명으로 틀린 것은?",
     "choices": [
       "UDP는 패킷 순서 보장과 재전송을 제공한다",
@@ -109,6 +115,7 @@
     "area": "네트워크",
     "difficulty": "상",
     "topic": "ip-subnetting",
+    "concept": "서브넷 호스트 수 = 2^(32-프리픽스) - 2(네트워크·브로드캐스트 주소 제외).",
     "question": "서브넷 마스크가 /26인 네트워크에서 실제 할당 가능한 호스트 수는?",
     "choices": [
       "64",
@@ -124,6 +131,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "ip-subnetting",
+    "concept": "IPv4 클래스는 A·B·C(호스트용)·D(멀티캐스트)·E(예약)로 나뉜다.",
     "question": "IPv4 클래스풀 주소 체계에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "첫 옥텟이 130인 주소는 B 클래스이며 기본 서브넷 마스크는 255.255.0.0이다",
@@ -139,6 +147,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "db-normalization",
+    "concept": "2NF는 1NF에 더해 부분 함수 종속을 제거한 정규형이다.",
     "question": "제2정규형(2NF)의 조건으로 옳은 것은?",
     "choices": [
       "모든 속성이 원자값을 가진다",
@@ -154,6 +163,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "transaction-acid",
+    "concept": "ACID는 원자성·일관성·격리성·지속성이며, 지속성은 커밋된 결과가 장애에도 남는 성질이다.",
     "question": "트랜잭션의 ACID 성질과 그 설명의 연결이 옳지 않은 것은?",
     "choices": [
       "원자성(Atomicity) — 전부 반영되거나 전부 취소되어야 하며 절반만 반영은 없다",
@@ -169,6 +179,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "db-index",
+    "concept": "인덱스는 조회를 빠르게 하지만 삽입·갱신 비용과 저장 공간을 늘린다.",
     "question": "데이터베이스 인덱스에 대한 설명으로 틀린 것은?",
     "choices": [
       "B-tree 인덱스는 범위 검색에 활용할 수 있다",
@@ -184,6 +195,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "db-keys",
+    "concept": "외래키는 참조 대상의 기본키와 도메인이 같아야 하되 속성 이름은 달라도 된다.",
     "question": "키의 종류에 대한 설명으로 틀린 것은?",
     "choices": [
       "슈퍼키(Super Key)는 유일성은 만족하지만 최소성은 만족하지 않을 수 있다",
@@ -199,6 +211,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "db-normalization",
+    "concept": "정규화되지 않은 테이블에는 삽입·삭제·갱신 이상이 생긴다.",
     "question": "정규화를 하지 않았을 때 발생하는 이상(anomaly) 현상이 아닌 것은?",
     "choices": [
       "삽입 이상",
@@ -214,6 +227,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "coupling-cohesion",
+    "concept": "결합도는 자료<스탬프<제어<외부<공통<내용 순으로 강해지며, 낮을수록 좋다.",
     "question": "모듈 간 결합도가 낮은 것부터 높은 것 순으로 나열할 때 가장 낮은(바람직한) 결합도는?",
     "choices": [
       "내용 결합도",
@@ -229,6 +243,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "test-blackbox-whitebox",
+    "concept": "블랙박스는 동등 분할·경계값·원인결과·오류 예측, 화이트박스는 기초 경로·커버리지다.",
     "question": "다음 중 블랙박스 테스트 기법이 아닌 것은?",
     "choices": [
       "동등 분할",
@@ -244,6 +259,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "design-patterns",
+    "concept": "GoF 패턴은 생성·구조·행위로 나뉘며 Adapter는 구조 패턴이다.",
     "question": "GoF 디자인 패턴 중 생성(Creational) 패턴이 아닌 것은?",
     "choices": [
       "Singleton",
@@ -274,6 +290,7 @@
     "area": "소프트웨어공학",
     "difficulty": "하",
     "topic": "coupling-cohesion",
+    "concept": "응집도는 우연<논리<시간<절차<통신<순차<기능 순으로 강해지며, 높을수록 좋다.",
     "question": "모듈 응집도(Cohesion)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "기능적 응집도는 모듈의 모든 요소가 하나의 기능을 수행하려 모인 가장 높은 응집이다",
@@ -289,6 +306,7 @@
     "area": "정보보안",
     "difficulty": "하",
     "topic": "security-cia",
+    "concept": "기밀성은 인가된 자만 읽기, 무결성은 인가되지 않은 변경 방지, 가용성은 필요할 때 접근이다.",
     "question": "정보보안 3요소에 대한 설명으로 틀린 것은?",
     "choices": [
       "가용성(Availability)은 필요할 때 자원을 쓸 수 있어야 한다는 성질로, 이중화·백업·부하 분산이 대응책이다",
@@ -304,6 +322,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "symmetric-asymmetric",
+    "concept": "대칭키는 암복호에 같은 키를 써 빠르지만 키 분배와 관리가 어렵다.",
     "question": "대칭키 암호화에 대한 설명으로 틀린 것은?",
     "choices": [
       "암호화와 복호화에 같은 키를 사용한다",
@@ -319,6 +338,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "hash-digital-signature",
+    "concept": "해시는 일방향 함수라 해시값에서 원본을 되찾을 수 없다.",
     "question": "암호학적 해시 함수의 성질로 틀린 것은?",
     "choices": [
       "입력 길이와 무관하게 고정 길이 출력을 낸다",
@@ -349,6 +369,7 @@
     "area": "정보보안",
     "difficulty": "상",
     "topic": "access-control",
+    "concept": "BLP는 기밀성 모델로 'No Read Up·No Write Down' 규칙을 강제한다.",
     "question": "Bell-LaPadula(BLP) 모델의 접근 규칙으로 옳은 것은?",
     "choices": [
       "No Read Down, No Write Up",
@@ -364,6 +385,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "hash-digital-signature",
+    "concept": "전자서명은 송신자의 개인키로 서명하고 공개키로 검증한다.",
     "question": "전자서명에서 서명 생성과 검증에 사용하는 키의 조합으로 옳은 것은?",
     "choices": [
       "서명: 송신자의 공개키, 검증: 송신자의 개인키",
@@ -379,6 +401,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "cpu-scheduling",
+    "concept": "RR은 타임 퀀텀을 아주 크게 잡으면 FCFS처럼, 아주 작게 잡으면 문맥 교환이 잦아진다.",
     "question": "라운드 로빈(RR) 스케줄링에서 타임 퀀텀(시간 할당량)을 매우 크게 잡으면 어떤 알고리즘과 비슷하게 동작하는가?",
     "choices": [
       "SJF",
@@ -394,6 +417,7 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "cpu-scheduling",
+    "concept": "SJF는 비선점, SRT는 그 선점형으로 남은 실행 시간이 가장 짧은 것을 고른다.",
     "question": "SJF(Shortest Job First)와 SRT(Shortest Remaining Time)에 대한 설명으로 틀린 것은?",
     "choices": [
       "SRT는 남은 실행 시간이 더 짧은 프로세스가 도착하면 실행 중인 프로세스에게서 CPU를 빼앗는다",
@@ -409,6 +433,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "cpu-scheduling",
+    "concept": "FCFS는 도착 순서대로 처리해, 긴 작업이 앞서면 뒤 작업의 대기가 길어진다.",
     "question": "실행 시간이 P1=24ms, P2=3ms, P3=3ms인 프로세스가 이 순서로 동시에 도착했다. FCFS 스케줄링의 평균 대기 시간은?",
     "choices": [
       "10ms",
@@ -424,6 +449,7 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "cpu-scheduling",
+    "concept": "에이징은 오래 기다린 프로세스의 우선순위를 점차 높여 기아(starvation)를 막는다.",
     "question": "에이징(aging) 기법에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "기다린 시간에 비례해 프로세스의 우선순위를 높여 준다",
@@ -469,6 +495,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "deadlock",
+    "concept": "교착상태 회복은 프로세스 강제 종료나 자원 선점으로 순환을 끊는다.",
     "question": "교착상태가 탐지된 뒤의 회복(Recovery) 방법으로 옳게 짝지어진 것은?",
     "choices": [
       "상호 배제 강화, 잠금 추가",
@@ -484,6 +511,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "deadlock",
+    "concept": "교착상태는 네 조건이 동시에 성립해야 하며, 하나만으로는 생기지 않는다.",
     "question": "교착상태 발생 조건에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "조건 중 하나만 성립해도 교착상태가 발생할 수 있다",
@@ -499,6 +527,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "page-replacement",
+    "concept": "FIFO는 프레임을 늘려도 페이지 폴트가 되레 느는 벨레이디 모순이 나타날 수 있다.",
     "question": "프레임 수를 늘렸는데 오히려 페이지 폴트가 증가하는 Belady's Anomaly가 나타날 수 있는 페이지 교체 알고리즘은?",
     "choices": [
       "LRU",
@@ -544,6 +573,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "page-replacement",
+    "concept": "FIFO 페이지 교체는 먼저 들어온 페이지를 먼저 내보낸다.",
     "question": "페이지 참조열이 1, 2, 3, 1, 2, 4이고 프레임이 3개일 때, FIFO 교체에서 발생하는 페이지 폴트 횟수는? (초기 프레임은 비어 있음)",
     "choices": [
       "3회",
@@ -574,6 +604,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "process-vs-thread",
+    "concept": "멀티스레드는 응답성·자원 공유에 이점이 있지만 동기화 문제를 낳는다.",
     "question": "멀티스레드의 장점에 해당하지 않는 것은?",
     "choices": [
       "동기화 문제가 발생하지 않는다",
@@ -589,6 +620,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "process-vs-thread",
+    "concept": "스레드는 코드·데이터·힙을 공유하고 스택은 따로 갖는다.",
     "question": "같은 프로세스에 속한 스레드들이 공유하는 자원으로만 묶인 것은?",
     "choices": [
       "스택, 힙, 프로그램 카운터",
@@ -619,6 +651,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "osi-layers",
+    "concept": "캡슐화는 상위 계층 데이터에 각 계층이 헤더를 덧씌워 내려보내는 과정이다.",
     "question": "캡슐화(Encapsulation)와 역캡슐화(Decapsulation)에 대한 설명으로 틀린 것은?",
     "choices": [
       "송신 측에서는 데이터가 상위 계층에서 하위 계층으로 내려가며 각 계층의 헤더가 덧붙는다",
@@ -649,6 +682,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "osi-layers",
+    "concept": "종단 간 통신에서 IP 주소는 그대로지만 MAC 주소는 구간마다 바뀐다.",
     "question": "종단 간 통신에서 IP 주소와 MAC 주소의 변화에 대한 설명으로 틀린 것은?",
     "choices": [
       "MAC 주소는 최종 목적지를 나타내므로 중간 라우터를 지나도 변하지 않는다",
@@ -709,6 +743,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "tcp-udp",
+    "concept": "흐름 제어는 수신자 버퍼, 혼잡 제어는 망 혼잡을 기준으로 전송량을 조절한다.",
     "question": "TCP의 흐름 제어(Flow Control)와 혼잡 제어(Congestion Control)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "흐름 제어는 수신 측의 처리 능력에 맞춰 송신량을 조절해 수신 버퍼가 넘치는 것을 막는다",
@@ -754,6 +789,7 @@
     "area": "네트워크",
     "difficulty": "하",
     "topic": "tcp-udp",
+    "concept": "실시간 통신은 재전송 지연보다 속도가 중요해 UDP를 쓴다.",
     "question": "실시간 스트리밍이나 인터넷 전화(VoIP)에 UDP를 쓰는 이유로 가장 적절하지 않은 것은?",
     "choices": [
       "연결 설정(3-way handshake) 과정이 없어 곧바로 데이터를 보내기 시작할 수 있다",
@@ -769,6 +805,7 @@
     "area": "네트워크",
     "difficulty": "상",
     "topic": "ip-subnetting",
+    "concept": "CIDR 프리픽스는 서브넷 마스크에서 1인 비트의 개수다.",
     "question": "서브넷 마스크 255.255.240.0을 CIDR 표기로 바꾸면?",
     "choices": [
       "/18",
@@ -784,6 +821,7 @@
     "area": "네트워크",
     "difficulty": "상",
     "topic": "ip-subnetting",
+    "concept": "호스트부에서 b비트를 빌리면 서브넷이 2^b개 만들어진다.",
     "question": "C 클래스 네트워크에서 호스트부 비트 2개를 빌려 서브네팅하면 만들어지는 서브넷 수는?",
     "choices": [
       "2개",
@@ -799,6 +837,7 @@
     "area": "네트워크",
     "difficulty": "상",
     "topic": "ip-subnetting",
+    "concept": "필요한 호스트 수를 담는 최소 크기(가장 긴 프리픽스)를 고른다 — 호스트 수 = 2^(32-n)-2.",
     "question": "한 서브넷에 호스트 50대를 수용해야 할 때 사용할 수 있는 가장 작은 서브넷(가장 긴 프리픽스)은?",
     "choices": [
       "/26",
@@ -814,6 +853,7 @@
     "area": "네트워크",
     "difficulty": "하",
     "topic": "ip-operations",
+    "concept": "127.0.0.1은 자기 자신을 가리키는 루프백 주소다.",
     "question": "IP 주소 127.0.0.1에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "127.0.0.0/8 대역 전체가 루프백 용도로 예약되어 있다",
@@ -829,6 +869,7 @@
     "area": "네트워크",
     "difficulty": "하",
     "topic": "ip-subnetting",
+    "concept": "호스트부가 모두 0이면 네트워크 주소, 모두 1이면 브로드캐스트 주소다.",
     "question": "IPv4 주소의 네트워크부·호스트부에 대한 설명으로 틀린 것은?",
     "choices": [
       "호스트부 비트가 모두 0인 주소는 그 네트워크의 브로드캐스트 주소로 쓰인다",
@@ -844,6 +885,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "db-normalization",
+    "concept": "1NF는 모든 속성이 더 쪼갤 수 없는 원자값이어야 하는 정규형이다.",
     "question": "정규형과 그 조건의 연결이 옳지 않은 것은?",
     "choices": [
       "제1정규형(1NF) — 부분 함수 종속을 제거한 상태다",
@@ -859,6 +901,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "db-normalization",
+    "concept": "3NF는 2NF에 더해 이행 함수 종속을 제거한 정규형이다.",
     "question": "제3정규형(3NF)에 대한 설명으로 틀린 것은?",
     "choices": [
       "이행 함수 종속(예: 과목 → 교수 → 교수연구실)을 제거한 정규형이다",
@@ -874,6 +917,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "db-normalization",
+    "concept": "BCNF는 모든 결정자가 후보키인 정규형이다.",
     "question": "BCNF(Boyce-Codd 정규형)의 조건으로 옳은 것은?",
     "choices": [
       "모든 결정자가 후보키다",
@@ -919,6 +963,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "transaction-acid",
+    "concept": "트랜잭션 상태는 활동·부분 완료·완료·실패·철회로 나뉜다.",
     "question": "트랜잭션의 상태에 대한 설명으로 틀린 것은?",
     "choices": [
       "실패(Failed)는 롤백을 마치고 실행 이전 상태로 되돌아간 상태다",
@@ -964,6 +1009,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "isolation-levels",
+    "concept": "Repeatable Read에서도 행이 새로 끼어드는 팬텀 리드는 생길 수 있다.",
     "question": "격리 수준 Repeatable Read에서 여전히 발생할 수 있는 이상 현상은?",
     "choices": [
       "Dirty Read",
@@ -979,6 +1025,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "isolation-levels",
+    "concept": "Dirty Read·Non-Repeatable Read·Phantom Read는 격리 수준으로 막는 동시성 이상이다.",
     "question": "트랜잭션 동시성 이상현상에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "Phantom Read는 같은 조건으로 두 번 조회하는 사이 삽입된 행이 새로 나타나는 현상이다",
@@ -1009,6 +1056,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "db-index",
+    "concept": "클러스터드 인덱스는 테이블의 저장 순서를 정해 테이블당 하나만 둔다.",
     "question": "테이블의 물리적 저장 순서 자체를 결정하는 클러스터드 인덱스는 한 테이블에 몇 개까지 만들 수 있는가?",
     "choices": [
       "제한 없음",
@@ -1024,6 +1072,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "db-index",
+    "concept": "해시 인덱스는 등호 검색엔 빠르지만 범위 검색엔 부적합하다.",
     "question": "해시 인덱스에 대한 설명으로 틀린 것은?",
     "choices": [
       "등호(=) 검색에 적합하다",
@@ -1039,6 +1088,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "db-index",
+    "concept": "기본키·유니크 제약을 지정하면 인덱스가 자동으로 만들어진다.",
     "question": "기본키(Primary Key)와 인덱스의 관계에 대한 설명으로 옳은 것은?",
     "choices": [
       "기본키를 지정하면 자동으로 인덱스가 생성된다",
@@ -1054,6 +1104,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "db-keys",
+    "concept": "외래키는 참조 속성과 도메인이 같아야 하되 속성 이름은 달라도 된다.",
     "question": "외래키(Foreign Key)에 대한 설명으로 옳은 것은?",
     "choices": [
       "자기 자신의 테이블은 참조할 수 없다",
@@ -1069,6 +1120,7 @@
     "area": "소프트웨어공학",
     "difficulty": "하",
     "topic": "coupling-cohesion",
+    "concept": "내용 결합도는 다른 모듈 내부를 직접 건드리는 가장 나쁜 결합이다.",
     "question": "한 모듈이 다른 모듈의 내부를 직접 건드리는, 가장 높고 나쁜 결합도는?",
     "choices": [
       "공통 결합도",
@@ -1084,6 +1136,7 @@
     "area": "소프트웨어공학",
     "difficulty": "하",
     "topic": "coupling-cohesion",
+    "concept": "제어 결합도는 처리 논리를 제어하는 플래그를 넘기는 결합이다.",
     "question": "제어 결합도(Control Coupling)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "한 모듈이 다른 모듈의 내부 코드나 지역 데이터를 직접 참조하는 가장 강한 결합이다",
@@ -1099,6 +1152,7 @@
     "area": "소프트웨어공학",
     "difficulty": "하",
     "topic": "coupling-cohesion",
+    "concept": "공통 결합도는 전역 데이터를 여러 모듈이 공유하는 결합이다.",
     "question": "공통 결합도(Common Coupling)에 대한 설명으로 틀린 것은?",
     "choices": [
       "필요한 값만 매개변수로 넘기는 자료 결합도로 바꾸는 것이 개선 방향이다",
@@ -1114,6 +1168,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "coupling-cohesion",
+    "concept": "시간적 응집도는 특정 시점에 함께 실행된다는 이유만으로 묶인 것이다.",
     "question": "'초기화 모듈'처럼 서로 관련 없는 작업들이 특정 시점에 함께 실행된다는 이유만으로 묶인 응집도는?",
     "choices": [
       "시간적 응집도",
@@ -1129,6 +1184,7 @@
     "area": "소프트웨어공학",
     "difficulty": "하",
     "topic": "coupling-cohesion",
+    "concept": "좋은 모듈 설계는 결합도는 낮게, 응집도는 높게 지향한다.",
     "question": "좋은 모듈 설계가 지향하는 결합도·응집도의 방향으로 옳은 것은?",
     "choices": [
       "높은 결합도, 높은 응집도",
@@ -1159,6 +1215,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "test-blackbox-whitebox",
+    "concept": "경계값 분석은 범위의 경계(최소·최대와 그 안팎)를 집중해 테스트한다.",
     "question": "유효 입력 범위가 1~100인 모듈에 경계값 분석(Boundary Value Analysis)을 적용할 때의 설명으로 틀린 것은?",
     "choices": [
       "하한의 안팎인 0과 1, 상한의 안팎인 100과 101이 전형적인 테스트 케이스다",
@@ -1174,6 +1231,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "test-blackbox-whitebox",
+    "concept": "화이트박스 커버리지는 구문→분기→경로 순으로 강해진다.",
     "question": "화이트박스 테스트 커버리지에 대한 설명으로 틀린 것은?",
     "choices": [
       "구문(문장) 커버리지는 프로그램의 모든 문장을 최소 한 번씩 실행하면 충족된다",
@@ -1189,6 +1247,7 @@
     "area": "소프트웨어공학",
     "difficulty": "하",
     "topic": "test-blackbox-whitebox",
+    "concept": "화이트박스 테스트는 소스 구조를 보므로 주로 단위 테스트에 쓴다.",
     "question": "소스 코드 구조를 들여다보는 화이트박스 테스트가 주로 쓰이는 테스트 단계는?",
     "choices": [
       "인수 테스트",
@@ -1219,6 +1278,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "design-patterns",
+    "concept": "구조 패턴은 Adapter·Bridge·Decorator·Facade 등이고 Observer는 행위 패턴이다.",
     "question": "GoF 디자인 패턴 중 구조(Structural) 패턴이 아닌 것은?",
     "choices": [
       "Adapter",
@@ -1294,6 +1354,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "security-cia",
+    "concept": "랜섬웨어는 파일을 못 쓰게 만들어 가용성을 침해한다.",
     "question": "랜섬웨어가 파일을 암호화해 열 수 없게 만들었을 때, 본질적으로 침해된 보안 요소는?",
     "choices": [
       "기밀성",
@@ -1309,6 +1370,7 @@
     "area": "정보보안",
     "difficulty": "하",
     "topic": "security-cia",
+    "concept": "평문 도청(스니핑)은 내용을 훔쳐봐 기밀성을 침해한다.",
     "question": "공격자가 평문 패킷을 도청(스니핑)해 내용을 훔쳐봤다면 침해된 보안 요소는?",
     "choices": [
       "무결성",
@@ -1324,6 +1386,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "security-cia",
+    "concept": "가용성은 이중화·백업·부하 분산으로 지킨다(암호화는 기밀성 대응).",
     "question": "다음 중 가용성(Availability)을 확보하는 대응 기술이 아닌 것은?",
     "choices": [
       "이중화(Redundancy)",
@@ -1339,6 +1402,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "security-cia",
+    "concept": "기밀성·무결성·가용성은 상충해, 한쪽을 강화하면 다른 쪽이 저하될 수 있다.",
     "question": "인증 단계를 늘려 기밀성을 강화했을 때 흔히 함께 저하되는 보안 요소는?",
     "choices": [
       "무결성",
@@ -1354,6 +1418,7 @@
     "area": "정보보안",
     "difficulty": "상",
     "topic": "symmetric-asymmetric",
+    "concept": "대칭키는 두 사람마다 하나씩 필요해 n(n-1)/2개다.",
     "question": "10명이 서로 대칭키 암호로 통신하려면 필요한 키의 총 개수는?",
     "choices": [
       "10개",
@@ -1369,6 +1434,7 @@
     "area": "정보보안",
     "difficulty": "상",
     "topic": "symmetric-asymmetric",
+    "concept": "공개키는 각자 한 쌍씩 가지면 되므로 2n개다.",
     "question": "n명이 비대칭키(공개키) 암호로 통신할 때 필요한 키의 총 개수는?",
     "choices": [
       "2n개",
@@ -1384,6 +1450,7 @@
     "area": "정보보안",
     "difficulty": "하",
     "topic": "symmetric-asymmetric",
+    "concept": "공개키 암호는 RSA·ECC·디피-헬만 등이고 AES는 대칭키다.",
     "question": "다음 중 비대칭키(공개키) 암호 알고리즘이 아닌 것은?",
     "choices": [
       "RSA",
@@ -1399,6 +1466,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "symmetric-asymmetric",
+    "concept": "하이브리드는 대칭키의 속도와 공개키의 안전한 키 분배를 함께 얻는다.",
     "question": "실무에서 비대칭키로 대칭키를 전달한 뒤 본문은 대칭키로 암호화하는 하이브리드 방식을 쓰는 이유는?",
     "choices": [
       "대칭키는 키 분배 문제가 없기 때문",
@@ -1414,6 +1482,7 @@
     "area": "정보보안",
     "difficulty": "하",
     "topic": "hash-digital-signature",
+    "concept": "눈사태 효과는 입력 한 비트 변화가 해시 출력을 크게 바꾸는 성질이다.",
     "question": "입력이 1비트만 바뀌어도 해시 출력이 크게 달라지는 암호학적 해시 함수의 성질은?",
     "choices": [
       "눈사태 효과",
@@ -1429,6 +1498,7 @@
     "area": "정보보안",
     "difficulty": "하",
     "topic": "hash-digital-signature",
+    "concept": "MD5·SHA-1은 충돌이 발견돼 폐기됐고 SHA-2 이상을 쓴다.",
     "question": "충돌 공격에 취약해 더 이상 권장되지 않는 해시 알고리즘으로 짝지어진 것은?",
     "choices": [
       "SHA-256, SHA-512",
@@ -1444,6 +1514,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "hash-digital-signature",
+    "concept": "전자서명은 무결성·인증·부인방지는 주지만 기밀성은 주지 않는다.",
     "question": "전자서명이 제공하는 보안 서비스가 아닌 것은?",
     "choices": [
       "무결성",
@@ -1489,6 +1560,7 @@
     "area": "정보보안",
     "difficulty": "하",
     "topic": "access-control",
+    "concept": "최소 권한 원칙은 업무에 필요한 최소한의 권한만 부여하는 것이다.",
     "question": "사용자에게 업무 수행에 필요한 최소한의 권한만 부여해야 한다는 접근통제의 기본 원칙은?",
     "choices": [
       "최소 권한 원칙",
@@ -1504,6 +1576,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "sql-command-types",
+    "concept": "DDL은 CREATE·ALTER·DROP·TRUNCATE, DML은 SELECT·INSERT·UPDATE·DELETE다.",
     "question": "다음 SQL 명령어 중 DDL(데이터 정의어)에 속하지 않는 것은?",
     "choices": [
       "UPDATE",
@@ -1519,6 +1592,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "sql-command-types",
+    "concept": "TRUNCATE는 DDL이라 롤백되지 않고, DELETE는 DML이라 롤백된다.",
     "question": "행을 지우는 명령들에 대한 설명으로 틀린 것은?",
     "choices": [
       "TRUNCATE는 DML이므로 COMMIT 전이라면 ROLLBACK으로 되돌릴 수 있다",
@@ -1534,6 +1608,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "sql-command-types",
+    "concept": "DELETE는 조건부 삭제로 롤백 가능, TRUNCATE는 전체 삭제로 롤백 불가, DROP은 테이블째 제거다.",
     "question": "WHERE 절로 조건에 맞는 행만 삭제할 수 있고, COMMIT 전이라면 ROLLBACK으로 되돌릴 수 있는 명령은?",
     "choices": [
       "TRUNCATE",
@@ -1549,6 +1624,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "sql-command-types",
+    "concept": "DCL은 GRANT·REVOKE로 권한을 제어한다(CREATE·ALTER는 DDL).",
     "question": "DCL(Data Control Language)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "GRANT는 사용자에게 권한을 부여하는 명령이다",
@@ -1564,6 +1640,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "sql-command-types",
+    "concept": "DML은 Data Manipulation Language의 약자다.",
     "question": "SQL 명령어 분류의 영문 풀네임 연결이 틀린 것은?",
     "choices": [
       "DDL — Data Definition Language",
@@ -1579,6 +1656,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "sql-command-types",
+    "concept": "TCL은 COMMIT·ROLLBACK·SAVEPOINT로 트랜잭션을 제어한다.",
     "question": "COMMIT, ROLLBACK, SAVEPOINT가 속하는 SQL 명령어 분류는? (보기에 해당 분류가 있는 경우)",
     "choices": [
       "DDL",
@@ -1594,6 +1672,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "sql-command-types",
+    "concept": "ALTER는 구조를 바꾸는 DDL, UPDATE는 값을 바꾸는 DML이다.",
     "question": "student 테이블에 email 열을 추가하는 'ALTER TABLE student ADD email VARCHAR(50)'과, 행의 이름 값을 바꾸는 'UPDATE student SET name=...'의 분류로 옳은 것은?",
     "choices": [
       "둘 다 DML이다",
@@ -1609,6 +1688,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "relational-algebra",
+    "concept": "select(σ)는 조건에 맞는 행을, project(π)는 지정한 열을 골라낸다.",
     "question": "관계대수 연산자에 대한 설명으로 옳은 것은?",
     "choices": [
       "select(σ)는 조건을 만족하는 행을, project(π)는 지정한 열을 골라낸다",
@@ -1624,6 +1704,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "relational-algebra",
+    "concept": "project(π)는 결과에서 중복 행을 제거한다.",
     "question": "관계대수의 project(π) 연산 결과에 대한 설명으로 옳은 것은?",
     "choices": [
       "조건을 만족하는 행만 남는다",
@@ -1639,6 +1720,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "relational-algebra",
+    "concept": "합집합·차집합·교집합은 두 릴레이션의 속성 수와 도메인이 같아야(합병 가능) 한다.",
     "question": "두 관계에 합집합(∪)·차집합(−)·교집합(∩)을 적용하기 위한 합병 가능(union-compatible) 조건은?",
     "choices": [
       "두 관계의 기본키가 같아야 한다",
@@ -1654,6 +1736,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "relational-algebra",
+    "concept": "자연 조인은 공통 속성을 하나로 합치고, 동등 조인은 양쪽 열을 모두 남긴다.",
     "question": "동등 조인(Equi Join)과 자연 조인(Natural Join)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "동등 조인은 조인 조건에 등호(=)만 사용하는 조인이다",
@@ -1669,6 +1752,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "relational-algebra",
+    "concept": "관계대수는 절차적(어떻게), 관계해석은 비절차적(무엇을) 언어다.",
     "question": "관계대수(Relational Algebra)와 관계해석(Relational Calculus)에 대한 설명으로 틀린 것은?",
     "choices": [
       "관계해석은 원하는 결과의 조건만 기술하는 비절차적(선언적) 언어다",
@@ -1684,6 +1768,7 @@
     "area": "네트워크",
     "difficulty": "하",
     "topic": "http-status-codes",
+    "concept": "HTTP 상태 코드는 1xx 정보·2xx 성공·3xx 리다이렉트·4xx 클라이언트 오류·5xx 서버 오류다.",
     "question": "HTTP 상태 코드의 첫 자리 숫자별 의미로 틀린 것은?",
     "choices": [
       "2xx — 요청이 정상 처리됨",
@@ -1699,6 +1784,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "http-status-codes",
+    "concept": "401은 인증이 필요할 때, 403은 인증됐으나 권한이 없을 때다.",
     "question": "로그인은 되어 있지만 해당 자원에 접근할 권한이 없는 사용자의 요청에 적합한 HTTP 상태 코드는?",
     "choices": [
       "400 Bad Request",
@@ -1714,6 +1800,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "http-status-codes",
+    "concept": "301은 영구 이동, 302는 임시 이동이다.",
     "question": "301 Moved Permanently와 302 Found의 차이로 옳은 것은?",
     "choices": [
       "둘 다 캐시가 유효하다는 의미다",
@@ -1729,6 +1816,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "http-status-codes",
+    "concept": "5xx는 서버 측 오류로 500 내부 오류·502 잘못된 게이트웨이·503 서비스 불가·504 게이트웨이 타임아웃이다.",
     "question": "게이트웨이(프록시)가 백엔드 서버의 응답을 제한 시간 안에 받지 못했을 때 반환하는 상태 코드는?",
     "choices": [
       "500",
@@ -1744,6 +1832,7 @@
     "area": "네트워크",
     "difficulty": "하",
     "topic": "http-status-codes",
+    "concept": "2xx는 성공으로 200 OK·201 Created·204 No Content가 대표적이다.",
     "question": "HTTP 2xx 상태 코드에 대한 연결이 옳지 않은 것은?",
     "choices": [
       "200 OK — 요청이 정상 처리됨",
@@ -1759,6 +1848,7 @@
     "area": "소프트웨어공학",
     "difficulty": "하",
     "topic": "dev-methodology",
+    "concept": "폭포수 모델은 분석→설계→구현→테스트→유지보수를 순차로 진행한다.",
     "question": "폭포수(Waterfall) 모델의 단계를 올바른 순서로 나열한 것은?",
     "choices": [
       "구현 → 설계 → 요구사항 분석 → 유지보수 → 테스트",
@@ -1774,6 +1864,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "dev-methodology",
+    "concept": "폭포수는 단계가 순차적이라 요구 변경에 유연하지 못하다.",
     "question": "폭포수 모델의 특징으로 옳지 않은 것은?",
     "choices": [
       "요구사항 변경에 유연하게 대응할 수 있다",
@@ -1804,6 +1895,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "dev-methodology",
+    "concept": "나선형 모델은 계획→위험 분석→개발→평가를 반복하며 위험을 줄여 간다.",
     "question": "나선형(Spiral) 모델이 반복하는 네 활동에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "한 주기는 계획 수립 → 위험 분석 → 개발 → 고객 평가 순으로 진행된다",
@@ -1819,6 +1911,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "dev-methodology",
+    "concept": "애자일은 문서·계약·절차보다 소프트웨어·협업·변화 대응을 중시한다.",
     "question": "애자일 선언(Agile Manifesto)의 네 가치로 옳은 것은?",
     "choices": [
       "포괄적 문서보다 동작하는 소프트웨어를",
@@ -1834,6 +1927,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "dev-methodology",
+    "concept": "위험 분석은 나선형 모델의 요소이지 XP의 것이 아니다.",
     "question": "애자일 방법론의 요소와 소속 연결이 틀린 것은?",
     "choices": [
       "스프린트 — Scrum",
@@ -1849,6 +1943,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "requirements-engineering",
+    "concept": "기능 요구는 무엇을 하는가, 비기능 요구는 성능·보안 같은 품질 조건이다.",
     "question": "다음 중 비기능(non-functional) 요구사항에 해당하는 것은?",
     "choices": [
       "회원 가입 시 이메일 인증을 거쳐야 한다",
@@ -1894,6 +1989,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "uml-diagrams",
+    "concept": "UML은 구조(정적)와 행위(동적) 다이어그램으로 나뉘며 시퀀스는 행위 쪽이다.",
     "question": "UML 다이어그램 중 구조(정적) 다이어그램이 아닌 것은?",
     "choices": [
       "클래스 다이어그램",
@@ -1924,6 +2020,7 @@
     "area": "소프트웨어공학",
     "difficulty": "하",
     "topic": "solid-principles",
+    "concept": "OCP는 확장에는 열리고 변경에는 닫히도록 설계하라는 원칙이다.",
     "question": "개방-폐쇄 원칙(OCP, Open-Closed Principle)에 대한 설명에 해당하지 않는 것은?",
     "choices": [
       "확장에는 열려 있고 수정에는 닫혀 있어야 한다는 SOLID 원칙의 하나다",
@@ -1939,6 +2036,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "test-levels",
+    "concept": "하향식 통합은 스텁(하위 대역), 상향식 통합은 드라이버(상위 대역)를 쓴다.",
     "question": "통합 테스트에서 사용하는 테스트 스텁(stub)과 드라이버(driver)에 대한 설명으로 옳은 것은?",
     "choices": [
       "하향식 통합은 스텁을, 상향식 통합은 드라이버를 사용한다",
@@ -1954,6 +2052,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "test-levels",
+    "concept": "하향식 통합은 상위 모듈부터 통합하고 미완성 하위는 스텁으로 대체한다.",
     "question": "하향식(top-down) 통합 테스트의 특징으로 옳은 것은?",
     "choices": [
       "하위 모듈부터 통합하며 상위 모듈은 드라이버로 대체한다",
@@ -1969,6 +2068,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "configuration-management",
+    "concept": "형상관리는 개발 전 과정에서 변경을 식별·통제·감사하는 활동이다.",
     "question": "소프트웨어 형상관리(SCM)에 대한 설명으로 틀린 것은?",
     "choices": [
       "개발이 끝난 뒤 배포 단계에서만 적용한다",
@@ -1984,6 +2084,7 @@
     "area": "소프트웨어공학",
     "difficulty": "하",
     "topic": "configuration-management",
+    "concept": "베이스라인은 승인 후 정식 절차로만 바꿀 수 있는 형상의 기준점이다.",
     "question": "형상관리에서 공식적으로 검토·승인되어 이후 변경 시 정식 통제 절차를 거쳐야 하는 기준점을 부르는 용어는?",
     "choices": [
       "브랜치",
@@ -1999,6 +2100,7 @@
     "area": "정보보안",
     "difficulty": "하",
     "topic": "security-attacks",
+    "concept": "DoS 계열은 자원을 고갈시켜 가용성을 침해하는 능동적 공격이다(스니핑은 수동적 도청).",
     "question": "자원을 고갈시켜 가용성을 침해하는 서비스 거부(DoS) 계열 공격에 해당하지 않는 것은?",
     "choices": [
       "SYN 플러딩 — 3-way handshake에서 SYN만 대량으로 보내고 ACK을 주지 않아 연결 대기 큐를 채운다",
@@ -2014,6 +2116,7 @@
     "area": "정보보안",
     "difficulty": "하",
     "topic": "security-attacks",
+    "concept": "DDoS는 다수의 좀비 PC로 자원을 고갈시키는 능동적 공격이다.",
     "question": "DDoS(분산 서비스 거부) 공격에 대한 설명으로 틀린 것은?",
     "choices": [
       "악성코드에 감염된 다수의 좀비 PC로 이뤄진 봇넷을 동원해 공격한다",
@@ -2029,6 +2132,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "security-attacks",
+    "concept": "스니핑은 훔쳐보는 수동 공격, 스푸핑은 위조하는 능동 공격이다.",
     "question": "스니핑(Sniffing)과 스푸핑(Spoofing)에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "스푸핑은 패킷을 관찰만 할 뿐 위조하지 않으므로 수동적 공격으로 분류된다",
@@ -2074,6 +2178,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "security-solutions",
+    "concept": "방화벽은 경계에서 트래픽을 거를 뿐 내부자 공격은 막지 못한다.",
     "question": "방화벽(firewall)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "내부 사용자에 의한 공격까지 모두 막아 준다",
@@ -2089,6 +2194,7 @@
     "area": "정보보안",
     "difficulty": "하",
     "topic": "security-solutions",
+    "concept": "IDS는 탐지·경보, IPS는 탐지와 동시에 차단한다.",
     "question": "IDS와 IPS의 차이로 옳은 것은?",
     "choices": [
       "둘 다 물리 보안 장비다",
@@ -2104,6 +2210,7 @@
     "area": "정보보안",
     "difficulty": "하",
     "topic": "security-attacks",
+    "concept": "중간자 공격은 통신 구간 암호화(TLS)와 상대 인증으로 막는다.",
     "question": "통신하는 두 당사자 사이에 몰래 끼어들어 내용을 엿보거나 변조하는 중간자(MITM) 공격의 대응 기술로 가장 적절한 것은?",
     "choices": [
       "로드 밸런싱",
@@ -2199,6 +2306,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "java-inheritance",
+    "concept": "업캐스팅에서 메서드는 재정의된 자식 것이 불리지만(오버라이딩), 필드는 참조 타입을 따른다.",
     "question": "Java에서 'A obj = new B();'(B는 A의 자식 클래스)일 때의 설명으로 틀린 것은?",
     "choices": [
       "instanceof는 실제 객체 타입을 기준으로 판정하므로 obj instanceof B는 true다",
@@ -2277,6 +2385,7 @@
     "area": "프로그래밍",
     "difficulty": "하",
     "topic": "stack-queue",
+    "concept": "스택은 후입선출(LIFO), 큐는 선입선출(FIFO) 구조다.",
     "question": "스택과 큐에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "스택은 나중에 넣은 것이 먼저 나오는 LIFO 구조다",
@@ -2292,6 +2401,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "stack-queue",
+    "concept": "원형 큐는 (rear+1) mod n == front이면 포화 상태다.",
     "question": "크기 n인 원형 큐의 포화(full) 상태를 판단하는 조건은?",
     "choices": [
       "(rear + 1) mod n == front",
@@ -2307,6 +2417,7 @@
     "area": "프로그래밍",
     "difficulty": "상",
     "topic": "stack-queue",
+    "concept": "스택 순열은 push 순서를 유지하며 pop 시점만 조절해 만들 수 있는 순서다.",
     "question": "1, 2, 3을 이 순서로 push하면서 중간중간 pop할 때, 만들 수 없는 출력 순서는?",
     "choices": [
       "1, 2, 3",
@@ -2322,6 +2433,7 @@
     "area": "프로그래밍",
     "difficulty": "하",
     "topic": "big-o-notation",
+    "concept": "Big-O는 최고차항만 남기고 계수·저차항을 버린다.",
     "question": "연산 횟수가 3n² + 5n + 100인 알고리즘의 시간복잡도를 Big-O로 나타내면?",
     "choices": [
       "O(n²)",
@@ -2337,6 +2449,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "big-o-notation",
+    "concept": "복잡도는 O(1)<O(log n)<O(n)<O(n log n)<O(n²)<O(2^n) 순으로 커진다.",
     "question": "시간복잡도를 효율적인 것(빠른 것)부터 순서대로 나열한 것은?",
     "choices": [
       "O(log n) → O(1) → O(n²) → O(n)",
@@ -2352,6 +2465,7 @@
     "area": "프로그래밍",
     "difficulty": "하",
     "topic": "binary-search",
+    "concept": "이진 탐색은 구간을 절반씩 줄여 O(log n)이다.",
     "question": "이진 탐색의 시간복잡도는?",
     "choices": [
       "O(1)",
@@ -2367,6 +2481,7 @@
     "area": "프로그래밍",
     "difficulty": "하",
     "topic": "binary-search",
+    "concept": "이진 탐색은 배열이 정렬돼 있어야 적용할 수 있다.",
     "question": "이진 탐색을 적용하기 위한 전제 조건은?",
     "choices": [
       "배열이 연결 리스트로 구현되어야 한다",
@@ -2382,6 +2497,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "binary-search",
+    "concept": "lo+(hi-lo)/2는 (lo+hi)가 자료형 범위를 넘는 오버플로를 막는다.",
     "question": "C·Java에서 이진 탐색의 중간 인덱스를 (lo + hi) / 2 대신 lo + (hi - lo) / 2로 계산하는 것에 대한 설명으로 틀린 것은?",
     "choices": [
       "lo·hi가 음수가 아닌 인덱스이고 lo ≤ hi인 한 (lo + hi) / 2와 같은 값을 준다",
@@ -2397,6 +2513,7 @@
     "area": "프로그래밍",
     "difficulty": "하",
     "topic": "bfs-dfs",
+    "concept": "가중치가 같은 그래프의 최단 거리는 BFS로 구한다.",
     "question": "간선 가중치가 모두 같은 그래프에서 최단 거리를 구할 때 적합한 탐색 방법은?",
     "choices": [
       "DFS",
@@ -2412,6 +2529,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "dp-intro",
+    "concept": "DP는 겹치는 부분 문제와 최적 부분 구조가 있을 때 성립한다.",
     "question": "동적 계획법(DP)이 성립하기 위한 두 가지 조건으로 옳게 짝지어진 것은?",
     "choices": [
       "상호 배제, 환형 대기",
@@ -2427,6 +2545,7 @@
     "area": "소프트웨어공학",
     "difficulty": "하",
     "topic": "cost-estimation",
+    "concept": "COCOMO는 예측 코드 라인 수(LOC)를 기준으로 비용을 산정한다.",
     "question": "COCOMO(COnstructive COst MOdel) 모형에 대한 설명으로 틀린 것은?",
     "choices": [
       "기능의 개수와 복잡도를 세어 규모를 재므로 구현 언어와 무관하게 적용할 수 있다",
@@ -2442,6 +2561,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "cost-estimation",
+    "concept": "COCOMO 유형은 조직형·반분리형·내장형으로 규모·제약에 따라 나뉜다.",
     "question": "COCOMO의 프로젝트 유형에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "Organic(조직형)은 5만 라인 이하의 잘 이해된 응용을 소규모 팀이 개발하는 유형이다",
@@ -2457,6 +2577,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "cost-estimation",
+    "concept": "기능 점수(FP)는 기능의 개수·복잡도로 규모를 재 구현 언어와 무관하다.",
     "question": "기능 점수(FP, Function Point) 산정 방식에 대한 설명으로 틀린 것은?",
     "choices": [
       "외부 입력·외부 출력·외부 조회, 내부 논리 파일, 외부 인터페이스 파일의 개수에 복잡도 가중치를 곱해 규모를 산정한다",
@@ -2487,6 +2608,7 @@
     "area": "소프트웨어공학",
     "difficulty": "상",
     "topic": "cost-estimation",
+    "concept": "LOC 3점 추정 = (낙관 + 4×중간 + 비관) / 6.",
     "question": "LOC 3점 추정에서 낙관치 2,000라인, 중간치 5,000라인, 비관치 8,000라인일 때 예측치는? (가중 평균: (낙관 + 4×중간 + 비관) / 6)",
     "choices": [
       "4,000라인",
@@ -2502,6 +2624,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "project-management",
+    "concept": "CPM의 임계 경로는 프로젝트 최소 완료 기간을 정하는 가장 긴 경로다.",
     "question": "CPM(Critical Path Method)의 임계 경로(critical path)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "작업별 시작과 끝을 막대로 늘어놓은 간트 차트(Gantt Chart)에서 임계 경로를 그대로 읽어낸다",
@@ -2517,6 +2640,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "project-management",
+    "concept": "PERT는 낙관·기대·비관 3점 추정으로 작업 기간을 확률적으로 예측한다.",
     "question": "PERT 일정 관리 기법의 특징으로 옳은 것은?",
     "choices": [
       "작업 기간을 단일 확정값으로만 다룬다",
@@ -2532,6 +2656,7 @@
     "area": "소프트웨어공학",
     "difficulty": "상",
     "topic": "project-management",
+    "concept": "CMMI는 초기→관리→정의→정량적 관리→최적화 5단계로 성숙도를 나눈다.",
     "question": "CMMI 성숙도 5단계에서 '조직 표준 프로세스가 정의되어 프로젝트가 이를 따르는' 단계는?",
     "choices": [
       "2단계(관리됨)",
@@ -2547,6 +2672,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "requirements-engineering",
+    "concept": "요구공학은 도출→분석→명세→확인 순으로 진행한다.",
     "question": "요구공학의 요구사항 개발 프로세스를 올바른 순서로 나열한 것은?",
     "choices": [
       "분석 → 도출 → 확인 → 명세",
@@ -2562,6 +2688,7 @@
     "area": "소프트웨어공학",
     "difficulty": "하",
     "topic": "requirements-engineering",
+    "concept": "요구사항 도출 기법은 인터뷰·설문·브레인스토밍·프로토타이핑 등이다.",
     "question": "다음 중 요구사항 도출(elicitation) 기법에 해당하지 않는 것은?",
     "choices": [
       "회귀 테스트",
@@ -2577,6 +2704,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "middleware-eai",
+    "concept": "미들웨어는 RPC(원격 호출)·MOM(메시지 큐)·ORB·WAS 등으로 나뉜다.",
     "question": "미들웨어(Middleware) 유형과 그 설명을 짝지은 것으로 틀린 것은?",
     "choices": [
       "ORB — CORBA 계열의 객체 요청 브로커로 분산 객체 사이의 호출을 중개한다",
@@ -2592,6 +2720,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "middleware-eai",
+    "concept": "EAI 구축은 Point-to-Point·Hub&Spoke·메시지 버스·하이브리드로 나뉜다.",
     "question": "EAI 구축 유형 중 허브 시스템을 두고 모든 애플리케이션 연동을 중앙 집중형으로 처리하는 방식은?",
     "choices": [
       "Point-to-Point",
@@ -2607,6 +2736,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "routing-sdn",
+    "concept": "RIP은 거리 벡터 방식으로 홉 수를 기준 삼으며 최대 15홉으로 제한된다.",
     "question": "라우팅 프로토콜 RIP에 대한 설명으로 틀린 것은?",
     "choices": [
       "거리 벡터(distance vector) 알고리즘을 사용한다",
@@ -2637,6 +2767,7 @@
     "area": "네트워크",
     "difficulty": "하",
     "topic": "ip-operations",
+    "concept": "IPv6는 128비트 주소를 16진수 여덟 덩어리로 콜론으로 구분해 적는다.",
     "question": "IPv6에 대한 설명으로 틀린 것은?",
     "choices": [
       "주소 길이가 128비트라서 32비트인 IPv4보다 주소 공간이 훨씬 넓다",
@@ -2697,6 +2828,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "virtualization-cloud",
+    "concept": "컨테이너는 호스트 커널을 공유해 게스트 OS가 없고, VM은 게스트 OS를 통째로 올린다.",
     "question": "가상머신(VM)과 컨테이너(container)의 비교로 틀린 것은?",
     "choices": [
       "가상머신은 하이퍼바이저(hypervisor) 위에 게스트 OS를 통째로 올린다",
@@ -2712,6 +2844,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "virtualization-cloud",
+    "concept": "클라우드는 IaaS(인프라)·PaaS(플랫폼)·SaaS(소프트웨어)로 나뉜다.",
     "question": "클라우드 서비스 모델 중 개발·실행 환경(플랫폼)을 제공하여 사용자가 애플리케이션 개발에만 집중하게 하는 것은?",
     "choices": [
       "IaaS",
@@ -2757,6 +2890,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "virtual-memory",
+    "concept": "페이징은 내부 단편화가, 세그먼테이션은 외부 단편화가 생긴다.",
     "question": "페이징(paging)과 세그먼테이션(segmentation)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "페이징은 메모리를 물리적으로 같은 고정 크기의 페이지로 나눈다",
@@ -2804,6 +2938,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "tree-traversal",
+    "concept": "레벨 k 포화 이진 트리의 노드 수 = 2^k - 1.",
     "question": "깊이(레벨) k인 포화 이진 트리(full binary tree)의 전체 노드 수는? (루트 레벨 = 1)",
     "choices": [
       "2^(k-1)",
@@ -2819,6 +2954,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "sorting",
+    "concept": "퀵 정렬은 평균 O(n log n)이지만 최악은 O(n²)다.",
     "question": "퀵 정렬(quick sort)에 대한 설명으로 틀린 것은?",
     "choices": [
       "병합 정렬과 마찬가지로 최악의 경우에도 O(n log n)을 보장한다",
@@ -2834,6 +2970,7 @@
     "area": "프로그래밍",
     "difficulty": "상",
     "topic": "sorting",
+    "concept": "버블 정렬은 인접 원소를 비교·교환해 한 회전마다 최댓값을 끝으로 보낸다.",
     "question": "배열 [5, 3, 4, 1]에 버블 정렬(오름차순, 인접 교환)을 적용할 때 1회전(pass) 후의 배열은?",
     "choices": [
       "[3, 4, 1, 5]",
@@ -2864,6 +3001,7 @@
     "area": "프로그래밍",
     "difficulty": "상",
     "topic": "stack-queue",
+    "concept": "후위 표기는 연산자를 피연산자 뒤에 두어 괄호 없이 우선순위를 표현한다.",
     "question": "중위 표기식 A + B * C를 후위 표기식(postfix)으로 바꾸면?",
     "choices": [
       "A B + C *",
@@ -2879,6 +3017,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "authentication",
+    "concept": "MFA는 아는 것·가진 것·자신인 것처럼 서로 다른 범주를 섞어야 성립한다.",
     "question": "인증 요소의 분류와 그 예시를 짝지은 것으로 옳지 않은 것은?",
     "choices": [
       "지식 기반(아는 것) — 비밀번호, PIN",
@@ -2924,6 +3063,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "secure-coding",
+    "concept": "SQL 인젝션은 매개변수화된 쿼리(준비된 문장)로 값과 구문을 분리해 막는다.",
     "question": "SQL 인젝션 공격의 가장 효과적인 대응 방법은?",
     "choices": [
       "데이터베이스 백업 주기를 늘린다",
@@ -2939,6 +3079,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "secure-coding",
+    "concept": "시큐어 코딩은 개발 단계부터 취약점을 예방하는 활동이다.",
     "question": "시큐어 코딩(secure coding)에 대한 설명으로 틀린 것은?",
     "choices": [
       "개발 단계부터 보안 취약점을 예방하는 코딩 원칙이다",
@@ -2954,6 +3095,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "sql-query-basics",
+    "concept": "뷰는 가상 테이블이라 독립적인 인덱스를 따로 두지 못한다.",
     "question": "뷰(View)에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "하나 이상의 테이블에서 유도되는 가상 테이블이다",
@@ -2984,6 +3126,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "relational-algebra",
+    "concept": "외부 조인은 매칭 없는 쪽 행도 남긴다 — LEFT는 왼쪽, RIGHT는 오른쪽 기준.",
     "question": "조인(Join)의 결과에 대한 설명으로 틀린 것은?",
     "choices": [
       "RIGHT OUTER JOIN은 왼쪽에 매칭이 없는 오른쪽 행을 결과에서 제외한다",
@@ -2999,6 +3142,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "sql-query-basics",
+    "concept": "집계 함수는 NULL을 무시하며, COUNT(*)만 NULL이 있는 행까지 센다.",
     "question": "집계 함수의 NULL 처리에 대한 설명으로 틀린 것은?",
     "choices": [
       "COUNT(컬럼명)은 그 컬럼이 NULL인 행을 빼고 센다",
@@ -3029,6 +3173,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "ui-design",
+    "concept": "UI 설계 원칙은 직관성·유효성·학습성·유연성이다.",
     "question": "UI 설계 원칙과 설명의 연결이 틀린 것은?",
     "choices": [
       "직관성 — 누구나 쉽게 이해하고 사용할 수 있어야 한다",
@@ -3059,6 +3204,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "ui-design",
+    "concept": "화면 설계는 와이어프레임→스토리보드→프로토타입 순으로 상세해진다.",
     "question": "화면 설계 산출물에 대한 설명으로 옳은 것은?",
     "choices": [
       "프로토타입은 정적인 뼈대 그림만을 뜻한다",
@@ -3074,6 +3220,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "ui-design",
+    "concept": "UI는 조작 접점, UX는 그를 통한 총체적 경험으로 UX가 더 넓다.",
     "question": "UI(User Interface)와 UX(User Experience)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "UI가 UX를 포함하는 더 넓은 개념이라 UX는 UI의 하위 요소로 다뤄진다",
@@ -3089,6 +3236,7 @@
     "area": "소프트웨어공학",
     "difficulty": "하",
     "topic": "requirements-engineering",
+    "concept": "프로토타입은 요구를 확인하는 시제품일 뿐 최종 코드가 아니다.",
     "question": "요구사항 확인 단계에서 프로토타입(prototype)을 만드는 목적이 아닌 것은?",
     "choices": [
       "완성품에 그대로 쓸 최종 코드를 미리 구현해 구현 단계를 건너뛰기 위해",
@@ -3104,6 +3252,7 @@
     "area": "소프트웨어공학",
     "difficulty": "하",
     "topic": "test-levels",
+    "concept": "V-모델 테스트는 단위→통합→시스템→인수 순으로 커진다.",
     "question": "V-모델의 테스트 레벨을 작은 단위부터 순서대로 나열한 것은?",
     "choices": [
       "인수 → 시스템 → 통합 → 단위",
@@ -3119,6 +3268,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "test-levels",
+    "concept": "알파 테스트는 개발자 환경에서, 베타 테스트는 실사용자 환경에서 한다.",
     "question": "알파 테스트(alpha test)와 베타 테스트(beta test)에 대한 설명으로 틀린 것은?",
     "choices": [
       "알파 테스트는 통제된 개발자 환경에서 개발자가 지켜보는 가운데 사용자가 수행한다",
@@ -3149,6 +3299,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "test-tools",
+    "concept": "테스트 하네스는 드라이버·스텁·오라클·케이스·스크립트로 테스트를 자동 수행하는 환경이다.",
     "question": "다음 중 테스트 하네스(test harness)의 구성 요소가 아닌 것은?",
     "choices": [
       "테스트 드라이버",
@@ -3164,6 +3315,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "test-tools",
+    "concept": "정적 분석은 코드를 실행하지 않고 소스를 분석해 결함·표준 위반을 찾는다.",
     "question": "정적 분석(static analysis) 도구에 대한 설명으로 옳은 것은?",
     "choices": [
       "사용자 인터뷰로 요구사항을 수집한다",
@@ -3179,6 +3331,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "framework-build-batch",
+    "concept": "제어의 역전(IoC)은 실행 흐름을 개발자 코드가 아니라 프레임워크가 주도하는 것이다.",
     "question": "소프트웨어 프레임워크의 특징인 '제어의 역전(IoC, Inversion of Control)'이 의미하는 것은?",
     "choices": [
       "프로그램의 실행 흐름을 개발자 코드가 아니라 프레임워크가 주도한다",
@@ -3194,6 +3347,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "framework-build-batch",
+    "concept": "라이브러리는 내 코드가 호출하고, 프레임워크는 내 코드를 호출한다(제어의 역전).",
     "question": "라이브러리와 프레임워크의 차이로 옳은 것은?",
     "choices": [
       "프레임워크는 개발자 코드가 호출해 쓰고, 라이브러리는 개발자 코드를 호출한다",
@@ -3209,6 +3363,7 @@
     "area": "소프트웨어공학",
     "difficulty": "하",
     "topic": "framework-build-batch",
+    "concept": "빌드 도구는 Maven·Gradle·Ant 등이고 Wireshark는 패킷 분석기다.",
     "question": "다음 중 소스 코드의 컴파일·패키징·의존성 관리를 자동화하는 빌드 도구가 아닌 것은?",
     "choices": [
       "Ant",
@@ -3239,6 +3394,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "framework-build-batch",
+    "concept": "배치 프로그램은 대량 일괄 처리라 실시간 응답이 요건이 아니다(대용량·자동화·견고성이 요건).",
     "question": "배치 프로그램의 필수 요건에 해당하지 않는 것은?",
     "choices": [
       "대용량 데이터를 처리할 수 있어야 한다",
@@ -3269,6 +3425,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "procedural-sql",
+    "concept": "트리거는 INSERT·UPDATE·DELETE 같은 이벤트에 자동 실행된다(직접 호출이 아니다).",
     "question": "트리거(Trigger)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "INSERT·UPDATE·DELETE 같은 이벤트가 발생하면 DBMS가 자동으로 실행한다",
@@ -3284,6 +3441,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "procedural-sql",
+    "concept": "저장 프로시저는 값 반환이 필수가 아니고, 사용자 정의 함수는 값을 반환한다.",
     "question": "절차형 SQL에 대한 설명으로 틀린 것은?",
     "choices": [
       "저장 프로시저는 CALL 문으로 명시적으로 호출해 실행한다",
@@ -3299,6 +3457,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "procedural-sql",
+    "concept": "사용자 정의 함수는 값을 반환해 SELECT 문 안에서 쓸 수 있다.",
     "question": "사용자 정의 함수(user-defined function)의 특징으로 옳은 것은?",
     "choices": [
       "값을 반환할 수 없다",
@@ -3329,6 +3488,7 @@
     "area": "프로그래밍",
     "difficulty": "하",
     "topic": "json-ajax",
+    "concept": "JSON은 언어 독립적인 경량 데이터 교환 형식이다.",
     "question": "JSON에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "특정 프로그래밍 언어에서만 사용할 수 있다",
@@ -3344,6 +3504,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "json-ajax",
+    "concept": "AJAX는 페이지 전체를 새로 고치지 않고 비동기로 일부만 갱신한다.",
     "question": "AJAX(Asynchronous JavaScript and XML)의 핵심 특징은?",
     "choices": [
       "서버 없이 동작하는 데이터베이스 기술이다",
@@ -3359,6 +3520,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "disk-file-system",
+    "concept": "SSTF는 현재 헤드에서 가장 가까운 트랙 요청을 먼저 처리한다.",
     "question": "디스크 헤드가 현재 50번 트랙에 있고 대기 큐에 90, 30, 120, 20번 트랙 요청이 이 순서로 들어와 있다. SSTF 스케줄링으로 처리할 때 헤드의 총 이동 거리는?",
     "choices": [
       "100 트랙",
@@ -3374,6 +3536,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "disk-file-system",
+    "concept": "SCAN(엘리베이터)은 한 방향 끝까지 훑고 방향을 바꿔 되돌아온다.",
     "question": "트랙이 0~99번인 디스크에서 헤드가 50번에 있고 트랙 번호가 커지는 방향으로 이동 중이다. 대기 큐가 10, 22, 70, 85번일 때 SCAN 스케줄링의 총 이동 거리는?",
     "choices": [
       "110 트랙",
@@ -3389,6 +3552,7 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "disk-file-system",
+    "concept": "C-SCAN은 한 방향만 서비스하고 끝에서 반대 끝으로 되돌아가 다시 같은 방향으로 훑는다.",
     "question": "C-SCAN 디스크 스케줄링의 동작 방식으로 옳은 것은?",
     "choices": [
       "한 방향으로만 서비스하고 끝에 닿으면 요청을 처리하지 않고 반대 끝으로 되돌아가 다시 같은 방향으로 훑는다",
@@ -3404,6 +3568,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "disk-file-system",
+    "concept": "SSTF는 가까운 요청만 처리해 먼 요청이 기아에 빠질 수 있다.",
     "question": "SSTF 디스크 스케줄링에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "매번 탐색 거리가 가장 짧은 요청을 선택한다",
@@ -3419,6 +3584,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "disk-file-system",
+    "concept": "파일 블록 할당은 연속·연결·색인 방식으로 나뉘며, 연결 할당은 직접 접근에 불리하다.",
     "question": "파일의 디스크 블록 할당 방식에 대한 설명으로 틀린 것은?",
     "choices": [
       "연속 할당은 직접 접근이 빠르지만 파일이 커지면 옮겨야 하고 외부 단편화가 생긴다",
@@ -3434,6 +3600,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "disk-file-system",
+    "concept": "i-node는 파일의 속성과 블록 위치를 담지만 파일 이름은 담지 않는다.",
     "question": "UNIX 파일 시스템의 i-node에 저장되지 않는 정보는?",
     "choices": [
       "파일의 크기",
@@ -3449,6 +3616,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "memory-allocation",
+    "concept": "최초 적합은 앞에서부터 처음 들어가는 빈 영역에 배치한다.",
     "question": "메모리의 빈 영역이 낮은 주소부터 12KB, 30KB, 20KB, 40KB 순으로 있다. 18KB 프로그램을 최초 적합(First Fit)으로 배치할 때 사용되는 영역과 배치 후 그 영역에 남는 공간은?",
     "choices": [
       "12KB 영역 — 배치 불가",
@@ -3464,6 +3632,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "memory-allocation",
+    "concept": "최적 적합은 들어갈 수 있는 가장 작은 빈 영역에, 최악 적합은 가장 큰 영역에 배치한다.",
     "question": "메모리의 빈 영역이 낮은 주소부터 8KB, 25KB, 14KB, 32KB 순으로 있다. 13KB 프로그램을 배치할 때의 설명으로 틀린 것은?",
     "choices": [
       "최초 적합(First Fit)은 앞에서부터 처음 만나는 8KB 영역에 배치해 5KB를 남긴다",
@@ -3494,6 +3663,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "memory-allocation",
+    "concept": "압축(compaction)은 흩어진 빈 공간을 한쪽으로 모아 외부 단편화를 없앤다.",
     "question": "메모리 압축(compaction)에 대한 설명으로 틀린 것은?",
     "choices": [
       "배치된 프로세스들을 한쪽으로 밀어붙여 흩어진 빈 공간을 하나의 큰 연속 공간으로 합친다",
@@ -3509,6 +3679,7 @@
     "area": "프로그래밍",
     "difficulty": "상",
     "topic": "hashing",
+    "concept": "선형 조사는 충돌 시 다음 빈 슬롯을 순차로 찾아 저장한다.",
     "question": "크기가 10인 해시 테이블에서 해시 함수 h(k) = k mod 10을 쓰고 충돌은 선형 조사(linear probing)로 해결한다. 빈 테이블에 23, 13, 33, 45를 이 순서로 삽입할 때 45가 저장되는 인덱스는?",
     "choices": [
       "4",
@@ -3524,6 +3695,7 @@
     "area": "프로그래밍",
     "difficulty": "상",
     "topic": "hashing",
+    "concept": "이차 조사는 충돌 시 (h+i²) 위치로 건너뛰며 빈 슬롯을 찾는다.",
     "question": "크기가 10인 해시 테이블에서 h(k) = k mod 10을 쓰고, 충돌 시 i번째 조사 위치를 (h(k) + i²) mod 10으로 정하는 이차 조사를 사용한다. 빈 테이블에 19, 29, 39를 이 순서로 삽입할 때 39가 저장되는 인덱스는?",
     "choices": [
       "0",
@@ -3539,6 +3711,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "hashing",
+    "concept": "적재율은 저장된 항목 수 ÷ 테이블 크기이며, 체이닝은 1을 넘어도 삽입된다.",
     "question": "해시 테이블의 적재율(load factor)에 대한 설명으로 틀린 것은?",
     "choices": [
       "저장된 원소 수를 테이블 크기로 나눈 값이다",
@@ -3554,6 +3727,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "hashing",
+    "concept": "체이닝은 슬롯에 연결 리스트를 매달고, 개방 주소법은 다른 빈 슬롯을 찾는다.",
     "question": "해시 충돌(collision) 해결 방법에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "개방 주소법(open addressing)은 각 슬롯에 연결 리스트를 매달아 충돌한 키를 이어 붙인다",
@@ -3569,6 +3743,7 @@
     "area": "프로그래밍",
     "difficulty": "하",
     "topic": "hashing",
+    "concept": "해시 테이블은 평균 O(1) 탐색이며 제산법은 키를 크기로 나눈 나머지를 주소로 쓴다.",
     "question": "해시 테이블의 평균 탐색 시간복잡도와, 키를 테이블 크기로 나눈 나머지를 주소로 삼는 해시 함수 기법을 바르게 짝지은 것은?",
     "choices": [
       "O(n) — 중간 제곱법",
@@ -3616,6 +3791,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "exception-language-types",
+    "concept": "검사 예외는 컴파일러가 처리를 강제하고, 비검사 예외는 강제하지 않는다.",
     "question": "Java의 검사 예외(checked exception)와 비검사 예외(unchecked exception)에 대한 설명으로 틀린 것은?",
     "choices": [
       "NullPointerException·ArithmeticException은 RuntimeException을 상속한 비검사 예외다",
@@ -3631,6 +3807,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "exception-language-types",
+    "concept": "언어는 절차형·객체지향·함수형(LISP 등)·논리형으로 나뉜다.",
     "question": "프로그래밍 언어의 분류와 대표 언어를 잘못 짝지은 것은?",
     "choices": [
       "절차형(명령형) 언어 — C, Pascal",
@@ -3646,6 +3823,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "exception-language-types",
+    "concept": "컴파일러는 전체를 번역해 목적 파일을 만들고, 인터프리터는 한 줄씩 해석·실행한다.",
     "question": "컴파일러와 인터프리터의 비교로 틀린 것은?",
     "choices": [
       "컴파일러는 소스 코드 전체를 목적 코드로 한 번에 번역한 뒤 실행한다",
@@ -3661,6 +3839,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "architecture-patterns",
+    "concept": "MVC는 모델(데이터)·뷰(표현)·컨트롤러(입력 해석·흐름 제어)로 책임을 나눈다.",
     "question": "MVC 아키텍처 패턴에서 각 구성요소의 책임에 대한 설명으로 가장 적절하지 않은 것은?",
     "choices": [
       "모델(Model)은 업무 데이터와 그 처리 규칙을 보관하며 화면 표현 방식과는 독립적이다",
@@ -3691,6 +3870,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "architecture-patterns",
+    "concept": "아키텍처 패턴은 시스템 전체 골격을, 디자인 패턴은 클래스·객체 수준 문제를 다룬다.",
     "question": "아키텍처 패턴과 디자인 패턴의 관계에 대한 설명으로 옳은 것은?",
     "choices": [
       "아키텍처 패턴이 디자인 패턴보다 추상화 수준이 낮아 클래스 단위의 구현 방식을 규정한다",
@@ -3706,6 +3886,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "architecture-patterns",
+    "concept": "계층화 아키텍처는 상위 계층이 하위 계층을 호출하는 단방향 의존을 원칙으로 한다.",
     "question": "계층화(Layered) 아키텍처 패턴의 특징으로 틀린 것은?",
     "choices": [
       "각 계층은 자신의 바로 아래 계층이 제공하는 서비스만 사용하도록 제한하는 것이 원칙이다",
@@ -3721,6 +3902,7 @@
     "area": "소프트웨어공학",
     "difficulty": "상",
     "topic": "architecture-patterns",
+    "concept": "이벤트 버스는 발신·수신자가 서로를 모른 채 이벤트로 느슨하게 결합한다.",
     "question": "아키텍처 패턴과 그 설명을 짝지은 것으로 틀린 것은?",
     "choices": [
       "이벤트 버스 — 발신자가 수신자를 직접 지정해 호출하므로 두 컴포넌트가 강하게 결합된다",
@@ -3736,6 +3918,7 @@
     "area": "소프트웨어공학",
     "difficulty": "상",
     "topic": "architecture-patterns",
+    "concept": "마스터-슬레이브는 작업을 여러 노드에 쪼개 맡기고 결과를 취합하며 실패를 재배정한다.",
     "question": "대량의 이미지 변환 작업을 여러 처리 노드에 똑같은 형태로 쪼개 맡기고, 각 노드의 부분 결과를 한곳에서 취합해 최종 결과를 만들며, 실패한 작업은 다른 노드에 다시 배정하려 한다. 가장 적합한 아키텍처 패턴은?",
     "choices": [
       "파이프-필터 패턴",
@@ -3751,6 +3934,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "code-review-quality",
+    "concept": "워크스루는 자료를 미리 돌려 보고 작성자가 주도하는 비공식 동료 검토다.",
     "question": "동료 검토 기법 중 워크스루(walk-through)에 대한 설명으로 옳은 것은?",
     "choices": [
       "훈련된 중재자가 회의를 주관하고 검토자들이 미리 정해진 역할을 맡는 공식 절차다",
@@ -3766,6 +3950,7 @@
     "area": "소프트웨어공학",
     "difficulty": "하",
     "topic": "code-review-quality",
+    "concept": "리팩토링은 외부 기능은 그대로 두고 내부 구조를 개선하는 작업이다.",
     "question": "리팩토링(refactoring)에 대한 설명으로 가장 적절한 것은?",
     "choices": [
       "변경된 요구사항에 맞춰 새로운 기능을 추가하는 작업이다",
@@ -3781,6 +3966,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "code-review-quality",
+    "concept": "ISO/IEC 9126 품질 특성은 기능성·신뢰성·사용성·효율성·유지보수성·이식성이다.",
     "question": "ISO/IEC 9126 소프트웨어 품질 특성 중 '명시된 조건에서 규정된 기간 동안 성능 수준을 유지하는 능력'에 해당하는 것은?",
     "choices": [
       "기능성(Functionality)",
@@ -3796,6 +3982,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "code-review-quality",
+    "concept": "클린 코드는 주석으로 때우지 않고 코드 자체가 의도를 드러내게 한다.",
     "question": "클린 코드 원칙과 코드 스멜에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "이름만 보고도 역할을 알 수 있도록 변수·함수의 이름을 의미 있게 짓는다",
@@ -3811,6 +3998,7 @@
     "area": "소프트웨어공학",
     "difficulty": "상",
     "topic": "code-review-quality",
+    "concept": "인스펙션은 공식·체계적 검토, 워크스루는 비공식 검토이며 둘 다 정적 검토다.",
     "question": "인스펙션(inspection)과 워크스루(walk-through)를 비교한 설명으로 틀린 것은?",
     "choices": [
       "인스펙션은 정적 검토이지만 워크스루는 프로그램을 실행해 결과를 확인하는 동적 검증이다",
@@ -3826,6 +4014,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "emerging-tech",
+    "concept": "블록체인은 중앙 기관 없이 참여 노드가 원장을 분산·공유해 위변조를 막는다.",
     "question": "블록체인의 구조와 특성에 대한 설명으로 틀린 것은?",
     "choices": [
       "중앙 관리 기관이 원장의 정본을 보관하고 참여 노드는 그 사본을 조회만 할 수 있다",
@@ -3856,6 +4045,7 @@
     "area": "소프트웨어공학",
     "difficulty": "하",
     "topic": "emerging-tech",
+    "concept": "빅데이터 3V는 규모(Volume)·속도(Velocity)·다양성(Variety)이다.",
     "question": "빅데이터의 특징을 나타내는 3V에 해당하지 않는 것은?",
     "choices": [
       "규모(Volume)",
@@ -3871,6 +4061,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "emerging-tech",
+    "concept": "하둡은 분산 저장 HDFS와 분산 처리 MapReduce로 구성된다.",
     "question": "하둡(Hadoop)의 구성 요소에 대한 설명으로 옳은 것은?",
     "choices": [
       "HDFS는 저장 공간을 아끼기 위해 블록을 노드마다 하나씩만 두고 복제본은 만들지 않는다",
@@ -3886,6 +4077,7 @@
     "area": "소프트웨어공학",
     "difficulty": "상",
     "topic": "emerging-tech",
+    "concept": "MSA는 서비스별 독립 배포·확장이 가능한 대신 통신·운영 복잡도가 는다.",
     "question": "모놀리식 아키텍처와 마이크로서비스 아키텍처(MSA)를 비교한 설명으로 옳은 것은?",
     "choices": [
       "MSA는 서비스별로 독립 배포·확장할 수 있는 대신, 서비스 간 통신이 네트워크를 타면서 지연과 장애 지점, 운영 복잡도가 늘어난다",
@@ -3901,6 +4093,7 @@
     "area": "소프트웨어공학",
     "difficulty": "상",
     "topic": "emerging-tech",
+    "concept": "쿠버네티스는 컨테이너를 여러 노드에 배포·관리하는 오케스트레이션 도구다.",
     "question": "신기술 용어와 그 설명을 짝지은 것으로 옳지 않은 것은?",
     "choices": [
       "쿠버네티스 — 컨테이너 이미지를 만들어 한 대의 호스트에서 실행하는 데 쓰는 이미지 빌드 도구",
@@ -3980,6 +4173,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "c-operators",
+    "concept": "strcat은 원본 문자열 자체에 이어 붙여 원본을 바꾼다.",
     "question": "다음 C 코드를 실행한 뒤의 상태에 대한 설명으로 틀린 것은? (단, string.h는 포함되어 있다.)",
     "code": "char s[20] = \"abc\";\nchar t[10] = \"de\";\nstrcat(s, t);",
     "choices": [
@@ -4012,6 +4206,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "c-operators",
+    "concept": "삼항 연산자는 조건에 따라 A·B 중 하나만 평가한다.",
     "question": "C언어의 증감 연산자와 삼항 연산자(ternary operator)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "전위 ++a는 값을 1 증가시킨 뒤의 값이 그 식의 값이 된다",
@@ -4027,6 +4222,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "c-operators",
+    "concept": "do-while은 조건을 뒤에서 검사해 본문을 최소 한 번 실행한다.",
     "question": "C언어의 제어문에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "break는 자신을 감싼 가장 안쪽 반복문 하나만 빠져나간다",
@@ -4042,6 +4238,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "java-basics",
+    "concept": "Java 배열은 생성 시 0·false·null 같은 기본값으로 자동 초기화된다.",
     "question": "다음 Java 코드에 대한 설명으로 틀린 것은?",
     "code": "int[] a = new int[4];\na[0] = 7;",
     "choices": [
@@ -4138,6 +4335,7 @@
     "area": "프로그래밍",
     "difficulty": "하",
     "topic": "java-basics",
+    "concept": "배열 길이는 length 필드, 문자열 길이는 length() 메서드로 얻는다.",
     "question": "Java에서 배열과 문자열의 길이를 얻는 방법에 대한 설명으로 틀린 것은?",
     "choices": [
       "배열 a의 길이는 a.length로 얻는다",
@@ -4153,6 +4351,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "java-basics",
+    "concept": "continue는 남은 본문을 건너뛰고 다음 반복으로, break는 반복문을 벗어난다.",
     "question": "Java의 연산자와 제어문에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "삼항 연산자 조건 ? A : B는 조건이 true면 A로 평가된다",
@@ -4168,6 +4367,7 @@
     "area": "프로그래밍",
     "difficulty": "상",
     "topic": "c-pointer-array",
+    "concept": "구조체 대입은 값 복사라 배열 멤버까지 통째로 복사된다.",
     "question": "다음 C 코드를 실행한 결과에 대한 설명으로 틀린 것은?",
     "code": "struct Point { int x; int arr[3]; };\n\nstruct Point a = {1, {10, 20, 30}};\nstruct Point b = a;\nb.x = 5;\nb.arr[1] = 99;",
     "choices": [
@@ -4261,6 +4461,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "relation-basics",
+    "concept": "릴레이션의 튜플은 순서가 없어 배열을 바꿔도 같은 릴레이션이다.",
     "question": "다음 [학생] 릴레이션에 대한 설명으로 틀린 것은?",
     "code": "[학생]\n학번   | 이름   | 학과       | 학년\n-------+--------+------------+-----\n2101   | 김민수 | 컴퓨터공학 | 2\n2102   | 이서연 | 전자공학   | 3\n2103   | 박지훈 | 컴퓨터공학 | 1",
     "choices": [
@@ -4277,6 +4478,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "relation-basics",
+    "concept": "한 속성의 값은 모두 같은 도메인이고, 튜플은 유일하며 순서가 없다.",
     "question": "릴레이션(Relation)의 성질에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "하나의 속성은 서로 다른 도메인(Domain)의 값을 자유롭게 섞어 가질 수 있다",
@@ -4292,6 +4494,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "relation-basics",
+    "concept": "데이터 모델의 3요소는 구조·연산·제약조건이다.",
     "question": "데이터 모델(Data Model)을 구성하는 3요소에 해당하지 않는 것은?",
     "choices": [
       "구조(Structure)",
@@ -4307,6 +4510,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "relation-basics",
+    "concept": "참조 무결성은 외래키가 참조 대상에 없는 값을 갖지 못하게 한다.",
     "question": "다음 연산이 데이터베이스에 의해 거부되었다면 위반한 무결성 제약으로 옳은 것은?",
     "code": "[릴레이션 스키마]\n사원(사번, 이름, 부서코드)\n부서(부서코드, 부서명)\n- 사원.부서코드는 부서.부서코드를 참조하는 외래키다.\n\n[시도한 연산]\nINSERT INTO 사원 VALUES (1005, '최유진', 'D99');\n- 단, 부서 릴레이션에 부서코드가 'D99'인 튜플은 없다.",
     "choices": [
@@ -4338,6 +4542,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "db-design-steps",
+    "concept": "DB 설계는 요구 분석→개념적→논리적→물리적→구현 순으로 진행한다.",
     "question": "데이터베이스 설계 단계를 순서대로 바르게 나열한 것은?",
     "code": "ㄱ. 논리적 설계\nㄴ. 물리적 설계\nㄷ. 요구조건 분석\nㄹ. 개념적 설계\nㅁ. 구현",
     "choices": [
@@ -4354,6 +4559,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "db-design-steps",
+    "concept": "물리적 설계는 저장 구조·인덱스·접근 경로를 정한다(트랜잭션 모델링은 개념 단계).",
     "question": "물리적 설계 단계에서 수행하는 작업이나 고려 사항에 해당하지 않는 것은?",
     "choices": [
       "저장 레코드 양식 설계",
@@ -4385,6 +4591,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "db-design-steps",
+    "concept": "논리적 설계는 개념 모델을 DBMS 스키마(테이블)로 옮긴다(저장 형식은 물리적 설계).",
     "question": "논리적 설계 단계에 대한 설명으로 틀린 것은?",
     "choices": [
       "사용할 DBMS에 맞는 논리 스키마로 변환한다",
@@ -4400,6 +4607,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "db-design-steps",
+    "concept": "데이터 사전은 시스템이 관리하며 사용자가 직접 갱신하지 못한다.",
     "question": "데이터 사전(Data Dictionary)에 대한 설명으로 틀린 것은?",
     "choices": [
       "사용자가 INSERT·UPDATE 문으로 그 내용을 직접 갱신할 수 있다",
@@ -4415,6 +4623,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "distributed-db",
+    "concept": "분산 DB 투명성은 위치·중복·분할·병행·장애 투명성이다.",
     "question": "분산 데이터베이스가 제공해야 하는 투명성(Transparency)이 아닌 것은?",
     "choices": [
       "위치 투명성(Location Transparency)",
@@ -4446,6 +4655,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "distributed-db",
+    "concept": "분산 DB는 가용성·확장성이 좋은 대신 설계와 관리가 복잡하다.",
     "question": "분산 데이터베이스 시스템에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "여러 지역에 물리적으로 분산된 데이터베이스를 논리적으로는 하나처럼 사용한다",
@@ -4476,6 +4686,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "distributed-db",
+    "concept": "투명성은 데이터가 분산·중복돼 있다는 사실을 사용자가 몰라도 되게 감추는 것이다.",
     "question": "분산 데이터베이스의 투명성이 지향하는 바와 가장 거리가 먼 것은?",
     "choices": [
       "데이터가 여러 사이트에 분산되어 있다는 사실을 사용자가 인식하도록 드러내야 한다",
@@ -4523,6 +4734,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "sql-query-basics",
+    "concept": "GRANT는 권한을 부여하고, WITH GRANT OPTION은 그 권한의 재부여를 허용한다.",
     "question": "다음 SQL문에 대한 설명으로 틀린 것은?",
     "code": "[SQL]\nGRANT SELECT ON 학생 TO KIM WITH GRANT OPTION;",
     "choices": [
@@ -4539,6 +4751,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "sql-query-basics",
+    "concept": "REVOKE의 CASCADE는 그 사용자가 넘겨준 권한까지 연쇄로 회수한다.",
     "question": "권한을 제어하는 DCL(Data Control Language) 구문에 대한 설명으로 틀린 것은?",
     "choices": [
       "GRANT는 'GRANT 권한 ON 객체 TO 사용자' 형태로 쓴다",
@@ -4602,6 +4815,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "malware-types",
+    "concept": "트로이 목마는 위장하되 자기 복제를 하지 않는다(웜은 스스로 퍼진다).",
     "question": "악성코드 유형에 대한 설명으로 틀린 것은?",
     "choices": [
       "트로이 목마(Trojan Horse)는 자기 복제로 다른 시스템까지 스스로 퍼져 나간다",
@@ -4649,6 +4863,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "malware-types",
+    "concept": "악성코드는 행위로 나뉜다 — 랜섬웨어는 파일 암호화로 금전을 요구한다.",
     "question": "악성코드와 그 주된 행위의 연결이 옳지 않은 것은?",
     "choices": [
       "키로거(Keylogger) — 키보드 입력을 가로채 계정 정보나 카드 번호를 빼낸다",
@@ -4664,6 +4879,7 @@
     "area": "정보보안",
     "difficulty": "하",
     "topic": "security-threat-types",
+    "concept": "보안 위협은 물리적·기술적·관리적으로 나뉜다.",
     "question": "다음 중 물리적 위협에 해당하지 않는 것은?",
     "choices": [
       "화재로 백업 매체가 소실되는 것",
@@ -4710,6 +4926,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "security-threat-types",
+    "concept": "응용은 최소 권한으로 실행해야 하며 관리자 권한 상시 실행은 위험하다.",
     "question": "응용 프로그램의 취약점을 줄이기 위한 조치로 가장 적절하지 않은 것은?",
     "choices": [
       "사용하지 않는 서비스와 계정을 제거한다",
@@ -4725,6 +4942,7 @@
     "area": "정보보안",
     "difficulty": "상",
     "topic": "security-threat-types",
+    "concept": "관리적 위협은 정책·절차·인적 요인이며, 설비 고장은 물리적 위협이다.",
     "question": "관리적 위협에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "보안 정책과 지침이 없어 담당자마다 처리 방식이 제각각이다",
@@ -4756,6 +4974,7 @@
     "area": "네트워크",
     "difficulty": "하",
     "topic": "ip-protocol",
+    "concept": "IP 헤더에는 IP 주소·TTL·프로토콜 등이 들고, 포트 번호는 전송 계층의 것이다.",
     "question": "IPv4 헤더에 포함되는 필드가 아닌 것은?",
     "choices": [
       "목적지 포트 번호(Destination Port Number)",
@@ -4771,6 +4990,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "ip-protocol",
+    "concept": "TTL은 라우터를 지날 때마다 1씩 줄어 패킷의 무한 순환을 막는다.",
     "question": "송신 호스트가 TTL(Time To Live)을 64로 설정해 보낸 패킷이 목적지에 도착했을 때 TTL 값이 57이었다. 이 패킷이 거쳐 온 라우터의 수는?",
     "choices": [
       "6개",
@@ -4786,6 +5006,7 @@
     "area": "네트워크",
     "difficulty": "상",
     "topic": "ip-protocol",
+    "concept": "IP 헤더 길이 = 헤더 길이 필드 × 4바이트, 데이터 = 전체 길이 - 헤더 길이.",
     "question": "어떤 IPv4 패킷의 헤더 길이(Header Length) 필드 값이 7이고 전체 패킷 길이(Total Packet Length) 필드 값이 1500일 때, 데이터 부분의 크기는?",
     "choices": [
       "1465바이트",
@@ -4801,6 +5022,7 @@
     "area": "네트워크",
     "difficulty": "상",
     "topic": "ip-protocol",
+    "concept": "단편화된 조각은 중간 라우터가 아니라 최종 목적지에서 재조립된다.",
     "question": "IP 단편화(Fragmentation)와 재조립에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "링크마다 전송 가능한 최대 크기(MTU)가 달라 단편화가 필요하다",
@@ -4832,6 +5054,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "network-topology",
+    "concept": "토폴로지는 성형·버스형·링형·망형으로 구축 비용과 장애 내성이 다르다.",
     "question": "네트워크 토폴로지에 대한 설명으로 틀린 것은?",
     "choices": [
       "버스형(Bus)은 하나의 공용 회선에 노드를 연결해 설치 비용이 적게 든다",
@@ -4847,6 +5070,7 @@
     "area": "네트워크",
     "difficulty": "상",
     "topic": "network-topology",
+    "concept": "완전 연결 망형의 회선 수 = n(n-1)/2.",
     "question": "노드 12개를 모두 서로 직접 연결하는 완전 연결 망형(Mesh)을 구성할 때 필요한 회선 수는?",
     "choices": [
       "55개",
@@ -4862,6 +5086,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "network-topology",
+    "concept": "장비는 허브 1계층·스위치 2계층·라우터 3계층, 게이트웨이는 상위 계층이다.",
     "question": "네트워크 장비와 그 장비가 동작하는 계층의 연결이 옳지 않은 것은?",
     "choices": [
       "라우터(Router) — 네트워크 계층",
@@ -4893,6 +5118,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "unix-os",
+    "concept": "UNIX는 대부분 C로 작성돼 이식성이 높고 다중 사용자·다중 작업을 지원한다.",
     "question": "UNIX 운영체제의 특징으로 틀린 것은?",
     "choices": [
       "대화식 시분할(Time Sharing) 방식으로 동작한다",
@@ -4908,6 +5134,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "unix-os",
+    "concept": "커널은 부팅 시 상주하고, 셸은 사용자가 바꿔 쓸 수 있는 명령 해석기다.",
     "question": "UNIX의 커널(Kernel)과 셸(Shell)에 대한 설명으로 옳은 것은?",
     "choices": [
       "셸이 하드웨어를 직접 제어하고, 커널이 사용자의 명령을 해석한다",
@@ -4923,6 +5150,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "unix-os",
+    "concept": "UNIX 파일 시스템은 루트(/)를 정점으로 한 계층형 트리 구조다.",
     "question": "UNIX 파일 시스템에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "모든 파일이 계층 없이 하나의 평면(flat) 목록에 저장된다",
@@ -4954,6 +5182,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "oop-basics",
+    "concept": "정보 은닉은 private 등으로 내부를 감추고 공개 인터페이스로만 접근하게 한다.",
     "question": "캡슐화(Encapsulation)와 정보 은닉(Information Hiding)에 대한 설명으로 틀린 것은?",
     "choices": [
       "캡슐화는 데이터인 속성과 그 속성을 다루는 연산을 클래스 안에 하나로 묶는 것이다",
@@ -4969,6 +5198,7 @@
     "area": "소프트웨어공학",
     "difficulty": "상",
     "topic": "oop-basics",
+    "concept": "오버로딩은 같은 이름 다른 매개변수(단일 클래스), 오버라이딩은 상속에서 메서드 재정의다.",
     "question": "오버로딩(Overloading)과 오버라이딩(Overriding)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "오버로딩은 한 클래스 안에서 이름은 같고 매개변수의 수나 타입이 다른 메서드를 여러 개 두는 것이다",
@@ -5000,6 +5230,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "oop-basics",
+    "concept": "메시지는 객체에 연산을 요청하는 것으로, 내부는 캡슐화돼 직접 건드리지 못한다.",
     "question": "객체지향에서 메시지(Message)에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "메시지는 수신 객체의 내부 속성을 호출한 쪽이 직접 읽고 쓰는 방식으로 전달된다",
@@ -5015,6 +5246,7 @@
     "area": "소프트웨어공학",
     "difficulty": "하",
     "topic": "oop-basics",
+    "concept": "상속은 상위 클래스를 물려받고 하위 클래스가 속성·연산을 추가·재정의할 수 있다.",
     "question": "상속(Inheritance)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "상위 클래스의 속성과 연산을 하위 클래스가 물려받는 것이다",
@@ -5030,6 +5262,7 @@
     "area": "소프트웨어공학",
     "difficulty": "상",
     "topic": "oop-basics",
+    "concept": "같은 이름 메서드가 매개변수 목록이 다르면 오버로딩 관계다.",
     "question": "다음 Java 코드에 대한 설명으로 옳은 것은?",
     "code": "class Printer {\n  void print(String s) { ... }\n  void print(String s, int count) { ... }\n}\n\nclass ColorPrinter extends Printer {\n  void print(String s) { ... }\n}",
     "choices": [
@@ -5046,6 +5279,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "packaging-drm",
+    "concept": "제품 패키징은 사용자 관점에서 하며 내부 구조·소스는 드러내지 않는다.",
     "question": "제품 소프트웨어 패키징에 대한 설명으로 틀린 것은?",
     "choices": [
       "내부 모듈 구조와 소스 코드를 그대로 드러내는 것이 목표이므로 개발자 관점에서 진행한다",
@@ -5077,6 +5311,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "packaging-drm",
+    "concept": "DRM은 콘텐츠에 암호화와 라이선스를 걸어 이용 권한을 통제한다.",
     "question": "DRM(Digital Rights Management)에 대한 설명으로 가장 적절하지 않은 것은?",
     "choices": [
       "콘텐츠를 암호화해 인가된 사용자만 복호화하여 이용할 수 있게 한다",
@@ -5108,6 +5343,7 @@
     "area": "소프트웨어공학",
     "difficulty": "상",
     "topic": "packaging-drm",
+    "concept": "DRM은 콘텐츠 제공자·분배자·클리어링 하우스·DRM 컨트롤러로 구성된다.",
     "question": "DRM(Digital Rights Management) 구성 요소와 그 역할의 연결이 옳지 않은 것은?",
     "choices": [
       "패키저(Packager) — 콘텐츠를 메타데이터와 함께 암호화해 배포 단위로 묶는다",
@@ -5123,6 +5359,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "uml-diagrams",
+    "concept": "유스케이스 관계는 연관·포함(include)·확장(extend)·일반화다.",
     "question": "유스케이스(Use Case) 다이어그램에서 사용하는 관계에 해당하지 않는 것은?",
     "choices": [
       "연관(Association)",
@@ -5154,6 +5391,7 @@
     "area": "소프트웨어공학",
     "difficulty": "하",
     "topic": "uml-diagrams",
+    "concept": "UML은 사물(Things)·관계(Relationships)·다이어그램으로 구성된다.",
     "question": "UML(Unified Modeling Language)의 구성 요소에 대한 설명으로 틀린 것은?",
     "choices": [
       "UML의 구성 요소는 사물(Things)·관계(Relationships)·다이어그램(Diagrams) 세 가지다",
@@ -5169,6 +5407,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "ui-design",
+    "concept": "UI는 오류가 나면 사용자에게 알리고 복구 방법을 안내해야 한다.",
     "question": "UI(User Interface) 설계 지침에 대한 설명으로 틀린 것은?",
     "choices": [
       "결과 예측 가능성 — 어떤 기능을 수행하면 어떤 결과가 나올지 미리 짐작할 수 있어야 한다",
@@ -5290,6 +5529,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "framework-build-batch",
+    "concept": "IDE는 편집·컴파일·디버깅·빌드를 한 환경에서 지원한다(컴파일은 소스→실행 파일).",
     "question": "IDE(Integrated Development Environment)의 기능에 대한 설명으로 틀린 것은?",
     "choices": [
       "Coding — 프로그래밍 언어로 소스 코드를 작성하고 편집한다",
@@ -5321,6 +5561,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "mutual-exclusion",
+    "concept": "상호배제 해법은 상호배제·진행·한정 대기를 만족해야 한다(환형 대기는 교착 조건).",
     "question": "상호배제(Mutual Exclusion) 해법이 반드시 만족해야 할 조건이 아닌 것은?",
     "choices": [
       "상호배제 — 한 프로세스가 임계 구역에 있으면 다른 프로세스는 들어갈 수 없다",
@@ -5336,6 +5577,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "mutual-exclusion",
+    "concept": "세마포어는 P(대기)·V(신호) 연산으로 자원 수를 세어 상호배제를 구현한다.",
     "question": "세마포어(Semaphore)와 P·V 연산에 대한 설명으로 틀린 것은?",
     "choices": [
       "P(wait) 연산은 세마포어 변수 S를 1 감소시키고, 그 결과가 음수이면 해당 프로세스를 대기 큐에 넣는다",
@@ -5351,6 +5593,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "mutual-exclusion",
+    "concept": "세마포어 S는 P에서 감소, V에서 증가하며, 음수면 그 절댓값만큼 대기 프로세스가 있다.",
     "question": "다음 조건에서 세마포어 변수 S의 최종 값과 대기 큐에 남아 있는 프로세스 수로 옳은 것은?",
     "code": "[조건]\n- 계수 세마포어 S의 초깃값은 3이다\n- 프로세스 5개가 차례로 P(wait) 연산을 수행했다\n- 그 뒤 임계 구역에 있던 프로세스 1개가 V(signal) 연산을 수행했다",
     "choices": [
@@ -5367,6 +5610,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "mutual-exclusion",
+    "concept": "모니터는 동기화를 언어 차원에서 캡슐화해 세마포어보다 오류가 적다.",
     "question": "모니터(Monitor)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "공유 자원과 그 자원에 접근하는 연산(프로시저)을 하나의 모듈로 묶는다",
@@ -5398,6 +5642,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "mutual-exclusion",
+    "concept": "상호배제 소프트웨어 해법에는 데커·피터슨·베이커리 알고리즘이 있다.",
     "question": "상호배제를 위한 소프트웨어 알고리즘에 해당하지 않는 것은?",
     "choices": [
       "데커(Dekker) 알고리즘",
@@ -5413,6 +5658,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "linux-admin",
+    "concept": "새 파일은 666, 디렉터리는 777에서 umask에 켜진 비트를 걷어낸 값이다.",
     "question": "umask 값이 027로 설정된 리눅스 시스템에서 새로 생성되는 일반 파일과 디렉터리의 기본 권한을 8진수로 옳게 짝지은 것은?",
     "choices": [
       "파일 640, 디렉터리 750",
@@ -5428,6 +5674,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "linux-admin",
+    "concept": "목표 권한을 얻으려면 기준값(파일 666·디렉터리 777)에서 거꾸로 umask를 구한다.",
     "question": "새로 생성되는 디렉터리의 권한이 rwxr-x--- 가 되게 하려면 umask 값을 얼마로 설정해야 하는가?",
     "choices": [
       "022",
@@ -5443,6 +5690,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "linux-admin",
+    "concept": "chmod 숫자 권한은 소유자·그룹·그 외에 읽기 4·쓰기 2·실행 1을 배정한다.",
     "question": "다음 명령을 수행한 뒤 report.txt에 부여되는 권한 표기로 옳은 것은?",
     "code": "$ chmod 751 report.txt",
     "choices": [
@@ -5459,6 +5707,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "linux-admin",
+    "concept": "로그인 실패는 btmp(lastb), 이력은 wtmp(last), 마지막 로그인은 lastlog다.",
     "question": "리눅스의 접속 관련 로그 파일과 그 내용을 확인하는 명령의 연결이 옳지 않은 것은?",
     "choices": [
       "wtmp — 로그인·로그아웃과 부팅·종료 이력 — last",
@@ -5490,6 +5739,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "linux-admin",
+    "concept": "kill은 이름이 아니라 PID로 프로세스에 시그널을 보낸다.",
     "question": "리눅스 명령어에 대한 설명으로 틀린 것은?",
     "choices": [
       "chown은 파일의 소유자와 소유 그룹을 변경한다",
@@ -5521,6 +5771,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "storage-ha",
+    "concept": "DAS는 직접 연결, NAS는 파일 단위 네트워크 저장, SAN은 전용 망의 블록 저장이다.",
     "question": "DAS·NAS·SAN에 대한 설명으로 틀린 것은?",
     "choices": [
       "NAS는 파이버 채널 전용 망을 따로 구축해야 해서 DAS보다 설치가 까다롭다",
@@ -5536,6 +5787,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "storage-ha",
+    "concept": "RAID는 여러 디스크를 묶어 성능·안정성을 얻으며 레벨마다 미러링·패리티 방식이 다르다.",
     "question": "RAID 구성에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "RAID 0은 데이터를 여러 디스크에 나눠 저장(스트라이핑)해 속도를 높이지만 중복 저장이 없어 디스크 하나만 고장 나도 데이터를 잃는다",
@@ -5567,6 +5819,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "software-reengineering",
+    "concept": "재공학 활동은 분석·재구조화·역공학·이식이다(형상 감사는 형상관리).",
     "question": "소프트웨어 재공학(Reengineering)의 주요 활동에 해당하지 않는 것은?",
     "choices": [
       "재구조화(Restructuring)",
@@ -5614,6 +5867,7 @@
     "area": "소프트웨어공학",
     "difficulty": "상",
     "topic": "software-reengineering",
+    "concept": "재구조화는 기능을 유지한 채 코드 구조를 개선하는 것이다(환경 이전은 이식).",
     "question": "재공학의 재구조화(Restructuring)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "외부에 드러나는 기능은 그대로 둔 채 코드나 자료의 구조만 다시 짜는 활동이다",
@@ -5629,6 +5883,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "software-reengineering",
+    "concept": "재사용은 검증된 부품을 쓰지만 쓸 만한 부품을 찾는 노력이 든다.",
     "question": "소프트웨어 재사용(Reuse)에 대한 설명으로 틀린 것은?",
     "choices": [
       "재사용의 규모는 함수·모듈 단위, 컴포넌트 단위, 애플리케이션 단위로 나눌 수 있다",
@@ -5660,6 +5915,7 @@
     "area": "소프트웨어공학",
     "difficulty": "상",
     "topic": "software-reengineering",
+    "concept": "유지보수는 수정·적응·완전·예방으로 나뉜다.",
     "question": "유지보수 유형과 그 사례를 짝지은 것으로 틀린 것은?",
     "choices": [
       "수정(Corrective) 유지보수 — 앞으로 생길 문제에 대비해 이해하기 어려운 모듈의 문서를 정비한다",
@@ -5675,6 +5931,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "structured-analysis-notation",
+    "concept": "DFD는 프로세스(원)·자료 흐름(화살표)·자료 저장소(평행선)·단말(사각형)로 그린다.",
     "question": "자료 흐름도(DFD, Data Flow Diagram)의 구성 요소와 표기 기호를 짝지은 것으로 틀린 것은?",
     "choices": [
       "처리(Process) — 원 또는 둥근 사각형",
@@ -5706,6 +5963,7 @@
     "area": "소프트웨어공학",
     "difficulty": "상",
     "topic": "structured-analysis-notation",
+    "concept": "NS 차트는 GOTO 없는 구조적 프로그래밍을 도식화해 논리 흐름을 표현한다.",
     "question": "나씨-슈나이더만 차트(NS Chart, Nassi-Schneiderman Chart)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "순차·선택·반복의 세 가지 기본 제어 구조를 상자의 중첩으로 표현한다",
@@ -5736,6 +5994,7 @@
     "area": "소프트웨어공학",
     "difficulty": "상",
     "topic": "structured-analysis-notation",
+    "concept": "DFD는 자료의 흐름과 변환을 나타낼 뿐 시간 순서·제어 분기는 표현하지 않는다.",
     "question": "자료 흐름도(DFD, Data Flow Diagram)에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "시스템을 자료의 흐름과 그 변환 과정을 중심으로 표현한다",
@@ -5751,6 +6010,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "er-modeling",
+    "concept": "E-R 기호는 개체 사각형·관계 마름모·속성 타원이다.",
     "question": "E-R 다이어그램의 구성 요소와 표기 기호를 짝지은 것으로 틀린 것은?",
     "choices": [
       "개체(Entity) — 사각형",
@@ -5782,6 +6042,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "er-modeling",
+    "concept": "약한 개체는 자신의 속성만으로 식별되지 않아 다른 개체에 의존한다(이중 사각형).",
     "question": "E-R 모델의 약한 개체(Weak Entity)에 대한 설명으로 옳은 것은?",
     "choices": [
       "자신의 속성만으로는 식별되지 않아 다른 개체에 의존하며 이중 사각형으로 표기한다",
@@ -5797,6 +6058,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "er-modeling",
+    "concept": "대응수(카디널리티)는 1:1·1:N·N:M으로 표현한다.",
     "question": "다음 업무 규칙을 E-R 다이어그램으로 옮길 때 학생 개체와 강좌 개체 사이의 대응수(Cardinality)로 옳은 것은?",
     "code": "- 한 명의 학생은 여러 개의 강좌를 수강 신청할 수 있다\n- 하나의 강좌에는 여러 명의 학생이 등록할 수 있다\n- 두 개체는 '수강' 관계로 연결된다",
     "choices": [
@@ -5845,6 +6107,7 @@
     "area": "정보보안",
     "difficulty": "상",
     "topic": "wireless-security",
+    "concept": "블루투스 공격은 블루스나프(자료 탈취)·블루버그(원격 제어)·블루재킹(메시지 전송)으로 나뉜다.",
     "question": "블루투스를 노리는 공격에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "블루프린팅(BluePrinting)은 주변 블루투스 기기의 모델과 제공 기능을 식별해 공격 대상을 선별하는 단계다",
@@ -5876,6 +6139,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "wireless-security",
+    "concept": "WEP은 근본적으로 취약해 WPA2·WPA3로 교체해야 한다.",
     "question": "무선랜 보안 규격에 대한 설명으로 틀린 것은?",
     "choices": [
       "WEP(Wired Equivalent Privacy)는 초기화 벡터(IV)가 짧아 재사용되는 구조적 결함 탓에 키가 복구되어 폐기됐다",
@@ -5891,6 +6155,7 @@
     "area": "정보보안",
     "difficulty": "상",
     "topic": "wireless-security",
+    "concept": "블루재킹은 메시지를 보내는 장난 수준이고, 자료 탈취는 블루스나프다.",
     "question": "무선·근거리 통신 구간을 노리는 위협에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "블루재킹(BlueJacking)은 대상 기기에 저장된 연락처와 파일을 인증 없이 꺼내 오는 것이 목적이다",
@@ -5922,6 +6187,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "security-solutions",
+    "concept": "DPI는 헤더를 넘어 패킷 페이로드까지 열어 검사한다.",
     "question": "DPI(Deep Packet Inspection)에 대한 설명으로 틀린 것은?",
     "choices": [
       "패킷의 헤더뿐 아니라 페이로드(내용)까지 열어 분석한다",
@@ -5937,6 +6203,7 @@
     "area": "정보보안",
     "difficulty": "상",
     "topic": "secure-coding",
+    "concept": "XSS는 공격자 스크립트가 다른 사용자의 브라우저에서 실행되는 취약점이다.",
     "question": "취약점과 그 설명의 연결로 옳지 않은 것은?",
     "choices": [
       "자원 삽입(Resource Injection) — 외부 입력이 파일 경로나 포트 번호 같은 자원 식별자로 그대로 쓰여 의도치 않은 자원에 접근하게 된다",
@@ -5968,6 +6235,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "symmetric-asymmetric",
+    "concept": "DES는 블록 64비트·실질 키 56비트, AES는 블록 128비트·키 128/192/256비트다.",
     "question": "DES와 AES의 제원에 대한 설명으로 옳은 것은?",
     "choices": [
       "DES는 128비트 블록을 처리하며 키 길이는 256비트로 고정되어 있다",
@@ -5999,6 +6267,7 @@
     "area": "소프트웨어공학",
     "difficulty": "하",
     "topic": "interface-design",
+    "concept": "인터페이스 대상 식별은 송수신 시스템과 데이터·범위를 정하는 단계다.",
     "question": "인터페이스 설계의 첫 단계인 인터페이스 대상 식별 활동에 해당하지 않는 것은?",
     "choices": [
       "개발할 시스템과 데이터를 주고받을 내부·외부 시스템을 찾아낸다",
@@ -6014,6 +6283,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "interface-design",
+    "concept": "직접 연계는 단순·빠르지만 결합이 강하고, 간접 연계는 솔루션이 중계해 유연하다.",
     "question": "시스템 간 연계 방식에 대한 설명으로 틀린 것은?",
     "choices": [
       "직접 연계는 중간 매개체 없이 소켓(Socket)이나 DB 링크(DB Link)로 시스템을 곧바로 잇는다",
@@ -6061,6 +6331,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "interface-design",
+    "concept": "인터페이스 데이터는 XML·JSON·YAML로 명세하며 YAML은 들여쓰기로 구조를 나타낸다.",
     "question": "인터페이스 데이터 명세화에 쓰이는 표기 형식에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "JSON(JavaScript Object Notation)은 속성-값 쌍을 중괄호로 묶어 표현하는 경량 데이터 교환 형식이다",
@@ -6076,6 +6347,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "interface-design",
+    "concept": "오류 처리방안 명세는 오류 코드·메시지·복구 절차를 담는다(하드웨어 선정은 아니다).",
     "question": "인터페이스 설계 시 오류 처리방안 명세화에 담을 내용이 아닌 것은?",
     "choices": [
       "송수신 데이터를 담을 스토리지 제조사와 디스크 RAID 구성의 선정",
@@ -6091,6 +6363,7 @@
     "area": "소프트웨어공학",
     "difficulty": "상",
     "topic": "interface-design",
+    "concept": "실시간성이 낮고 대량이면 일 배치 연계가 적합하다.",
     "question": "다음 요건을 가진 인터페이스의 송수신 주기 설계로 가장 적절한 것은?",
     "code": "- 영업점 100곳의 당일 거래 내역 전체를 본사 정산 시스템으로 넘긴다\n- 정산은 영업 종료 후 집계된 결과만 있으면 되며 즉시성은 요구되지 않는다\n- 건별로 보내면 연계 횟수가 과도해 운영 시간대의 시스템 부하가 커진다",
     "choices": [
@@ -6107,6 +6380,7 @@
     "area": "소프트웨어공학",
     "difficulty": "상",
     "topic": "interface-design",
+    "concept": "간접 연계는 중간 계층이 늘어 유연한 대신 응답 지연은 오히려 커진다.",
     "question": "이기종 시스템 10여 개를 EAI·ESB 같은 연계 솔루션으로 묶는 간접 연계로 설계했다. 이 결정의 근거로 가장 거리가 먼 것은?",
     "choices": [
       "연계 규격을 표준화해 시스템마다 제각각인 연동 방식을 하나로 통일할 수 있다",
@@ -6122,6 +6396,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "interface-implementation",
+    "concept": "인터페이스 구현은 데이터 통신 방식과 인터페이스 테이블 방식으로 나뉜다.",
     "question": "인터페이스 구현 방식에 대한 설명으로 틀린 것은?",
     "choices": [
       "데이터 통신 방식은 송신 시스템이 JSON·XML로 데이터를 만들어 보내고 수신 시스템이 이를 파싱해 처리한다",
@@ -6169,6 +6444,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "interface-implementation",
+    "concept": "인터페이스 보안은 계층별로 IPSec(네트워크)·SSL/TLS(전송)·S-HTTP(응용)를 쓴다.",
     "question": "인터페이스 보안 수단을 동작 계층과 짝지은 것으로 틀린 것은?",
     "choices": [
       "응용 계층 — IPSec(IP Security)이 HTTP 메시지를 메시지 단위로 암호화한다",
@@ -6216,6 +6492,7 @@
     "area": "소프트웨어공학",
     "difficulty": "하",
     "topic": "interface-implementation",
+    "concept": "인터페이스 명세서는 송수신 시스템·데이터·주기를 정리해 연계 테스트의 기준이 된다.",
     "question": "인터페이스 명세서(Interface Specification)에 대한 설명으로 옳은 것은?",
     "choices": [
       "인터페이스 구현이 모두 끝난 뒤 결과를 정리하는 문서라 테스트에는 쓰이지 않는다",
@@ -6246,6 +6523,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "sql-advanced",
+    "concept": "상관 서브쿼리는 바깥 쿼리의 행마다 실행되고, 비상관 서브쿼리는 한 번만 실행된다.",
     "question": "서브쿼리(Subquery)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "상관 서브쿼리(Correlated Subquery)는 바깥 쿼리와 무관하게 한 번만 실행되고 그 값이 모든 행에 재사용된다",
@@ -6261,6 +6539,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "sql-advanced",
+    "concept": "NOT IN 비교 목록에 NULL이 섞이면 결과가 모두 사라질 수 있다.",
     "question": "다음 [부서]와 [사원] 테이블에 대해 [SQL문]을 실행한 결과로 옳은 것은?",
     "code": "[부서]\n부서코드 | 부서명\n---------+-------\nD1       | 영업\nD2       | 개발\nD3       | 총무\n\n[사원]\n사번 | 이름   | 부서코드\n-----+--------+---------\n1    | 김철수 | D1\n2    | 이영희 | D2\n3    | 박민준 | NULL\n\n[SQL문]\nSELECT 부서명\n  FROM 부서\n WHERE 부서코드 NOT IN (SELECT 부서코드 FROM 사원);",
     "choices": [
@@ -6277,6 +6556,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "sql-advanced",
+    "concept": "RANK는 동점 뒤 순위를 건너뛰고, DENSE_RANK는 건너뛰지 않는다.",
     "question": "다음 [SQL문]을 실행했을 때 최수빈 행의 R1과 R2 값으로 옳은 것은?",
     "code": "[성적]\n이름   | 점수\n-------+-----\n김철수 |  95\n이영희 |  90\n박민준 |  90\n최수빈 |  85\n\n[SQL문]\nSELECT 이름,\n       RANK()       OVER (ORDER BY 점수 DESC) AS R1,\n       DENSE_RANK() OVER (ORDER BY 점수 DESC) AS R2\n  FROM 성적;",
     "choices": [
@@ -6293,6 +6573,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "sql-advanced",
+    "concept": "RANK는 동점에 같은 순위를 준 뒤 다음 순위를 건너뛴다.",
     "question": "윈도우 함수(Window Function)에 대한 설명으로 틀린 것은?",
     "choices": [
       "OVER 절의 PARTITION BY는 계산을 나눌 그룹의 기준 열을 지정한다",
@@ -6308,6 +6589,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "sql-advanced",
+    "concept": "ROLLUP은 그룹 소계와 총계 행을 추가로 만든다.",
     "question": "다음 [SQL문]의 결과로 출력되는 행의 총 개수는?",
     "code": "[판매]\n지점 | 품목   | 수량\n-----+--------+-----\n서울 | TV     |  10\n서울 | 냉장고 |   5\n부산 | TV     |   7\n\n[SQL문]\nSELECT 지점, 품목, SUM(수량)\n  FROM 판매\n GROUP BY ROLLUP(지점, 품목);",
     "choices": [
@@ -6356,6 +6638,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "sql-advanced",
+    "concept": "ALL은 서브쿼리의 모든 값과의 비교를 만족해야 참이 된다.",
     "question": "다음 [SQL문]을 실행한 결과로 출력되는 이름은?",
     "code": "[사원]\n이름   | 부서 | 급여\n-------+------+------\n김철수 | 영업 | 3000\n이영희 | 영업 | 4000\n박민준 | 개발 | 3500\n최수빈 | 개발 | 4500\n\n[SQL문]\nSELECT 이름\n  FROM 사원\n WHERE 급여 > ALL (SELECT 급여 FROM 사원 WHERE 부서 = '영업');",
     "choices": [
@@ -6372,6 +6655,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "physical-db-design",
+    "concept": "파티셔닝은 범위·해시·목록·복합 방식으로 나뉜다.",
     "question": "파티셔닝(Partitioning) 기법과 그 설명의 연결로 틀린 것은?",
     "choices": [
       "범위(Range) 분할 — 분할 키 값의 구간을 기준으로 나눈다",
@@ -6403,6 +6687,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "physical-db-design",
+    "concept": "옵티마이저는 규칙 기반(RBO)과 통계를 쓰는 비용 기반(CBO)으로 나뉜다.",
     "question": "옵티마이저(Optimizer)에 대한 설명으로 틀린 것은?",
     "choices": [
       "규칙 기반 옵티마이저(RBO)는 데이터의 실제 건수와 분포를 반영하므로 통계 정보 없이도 항상 최적 경로를 보장한다",
@@ -6418,6 +6703,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "physical-db-design",
+    "concept": "CRUD 매트릭스는 프로세스와 테이블의 생성·조회·갱신·삭제 관계를 적는다.",
     "question": "CRUD 매트릭스에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "단위 프로세스와 테이블을 행·열에 놓고 각 칸에 C·R·U·D를 표시한 표다",
@@ -6433,6 +6719,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "physical-db-design",
+    "concept": "차등 백업 복구는 마지막 전체 백업 + 가장 최근 차등 하나면 된다.",
     "question": "매주 일요일 밤에 전체(Full) 백업을 하고 월요일부터 매일 밤 차등(Differential) 백업을 수행하는 시스템에서 금요일 오전에 디스크 장애가 발생했다. 복구에 필요한 백업본으로 옳은 것은?",
     "choices": [
       "일요일 전체 백업 + 월·화·수·목요일 차등 백업 4개",
@@ -6448,6 +6735,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "physical-db-design",
+    "concept": "힌트는 옵티마이저의 실행 계획을 유도할 뿐 저장 구조를 바꾸지 않는다.",
     "question": "실행 계획(Execution Plan)과 힌트(Hint)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "힌트를 사용하면 SQL 문장을 고치지 않아도 테이블의 물리적 저장 구조가 자동으로 재구성된다",
@@ -6463,6 +6751,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "data-migration",
+    "concept": "ETL은 추출(Extract)·변환(Transform)·적재(Load) 세 단계다.",
     "question": "데이터 전환의 핵심 기술인 ETL의 세 단계에 해당하지 않는 것은?",
     "choices": [
       "추출(Extraction)",
@@ -6494,6 +6783,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "data-migration",
+    "concept": "데이터 정제는 전환 전에도 오류 데이터를 찾아 다룬다.",
     "question": "데이터 품질 분석과 데이터 정제에 대한 설명으로 틀린 것은?",
     "choices": [
       "데이터 품질 분석은 결측값·중복·형식 오류·업무 규칙 위반을 찾아 오류 데이터의 양을 측정한다",
@@ -6509,6 +6799,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "data-migration",
+    "concept": "전환 검증은 전환을 마친 뒤 건수·값을 대조하는 일이다(계획서 작성은 사전 단계).",
     "question": "데이터 전환을 마친 뒤 수행하는 검증 활동이 아닌 것은?",
     "choices": [
       "전환 대상과 범위·방식·일정을 확정해 전환 계획서를 작성한다",
@@ -6572,6 +6863,7 @@
     "area": "정보보안",
     "difficulty": "상",
     "topic": "secure-sdlc",
+    "concept": "소프트웨어 개발 보안 취약점 7분류 — 검사·사용 시점 틈(TOCTOU)은 '시간 및 상태'다.",
     "question": "다음 코드에 존재하는 취약점은 소프트웨어 개발 보안 취약점 7분류 중 어디에 속하는가?",
     "code": "if (access(\"/tmp/data.txt\", W_OK) == 0) {\n    /* 검사가 끝난 뒤 open이 실행되기 전에 대상 파일이 다른 파일의 링크로 바뀔 수 있다 */\n    fd = open(\"/tmp/data.txt\", O_WRONLY);\n    write(fd, buf, len);\n}",
     "choices": [
@@ -6588,6 +6880,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "secure-sdlc",
+    "concept": "널 포인터 역참조·자원 해제 누락·정수 오버플로는 '코드 오류' 분류다.",
     "question": "널 포인터 역참조(Null Pointer Dereference), 부적절한 자원 해제, 정수 오버플로(Integer Overflow)가 공통으로 속하는 소프트웨어 개발 보안 취약점 분류는?",
     "choices": [
       "코드 오류",
@@ -6603,6 +6896,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "secure-sdlc",
+    "concept": "디버그 코드·시험 계정을 남기는 것은 '캡슐화' 분류다.",
     "question": "운영 서버에 배포된 프로그램에 개발 중 쓰던 디버그 코드와 시험용 관리자 계정이 그대로 남아 있었다. 이 취약점이 속하는 소프트웨어 개발 보안 취약점 분류는?",
     "choices": [
       "에러 처리",
@@ -6618,6 +6912,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "secure-sdlc",
+    "concept": "경로 조작·자원 삽입은 '입력 데이터 검증 및 표현' 분류다.",
     "question": "취약점과 소프트웨어 개발 보안 취약점 7분류의 연결로 옳지 않은 것은?",
     "choices": [
       "SQL 삽입(SQL Injection) — 입력 데이터 검증 및 표현",
@@ -6633,6 +6928,7 @@
     "area": "정보보안",
     "difficulty": "상",
     "topic": "secure-sdlc",
+    "concept": "Secure SDLC는 개발 생명주기 전체에 보안 활동을 심는다(마지막 침투 테스트 한 번이 아니다).",
     "question": "Secure SDLC에 대한 설명으로 틀린 것은?",
     "choices": [
       "결함은 늦게 발견할수록 수정 비용이 커지므로 요구·설계 단계의 보안 활동이 더 값싸다",
@@ -6648,6 +6944,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "dev-environment",
+    "concept": "개발환경 서버는 역할별로 웹·WAS·DB·파일 서버 등으로 나뉜다.",
     "question": "개발환경을 구성하는 서버의 역할과 대표적인 소프트웨어의 연결로 틀린 것은?",
     "choices": [
       "파일 서버 — Wireshark, Nessus",
@@ -6663,6 +6960,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "dev-environment",
+    "concept": "환경 변수는 리눅스에서 $이름, 윈도우에서 %이름% 형식으로 참조한다.",
     "question": "환경 변수(Environment Variable)에 대한 설명으로 틀린 것은?",
     "choices": [
       "PATH는 명령을 입력했을 때 실행 파일을 찾아볼 디렉터리 목록을 담는다",
@@ -6678,6 +6976,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "dev-environment",
+    "concept": "export한 변수만 자식 프로세스로 상속된다.",
     "question": "리눅스에서 아래 순서로 명령을 수행했을 때 두 번의 ./run.sh 실행 결과로 옳은 것은?",
     "code": "$ cat run.sh\n#!/bin/bash\necho \"[$NAME]\"\n\n$ NAME=quiz\n$ ./run.sh\n$ export NAME\n$ ./run.sh",
     "choices": [
@@ -6694,6 +6993,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "dev-environment",
+    "concept": "셸의 for·if·continue는 반복 중 특정 조건의 값을 건너뛰게 한다.",
     "question": "다음 셸 스크립트를 실행했을 때 출력되는 값은?",
     "code": "#!/bin/bash\nsum=0\nfor i in 1 2 3 4 5\ndo\n    if [ $((i % 2)) -eq 0 ]\n    then\n        continue\n    fi\n    sum=$((sum + i))\ndone\necho $sum",
     "choices": [
@@ -6710,6 +7010,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "dev-environment",
+    "concept": "셔뱅(#!)은 인터프리터를 지정할 뿐, 이름으로 실행하려면 실행 권한이 필요하다.",
     "question": "셸 스크립트 작성과 실행에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "첫 줄에 #!/bin/bash처럼 셔뱅(shebang)을 적어 스크립트를 해석할 셸을 지정한다",
@@ -6725,6 +7026,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "current-system-analysis",
+    "concept": "현행 시스템 파악은 구성·기능·인터페이스·아키텍처·소프트웨어·하드웨어를 정리한다.",
     "question": "현행 시스템 파악 단계에서 정리하는 내용에 해당하지 않는 것은?",
     "choices": [
       "현행 시스템이 어떤 하위 시스템으로 구성되어 있는지",
@@ -6740,6 +7042,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "current-system-analysis",
+    "concept": "플랫폼 성능 지표는 응답 시간·처리량·경과 시간·가용성이다(주석 비율은 아니다).",
     "question": "플랫폼 성능 특성 분석에서 현행 시스템의 성능 수준을 재는 측정 지표로 가장 거리가 먼 것은?",
     "choices": [
       "소스 코드의 주석 비율(Comment Ratio)",
@@ -6755,6 +7058,7 @@
     "area": "소프트웨어공학",
     "difficulty": "상",
     "topic": "current-system-analysis",
+    "concept": "현행 분석은 플랫폼·네트워크·DBMS·비즈니스 융합을 대상으로 한다.",
     "question": "현행 시스템 분석에서 분석 대상과 고려사항의 연결로 틀린 것은?",
     "choices": [
       "운영체제 — 종류와 버전, 메모리·주변장치 요구사항, 안정성과 기술 지원",
@@ -6770,6 +7074,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "code-design",
+    "concept": "코드는 순차·블록·그룹분류·표의숫자·10진·연상·합성 코드로 나뉜다.",
     "question": "코드(Code)의 종류와 그 설명의 연결이 틀린 것은?",
     "choices": [
       "순차 코드(Sequence Code) — 자료가 발생한 차례대로 일련번호를 하나씩 이어 붙여 매긴다",
@@ -6785,6 +7090,7 @@
     "area": "소프트웨어공학",
     "difficulty": "하",
     "topic": "code-design",
+    "concept": "블록 코드는 분류마다 번호 구간을 미리 떼어 그 안에서 개별 번호를 매긴다.",
     "question": "재고 품목을 대분류마다 미리 번호 구간을 떼어 배정해 두고, 그 구간 안에서 개별 품목에 번호를 매기는 코드 부여 방식은?",
     "choices": [
       "블록 코드(Block Code)",
@@ -6800,6 +7106,7 @@
     "area": "소프트웨어공학",
     "difficulty": "하",
     "topic": "code-design",
+    "concept": "표의 숫자 코드는 대상의 실제 치수·수치를 그대로 코드로 삼는다.",
     "question": "강관 제품의 코드를 '150-3000'과 같이 지름 150mm, 길이 3000mm라는 실제 치수를 그대로 따서 부여했다. 이에 해당하는 코드는?",
     "choices": [
       "표의 숫자 코드(Significant Digit Code)",
@@ -6815,6 +7122,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "code-design",
+    "concept": "전위 오류는 이웃한 두 자리의 순서가 바뀌어 입력되는 오류다.",
     "question": "다음과 같이 코드를 잘못 옮겨 적었을 때 해당하는 오류 유형은?",
     "code": "정상 코드 : 48261\n입력된 코드 : 48621",
     "choices": [
@@ -6831,6 +7139,7 @@
     "area": "소프트웨어공학",
     "difficulty": "상",
     "topic": "code-design",
+    "concept": "이중 전위 오류는 전위 오류가 두 번 겹쳐 일어난 것이다.",
     "question": "다음 코드 입력 오류에 해당하는 유형은?",
     "code": "정상 코드 : 573914\n입력된 코드 : 753941",
     "choices": [
@@ -6847,6 +7156,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "code-design",
+    "concept": "코드 입력 오류는 생략·추가·전사·전위·이중전위·임의 오류로 나뉜다.",
     "question": "코드 입력 오류의 유형과 예시가 잘못 짝지어진 것은?",
     "choices": [
       "첨가 오류(Addition Error) — 3092를 30926으로 한 자리를 더 붙여 적었다",
@@ -7134,6 +7444,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "error-flow-control",
+    "concept": "ARQ는 오류가 나면 재전송하는 후진 오류 수정 방식이다(FEC는 수신 측 자체 정정).",
     "question": "ARQ(Automatic Repeat reQuest) 방식에 대한 설명으로 틀린 것은?",
     "choices": [
       "정지-대기(Stop-and-Wait) ARQ는 한 프레임을 보낸 뒤 응답이 올 때까지 다음 프레임을 보내지 않는다.",
@@ -7149,6 +7460,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "error-flow-control",
+    "concept": "후진 오류 수정(BEC)은 재전송으로, 전진 오류 수정(FEC)은 수신 측이 스스로 정정한다.",
     "question": "후진 오류 수정(BEC)과 전진 오류 수정(FEC)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "후진 오류 수정은 오류를 검출하면 송신 측에 재전송을 요구한다.",
@@ -7180,6 +7492,7 @@
     "area": "네트워크",
     "difficulty": "상",
     "topic": "error-flow-control",
+    "concept": "오류 검출은 패리티·CRC, 오류 정정은 해밍 코드가 대표적이다.",
     "question": "오류 검출·정정 코드에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "패리티 검사는 오류가 났다는 사실만 알 수 있고 어느 비트인지 찾아 고치지는 못한다.",
@@ -7211,6 +7524,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "network-topology",
+    "concept": "CSMA/CD는 유선의 충돌 감지, CSMA/CA는 무선의 충돌 회피 방식이다.",
     "question": "CSMA/CD와 CSMA/CA에 대한 설명으로 틀린 것은?",
     "choices": [
       "CSMA/CD는 유선 이더넷에서 쓰이며 전송 중 충돌이 감지되면 잠시 기다렸다가 다시 보낸다.",
@@ -7241,6 +7555,7 @@
     "area": "네트워크",
     "difficulty": "중",
     "topic": "osi-layers",
+    "concept": "잘 알려진 포트 — HTTP 80·HTTPS 443·SSH 22·Telnet 23·FTP 21·DNS 53·SMTP 25.",
     "question": "응용 계층 프로토콜과 잘 알려진 포트(well-known port) 번호를 잘못 짝지은 것은?",
     "choices": [
       "HTTPS — 443",
@@ -7271,6 +7586,7 @@
     "area": "네트워크",
     "difficulty": "상",
     "topic": "tcp-udp",
+    "concept": "TCP 체크섬은 헤더와 데이터를 함께 검사 대상으로 삼는다.",
     "question": "TCP 헤더의 필드에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "순서 번호(Sequence Number)는 담긴 데이터가 전체 바이트 흐름에서 어느 위치인지 알려 순서를 잡게 한다.",
@@ -7286,6 +7602,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "virtual-memory",
+    "concept": "페이지 크기가 작으면 내부 단편화는 줄지만 페이지 수와 페이지 테이블이 커진다.",
     "question": "페이징 기법에서 페이지 크기를 작게 잡았을 때 나타나는 현상으로 틀린 것은?",
     "choices": [
       "마지막 페이지에 남는 내부 단편화가 줄어든다.",
@@ -7333,6 +7650,7 @@
     "area": "프로그래밍",
     "difficulty": "하",
     "topic": "c-operators",
+    "concept": "C 식별자는 영문자·밑줄로 시작하고 숫자로 시작할 수 없다.",
     "question": "C언어에서 변수 이름(식별자)으로 사용할 수 있는 것은?",
     "choices": [
       "2nd_score",
@@ -7380,6 +7698,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "java-basics",
+    "concept": "가비지 컬렉터는 회수 시점을 개발자가 지정할 수 없다.",
     "question": "Java의 가비지 컬렉터와 연산자 우선순위에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "가비지 컬렉터가 언제 동작해 메모리를 회수할지는 개발자가 원하는 시점으로 지정할 수 있다.",
@@ -7427,6 +7746,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "exception-language-types",
+    "concept": "C 표준 헤더 — stdlib.h(메모리·형변환)·string.h(문자열)·ctype.h(문자 판별)·math.h(수학).",
     "question": "C의 표준 헤더 파일과 그 역할을 잘못 연결한 것은?",
     "choices": [
       "stdio.h — printf·scanf 같은 표준 입출력 함수",
@@ -7442,6 +7762,7 @@
     "area": "프로그래밍",
     "difficulty": "상",
     "topic": "json-ajax",
+    "concept": "자바스크립트는 프로토타입 기반 상속이며 ES6 class도 그 위의 문법이다.",
     "question": "자바스크립트의 프로토타입(prototype) 기반 상속에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "객체가 다른 객체를 원형(prototype)으로 삼아 속성과 메서드를 물려받는다.",
@@ -7473,6 +7794,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "sorting",
+    "concept": "퀵 정렬의 최악은 O(n²)이고, 병합·힙 정렬은 최악에도 O(n log n)이다.",
     "question": "정렬 알고리즘과 최악의 경우 시간 복잡도를 짝지은 것으로 옳지 않은 것은?",
     "choices": [
       "퀵 정렬 — O(n log n)",
@@ -7488,6 +7810,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "tree-traversal",
+    "concept": "한쪽으로 치우친 이진 탐색 트리는 탐색이 O(n)까지 나빠진다.",
     "question": "이진 탐색 트리에 오름차순으로 정렬된 값을 차례대로 삽입하여 한쪽으로 완전히 치우친 트리가 만들어졌다. 이때 탐색 연산의 최악 시간 복잡도는?",
     "choices": [
       "O(1)",
@@ -7503,6 +7826,7 @@
     "area": "프로그래밍",
     "difficulty": "중",
     "topic": "tree-traversal",
+    "concept": "균형 이진 탐색 트리(AVL·레드블랙 등)는 최악에도 O(log n)을 보장한다.",
     "question": "삽입·삭제 때 균형을 유지해 최악에도 O(log n)을 보장하는 균형 이진 탐색 트리에 해당하지 않는 것은?",
     "choices": [
       "AVL 트리",
@@ -7518,6 +7842,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "relational-algebra",
+    "concept": "나누기(÷)는 S가 가진 모든 값과 짝을 이루는 R의 값만 남긴다.",
     "question": "관계대수의 순수 관계 연산자인 나누기(Division, ÷) 연산에 대한 설명으로 옳은 것은?",
     "choices": [
       "R ÷ S는 S가 가진 모든 값과 짝을 이루는 R의 값만 결과로 남긴다",
@@ -7533,6 +7858,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "relational-algebra",
+    "concept": "카티션 곱의 차수는 두 릴레이션 차수의 합, 카디널리티는 곱이다.",
     "question": "다음 두 릴레이션에 카티션 프로덕트(Cartesian Product, ×) 연산을 수행한 결과의 차수(Degree)와 카디널리티(Cardinality)로 옳은 것은?",
     "code": "릴레이션 EMPLOYEE : 차수(Degree) 4, 카디널리티(Cardinality) 5\n릴레이션 PROJECT  : 차수(Degree) 3, 카디널리티(Cardinality) 6",
     "choices": [
@@ -7549,6 +7875,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "isolation-levels",
+    "concept": "MVCC는 버전을 여러 개 두어 읽기와 쓰기가 서로를 차단하지 않게 한다.",
     "question": "병행 제어(Concurrency Control) 기법에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "낙관적 검증(Optimistic Validation)은 트랜잭션을 일단 수행한 뒤 커밋 직전에 충돌 여부를 확인해 문제가 있으면 되돌린다",
@@ -7564,6 +7891,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "isolation-levels",
+    "concept": "로킹 단위가 크면 오버헤드는 작고 병행성은 떨어진다(작으면 반대).",
     "question": "로킹(Locking) 단위의 크기에 따른 특성으로 옳은 것은?",
     "choices": [
       "로킹 단위를 테이블처럼 크게 잡으면 관리할 로크 수가 줄어 오버헤드는 작아지지만 병행성은 떨어진다",
@@ -7579,6 +7907,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "physical-db-design",
+    "concept": "수평 분할은 행을 나눠 담고, 수직 분할은 열을 나눈다.",
     "question": "테이블 분할의 방향에 대한 설명으로 거리가 먼 것은?",
     "choices": [
       "수평 분할은 행(레코드)을 기준으로 테이블을 여러 조각으로 나누는 방식이다",
@@ -7624,6 +7953,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "security-solutions",
+    "concept": "오용 탐지는 패턴 대조(신종에 약함), 이상 탐지는 행위 차이(오탐 늘어남)다.",
     "question": "침입 탐지 방식인 오용 탐지(Misuse Detection)와 이상 탐지(Anomaly Detection)에 대한 설명으로 옳은 것은?",
     "choices": [
       "오용 탐지는 평소 행동과의 차이를 기준으로 판단하므로 정상 행위를 공격으로 오인하는 일이 잦다",
@@ -7639,6 +7969,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "security-solutions",
+    "concept": "HIDS는 호스트를, NIDS는 네트워크를 감시하며 Snort는 네트워크 IDS다.",
     "question": "침입 탐지 시스템의 설치 위치별 분류와 관련 도구에 대한 설명으로 틀린 것은?",
     "choices": [
       "Snort는 호스트에 저장된 파일의 무결성만 검사하는 도구라 네트워크 패킷은 다루지 못한다",
@@ -7654,6 +7985,7 @@
     "area": "정보보안",
     "difficulty": "상",
     "topic": "security-solutions",
+    "concept": "Secure OS는 커널에서 접근을 강제한다(페이로드 검사는 IPS·DPI의 몫).",
     "question": "운영체제 커널에 보안 기능을 넣어 참조 모니터로 접근을 강제하는 Secure OS의 보안 기능에 해당하지 않는 것은?",
     "choices": [
       "객체 재사용 방지",
@@ -7699,6 +8031,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "hash-digital-signature",
+    "concept": "솔트는 사용자마다 다른 값을 더해 레인보우 테이블 공격을 막는다(일방향은 그대로).",
     "question": "비밀번호를 저장할 때 사용자마다 다른 임의 값을 덧붙여 해시하는 솔트(Salt)에 대한 설명으로 틀린 것은?",
     "choices": [
       "솔트를 덧붙이면 해시 함수가 양방향 함수로 바뀌어 저장된 값에서 원래 비밀번호를 복호화할 수 있다",
@@ -7714,6 +8047,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "authentication",
+    "concept": "SSO는 한 번 인증으로 여러 시스템을 쓰지만 한 번 뚫리면 전부 뚫린다.",
     "question": "통합 인증(SSO, Single Sign On)에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "한 번의 로그인으로 연결된 여러 시스템을 추가 인증 없이 이용할 수 있다",
