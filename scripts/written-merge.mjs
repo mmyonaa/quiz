@@ -21,7 +21,7 @@ const TOPIC_NOTES = join(root, "src/data/topic-notes.json");
 /** content.config.ts의 DEFAULT_EXAM과 같은 값 — topic-notes.json에서 exam을 생략하면 이 시험이다 */
 const DEFAULT_EXAM = "정처기";
 const DIFFS = new Set(["하", "중", "상"]);
-const ORDER = ["id", "area", "difficulty", "topic", "question", "code", "choices", "answer", "explanation"];
+const ORDER = ["id", "area", "difficulty", "topic", "concept", "question", "code", "choices", "answer", "explanation"];
 const FIELDS = new Set(ORDER);
 const REQUIRED = ["id", "area", "difficulty", "topic", "question", "choices", "answer", "explanation"];
 

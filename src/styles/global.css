@@ -2875,8 +2875,7 @@ button.toc-chip {
    배지는 달지 않는다 — 문장 자체가 "출제 핵심이다"로 끝나 라벨이 겹쳐 읽힌다.
    좌측 보더는 액센트를 쓴다(형광펜과 달리 이건 사이트가 말하는 것이므로 브랜드색이 맞다). */
 .topic-key {
-  border-left: 3px solid var(--accent);
-  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  border-radius: var(--r-sm);
   background: var(--accent-soft);
   padding: 0.7em 0.9em;
 }
@@ -3039,6 +3038,33 @@ button.toc-chip {
 }
 .cn-reveal {
   margin-top: 0.35rem;
+}
+/* 개념 — 문항이 짚는 객관적 개념 한 줄. 문제 위에 먼저 놓여 "무엇을 아는지"를 세운다.
+   연한 중립 면(--surface-2)을 깔아 아래 문제·선지와 시각적으로 가른다 — 액센트가 아니라
+   카드마다 나와도 화면이 한 색으로 물들지 않는다. 오른쪽은 난이도 배지·저장 별 자리를 비운다. */
+.cn-concept {
+  margin: 0.1rem 0 0.7rem;
+  padding: 0.6em 0.8em;
+  padding-right: 3.4rem;
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+  font-size: var(--t-base);
+  line-height: 1.7;
+}
+/* 상세 해설 — 선지를 고르거나 '해설 보기'로 열린다. 위의 선지와 점선으로 가른다
+   (예전 .cn-q[open]가 하던 구실 — 박스를 더 겹치지 않고 괘선으로만 끊는다). */
+.cn-exp {
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 1px dashed var(--border);
+}
+.cn-exp .cn-x {
+  margin: 0;
+}
+/* 난이도 배지 — 저장 별 왼쪽에 작게 얹는다(카드 첫 줄을 비켜 float) */
+.cn-diff {
+  float: right;
+  margin: 0.1rem 0.15rem 0 0.4rem;
 }
 
 /* 키보드 힌트 — 포인터가 있는(=키보드가 있을 법한) 환경에서만 */

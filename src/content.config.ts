@@ -218,6 +218,11 @@ const quiz = defineCollection({
       difficulty: z.enum(DIFFICULTIES),
       /** 소속 개념 주제 — topic-notes.json에 없는 주제를 쓰면 빌드가 실패한다 */
       topic: z.enum(TOPIC_KEYS),
+      /**
+       * 문항이 짚는 객관적 개념 한 줄(선택) — 개념 노트에서 문제 위에 먼저 놓인다.
+       * "개념 → 문제 → 상세 해설" 구조의 머리. 없으면 문제부터 바로 보인다(점진 도입).
+       */
+      concept: z.string().min(2).optional(),
       question: z.string().min(10),
       /**
        * 제시문 블록 — 고정폭 <pre>로 렌더(선택). 기출의 박스 제시문에 대응한다:
