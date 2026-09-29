@@ -3041,9 +3041,14 @@ button.toc-chip {
   margin-top: 0.35rem;
 }
 /* 개념 — 문항이 짚는 객관적 개념 한 줄. 문제 위에 먼저 놓여 "무엇을 아는지"를 세운다.
-   해설(cn-x)과 달리 답을 흘리지 않는 중립 서술이라 본문톤으로 담담하게 둔다. */
+   연한 중립 면(--surface-2)을 깔아 아래 문제·선지와 시각적으로 가른다 — 액센트가 아니라
+   카드마다 나와도 화면이 한 색으로 물들지 않는다. 오른쪽은 난이도 배지·저장 별 자리를 비운다. */
 .cn-concept {
-  margin: 0 0 0.5rem;
+  margin: 0.1rem 0 0.7rem;
+  padding: 0.6em 0.8em;
+  padding-right: 3.4rem;
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
   font-size: var(--t-base);
   line-height: 1.7;
 }
