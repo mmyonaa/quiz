@@ -7,6 +7,8 @@ import { md } from "../lib/md";
 type Q = {
   id: string;
   difficulty: (typeof DIFFICULTIES)[number];
+  /** 문제 위에 붙는 '외울 한 줄' — 순수 정의형 문항에는 없다 */
+  concept?: string;
   question: string;
   code?: string;
   choices: string[];
@@ -100,11 +102,12 @@ const blankLabel = (q: PQ, i: number) =>
           '해설 보기'를 눌러 그 자리서 편다 — 해설이 답을 흘리던 '해설 먼저' 구조를 뒤집었다. */}
       {questions.map((q) => (
         <article class="cn" data-id={q.id} data-diff={q.difficulty}>
-          {/* 개념이 있으면 개념 박스와 난이도·별을 한 줄(flex)로 묶어 세로 중앙정렬한다.
-              없으면(순수 정의형) 예전처럼 문제 첫 줄에 우측으로 띄운다. */}
+          {/* 개념이 있으면 개념 메모지와 난이도·별을 한 줄(flex)로 묶어 세로 중앙정렬한다.
+              메모지 자체가 강조(면)라서 안쪽에 형광펜을 겹치지 않는다 — 노랑 위의 노랑은
+              강조가 아니다. 없으면(순수 정의형) 예전처럼 문제 첫 줄에 우측으로 띄운다. */}
           {q.concept ? (
             <div class="cn-crow">
-              <p class="cn-concept"><mark class="cn-hl" set:html={md(q.concept)} /></p>
+              <p class="cn-concept" set:html={md(q.concept)} />
               <span class="badge diff cn-diff" data-level={q.difficulty}>{q.difficulty}</span>
               <button class="save-star cn-save" type="button" title="이 개념 저장" aria-label="이 개념 저장">☆</button>
             </div>
