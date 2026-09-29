@@ -8154,6 +8154,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-os-account-privilege",
+    "concept": "리눅스는 UID로 권한을 판단하며, 비밀번호 해시는 /etc/passwd와 분리해 /etc/shadow에 둔다(섀도우 패스워드).",
     "question": "리눅스 계정 관리 파일에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "/etc/passwd는 사용자 이름과 UID 등을 담으며 모든 사용자가 읽을 수 있다",
@@ -8169,6 +8170,7 @@
     "area": "시스템 보안",
     "difficulty": "하",
     "topic": "sec-os-account-privilege",
+    "concept": "리눅스는 UID로 권한을 판단하므로 root 외에 UID 0인 계정은 백도어로 의심한다.",
     "question": "리눅스 서버를 점검하던 중 /etc/passwd에서 root 외에 UID가 0인 계정을 발견했다. 이때 가장 우선해 의심해야 할 것은?",
     "choices": [
       "디스크 용량 부족",
@@ -8184,6 +8186,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-os-account-privilege",
+    "concept": "su는 계정을 통째로 전환하고, sudo는 필요한 명령만 상승 권한으로 실행·기록해 최소 권한에 맞다.",
     "question": "su와 sudo의 차이에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "su는 대상 계정으로 전환하며 그 계정의 비밀번호를 요구한다",
@@ -8199,6 +8202,7 @@
     "area": "시스템 보안",
     "difficulty": "상",
     "topic": "sec-linux-permission",
+    "concept": "새 파일 권한은 666, 디렉터리는 777에서 umask에 켜진 비트를 걷어낸 값이다.",
     "question": "umask 값이 027로 설정된 환경에서 일반 파일을 새로 만들었을 때 부여되는 권한은?",
     "choices": [
       "750",
@@ -8214,6 +8218,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-linux-permission",
+    "concept": "SetUID는 소유자 권한을 빌려 주는 장치라, 꼭 필요한 파일에만 두고 주기적으로 점검한다.",
     "question": "리눅스 특수 권한에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "SetUID가 걸린 실행 파일은 실행한 사용자가 아니라 파일 소유자의 권한으로 동작한다",
@@ -8229,6 +8234,7 @@
     "area": "시스템 보안",
     "difficulty": "하",
     "topic": "sec-linux-permission",
+    "concept": "스티키 비트는 디렉터리에 걸어 파일 소유자만 자기 파일을 지우게 제한한다(/tmp).",
     "question": "/tmp 디렉터리는 모든 사용자가 쓸 수 있지만 남의 파일은 지울 수 없다. 이를 가능하게 하는 특수 권한은?",
     "choices": [
       "SetUID",
@@ -8244,6 +8250,7 @@
     "area": "시스템 보안",
     "difficulty": "상",
     "topic": "sec-linux-permission",
+    "concept": "디렉터리의 실행(x)은 그 디렉터리를 통과할 권한이라, 없으면 안쪽 파일에 닿을 수 없다.",
     "question": "디렉터리에 부여된 권한의 의미로 옳지 않은 것은?",
     "choices": [
       "읽기(r)는 디렉터리 안의 파일 목록을 조회할 수 있게 한다",
@@ -8259,6 +8266,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-windows-security",
+    "concept": "레지스트리는 악성코드의 지속성 확보·실행 흔적이 남는 곳이라 침해 분석의 필수 대상이다.",
     "question": "윈도우 침해사고 분석에 대한 설명으로 적절하지 않은 것은?",
     "choices": [
       "레지스트리의 Run 계열 키는 악성코드가 지속성을 확보하는 대표적 자리다",
@@ -8274,6 +8282,7 @@
     "area": "시스템 보안",
     "difficulty": "하",
     "topic": "sec-windows-security",
+    "concept": "NTFS는 접근 권한(DACL)·암호화(EFS)·저널링을 제공하고, FAT은 권한 설정 자체가 없다.",
     "question": "NTFS가 FAT 파일 시스템에 비해 보안 측면에서 갖는 이점으로 옳지 않은 것은?",
     "choices": [
       "사용자별 접근 권한을 설정할 수 있다",
@@ -8289,6 +8298,7 @@
     "area": "시스템 보안",
     "difficulty": "상",
     "topic": "sec-system-logs",
+    "concept": "로그인 실패는 btmp(lastb), 로그인 이력은 wtmp(last), 현재 접속자는 utmp — 모두 바이너리 로그다.",
     "question": "리눅스에서 로그인 실패 기록이 남는 로그 파일과 이를 확인하는 명령을 바르게 짝지은 것은?",
     "choices": [
       "wtmp — last",
@@ -8304,6 +8314,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-system-logs",
+    "concept": "로그는 책임추적성의 근거라 법정 보관 기간을 지키고 임의로 삭제하지 않는다.",
     "question": "로그 관리에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "로그를 원격 서버로 전송하면 공격자가 로컬 로그를 지워도 사본이 남는다",
@@ -8319,6 +8330,7 @@
     "area": "시스템 보안",
     "difficulty": "하",
     "topic": "sec-malware",
+    "concept": "바이러스는 숙주에 기생, 웜은 숙주 없이 자기 복제, 트로이 목마는 위장하되 복제하지 않는다.",
     "question": "악성코드의 분류에 대한 설명으로 옳은 것은?",
     "choices": [
       "웜은 숙주 파일에 기생해야만 전파된다",
@@ -8334,6 +8346,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-malware",
+    "concept": "시그니처 기반 탐지는 알려진 악성코드엔 정확하지만 신종·변종은 놓친다.",
     "question": "시그니처 기반 악성코드 탐지 방식의 한계로 가장 알맞은 것은?",
     "choices": [
       "오탐이 많아 정상 파일을 자주 차단한다",
@@ -8349,6 +8362,7 @@
     "area": "시스템 보안",
     "difficulty": "하",
     "topic": "sec-malware",
+    "concept": "APT는 특정 표적을 정해 오래 잠복하며 단계적으로 침투하는 지능형 지속 위협이다.",
     "question": "특정 조직을 표적으로 삼아 장기간 잠복하면서 단계적으로 내부에 침투해 정보를 빼내는 공격 형태는?",
     "choices": [
       "APT",
@@ -8364,6 +8378,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-buffer-overflow",
+    "concept": "스택 오버플로는 버퍼를 넘겨 함수의 복귀 주소를 덮어 실행 흐름을 가로챈다.",
     "question": "스택 버퍼 오버플로 공격에서 공격자가 실행 흐름을 가로채기 위해 덮어쓰려는 대상은?",
     "choices": [
       "힙 영역의 청크 헤더",
@@ -8379,6 +8394,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-buffer-overflow",
+    "concept": "메모리 공격 완화는 ASLR(주소 무작위화)·DEP/NX(실행 금지)·카나리(덮어쓰기 탐지)로 지점이 다르다.",
     "question": "메모리 공격 완화 기법에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "ASLR은 실행할 때마다 메모리 배치를 무작위로 바꿔 주소 예측을 어렵게 한다",
@@ -8394,6 +8410,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-buffer-overflow",
+    "concept": "TOCTOU 경쟁 조건은 검사 시점과 사용 시점 사이의 틈을 노린다.",
     "question": "파일의 존재와 권한을 검사한 뒤 실제로 그 파일을 여는 사이의 짧은 틈을 노려, 그 사이에 파일을 심볼릭 링크로 바꿔치기하는 공격이 이용하는 결함은?",
     "choices": [
       "정수 오버플로",
@@ -8409,6 +8426,7 @@
     "area": "시스템 보안",
     "difficulty": "상",
     "topic": "sec-secure-os",
+    "concept": "참조 모니터는 우회 불가(완전한 조정)·격리·검증 가능성을 갖춰야 한다.",
     "question": "참조 모니터(Reference Monitor)가 만족해야 할 조건으로 옳지 않은 것은?",
     "choices": [
       "모든 접근 요청이 반드시 참조 모니터를 거쳐야 한다",
@@ -8424,6 +8442,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-secure-os",
+    "concept": "객체 재사용 방지는 해제된 자원의 잔여 정보가 다음 사용자에게 새지 않게 한다.",
     "question": "Secure OS가 제공하는 보안 기능 중, 해제된 메모리나 디스크 영역에 남아 있던 정보가 다음 사용자에게 노출되지 않도록 하는 것은?",
     "choices": [
       "신뢰 경로",
@@ -8439,6 +8458,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-secure-os",
+    "concept": "시큐어 부트는 부팅 경로의 무결성만 보장하고 응용 계층 취약점과는 무관하다.",
     "question": "신뢰 컴퓨팅 기술에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "시큐어 부트는 부팅 단계마다 다음 단계 코드의 서명을 검증한다",
@@ -9994,6 +10014,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-os-account-privilege",
+    "concept": "/etc/shadow는 비밀번호 해시를 담아 root만 읽을 수 있게(600) 유지해야 한다.",
     "question": "리눅스 서버 점검에서 /etc/shadow 파일의 권한이 644로 설정돼 있는 것을 발견했다. 이 상태의 위험으로 가장 알맞은 것은?",
     "choices": [
       "모든 사용자가 비밀번호 해시를 읽어 오프라인 대입 공격에 쓸 수 있다",
@@ -10009,6 +10030,7 @@
     "area": "시스템 보안",
     "difficulty": "하",
     "topic": "sec-os-account-privilege",
+    "concept": "로그인 실패 임계값과 계정 잠금은 무차별 대입 시도를 직접 차단한다.",
     "question": "동일 계정으로 비밀번호를 반복해서 틀리는 자동화된 시도를 막기 위해 적용하는 계정 정책은?",
     "choices": [
       "로그인 실패 임계값과 계정 잠금",
@@ -10024,6 +10046,7 @@
     "area": "시스템 보안",
     "difficulty": "하",
     "topic": "sec-os-account-privilege",
+    "concept": "미사용·퇴직자 계정은 관리 사각이라 주기적으로 잠그거나 삭제한다.",
     "question": "퇴직자 계정과 설치 시 기본으로 만들어진 사용하지 않는 계정을 그대로 남겨 두었을 때의 위험으로 가장 알맞은 것은?",
     "choices": [
       "관리 대상에서 벗어난 계정이 침입 경로로 쓰일 수 있다",
@@ -10039,6 +10062,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-os-account-privilege",
+    "concept": "공용 계정은 최소 권한과 책임추적성을 동시에 무너뜨리는 대표적 결함이다.",
     "question": "계정 관리 점검 항목으로 적절하지 않은 것은?",
     "choices": [
       "root 외에 UID가 0인 계정이 있는지 확인한다",
@@ -10054,6 +10078,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-os-account-privilege",
+    "concept": "비밀번호는 복호화 불가능한 해시로 저장하고, 잊으면 알려 주지 말고 재설정하게 한다.",
     "question": "비밀번호 정책에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "최소 길이와 문자 구성 조건을 두어 추측을 어렵게 한다",
@@ -10069,6 +10094,7 @@
     "area": "시스템 보안",
     "difficulty": "상",
     "topic": "sec-os-account-privilege",
+    "concept": "서비스 계정은 전용 UID·최소 권한·대화형 로그인 차단이 원칙이다(UID 0 금지).",
     "question": "데몬 실행에만 쓰이는 서비스 계정의 관리 방법으로 적절하지 않은 것은?",
     "choices": [
       "로그인 셸을 /sbin/nologin이나 /bin/false로 지정해 대화형 로그인을 막는다",
@@ -10084,6 +10110,7 @@
     "area": "시스템 보안",
     "difficulty": "하",
     "topic": "sec-linux-permission",
+    "concept": "파일 권한은 읽기 4·쓰기 2·실행 1을 주체별로 더해 세 자리 8진수로 적는다.",
     "question": "권한이 rwxr-xr--로 표시된 파일을 8진수로 나타낸 값은?",
     "choices": [
       "754",
@@ -10099,6 +10126,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-linux-permission",
+    "concept": "디렉터리는 777, 파일은 666에서 umask 비트를 걷어낸 값이 기본 권한이다.",
     "question": "umask가 022로 설정된 환경에서 새로 만든 디렉터리에 부여되는 권한은?",
     "choices": [
       "755",
@@ -10114,6 +10142,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-linux-permission",
+    "concept": "SetUID(4000) 파일은 find / -perm -4000으로 찾아 점검한다.",
     "question": "시스템 전체에서 불필요한 SetUID 실행 파일이 있는지 점검하려 할 때 쓰는 명령으로 알맞은 것은?",
     "choices": [
       "find / -perm -4000",
@@ -10129,6 +10158,7 @@
     "area": "시스템 보안",
     "difficulty": "상",
     "topic": "sec-linux-permission",
+    "concept": "디렉터리에 SetGID를 걸면 그 안에 만들어지는 파일이 디렉터리의 그룹을 물려받는다.",
     "question": "여러 사람이 함께 쓰는 공유 디렉터리에서, 누가 파일을 만들든 그 파일의 그룹이 디렉터리의 그룹으로 지정되게 하려 한다. 디렉터리에 부여해야 할 특수 권한은?",
     "choices": [
       "SetGID",
@@ -10144,6 +10174,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-linux-permission",
+    "concept": "특수 권한(SetUID 4000·SetGID 2000·스티키 1000)은 맨 앞 네 번째 자리로 적는다.",
     "question": "리눅스 권한 표기에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "SetUID는 8진수 4000, SetGID는 2000, 스티키 비트는 1000으로 나타낸다",
@@ -10159,6 +10190,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-linux-permission",
+    "concept": "SetUID 실행 파일은 실행하는 사람이 아니라 파일 소유자의 권한으로 동작한다.",
     "question": "일반 사용자가 실행하는 /usr/bin/passwd에 SetUID가 걸려 있는 이유로 가장 알맞은 것은?",
     "choices": [
       "root만 쓸 수 있는 /etc/shadow를 수정해야 하므로 실행 시 소유자 권한이 필요하기 때문",
@@ -10174,6 +10206,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-windows-security",
+    "concept": "레지스트리는 HKCR·HKCU·HKLM·HKU·HKCC 다섯 루트 키로 나뉜다.",
     "question": "윈도우 레지스트리의 루트 키에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "HKEY_LOCAL_MACHINE은 시스템 전역 설정을 담는다",
@@ -10189,6 +10222,7 @@
     "area": "시스템 보안",
     "difficulty": "상",
     "topic": "sec-windows-security",
+    "concept": "패스 더 해시는 훔친 NTLM 해시만으로 비밀번호 없이 인증을 통과하는 공격이다.",
     "question": "공격자가 침투한 윈도우 시스템의 메모리에서 NTLM 해시를 추출한 뒤, 원래 비밀번호를 복원하지 않고 그 해시 값만으로 다른 서버에 인증하는 공격은?",
     "choices": [
       "패스 더 해시(Pass the Hash)",
@@ -10204,6 +10238,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-windows-security",
+    "concept": "빈 DACL은 모든 접근 거부, DACL 자체가 없는(NULL) 객체는 모두 허용이라 정반대다.",
     "question": "윈도우의 보안 서술자에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "DACL은 어떤 주체에게 어떤 접근을 허용하거나 거부할지를 담는다",
@@ -10219,6 +10254,7 @@
     "area": "시스템 보안",
     "difficulty": "하",
     "topic": "sec-windows-security",
+    "concept": "그룹 정책(GPO)은 도메인 전체에 비밀번호·화면 설정 같은 정책을 일괄 강제한다.",
     "question": "액티브 디렉터리 도메인에 속한 수백 대의 PC에 동일한 비밀번호 정책과 화면 보호기 설정을 일괄 적용하려 할 때 쓰는 기능은?",
     "choices": [
       "그룹 정책(GPO)",
@@ -10234,6 +10270,7 @@
     "area": "시스템 보안",
     "difficulty": "하",
     "topic": "sec-windows-security",
+    "concept": "윈도우는 계정 이름이 아니라 SID로 주체를 식별하므로, 같은 이름으로 다시 만들어도 권한이 이어지지 않는다.",
     "question": "윈도우에서 사용자와 그룹을 내부적으로 구별하는 데 쓰는 고유 식별자는?",
     "choices": [
       "SID(Security Identifier)",
@@ -10249,6 +10286,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-windows-security",
+    "concept": "사용자별 접근 권한·EFS 암호화·저널링은 NTFS의 기능이고, FAT은 권한도 암호화도 없다.",
     "question": "윈도우 보안 기능에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "UAC는 관리자 권한이 필요한 작업을 실행할 때 사용자 확인을 요구한다",
@@ -10264,6 +10302,7 @@
     "area": "시스템 보안",
     "difficulty": "하",
     "topic": "sec-system-logs",
+    "concept": "현재 접속자는 utmp(who), 로그인 이력은 wtmp(last), 실패는 btmp(lastb), 마지막 로그인은 lastlog다.",
     "question": "리눅스에서 '현재 로그인해 있는 사용자'가 기록되는 로그 파일은?",
     "choices": [
       "utmp",
@@ -10279,6 +10318,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-system-logs",
+    "concept": "syslog severity는 값이 작을수록 긴급하다 — emerg(0)가 가장 심각하고 debug(7)가 가장 낮다.",
     "question": "syslog에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "facility는 로그를 남긴 서비스의 종류를 뜻한다",
@@ -10294,6 +10334,7 @@
     "area": "시스템 보안",
     "difficulty": "하",
     "topic": "sec-system-logs",
+    "concept": "SIEM은 여러 장비의 로그를 모아 상관 분석하고 이상 징후에 경보를 내는 체계다.",
     "question": "여러 서버·네트워크 장비·보안 솔루션의 로그를 한곳에 모아 서로 연관 지어 분석하고 이상 징후에 경보를 내는 체계는?",
     "choices": [
       "SIEM",
@@ -10309,6 +10350,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-system-logs",
+    "concept": "utmp·wtmp·btmp·lastlog는 바이너리 로그라 전용 명령으로만 읽는다.",
     "question": "리눅스 로그 파일을 확인하는 방법으로 옳지 않은 것은?",
     "choices": [
       "/var/log/messages는 텍스트 파일이므로 cat이나 tail로 볼 수 있다",
@@ -10324,6 +10366,7 @@
     "area": "시스템 보안",
     "difficulty": "상",
     "topic": "sec-system-logs",
+    "concept": "lastlog는 계정별 마지막 로그인 시각을 담아 휴면 계정의 갑작스러운 사용을 찾는다.",
     "question": "각 계정이 마지막으로 로그인한 시각을 확인해, 오랫동안 쓰이지 않다가 최근에 갑자기 접속된 계정을 찾으려 한다. 확인해야 할 로그는?",
     "choices": [
       "lastlog",
@@ -10339,6 +10382,7 @@
     "area": "시스템 보안",
     "difficulty": "하",
     "topic": "sec-malware",
+    "concept": "트로이 목마는 정상 프로그램으로 위장하되 자기 복제는 하지 않는다.",
     "question": "정상 프로그램으로 위장해 사용자가 스스로 실행하게 만들지만, 자기 자신을 복제하지는 않는 악성코드는?",
     "choices": [
       "트로이 목마",
@@ -10354,6 +10398,7 @@
     "area": "시스템 보안",
     "difficulty": "하",
     "topic": "sec-malware",
+    "concept": "루트킷은 커널 수준에서 흔적을 숨겨 감염 사실 자체를 은폐한다.",
     "question": "침투 후 자신의 프로세스·파일·네트워크 연결을 시스템 명령의 결과에서 보이지 않게 숨겨, 감염 사실 자체를 은폐하는 악성코드는?",
     "choices": [
       "루트킷",
@@ -10369,6 +10414,7 @@
     "area": "시스템 보안",
     "difficulty": "상",
     "topic": "sec-malware",
+    "concept": "파일리스 악성코드는 디스크에 파일을 남기지 않고 메모리·정상 도구로 동작해 시그니처를 피한다.",
     "question": "파일리스(Fileless) 악성코드에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "디스크에 실행 파일을 남기지 않고 주로 메모리에서 동작한다",
@@ -10384,6 +10430,7 @@
     "area": "시스템 보안",
     "difficulty": "하",
     "topic": "sec-malware",
+    "concept": "봇넷은 다수의 좀비 PC를 C&C 서버로 조종하는 집합으로 DDoS·스팸의 기반이다.",
     "question": "감염된 다수의 좀비 PC가 공격자의 명령·제어 서버(C&C)에 연결돼 지시를 받아 동시에 움직이는 집합을 가리키는 말은?",
     "choices": [
       "봇넷",
@@ -10399,6 +10446,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-malware",
+    "concept": "랜섬웨어 대응의 축은 격리·백업 복구·신고이며, 금전 지급은 해법이 아니다.",
     "question": "랜섬웨어 감염이 확인된 상황에서의 대응으로 적절하지 않은 것은?",
     "choices": [
       "감염 단말을 네트워크에서 즉시 분리해 확산을 막는다",
@@ -10414,6 +10462,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-malware",
+    "concept": "악성코드 분석은 실행 없이 보는 정적 분석과 실행하며 보는 동적 분석으로 나뉜다.",
     "question": "악성코드 분석 방법에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "정적 분석은 코드를 실행하지 않고 구조와 문자열 등을 살핀다",
@@ -10429,6 +10478,7 @@
     "area": "시스템 보안",
     "difficulty": "하",
     "topic": "sec-buffer-overflow",
+    "concept": "버퍼 오버플로는 길이를 받는 strncpy·fgets로 위험 함수(strcpy·gets)를 대체해 막는다.",
     "question": "C 코드에서 버퍼 오버플로를 막기 위해 strcpy와 gets를 대체할 함수로 알맞은 것은?",
     "choices": [
       "strncpy와 fgets",
@@ -10444,6 +10494,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-buffer-overflow",
+    "concept": "스택 카나리는 복귀 주소가 덮였는지 탐지하는 완화 기법일 뿐 결함 자체를 없애지 못한다.",
     "question": "스택 카나리(Stack Canary)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "지역 변수 영역과 복귀 주소 사이에 특정 값을 두고 함수 종료 시 그 값을 확인한다",
@@ -10459,6 +10510,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-buffer-overflow",
+    "concept": "DEP·NX는 데이터 영역의 코드 실행을 막고, ASLR은 주소 배치를 무작위로 바꾼다.",
     "question": "DEP(NX 비트)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "데이터 영역으로 지정된 메모리에서 코드가 실행되지 않도록 막는다",
@@ -10474,6 +10526,7 @@
     "area": "시스템 보안",
     "difficulty": "상",
     "topic": "sec-buffer-overflow",
+    "concept": "ROP는 프로그램에 이미 있는 코드 조각을 이어 붙여 DEP를 우회하는 기법이다.",
     "question": "DEP가 적용돼 주입한 셸코드를 실행할 수 없게 되자, 공격자가 프로그램 안에 이미 존재하는 코드 조각들을 복귀 주소로 이어 붙여 원하는 동작을 만들어 냈다. 이 기법은?",
     "choices": [
       "ROP(Return Oriented Programming)",
@@ -10489,6 +10542,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-buffer-overflow",
+    "concept": "포맷 스트링 취약점은 사용자 입력을 형식 문자열 자리에 그대로 넘길 때 생긴다.",
     "question": "포맷 스트링 취약점에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "사용자 입력을 printf 계열 함수의 형식 문자열 자리에 그대로 넘길 때 발생한다",
@@ -10504,6 +10558,7 @@
     "area": "시스템 보안",
     "difficulty": "상",
     "topic": "sec-buffer-overflow",
+    "concept": "스택 오버플로는 버퍼를 넘겨 복귀 주소를 덮는 결함으로, 힙 확장과는 무관하다.",
     "question": "메모리 관련 취약점에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "Use-After-Free는 이미 해제한 메모리를 다시 참조할 때 발생한다",
@@ -10519,6 +10574,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-secure-os",
+    "concept": "TCB는 보안 정책을 강제하는 하드웨어·소프트웨어의 총체로, 작고 검증 가능할수록 좋다.",
     "question": "시스템의 보안 정책을 강제하는 데 관여하는 하드웨어·펌웨어·소프트웨어의 총체를 가리키며, 작고 검증 가능할수록 좋다고 보는 개념은?",
     "choices": [
       "TCB(Trusted Computing Base)",
@@ -10534,6 +10590,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-secure-os",
+    "concept": "SELinux·AppArmor는 시스템이 강제하는 MAC이라 소유자도 정책 밖의 접근을 열 수 없다.",
     "question": "SELinux와 AppArmor에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "리눅스 커널 수준에서 강제적 접근통제(MAC)를 구현한다",
@@ -10549,6 +10606,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-secure-os",
+    "concept": "신뢰 경로는 로그인 화면이 위조된 것이 아님을 보장하는 통로다.",
     "question": "사용자가 비밀번호를 입력하는 화면이 악성 프로그램이 위장한 가짜 화면이 아니라 진짜 시스템의 것임을 보장하는 통로를 가리키는 개념은?",
     "choices": [
       "신뢰 경로(Trusted Path)",
@@ -10564,6 +10622,7 @@
     "area": "시스템 보안",
     "difficulty": "상",
     "topic": "sec-secure-os",
+    "concept": "TEE는 프로세서 안의 격리된 실행 영역이라 OS가 뚫려도 그 안의 코드·데이터를 보호한다.",
     "question": "프로세서 내부에 일반 운영체제와 분리된 실행 영역을 두어, 운영체제가 침해되더라도 그 영역 안의 코드와 데이터는 보호되도록 하는 기술은?",
     "choices": [
       "TEE(신뢰 실행 환경)",
@@ -10579,6 +10638,7 @@
     "area": "시스템 보안",
     "difficulty": "하",
     "topic": "sec-secure-os",
+    "concept": "Secure OS의 기능은 식별·인증, 접근통제, 객체 재사용 방지, 신뢰 경로, 감사로 정리된다.",
     "question": "Secure OS가 제공하는 보안 기능에 해당하지 않는 것은?",
     "choices": [
       "네트워크 대역폭을 늘려 전송 속도를 높이는 기능",
@@ -12490,6 +12550,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-analysis-tools",
+    "concept": "OS 핑거프린팅은 응답 특성의 구현 차이를 대조해 운영체제를 원격에서 추정한다.",
     "question": "Nmap으로 대상 시스템의 운영체제 종류와 버전을 추정하는 기능의 원리로 알맞은 것은?",
     "choices": [
       "패킷에 대한 응답 특성이 운영체제마다 미세하게 다른 점을 대조한다",
@@ -12505,6 +12566,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-analysis-tools",
+    "concept": "자동 취약점 스캐너 결과에는 오탐이 섞이므로 수동 검증으로 확정한다.",
     "question": "자동화된 취약점 스캐너에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "알려진 취약점 정보와 대조해 점검 결과를 목록으로 제시한다",
@@ -12520,6 +12582,7 @@
     "area": "시스템 보안",
     "difficulty": "하",
     "topic": "sec-analysis-tools",
+    "concept": "Kali Linux는 점검·모의 침투 도구를 모아 둔 배포판이다.",
     "question": "모의 침투 테스트와 보안 점검에 쓰이는 도구를 모아 배포하는 리눅스 배포판은?",
     "choices": [
       "Kali Linux",
@@ -12535,6 +12598,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-analysis-tools",
+    "concept": "Tripwire·AIDE는 기준 해시와 대조해 파일 변조를 탐지한다.",
     "question": "주요 시스템 파일의 해시 값을 미리 기록해 두고 주기적으로 대조해 변조 여부를 확인하는 도구는?",
     "choices": [
       "Tripwire",
@@ -12550,6 +12614,7 @@
     "area": "시스템 보안",
     "difficulty": "하",
     "topic": "sec-analysis-tools",
+    "concept": "스캐닝·모의 침투는 소유자의 명시적 사전 승인과 합의된 범위가 전제다.",
     "question": "취약점 점검이나 모의 침투 테스트를 수행하기 전에 반드시 갖춰야 할 것은?",
     "choices": [
       "대상 시스템 소유자의 명시적 사전 승인과 합의된 점검 범위",
@@ -12565,6 +12630,7 @@
     "area": "시스템 보안",
     "difficulty": "상",
     "topic": "sec-analysis-tools",
+    "concept": "점검은 합의된 범위를 넘지 않으며, 실제 데이터 열람은 점검이 아니라 침해다.",
     "question": "취약점 점검을 수행할 때의 절차로 적절하지 않은 것은?",
     "choices": [
       "운영에 영향이 큰 점검은 사전에 협의하고 영향도가 낮은 시간대에 수행한다",
@@ -13405,6 +13471,7 @@
     "area": "시스템 보안",
     "difficulty": "상",
     "topic": "sec-windows-security",
+    "concept": "대체 데이터 스트림(ADS)은 파일에 숨은 스트림을 붙여 크기를 드러내지 않고 데이터를 은닉한다.",
     "question": "NTFS에서 한 파일에 이름 없는 주 스트림 외에 `파일명:스트림명` 형태로 데이터를 더 붙일 수 있어, 탐색기나 일반 dir에는 크기가 드러나지 않아 악성코드 은닉에 악용되는 기능은?",
     "choices": [
       "대체 데이터 스트림(ADS)",
@@ -13420,6 +13487,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-windows-security",
+    "concept": "MFT는 NTFS의 메타데이터 구조로, 삭제된 파일의 흔적이 남아 포렌식 단서가 된다.",
     "question": "NTFS 볼륨에서 모든 파일과 디렉터리를 하나의 레코드로 등록해 이름·크기·시각·권한 등 메타데이터와 데이터 위치를 관리하며, 삭제된 파일의 흔적이 남아 포렌식 분석의 단서가 되는 구조는?",
     "choices": [
       "MFT(Master File Table)",
@@ -13621,6 +13689,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-os-account-privilege",
+    "concept": "/etc/shadow의 비밀번호 칸이 비면 무인증 로그인, *·!는 로그인 차단 상태다.",
     "question": "리눅스 `/etc/shadow`의 두 번째 필드(암호화된 비밀번호)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "$id$salt$해시 꼴로 적히며 id가 해시 알고리즘을 가리킨다 — $6$은 SHA-512다",
@@ -13636,6 +13705,7 @@
     "area": "시스템 보안",
     "difficulty": "상",
     "topic": "sec-os-account-privilege",
+    "concept": "shadow의 날짜 필드는 1970-01-01부터 센 일수이며, 최소·최대 사용일로 비밀번호 수명을 관리한다.",
     "question": "다음은 리눅스 `/etc/shadow`의 한 줄이다. 이 계정에 대한 해석으로 옳지 않은 것은?",
     "code": "devops:$6$rT9kQ2mv$8f2c...:19800:1:90:7:30:19900:",
     "choices": [
