@@ -40,13 +40,20 @@
      뉴트럴 계열(--surface-2·--border 언저리)로 낮춰 "노랑은 종이, 테이프는 무채"로 가른다. */
   --tape: #e2d8c5;
   /* 난이도 — 한 색(보라)의 농담 3단. 정답 초록·오답 코랄·형광 노랑·시험 액센트(코랄/블루)와
-     겹치지 않는 계열이라 '난이도가 오른다'가 색이 진해지는 것으로만 읽힌다(정오답과 혼동 없음). */
-  --diff-1-bg: #eae7f6;  /* 하 */
-  --diff-1-fg: #5b528a;
-  --diff-2-bg: #d6d0ee;  /* 중 */
-  --diff-2-fg: #443a7a;
-  --diff-3-bg: #b6a8e2;  /* 상 */
-  --diff-3-fg: #2e2560;
+     겹치지 않는 계열이라 '난이도가 오른다'가 색이 진해지는 것으로만 읽힌다(정오답과 혼동 없음).
+     농담 간격을 넓게 벌린다 — 앞서 세 단이 밝은 쪽에 몰려(명도 92·85·73) 배지만 한 이 크기에서는
+     하와 중이 같은 연보라로 보였다. 이제 '상'은 면을 채운 보라에 흰 글자로 홀로 층이 다르다.
+     --diff-N-dot은 필터 칩의 점 — 배지 면색은 테마마다 명암이 뒤집혀(밝은 테마의 '하',
+     어두운 테마의 '상') 칩 바탕에 얹으면 사라지므로, 칩 위에서 세 단이 보이는 값을 따로 둔다. */
+  --diff-1-bg: #ddd6f2;  /* 하 */
+  --diff-1-fg: #4a4080;
+  --diff-1-dot: #c3b8e8;
+  --diff-2-bg: #b3a3e0;  /* 중 */
+  --diff-2-fg: #2f2566;
+  --diff-2-dot: #9280d4;
+  --diff-3-bg: #7259bf;  /* 상 */
+  --diff-3-fg: #ffffff;
+  --diff-3-dot: #5f4bb0;
   /* ── 타입 스케일 ──
      고유 font-size가 24종까지 불어나 있었다(0.68·0.7·0.72·0.74·0.75·0.76·0.78·0.79·0.8·0.82…).
      "조금 작게"를 매번 새 숫자로 정한 값들이라 같은 층위의 글자가 화면마다 달랐다.
@@ -126,12 +133,15 @@
     --memo-text: #ebe4d3;
     --tape: #464034;
     /* 난이도 보라 — 어두운 면으로 낮추고 글자를 밝은 보라로 */
-    --diff-1-bg: #2b2740;
-    --diff-1-fg: #b6aee0;
-    --diff-2-bg: #383056;
-    --diff-2-fg: #cfc6f2;
-    --diff-3-bg: #4a3f7a;
-    --diff-3-fg: #e5def8;
+    --diff-1-bg: #322c4d;
+    --diff-1-fg: #b9b0e2;
+    --diff-1-dot: #6b619b;
+    --diff-2-bg: #4c3f8c;
+    --diff-2-fg: #ddd6f6;
+    --diff-2-dot: #9c8ae0;
+    --diff-3-bg: #6d58c4;
+    --diff-3-fg: #f6f3ff;
+    --diff-3-dot: #c9bcff;
     color-scheme: dark;
   }
   :root[data-exam="sec"]:not([data-theme="light"]) {
@@ -165,12 +175,15 @@
   --memo: #2a2720;
   --memo-text: #ebe4d3;
   --tape: #464034;
-  --diff-1-bg: #2b2740;
-  --diff-1-fg: #b6aee0;
-  --diff-2-bg: #383056;
-  --diff-2-fg: #cfc6f2;
-  --diff-3-bg: #4a3f7a;
-  --diff-3-fg: #e5def8;
+  --diff-1-bg: #322c4d;
+  --diff-1-fg: #b9b0e2;
+  --diff-1-dot: #6b619b;
+  --diff-2-bg: #4c3f8c;
+  --diff-2-fg: #ddd6f6;
+  --diff-2-dot: #9c8ae0;
+  --diff-3-bg: #6d58c4;
+  --diff-3-fg: #f6f3ff;
+  --diff-3-dot: #c9bcff;
   color-scheme: dark;
 }
 :root[data-theme="dark"][data-exam="sec"] {
@@ -1546,7 +1559,8 @@ button.linklike:hover {
   letter-spacing: 0;
   line-height: 1.4;
 }
-/* 한 색(보라)의 농담 3단 — 하→상으로 진해진다. 정오답 색과 겹치지 않아 난이도 축으로만 읽힌다 */
+/* 한 색(보라)의 농담 3단 — 하→상으로 진해진다. 정오답 색과 겹치지 않아 난이도 축으로만 읽힌다.
+   '상'만 면을 꽉 채운 보라(흰 글자)라, 셋을 나란히 두지 않고 하나만 봐도 어느 단인지 읽힌다 */
 .badge.diff[data-level="하"] {
   background: var(--diff-1-bg);
   color: var(--diff-1-fg);
@@ -2476,13 +2490,13 @@ button.side-link {
   vertical-align: baseline;
 }
 .diff-chip[data-diff="하"]::before {
-  background: var(--diff-1-fg);
+  background: var(--diff-1-dot);
 }
 .diff-chip[data-diff="중"]::before {
-  background: var(--diff-2-fg);
+  background: var(--diff-2-dot);
 }
 .diff-chip[data-diff="상"]::before {
-  background: var(--diff-3-fg);
+  background: var(--diff-3-dot);
 }
 /* 주제 바로가기 — 알약 칩(영역 이동·난이도 필터)과 구분되는 해시 링크풍 목차 */
 .topic-jumps-box {
@@ -3161,11 +3175,22 @@ button.toc-chip {
   left: 45%;
   transform: rotate(-1.5deg);
 }
-.cn-crow .cn-diff,
 .cn-crow .cn-save {
   float: none;
   margin: 0;
   flex-shrink: 0;
+}
+/* 좁은 화면 — 메모지와 별 사이가 유난히 벌어져 보인다. 별의 44px 히트 영역이 글리프
+   양옆으로 11px씩 남는 데다 gap까지 얹히기 때문이다. 히트 영역은 그대로 두고
+   여백만 음수 마진으로 걷는다 — 글자가 들어갈 폭이 아까운 화면이다. */
+@media (max-width: 700px) {
+  .cn-crow {
+    gap: 0;
+  }
+  .cn-crow .cn-save {
+    margin-left: -0.25rem;
+    margin-right: -0.5rem;
+  }
 }
 /* 상세 해설 — 선지를 고르거나 '해설 보기'로 열린다. 위의 선지와 점선으로 가른다
    (예전 .cn-q[open]가 하던 구실 — 박스를 더 겹치지 않고 괘선으로만 끊는다). */
@@ -3177,10 +3202,19 @@ button.toc-chip {
 .cn-exp .cn-x {
   margin: 0;
 }
-/* 난이도 배지 — 저장 별 왼쪽에 작게 얹는다(카드 첫 줄을 비켜 float) */
+/* 난이도 배지 — 발문 맨 앞, 'Q.' 왼쪽에 놓는다. 둘째 줄부터는 발문이 배지 아래로
+   흘러들지 않게 flex로 칸을 나눈다(매달린 들여쓰기). */
+.cn-qrow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  margin: 0.6rem 0 0.5rem;
+}
+.cn-qrow .cn-question {
+  margin: 0;
+}
 .cn-diff {
-  float: right;
-  margin: 0.1rem 0.15rem 0 0.4rem;
+  flex-shrink: 0;
 }
 
 /* 키보드 힌트 — 포인터가 있는(=키보드가 있을 법한) 환경에서만 */
