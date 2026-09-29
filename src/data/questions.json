@@ -302,6 +302,7 @@
     "area": "정보보안",
     "difficulty": "하",
     "topic": "security-cia",
+    "concept": "기밀성은 인가된 자만 읽기, 무결성은 인가되지 않은 변경 방지, 가용성은 필요할 때 접근이다.",
     "question": "정보보안 3요소에 대한 설명으로 틀린 것은?",
     "choices": [
       "가용성(Availability)은 필요할 때 자원을 쓸 수 있어야 한다는 성질로, 이중화·백업·부하 분산이 대응책이다",
@@ -317,6 +318,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "symmetric-asymmetric",
+    "concept": "대칭키는 암복호에 같은 키를 써 빠르지만 키 분배와 관리가 어렵다.",
     "question": "대칭키 암호화에 대한 설명으로 틀린 것은?",
     "choices": [
       "암호화와 복호화에 같은 키를 사용한다",
@@ -332,6 +334,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "hash-digital-signature",
+    "concept": "해시는 일방향 함수라 해시값에서 원본을 되찾을 수 없다.",
     "question": "암호학적 해시 함수의 성질로 틀린 것은?",
     "choices": [
       "입력 길이와 무관하게 고정 길이 출력을 낸다",
@@ -362,6 +365,7 @@
     "area": "정보보안",
     "difficulty": "상",
     "topic": "access-control",
+    "concept": "BLP는 기밀성 모델로 'No Read Up·No Write Down' 규칙을 강제한다.",
     "question": "Bell-LaPadula(BLP) 모델의 접근 규칙으로 옳은 것은?",
     "choices": [
       "No Read Down, No Write Up",
@@ -377,6 +381,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "hash-digital-signature",
+    "concept": "전자서명은 송신자의 개인키로 서명하고 공개키로 검증한다.",
     "question": "전자서명에서 서명 생성과 검증에 사용하는 키의 조합으로 옳은 것은?",
     "choices": [
       "서명: 송신자의 공개키, 검증: 송신자의 개인키",
@@ -1336,6 +1341,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "security-cia",
+    "concept": "랜섬웨어는 파일을 못 쓰게 만들어 가용성을 침해한다.",
     "question": "랜섬웨어가 파일을 암호화해 열 수 없게 만들었을 때, 본질적으로 침해된 보안 요소는?",
     "choices": [
       "기밀성",
@@ -1351,6 +1357,7 @@
     "area": "정보보안",
     "difficulty": "하",
     "topic": "security-cia",
+    "concept": "평문 도청(스니핑)은 내용을 훔쳐봐 기밀성을 침해한다.",
     "question": "공격자가 평문 패킷을 도청(스니핑)해 내용을 훔쳐봤다면 침해된 보안 요소는?",
     "choices": [
       "무결성",
@@ -1366,6 +1373,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "security-cia",
+    "concept": "가용성은 이중화·백업·부하 분산으로 지킨다(암호화는 기밀성 대응).",
     "question": "다음 중 가용성(Availability)을 확보하는 대응 기술이 아닌 것은?",
     "choices": [
       "이중화(Redundancy)",
@@ -1381,6 +1389,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "security-cia",
+    "concept": "기밀성·무결성·가용성은 상충해, 한쪽을 강화하면 다른 쪽이 저하될 수 있다.",
     "question": "인증 단계를 늘려 기밀성을 강화했을 때 흔히 함께 저하되는 보안 요소는?",
     "choices": [
       "무결성",
@@ -1396,6 +1405,7 @@
     "area": "정보보안",
     "difficulty": "상",
     "topic": "symmetric-asymmetric",
+    "concept": "대칭키는 두 사람마다 하나씩 필요해 n(n-1)/2개다.",
     "question": "10명이 서로 대칭키 암호로 통신하려면 필요한 키의 총 개수는?",
     "choices": [
       "10개",
@@ -1411,6 +1421,7 @@
     "area": "정보보안",
     "difficulty": "상",
     "topic": "symmetric-asymmetric",
+    "concept": "공개키는 각자 한 쌍씩 가지면 되므로 2n개다.",
     "question": "n명이 비대칭키(공개키) 암호로 통신할 때 필요한 키의 총 개수는?",
     "choices": [
       "2n개",
@@ -1426,6 +1437,7 @@
     "area": "정보보안",
     "difficulty": "하",
     "topic": "symmetric-asymmetric",
+    "concept": "공개키 암호는 RSA·ECC·디피-헬만 등이고 AES는 대칭키다.",
     "question": "다음 중 비대칭키(공개키) 암호 알고리즘이 아닌 것은?",
     "choices": [
       "RSA",
@@ -1441,6 +1453,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "symmetric-asymmetric",
+    "concept": "하이브리드는 대칭키의 속도와 공개키의 안전한 키 분배를 함께 얻는다.",
     "question": "실무에서 비대칭키로 대칭키를 전달한 뒤 본문은 대칭키로 암호화하는 하이브리드 방식을 쓰는 이유는?",
     "choices": [
       "대칭키는 키 분배 문제가 없기 때문",
@@ -1456,6 +1469,7 @@
     "area": "정보보안",
     "difficulty": "하",
     "topic": "hash-digital-signature",
+    "concept": "눈사태 효과는 입력 한 비트 변화가 해시 출력을 크게 바꾸는 성질이다.",
     "question": "입력이 1비트만 바뀌어도 해시 출력이 크게 달라지는 암호학적 해시 함수의 성질은?",
     "choices": [
       "눈사태 효과",
@@ -1471,6 +1485,7 @@
     "area": "정보보안",
     "difficulty": "하",
     "topic": "hash-digital-signature",
+    "concept": "MD5·SHA-1은 충돌이 발견돼 폐기됐고 SHA-2 이상을 쓴다.",
     "question": "충돌 공격에 취약해 더 이상 권장되지 않는 해시 알고리즘으로 짝지어진 것은?",
     "choices": [
       "SHA-256, SHA-512",
@@ -1486,6 +1501,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "hash-digital-signature",
+    "concept": "전자서명은 무결성·인증·부인방지는 주지만 기밀성은 주지 않는다.",
     "question": "전자서명이 제공하는 보안 서비스가 아닌 것은?",
     "choices": [
       "무결성",
@@ -1531,6 +1547,7 @@
     "area": "정보보안",
     "difficulty": "하",
     "topic": "access-control",
+    "concept": "최소 권한 원칙은 업무에 필요한 최소한의 권한만 부여하는 것이다.",
     "question": "사용자에게 업무 수행에 필요한 최소한의 권한만 부여해야 한다는 접근통제의 기본 원칙은?",
     "choices": [
       "최소 권한 원칙",
@@ -2058,6 +2075,7 @@
     "area": "정보보안",
     "difficulty": "하",
     "topic": "security-attacks",
+    "concept": "DoS 계열은 자원을 고갈시켜 가용성을 침해하는 능동적 공격이다(스니핑은 수동적 도청).",
     "question": "자원을 고갈시켜 가용성을 침해하는 서비스 거부(DoS) 계열 공격에 해당하지 않는 것은?",
     "choices": [
       "SYN 플러딩 — 3-way handshake에서 SYN만 대량으로 보내고 ACK을 주지 않아 연결 대기 큐를 채운다",
@@ -2073,6 +2091,7 @@
     "area": "정보보안",
     "difficulty": "하",
     "topic": "security-attacks",
+    "concept": "DDoS는 다수의 좀비 PC로 자원을 고갈시키는 능동적 공격이다.",
     "question": "DDoS(분산 서비스 거부) 공격에 대한 설명으로 틀린 것은?",
     "choices": [
       "악성코드에 감염된 다수의 좀비 PC로 이뤄진 봇넷을 동원해 공격한다",
@@ -2088,6 +2107,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "security-attacks",
+    "concept": "스니핑은 훔쳐보는 수동 공격, 스푸핑은 위조하는 능동 공격이다.",
     "question": "스니핑(Sniffing)과 스푸핑(Spoofing)에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "스푸핑은 패킷을 관찰만 할 뿐 위조하지 않으므로 수동적 공격으로 분류된다",
@@ -2133,6 +2153,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "security-solutions",
+    "concept": "방화벽은 경계에서 트래픽을 거를 뿐 내부자 공격은 막지 못한다.",
     "question": "방화벽(firewall)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "내부 사용자에 의한 공격까지 모두 막아 준다",
@@ -2148,6 +2169,7 @@
     "area": "정보보안",
     "difficulty": "하",
     "topic": "security-solutions",
+    "concept": "IDS는 탐지·경보, IPS는 탐지와 동시에 차단한다.",
     "question": "IDS와 IPS의 차이로 옳은 것은?",
     "choices": [
       "둘 다 물리 보안 장비다",
@@ -2163,6 +2185,7 @@
     "area": "정보보안",
     "difficulty": "하",
     "topic": "security-attacks",
+    "concept": "중간자 공격은 통신 구간 암호화(TLS)와 상대 인증으로 막는다.",
     "question": "통신하는 두 당사자 사이에 몰래 끼어들어 내용을 엿보거나 변조하는 중간자(MITM) 공격의 대응 기술로 가장 적절한 것은?",
     "choices": [
       "로드 밸런싱",
@@ -2943,6 +2966,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "authentication",
+    "concept": "MFA는 아는 것·가진 것·자신인 것처럼 서로 다른 범주를 섞어야 성립한다.",
     "question": "인증 요소의 분류와 그 예시를 짝지은 것으로 옳지 않은 것은?",
     "choices": [
       "지식 기반(아는 것) — 비밀번호, PIN",
@@ -2988,6 +3012,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "secure-coding",
+    "concept": "SQL 인젝션은 매개변수화된 쿼리(준비된 문장)로 값과 구문을 분리해 막는다.",
     "question": "SQL 인젝션 공격의 가장 효과적인 대응 방법은?",
     "choices": [
       "데이터베이스 백업 주기를 늘린다",
@@ -3003,6 +3028,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "secure-coding",
+    "concept": "시큐어 코딩은 개발 단계부터 취약점을 예방하는 활동이다.",
     "question": "시큐어 코딩(secure coding)에 대한 설명으로 틀린 것은?",
     "choices": [
       "개발 단계부터 보안 취약점을 예방하는 코딩 원칙이다",
@@ -4694,6 +4720,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "malware-types",
+    "concept": "트로이 목마는 위장하되 자기 복제를 하지 않는다(웜은 스스로 퍼진다).",
     "question": "악성코드 유형에 대한 설명으로 틀린 것은?",
     "choices": [
       "트로이 목마(Trojan Horse)는 자기 복제로 다른 시스템까지 스스로 퍼져 나간다",
@@ -4741,6 +4768,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "malware-types",
+    "concept": "악성코드는 행위로 나뉜다 — 랜섬웨어는 파일 암호화로 금전을 요구한다.",
     "question": "악성코드와 그 주된 행위의 연결이 옳지 않은 것은?",
     "choices": [
       "키로거(Keylogger) — 키보드 입력을 가로채 계정 정보나 카드 번호를 빼낸다",
@@ -4756,6 +4784,7 @@
     "area": "정보보안",
     "difficulty": "하",
     "topic": "security-threat-types",
+    "concept": "보안 위협은 물리적·기술적·관리적으로 나뉜다.",
     "question": "다음 중 물리적 위협에 해당하지 않는 것은?",
     "choices": [
       "화재로 백업 매체가 소실되는 것",
@@ -4802,6 +4831,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "security-threat-types",
+    "concept": "응용은 최소 권한으로 실행해야 하며 관리자 권한 상시 실행은 위험하다.",
     "question": "응용 프로그램의 취약점을 줄이기 위한 조치로 가장 적절하지 않은 것은?",
     "choices": [
       "사용하지 않는 서비스와 계정을 제거한다",
@@ -4817,6 +4847,7 @@
     "area": "정보보안",
     "difficulty": "상",
     "topic": "security-threat-types",
+    "concept": "관리적 위협은 정책·절차·인적 요인이며, 설비 고장은 물리적 위협이다.",
     "question": "관리적 위협에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "보안 정책과 지침이 없어 담당자마다 처리 방식이 제각각이다",
@@ -5962,6 +5993,7 @@
     "area": "정보보안",
     "difficulty": "상",
     "topic": "wireless-security",
+    "concept": "블루투스 공격은 블루스나프(자료 탈취)·블루버그(원격 제어)·블루재킹(메시지 전송)으로 나뉜다.",
     "question": "블루투스를 노리는 공격에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "블루프린팅(BluePrinting)은 주변 블루투스 기기의 모델과 제공 기능을 식별해 공격 대상을 선별하는 단계다",
@@ -5993,6 +6025,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "wireless-security",
+    "concept": "WEP은 근본적으로 취약해 WPA2·WPA3로 교체해야 한다.",
     "question": "무선랜 보안 규격에 대한 설명으로 틀린 것은?",
     "choices": [
       "WEP(Wired Equivalent Privacy)는 초기화 벡터(IV)가 짧아 재사용되는 구조적 결함 탓에 키가 복구되어 폐기됐다",
@@ -6008,6 +6041,7 @@
     "area": "정보보안",
     "difficulty": "상",
     "topic": "wireless-security",
+    "concept": "블루재킹은 메시지를 보내는 장난 수준이고, 자료 탈취는 블루스나프다.",
     "question": "무선·근거리 통신 구간을 노리는 위협에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "블루재킹(BlueJacking)은 대상 기기에 저장된 연락처와 파일을 인증 없이 꺼내 오는 것이 목적이다",
@@ -6039,6 +6073,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "security-solutions",
+    "concept": "DPI는 헤더를 넘어 패킷 페이로드까지 열어 검사한다.",
     "question": "DPI(Deep Packet Inspection)에 대한 설명으로 틀린 것은?",
     "choices": [
       "패킷의 헤더뿐 아니라 페이로드(내용)까지 열어 분석한다",
@@ -6054,6 +6089,7 @@
     "area": "정보보안",
     "difficulty": "상",
     "topic": "secure-coding",
+    "concept": "XSS는 공격자 스크립트가 다른 사용자의 브라우저에서 실행되는 취약점이다.",
     "question": "취약점과 그 설명의 연결로 옳지 않은 것은?",
     "choices": [
       "자원 삽입(Resource Injection) — 외부 입력이 파일 경로나 포트 번호 같은 자원 식별자로 그대로 쓰여 의도치 않은 자원에 접근하게 된다",
@@ -6085,6 +6121,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "symmetric-asymmetric",
+    "concept": "DES는 블록 64비트·실질 키 56비트, AES는 블록 128비트·키 128/192/256비트다.",
     "question": "DES와 AES의 제원에 대한 설명으로 옳은 것은?",
     "choices": [
       "DES는 128비트 블록을 처리하며 키 길이는 256비트로 고정되어 있다",
@@ -6703,6 +6740,7 @@
     "area": "정보보안",
     "difficulty": "상",
     "topic": "secure-sdlc",
+    "concept": "소프트웨어 개발 보안 취약점 7분류 — 검사·사용 시점 틈(TOCTOU)은 '시간 및 상태'다.",
     "question": "다음 코드에 존재하는 취약점은 소프트웨어 개발 보안 취약점 7분류 중 어디에 속하는가?",
     "code": "if (access(\"/tmp/data.txt\", W_OK) == 0) {\n    /* 검사가 끝난 뒤 open이 실행되기 전에 대상 파일이 다른 파일의 링크로 바뀔 수 있다 */\n    fd = open(\"/tmp/data.txt\", O_WRONLY);\n    write(fd, buf, len);\n}",
     "choices": [
@@ -6719,6 +6757,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "secure-sdlc",
+    "concept": "널 포인터 역참조·자원 해제 누락·정수 오버플로는 '코드 오류' 분류다.",
     "question": "널 포인터 역참조(Null Pointer Dereference), 부적절한 자원 해제, 정수 오버플로(Integer Overflow)가 공통으로 속하는 소프트웨어 개발 보안 취약점 분류는?",
     "choices": [
       "코드 오류",
@@ -6734,6 +6773,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "secure-sdlc",
+    "concept": "디버그 코드·시험 계정을 남기는 것은 '캡슐화' 분류다.",
     "question": "운영 서버에 배포된 프로그램에 개발 중 쓰던 디버그 코드와 시험용 관리자 계정이 그대로 남아 있었다. 이 취약점이 속하는 소프트웨어 개발 보안 취약점 분류는?",
     "choices": [
       "에러 처리",
@@ -6749,6 +6789,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "secure-sdlc",
+    "concept": "경로 조작·자원 삽입은 '입력 데이터 검증 및 표현' 분류다.",
     "question": "취약점과 소프트웨어 개발 보안 취약점 7분류의 연결로 옳지 않은 것은?",
     "choices": [
       "SQL 삽입(SQL Injection) — 입력 데이터 검증 및 표현",
@@ -6764,6 +6805,7 @@
     "area": "정보보안",
     "difficulty": "상",
     "topic": "secure-sdlc",
+    "concept": "Secure SDLC는 개발 생명주기 전체에 보안 활동을 심는다(마지막 침투 테스트 한 번이 아니다).",
     "question": "Secure SDLC에 대한 설명으로 틀린 것은?",
     "choices": [
       "결함은 늦게 발견할수록 수정 비용이 커지므로 요구·설계 단계의 보안 활동이 더 값싸다",
@@ -7772,6 +7814,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "security-solutions",
+    "concept": "오용 탐지는 패턴 대조(신종에 약함), 이상 탐지는 행위 차이(오탐 늘어남)다.",
     "question": "침입 탐지 방식인 오용 탐지(Misuse Detection)와 이상 탐지(Anomaly Detection)에 대한 설명으로 옳은 것은?",
     "choices": [
       "오용 탐지는 평소 행동과의 차이를 기준으로 판단하므로 정상 행위를 공격으로 오인하는 일이 잦다",
@@ -7787,6 +7830,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "security-solutions",
+    "concept": "HIDS는 호스트를, NIDS는 네트워크를 감시하며 Snort는 네트워크 IDS다.",
     "question": "침입 탐지 시스템의 설치 위치별 분류와 관련 도구에 대한 설명으로 틀린 것은?",
     "choices": [
       "Snort는 호스트에 저장된 파일의 무결성만 검사하는 도구라 네트워크 패킷은 다루지 못한다",
@@ -7802,6 +7846,7 @@
     "area": "정보보안",
     "difficulty": "상",
     "topic": "security-solutions",
+    "concept": "Secure OS는 커널에서 접근을 강제한다(페이로드 검사는 IPS·DPI의 몫).",
     "question": "운영체제 커널에 보안 기능을 넣어 참조 모니터로 접근을 강제하는 Secure OS의 보안 기능에 해당하지 않는 것은?",
     "choices": [
       "객체 재사용 방지",
@@ -7847,6 +7892,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "hash-digital-signature",
+    "concept": "솔트는 사용자마다 다른 값을 더해 레인보우 테이블 공격을 막는다(일방향은 그대로).",
     "question": "비밀번호를 저장할 때 사용자마다 다른 임의 값을 덧붙여 해시하는 솔트(Salt)에 대한 설명으로 틀린 것은?",
     "choices": [
       "솔트를 덧붙이면 해시 함수가 양방향 함수로 바뀌어 저장된 값에서 원래 비밀번호를 복호화할 수 있다",
@@ -7862,6 +7908,7 @@
     "area": "정보보안",
     "difficulty": "중",
     "topic": "authentication",
+    "concept": "SSO는 한 번 인증으로 여러 시스템을 쓰지만 한 번 뚫리면 전부 뚫린다.",
     "question": "통합 인증(SSO, Single Sign On)에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "한 번의 로그인으로 연결된 여러 시스템을 추가 인증 없이 이용할 수 있다",
