@@ -4,6 +4,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "cpu-scheduling",
+    "concept": "스케줄링은 실행 중 뺏는 선점(RR·SRT 등)과 못 뺏는 비선점(FCFS·SJF·HRN)으로 나뉜다.",
     "question": "다음 중 비선점(non-preemptive) 스케줄링 알고리즘에 해당하지 않는 것은?",
     "choices": [
       "FCFS",
@@ -19,6 +20,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "cpu-scheduling",
+    "concept": "HRN 우선순위 = (대기 시간 + 서비스 시간) / 서비스 시간으로, 값이 클수록 먼저 실행한다.",
     "question": "HRN 스케줄링에서 대기 시간 20, 서비스(실행) 시간 5인 프로세스의 우선순위 값은?",
     "choices": [
       "4",
@@ -34,6 +36,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "deadlock",
+    "concept": "교착상태는 상호 배제·점유와 대기·비선점·환형 대기 네 조건이 모두 성립할 때 생긴다.",
     "question": "교착상태(deadlock) 발생의 4가지 필요조건에 해당하지 않는 것은?",
     "choices": [
       "상호 배제",
@@ -49,6 +52,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "process-vs-thread",
+    "concept": "스레드는 코드·데이터·힙은 공유하되 스택과 레지스터는 스레드마다 따로 갖는다.",
     "question": "같은 프로세스에 속한 스레드들에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "스택 영역도 공유하므로 지역 변수와 함수 호출 기록을 서로 그대로 쓴다",
@@ -64,6 +68,7 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "page-replacement",
+    "concept": "LRU는 가장 오래 참조되지 않은 페이지를 교체 대상으로 고른다.",
     "question": "페이지 교체 알고리즘 중 '가장 오랫동안 사용되지 않은 페이지'를 교체 대상으로 고르는 것은?",
     "choices": [
       "FIFO",
@@ -379,6 +384,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "cpu-scheduling",
+    "concept": "RR은 타임 퀀텀을 아주 크게 잡으면 FCFS처럼, 아주 작게 잡으면 문맥 교환이 잦아진다.",
     "question": "라운드 로빈(RR) 스케줄링에서 타임 퀀텀(시간 할당량)을 매우 크게 잡으면 어떤 알고리즘과 비슷하게 동작하는가?",
     "choices": [
       "SJF",
@@ -394,6 +400,7 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "cpu-scheduling",
+    "concept": "SJF는 비선점, SRT는 그 선점형으로 남은 실행 시간이 가장 짧은 것을 고른다.",
     "question": "SJF(Shortest Job First)와 SRT(Shortest Remaining Time)에 대한 설명으로 틀린 것은?",
     "choices": [
       "SRT는 남은 실행 시간이 더 짧은 프로세스가 도착하면 실행 중인 프로세스에게서 CPU를 빼앗는다",
@@ -409,6 +416,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "cpu-scheduling",
+    "concept": "FCFS는 도착 순서대로 처리해, 긴 작업이 앞서면 뒤 작업의 대기가 길어진다.",
     "question": "실행 시간이 P1=24ms, P2=3ms, P3=3ms인 프로세스가 이 순서로 동시에 도착했다. FCFS 스케줄링의 평균 대기 시간은?",
     "choices": [
       "10ms",
@@ -424,6 +432,7 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "cpu-scheduling",
+    "concept": "에이징은 오래 기다린 프로세스의 우선순위를 점차 높여 기아(starvation)를 막는다.",
     "question": "에이징(aging) 기법에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "기다린 시간에 비례해 프로세스의 우선순위를 높여 준다",
@@ -439,6 +448,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "deadlock",
+    "concept": "자원에 번호를 매겨 오름차순 요청만 허용하면 환형 대기 조건이 깨진다.",
     "question": "모든 자원에 번호를 매기고 오름차순으로만 요청하게 하는 교착상태 예방 기법이 부정하는 조건은?",
     "choices": [
       "상호 배제",
@@ -454,6 +464,7 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "deadlock",
+    "concept": "은행원 알고리즘은 안전 상태를 유지하며 자원을 내주는 교착상태 회피 기법이다.",
     "question": "은행원 알고리즘(Banker's Algorithm)은 교착상태 처리 방법 중 어느 갈래에 속하는가?",
     "choices": [
       "회피(Avoidance)",
@@ -469,6 +480,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "deadlock",
+    "concept": "교착상태 회복은 프로세스 강제 종료나 자원 선점으로 순환을 끊는다.",
     "question": "교착상태가 탐지된 뒤의 회복(Recovery) 방법으로 옳게 짝지어진 것은?",
     "choices": [
       "상호 배제 강화, 잠금 추가",
@@ -484,6 +496,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "deadlock",
+    "concept": "교착상태는 네 조건이 동시에 성립해야 하며, 하나만으로는 생기지 않는다.",
     "question": "교착상태 발생 조건에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "조건 중 하나만 성립해도 교착상태가 발생할 수 있다",
@@ -499,6 +512,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "page-replacement",
+    "concept": "FIFO는 프레임을 늘려도 페이지 폴트가 되레 느는 벨레이디 모순이 나타날 수 있다.",
     "question": "프레임 수를 늘렸는데 오히려 페이지 폴트가 증가하는 Belady's Anomaly가 나타날 수 있는 페이지 교체 알고리즘은?",
     "choices": [
       "LRU",
@@ -514,6 +528,7 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "page-replacement",
+    "concept": "OPT는 앞으로 가장 늦게 쓰일 페이지를 교체하는 이론상 최적 알고리즘이다.",
     "question": "'앞으로 가장 오랫동안 사용되지 않을 페이지'를 교체하는, 이론상 최적이지만 실현 불가능한 알고리즘은?",
     "choices": [
       "LRU",
@@ -529,6 +544,7 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "page-replacement",
+    "concept": "Clock(Second-Chance)은 참조 비트를 이용해 LRU를 근사 구현한다.",
     "question": "참조 비트를 이용해 LRU를 근사 구현하는 페이지 교체 알고리즘은?",
     "choices": [
       "FIFO",
@@ -544,6 +560,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "page-replacement",
+    "concept": "FIFO 페이지 교체는 먼저 들어온 페이지를 먼저 내보낸다.",
     "question": "페이지 참조열이 1, 2, 3, 1, 2, 4이고 프레임이 3개일 때, FIFO 교체에서 발생하는 페이지 폴트 횟수는? (초기 프레임은 비어 있음)",
     "choices": [
       "3회",
@@ -559,6 +576,7 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "process-vs-thread",
+    "concept": "경량 프로세스(LWP)는 스레드를 가리키는 말이다.",
     "question": "'경량 프로세스(LWP, Light Weight Process)'라는 표현이 가리키는 것은?",
     "choices": [
       "프로세스",
@@ -574,6 +592,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "process-vs-thread",
+    "concept": "멀티스레드는 응답성·자원 공유에 이점이 있지만 동기화 문제를 낳는다.",
     "question": "멀티스레드의 장점에 해당하지 않는 것은?",
     "choices": [
       "동기화 문제가 발생하지 않는다",
@@ -589,6 +608,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "process-vs-thread",
+    "concept": "스레드는 코드·데이터·힙을 공유하고 스택은 따로 갖는다.",
     "question": "같은 프로세스에 속한 스레드들이 공유하는 자원으로만 묶인 것은?",
     "choices": [
       "스택, 힙, 프로그램 카운터",
@@ -2697,6 +2717,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "virtualization-cloud",
+    "concept": "컨테이너는 호스트 커널을 공유해 게스트 OS가 없고, VM은 게스트 OS를 통째로 올린다.",
     "question": "가상머신(VM)과 컨테이너(container)의 비교로 틀린 것은?",
     "choices": [
       "가상머신은 하이퍼바이저(hypervisor) 위에 게스트 OS를 통째로 올린다",
@@ -2712,6 +2733,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "virtualization-cloud",
+    "concept": "클라우드는 IaaS(인프라)·PaaS(플랫폼)·SaaS(소프트웨어)로 나뉜다.",
     "question": "클라우드 서비스 모델 중 개발·실행 환경(플랫폼)을 제공하여 사용자가 애플리케이션 개발에만 집중하게 하는 것은?",
     "choices": [
       "IaaS",
@@ -2727,6 +2749,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "virtual-memory",
+    "concept": "스래싱은 페이지 교체에 시간을 다 써 시스템 처리량이 급락하는 현상이다.",
     "question": "프로세스가 실제 작업보다 페이지 교체에 더 많은 시간을 쓰며 시스템 처리량이 급락하는 현상은?",
     "choices": [
       "스래싱(thrashing)",
@@ -2742,6 +2765,7 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "virtual-memory",
+    "concept": "워킹셋은 자주 참조하는 페이지 집합을 메모리에 유지해 스래싱을 막는다.",
     "question": "프로세스가 일정 시간 동안 자주 참조하는 페이지들의 집합을 메모리에 유지해 스래싱을 방지하는 기법은?",
     "choices": [
       "워킹셋(working set)",
@@ -2757,6 +2781,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "virtual-memory",
+    "concept": "페이징은 내부 단편화가, 세그먼테이션은 외부 단편화가 생긴다.",
     "question": "페이징(paging)과 세그먼테이션(segmentation)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "페이징은 메모리를 물리적으로 같은 고정 크기의 페이지로 나눈다",
@@ -3359,6 +3384,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "disk-file-system",
+    "concept": "SSTF는 현재 헤드에서 가장 가까운 트랙 요청을 먼저 처리한다.",
     "question": "디스크 헤드가 현재 50번 트랙에 있고 대기 큐에 90, 30, 120, 20번 트랙 요청이 이 순서로 들어와 있다. SSTF 스케줄링으로 처리할 때 헤드의 총 이동 거리는?",
     "choices": [
       "100 트랙",
@@ -3374,6 +3400,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "disk-file-system",
+    "concept": "SCAN(엘리베이터)은 한 방향 끝까지 훑고 방향을 바꿔 되돌아온다.",
     "question": "트랙이 0~99번인 디스크에서 헤드가 50번에 있고 트랙 번호가 커지는 방향으로 이동 중이다. 대기 큐가 10, 22, 70, 85번일 때 SCAN 스케줄링의 총 이동 거리는?",
     "choices": [
       "110 트랙",
@@ -3389,6 +3416,7 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "disk-file-system",
+    "concept": "C-SCAN은 한 방향만 서비스하고 끝에서 반대 끝으로 되돌아가 다시 같은 방향으로 훑는다.",
     "question": "C-SCAN 디스크 스케줄링의 동작 방식으로 옳은 것은?",
     "choices": [
       "한 방향으로만 서비스하고 끝에 닿으면 요청을 처리하지 않고 반대 끝으로 되돌아가 다시 같은 방향으로 훑는다",
@@ -3404,6 +3432,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "disk-file-system",
+    "concept": "SSTF는 가까운 요청만 처리해 먼 요청이 기아에 빠질 수 있다.",
     "question": "SSTF 디스크 스케줄링에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "매번 탐색 거리가 가장 짧은 요청을 선택한다",
@@ -3419,6 +3448,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "disk-file-system",
+    "concept": "파일 블록 할당은 연속·연결·색인 방식으로 나뉘며, 연결 할당은 직접 접근에 불리하다.",
     "question": "파일의 디스크 블록 할당 방식에 대한 설명으로 틀린 것은?",
     "choices": [
       "연속 할당은 직접 접근이 빠르지만 파일이 커지면 옮겨야 하고 외부 단편화가 생긴다",
@@ -3434,6 +3464,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "disk-file-system",
+    "concept": "i-node는 파일의 속성과 블록 위치를 담지만 파일 이름은 담지 않는다.",
     "question": "UNIX 파일 시스템의 i-node에 저장되지 않는 정보는?",
     "choices": [
       "파일의 크기",
@@ -3449,6 +3480,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "memory-allocation",
+    "concept": "최초 적합은 앞에서부터 처음 들어가는 빈 영역에 배치한다.",
     "question": "메모리의 빈 영역이 낮은 주소부터 12KB, 30KB, 20KB, 40KB 순으로 있다. 18KB 프로그램을 최초 적합(First Fit)으로 배치할 때 사용되는 영역과 배치 후 그 영역에 남는 공간은?",
     "choices": [
       "12KB 영역 — 배치 불가",
@@ -3464,6 +3496,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "memory-allocation",
+    "concept": "최적 적합은 들어갈 수 있는 가장 작은 빈 영역에, 최악 적합은 가장 큰 영역에 배치한다.",
     "question": "메모리의 빈 영역이 낮은 주소부터 8KB, 25KB, 14KB, 32KB 순으로 있다. 13KB 프로그램을 배치할 때의 설명으로 틀린 것은?",
     "choices": [
       "최초 적합(First Fit)은 앞에서부터 처음 만나는 8KB 영역에 배치해 5KB를 남긴다",
@@ -3479,6 +3512,7 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "memory-allocation",
+    "concept": "내부 단편화는 할당한 영역이 요청보다 커서 그 안에 남는 낭비다.",
     "question": "20KB 영역에 14KB 프로그램을 배치했을 때 그 영역 안에 남아 쓰이지 못하는 6KB와 같은 낭비를 무엇이라 하는가?",
     "choices": [
       "오버레이",
@@ -3494,6 +3528,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "memory-allocation",
+    "concept": "압축(compaction)은 흩어진 빈 공간을 한쪽으로 모아 외부 단편화를 없앤다.",
     "question": "메모리 압축(compaction)에 대한 설명으로 틀린 것은?",
     "choices": [
       "배치된 프로세스들을 한쪽으로 밀어붙여 흩어진 빈 공간을 하나의 큰 연속 공간으로 합친다",
@@ -4877,6 +4912,7 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "unix-os",
+    "concept": "셸은 사용자 명령을 해석해 커널에 전달하는 명령 해석기다.",
     "question": "다음 설명에 해당하는 UNIX의 구성 요소는?",
     "code": "- 사용자가 입력한 명령을 해석해 커널에 전달한다\n- 하드웨어를 직접 다루지 않고 요청을 넘기는 역할만 한다\n- 사용자가 다른 종류로 바꿔 쓸 수 있으며 여러 구현이 존재한다",
     "choices": [
@@ -4893,6 +4929,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "unix-os",
+    "concept": "UNIX는 대부분 C로 작성돼 이식성이 높고 다중 사용자·다중 작업을 지원한다.",
     "question": "UNIX 운영체제의 특징으로 틀린 것은?",
     "choices": [
       "대화식 시분할(Time Sharing) 방식으로 동작한다",
@@ -4908,6 +4945,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "unix-os",
+    "concept": "커널은 부팅 시 상주하고, 셸은 사용자가 바꿔 쓸 수 있는 명령 해석기다.",
     "question": "UNIX의 커널(Kernel)과 셸(Shell)에 대한 설명으로 옳은 것은?",
     "choices": [
       "셸이 하드웨어를 직접 제어하고, 커널이 사용자의 명령을 해석한다",
@@ -4923,6 +4961,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "unix-os",
+    "concept": "UNIX 파일 시스템은 루트(/)를 정점으로 한 계층형 트리 구조다.",
     "question": "UNIX 파일 시스템에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "모든 파일이 계층 없이 하나의 평면(flat) 목록에 저장된다",
@@ -5305,6 +5344,7 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "mutual-exclusion",
+    "concept": "임계 구역은 한 번에 한 프로세스만 들어가야 하는 공유 자원 접근 코드 영역이다.",
     "question": "다음 설명에 해당하는 용어는?",
     "code": "- 여러 프로세스가 공유하는 자원에 접근하는 프로그램 코드 구간이다\n- 한 번에 오직 하나의 프로세스만 실행되도록 통제해야 한다\n- 통제에 실패하면 실행 순서에 따라 결과가 달라지는 경쟁 상태가 생긴다",
     "choices": [
@@ -5321,6 +5361,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "mutual-exclusion",
+    "concept": "상호배제 해법은 상호배제·진행·한정 대기를 만족해야 한다(환형 대기는 교착 조건).",
     "question": "상호배제(Mutual Exclusion) 해법이 반드시 만족해야 할 조건이 아닌 것은?",
     "choices": [
       "상호배제 — 한 프로세스가 임계 구역에 있으면 다른 프로세스는 들어갈 수 없다",
@@ -5336,6 +5377,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "mutual-exclusion",
+    "concept": "세마포어는 P(대기)·V(신호) 연산으로 자원 수를 세어 상호배제를 구현한다.",
     "question": "세마포어(Semaphore)와 P·V 연산에 대한 설명으로 틀린 것은?",
     "choices": [
       "P(wait) 연산은 세마포어 변수 S를 1 감소시키고, 그 결과가 음수이면 해당 프로세스를 대기 큐에 넣는다",
@@ -5351,6 +5393,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "mutual-exclusion",
+    "concept": "세마포어 S는 P에서 감소, V에서 증가하며, 음수면 그 절댓값만큼 대기 프로세스가 있다.",
     "question": "다음 조건에서 세마포어 변수 S의 최종 값과 대기 큐에 남아 있는 프로세스 수로 옳은 것은?",
     "code": "[조건]\n- 계수 세마포어 S의 초깃값은 3이다\n- 프로세스 5개가 차례로 P(wait) 연산을 수행했다\n- 그 뒤 임계 구역에 있던 프로세스 1개가 V(signal) 연산을 수행했다",
     "choices": [
@@ -5367,6 +5410,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "mutual-exclusion",
+    "concept": "모니터는 동기화를 언어 차원에서 캡슐화해 세마포어보다 오류가 적다.",
     "question": "모니터(Monitor)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "공유 자원과 그 자원에 접근하는 연산(프로시저)을 하나의 모듈로 묶는다",
@@ -5382,6 +5426,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "mutual-exclusion",
+    "concept": "베이커리 알고리즘은 번호표로 순서를 정하는 다중 프로세스 상호배제 소프트웨어 해법이다.",
     "question": "다음 설명에 해당하는 상호배제 알고리즘은?",
     "code": "- 두 프로세스로 제한되지 않고 n개 프로세스로 확장되는 소프트웨어 해법이다\n- 임계 구역에 들어가려는 프로세스는 먼저 번호표를 받는다\n- 번호가 가장 작은 프로세스가 먼저 들어가고, 번호가 같으면 프로세스 번호가 작은 쪽이 우선한다",
     "choices": [
@@ -5398,6 +5443,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "mutual-exclusion",
+    "concept": "상호배제 소프트웨어 해법에는 데커·피터슨·베이커리 알고리즘이 있다.",
     "question": "상호배제를 위한 소프트웨어 알고리즘에 해당하지 않는 것은?",
     "choices": [
       "데커(Dekker) 알고리즘",
@@ -5413,6 +5459,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "linux-admin",
+    "concept": "새 파일은 666, 디렉터리는 777에서 umask에 켜진 비트를 걷어낸 값이다.",
     "question": "umask 값이 027로 설정된 리눅스 시스템에서 새로 생성되는 일반 파일과 디렉터리의 기본 권한을 8진수로 옳게 짝지은 것은?",
     "choices": [
       "파일 640, 디렉터리 750",
@@ -5428,6 +5475,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "linux-admin",
+    "concept": "목표 권한을 얻으려면 기준값(파일 666·디렉터리 777)에서 거꾸로 umask를 구한다.",
     "question": "새로 생성되는 디렉터리의 권한이 rwxr-x--- 가 되게 하려면 umask 값을 얼마로 설정해야 하는가?",
     "choices": [
       "022",
@@ -5443,6 +5491,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "linux-admin",
+    "concept": "chmod 숫자 권한은 소유자·그룹·그 외에 읽기 4·쓰기 2·실행 1을 배정한다.",
     "question": "다음 명령을 수행한 뒤 report.txt에 부여되는 권한 표기로 옳은 것은?",
     "code": "$ chmod 751 report.txt",
     "choices": [
@@ -5459,6 +5508,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "linux-admin",
+    "concept": "로그인 실패는 btmp(lastb), 이력은 wtmp(last), 마지막 로그인은 lastlog다.",
     "question": "리눅스의 접속 관련 로그 파일과 그 내용을 확인하는 명령의 연결이 옳지 않은 것은?",
     "choices": [
       "wtmp — 로그인·로그아웃과 부팅·종료 이력 — last",
@@ -5474,6 +5524,7 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "linux-admin",
+    "concept": "btmp는 로그인 실패 기록을 담는 바이너리 로그로 lastb로 읽는다.",
     "question": "다음 설명에 해당하는 리눅스 로그 파일은?",
     "code": "- 로그인에 실패한 기록이 쌓이는 이진(binary) 로그 파일이다\n- 무차별 대입 공격 시도를 확인하는 근거가 된다\n- lastb 명령으로 내용을 확인한다",
     "choices": [
@@ -5490,6 +5541,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "linux-admin",
+    "concept": "kill은 이름이 아니라 PID로 프로세스에 시그널을 보낸다.",
     "question": "리눅스 명령어에 대한 설명으로 틀린 것은?",
     "choices": [
       "chown은 파일의 소유자와 소유 그룹을 변경한다",
@@ -5505,6 +5557,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "storage-ha",
+    "concept": "SAN은 파이버 채널 등 전용 망으로 블록 단위 저장을 제공하는 방식이다.",
     "question": "다음 설명에 해당하는 스토리지 연결 방식은?",
     "code": "- 파이버 채널 같은 전용 네트워크로 서버와 스토리지를 연결한다\n- 데이터를 파일이 아닌 블록(block) 단위로 제공한다\n- 성능과 확장성이 가장 뛰어나지만 구축 비용이 크다",
     "choices": [
@@ -5521,6 +5574,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "storage-ha",
+    "concept": "DAS는 직접 연결, NAS는 파일 단위 네트워크 저장, SAN은 전용 망의 블록 저장이다.",
     "question": "DAS·NAS·SAN에 대한 설명으로 틀린 것은?",
     "choices": [
       "NAS는 파이버 채널 전용 망을 따로 구축해야 해서 DAS보다 설치가 까다롭다",
@@ -5536,6 +5590,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "storage-ha",
+    "concept": "RAID는 여러 디스크를 묶어 성능·안정성을 얻으며 레벨마다 미러링·패리티 방식이 다르다.",
     "question": "RAID 구성에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "RAID 0은 데이터를 여러 디스크에 나눠 저장(스트라이핑)해 속도를 높이지만 중복 저장이 없어 디스크 하나만 고장 나도 데이터를 잃는다",
@@ -5551,6 +5606,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "storage-ha",
+    "concept": "HACMP는 클러스터로 장애 시 다른 노드가 이어받게 하는 고가용성 솔루션이다.",
     "question": "다음 설명에 해당하는 고가용성(HA, High Availability) 솔루션은?",
     "code": "- 여러 노드가 공유 디스크를 함께 두고 하나의 클러스터로 묶인다\n- 운영 중인 노드에 장애가 나면 다른 노드가 자원을 넘겨받아 서비스를 이어간다\n- IBM 계열 유닉스 환경에서 쓰이는 클러스터링 솔루션이다",
     "choices": [
@@ -6648,6 +6704,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "dev-environment",
+    "concept": "개발환경 서버는 역할별로 웹·WAS·DB·파일 서버 등으로 나뉜다.",
     "question": "개발환경을 구성하는 서버의 역할과 대표적인 소프트웨어의 연결로 틀린 것은?",
     "choices": [
       "파일 서버 — Wireshark, Nessus",
@@ -6663,6 +6720,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "dev-environment",
+    "concept": "환경 변수는 리눅스에서 $이름, 윈도우에서 %이름% 형식으로 참조한다.",
     "question": "환경 변수(Environment Variable)에 대한 설명으로 틀린 것은?",
     "choices": [
       "PATH는 명령을 입력했을 때 실행 파일을 찾아볼 디렉터리 목록을 담는다",
@@ -6678,6 +6736,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "dev-environment",
+    "concept": "export한 변수만 자식 프로세스로 상속된다.",
     "question": "리눅스에서 아래 순서로 명령을 수행했을 때 두 번의 ./run.sh 실행 결과로 옳은 것은?",
     "code": "$ cat run.sh\n#!/bin/bash\necho \"[$NAME]\"\n\n$ NAME=quiz\n$ ./run.sh\n$ export NAME\n$ ./run.sh",
     "choices": [
@@ -6694,6 +6753,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "dev-environment",
+    "concept": "셸의 for·if·continue는 반복 중 특정 조건의 값을 건너뛰게 한다.",
     "question": "다음 셸 스크립트를 실행했을 때 출력되는 값은?",
     "code": "#!/bin/bash\nsum=0\nfor i in 1 2 3 4 5\ndo\n    if [ $((i % 2)) -eq 0 ]\n    then\n        continue\n    fi\n    sum=$((sum + i))\ndone\necho $sum",
     "choices": [
@@ -6710,6 +6770,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "dev-environment",
+    "concept": "셔뱅(#!)은 인터프리터를 지정할 뿐, 이름으로 실행하려면 실행 권한이 필요하다.",
     "question": "셸 스크립트 작성과 실행에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "첫 줄에 #!/bin/bash처럼 셔뱅(shebang)을 적어 스크립트를 해석할 셸을 지정한다",
@@ -7286,6 +7347,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "virtual-memory",
+    "concept": "페이지 크기가 작으면 내부 단편화는 줄지만 페이지 수와 페이지 테이블이 커진다.",
     "question": "페이징 기법에서 페이지 크기를 작게 잡았을 때 나타나는 현상으로 틀린 것은?",
     "choices": [
       "마지막 페이지에 남는 내부 단편화가 줄어든다.",
@@ -7301,6 +7363,7 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "disk-file-system",
+    "concept": "파일 제어 블록(FCB)은 파일의 속성·위치 등 관리 정보를 담는 구조다.",
     "question": "다음 설명에 해당하는 것은?",
     "code": "운영체제가 파일마다 유지하는 자료구조로, 파일의 이름·디스크상의 위치·크기·접근 권한 같은 관리 정보를 한데 모아 담고 있다.",
     "choices": [
@@ -7317,6 +7380,7 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "storage-ha",
+    "concept": "SDS는 저장을 하드웨어와 분리해 소프트웨어로 관리·제어하는 기술이다.",
     "question": "다음 설명에 해당하는 기술은?",
     "code": "저장 장치의 제어 기능을 하드웨어에서 분리해 소프트웨어로 옮기고, 여러 스토리지를 중앙에서 하나처럼 묶어 관리·할당할 수 있게 한다. SDN이 네트워크에서 한 일을 저장 영역에서 하는 셈이다.",
     "choices": [
@@ -7804,6 +7868,7 @@
     "area": "운영체제",
     "difficulty": "하",
     "topic": "virtualization-cloud",
+    "concept": "PaaS-TA는 정부 주도로 공개한 국내 개방형 PaaS 표준 플랫폼이다.",
     "question": "국내에서 정부 주도로 만들어 공개한 개방형 클라우드 플랫폼으로, 이름 그대로 PaaS 계층의 표준 플랫폼을 목표로 한 오픈소스는?",
     "choices": [
       "PaaS-TA",
