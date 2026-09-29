@@ -147,6 +147,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "db-normalization",
+    "concept": "2NF는 1NF에 더해 부분 함수 종속을 제거한 정규형이다.",
     "question": "제2정규형(2NF)의 조건으로 옳은 것은?",
     "choices": [
       "모든 속성이 원자값을 가진다",
@@ -162,6 +163,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "transaction-acid",
+    "concept": "ACID는 원자성·일관성·격리성·지속성이며, 지속성은 커밋된 결과가 장애에도 남는 성질이다.",
     "question": "트랜잭션의 ACID 성질과 그 설명의 연결이 옳지 않은 것은?",
     "choices": [
       "원자성(Atomicity) — 전부 반영되거나 전부 취소되어야 하며 절반만 반영은 없다",
@@ -177,6 +179,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "db-index",
+    "concept": "인덱스는 조회를 빠르게 하지만 삽입·갱신 비용과 저장 공간을 늘린다.",
     "question": "데이터베이스 인덱스에 대한 설명으로 틀린 것은?",
     "choices": [
       "B-tree 인덱스는 범위 검색에 활용할 수 있다",
@@ -192,6 +195,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "db-keys",
+    "concept": "외래키는 참조 대상의 기본키와 도메인이 같아야 하되 속성 이름은 달라도 된다.",
     "question": "키의 종류에 대한 설명으로 틀린 것은?",
     "choices": [
       "슈퍼키(Super Key)는 유일성은 만족하지만 최소성은 만족하지 않을 수 있다",
@@ -207,6 +211,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "db-normalization",
+    "concept": "정규화되지 않은 테이블에는 삽입·삭제·갱신 이상이 생긴다.",
     "question": "정규화를 하지 않았을 때 발생하는 이상(anomaly) 현상이 아닌 것은?",
     "choices": [
       "삽입 이상",
@@ -871,6 +876,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "db-normalization",
+    "concept": "1NF는 모든 속성이 더 쪼갤 수 없는 원자값이어야 하는 정규형이다.",
     "question": "정규형과 그 조건의 연결이 옳지 않은 것은?",
     "choices": [
       "제1정규형(1NF) — 부분 함수 종속을 제거한 상태다",
@@ -886,6 +892,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "db-normalization",
+    "concept": "3NF는 2NF에 더해 이행 함수 종속을 제거한 정규형이다.",
     "question": "제3정규형(3NF)에 대한 설명으로 틀린 것은?",
     "choices": [
       "이행 함수 종속(예: 과목 → 교수 → 교수연구실)을 제거한 정규형이다",
@@ -901,6 +908,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "db-normalization",
+    "concept": "BCNF는 모든 결정자가 후보키인 정규형이다.",
     "question": "BCNF(Boyce-Codd 정규형)의 조건으로 옳은 것은?",
     "choices": [
       "모든 결정자가 후보키다",
@@ -946,6 +954,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "transaction-acid",
+    "concept": "트랜잭션 상태는 활동·부분 완료·완료·실패·철회로 나뉜다.",
     "question": "트랜잭션의 상태에 대한 설명으로 틀린 것은?",
     "choices": [
       "실패(Failed)는 롤백을 마치고 실행 이전 상태로 되돌아간 상태다",
@@ -991,6 +1000,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "isolation-levels",
+    "concept": "Repeatable Read에서도 행이 새로 끼어드는 팬텀 리드는 생길 수 있다.",
     "question": "격리 수준 Repeatable Read에서 여전히 발생할 수 있는 이상 현상은?",
     "choices": [
       "Dirty Read",
@@ -1006,6 +1016,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "isolation-levels",
+    "concept": "Dirty Read·Non-Repeatable Read·Phantom Read는 격리 수준으로 막는 동시성 이상이다.",
     "question": "트랜잭션 동시성 이상현상에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "Phantom Read는 같은 조건으로 두 번 조회하는 사이 삽입된 행이 새로 나타나는 현상이다",
@@ -1036,6 +1047,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "db-index",
+    "concept": "클러스터드 인덱스는 테이블의 저장 순서를 정해 테이블당 하나만 둔다.",
     "question": "테이블의 물리적 저장 순서 자체를 결정하는 클러스터드 인덱스는 한 테이블에 몇 개까지 만들 수 있는가?",
     "choices": [
       "제한 없음",
@@ -1051,6 +1063,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "db-index",
+    "concept": "해시 인덱스는 등호 검색엔 빠르지만 범위 검색엔 부적합하다.",
     "question": "해시 인덱스에 대한 설명으로 틀린 것은?",
     "choices": [
       "등호(=) 검색에 적합하다",
@@ -1066,6 +1079,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "db-index",
+    "concept": "기본키·유니크 제약을 지정하면 인덱스가 자동으로 만들어진다.",
     "question": "기본키(Primary Key)와 인덱스의 관계에 대한 설명으로 옳은 것은?",
     "choices": [
       "기본키를 지정하면 자동으로 인덱스가 생성된다",
@@ -1081,6 +1095,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "db-keys",
+    "concept": "외래키는 참조 속성과 도메인이 같아야 하되 속성 이름은 달라도 된다.",
     "question": "외래키(Foreign Key)에 대한 설명으로 옳은 것은?",
     "choices": [
       "자기 자신의 테이블은 참조할 수 없다",
@@ -1531,6 +1546,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "sql-command-types",
+    "concept": "DDL은 CREATE·ALTER·DROP·TRUNCATE, DML은 SELECT·INSERT·UPDATE·DELETE다.",
     "question": "다음 SQL 명령어 중 DDL(데이터 정의어)에 속하지 않는 것은?",
     "choices": [
       "UPDATE",
@@ -1546,6 +1562,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "sql-command-types",
+    "concept": "TRUNCATE는 DDL이라 롤백되지 않고, DELETE는 DML이라 롤백된다.",
     "question": "행을 지우는 명령들에 대한 설명으로 틀린 것은?",
     "choices": [
       "TRUNCATE는 DML이므로 COMMIT 전이라면 ROLLBACK으로 되돌릴 수 있다",
@@ -1561,6 +1578,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "sql-command-types",
+    "concept": "DELETE는 조건부 삭제로 롤백 가능, TRUNCATE는 전체 삭제로 롤백 불가, DROP은 테이블째 제거다.",
     "question": "WHERE 절로 조건에 맞는 행만 삭제할 수 있고, COMMIT 전이라면 ROLLBACK으로 되돌릴 수 있는 명령은?",
     "choices": [
       "TRUNCATE",
@@ -1576,6 +1594,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "sql-command-types",
+    "concept": "DCL은 GRANT·REVOKE로 권한을 제어한다(CREATE·ALTER는 DDL).",
     "question": "DCL(Data Control Language)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "GRANT는 사용자에게 권한을 부여하는 명령이다",
@@ -1591,6 +1610,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "sql-command-types",
+    "concept": "DML은 Data Manipulation Language의 약자다.",
     "question": "SQL 명령어 분류의 영문 풀네임 연결이 틀린 것은?",
     "choices": [
       "DDL — Data Definition Language",
@@ -1606,6 +1626,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "sql-command-types",
+    "concept": "TCL은 COMMIT·ROLLBACK·SAVEPOINT로 트랜잭션을 제어한다.",
     "question": "COMMIT, ROLLBACK, SAVEPOINT가 속하는 SQL 명령어 분류는? (보기에 해당 분류가 있는 경우)",
     "choices": [
       "DDL",
@@ -1621,6 +1642,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "sql-command-types",
+    "concept": "ALTER는 구조를 바꾸는 DDL, UPDATE는 값을 바꾸는 DML이다.",
     "question": "student 테이블에 email 열을 추가하는 'ALTER TABLE student ADD email VARCHAR(50)'과, 행의 이름 값을 바꾸는 'UPDATE student SET name=...'의 분류로 옳은 것은?",
     "choices": [
       "둘 다 DML이다",
@@ -1636,6 +1658,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "relational-algebra",
+    "concept": "select(σ)는 조건에 맞는 행을, project(π)는 지정한 열을 골라낸다.",
     "question": "관계대수 연산자에 대한 설명으로 옳은 것은?",
     "choices": [
       "select(σ)는 조건을 만족하는 행을, project(π)는 지정한 열을 골라낸다",
@@ -1651,6 +1674,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "relational-algebra",
+    "concept": "project(π)는 결과에서 중복 행을 제거한다.",
     "question": "관계대수의 project(π) 연산 결과에 대한 설명으로 옳은 것은?",
     "choices": [
       "조건을 만족하는 행만 남는다",
@@ -1666,6 +1690,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "relational-algebra",
+    "concept": "합집합·차집합·교집합은 두 릴레이션의 속성 수와 도메인이 같아야(합병 가능) 한다.",
     "question": "두 관계에 합집합(∪)·차집합(−)·교집합(∩)을 적용하기 위한 합병 가능(union-compatible) 조건은?",
     "choices": [
       "두 관계의 기본키가 같아야 한다",
@@ -1681,6 +1706,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "relational-algebra",
+    "concept": "자연 조인은 공통 속성을 하나로 합치고, 동등 조인은 양쪽 열을 모두 남긴다.",
     "question": "동등 조인(Equi Join)과 자연 조인(Natural Join)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "동등 조인은 조인 조건에 등호(=)만 사용하는 조인이다",
@@ -1696,6 +1722,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "relational-algebra",
+    "concept": "관계대수는 절차적(어떻게), 관계해석은 비절차적(무엇을) 언어다.",
     "question": "관계대수(Relational Algebra)와 관계해석(Relational Calculus)에 대한 설명으로 틀린 것은?",
     "choices": [
       "관계해석은 원하는 결과의 조건만 기술하는 비절차적(선언적) 언어다",
@@ -2991,6 +3018,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "sql-query-basics",
+    "concept": "뷰는 가상 테이블이라 독립적인 인덱스를 따로 두지 못한다.",
     "question": "뷰(View)에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "하나 이상의 테이블에서 유도되는 가상 테이블이다",
@@ -3021,6 +3049,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "relational-algebra",
+    "concept": "외부 조인은 매칭 없는 쪽 행도 남긴다 — LEFT는 왼쪽, RIGHT는 오른쪽 기준.",
     "question": "조인(Join)의 결과에 대한 설명으로 틀린 것은?",
     "choices": [
       "RIGHT OUTER JOIN은 왼쪽에 매칭이 없는 오른쪽 행을 결과에서 제외한다",
@@ -3036,6 +3065,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "sql-query-basics",
+    "concept": "집계 함수는 NULL을 무시하며, COUNT(*)만 NULL이 있는 행까지 센다.",
     "question": "집계 함수의 NULL 처리에 대한 설명으로 틀린 것은?",
     "choices": [
       "COUNT(컬럼명)은 그 컬럼이 NULL인 행을 빼고 센다",
@@ -3306,6 +3336,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "procedural-sql",
+    "concept": "트리거는 INSERT·UPDATE·DELETE 같은 이벤트에 자동 실행된다(직접 호출이 아니다).",
     "question": "트리거(Trigger)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "INSERT·UPDATE·DELETE 같은 이벤트가 발생하면 DBMS가 자동으로 실행한다",
@@ -3321,6 +3352,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "procedural-sql",
+    "concept": "저장 프로시저는 값 반환이 필수가 아니고, 사용자 정의 함수는 값을 반환한다.",
     "question": "절차형 SQL에 대한 설명으로 틀린 것은?",
     "choices": [
       "저장 프로시저는 CALL 문으로 명시적으로 호출해 실행한다",
@@ -3336,6 +3368,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "procedural-sql",
+    "concept": "사용자 정의 함수는 값을 반환해 SELECT 문 안에서 쓸 수 있다.",
     "question": "사용자 정의 함수(user-defined function)의 특징으로 옳은 것은?",
     "choices": [
       "값을 반환할 수 없다",
@@ -4307,6 +4340,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "relation-basics",
+    "concept": "릴레이션의 튜플은 순서가 없어 배열을 바꿔도 같은 릴레이션이다.",
     "question": "다음 [학생] 릴레이션에 대한 설명으로 틀린 것은?",
     "code": "[학생]\n학번   | 이름   | 학과       | 학년\n-------+--------+------------+-----\n2101   | 김민수 | 컴퓨터공학 | 2\n2102   | 이서연 | 전자공학   | 3\n2103   | 박지훈 | 컴퓨터공학 | 1",
     "choices": [
@@ -4323,6 +4357,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "relation-basics",
+    "concept": "한 속성의 값은 모두 같은 도메인이고, 튜플은 유일하며 순서가 없다.",
     "question": "릴레이션(Relation)의 성질에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "하나의 속성은 서로 다른 도메인(Domain)의 값을 자유롭게 섞어 가질 수 있다",
@@ -4338,6 +4373,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "relation-basics",
+    "concept": "데이터 모델의 3요소는 구조·연산·제약조건이다.",
     "question": "데이터 모델(Data Model)을 구성하는 3요소에 해당하지 않는 것은?",
     "choices": [
       "구조(Structure)",
@@ -4353,6 +4389,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "relation-basics",
+    "concept": "참조 무결성은 외래키가 참조 대상에 없는 값을 갖지 못하게 한다.",
     "question": "다음 연산이 데이터베이스에 의해 거부되었다면 위반한 무결성 제약으로 옳은 것은?",
     "code": "[릴레이션 스키마]\n사원(사번, 이름, 부서코드)\n부서(부서코드, 부서명)\n- 사원.부서코드는 부서.부서코드를 참조하는 외래키다.\n\n[시도한 연산]\nINSERT INTO 사원 VALUES (1005, '최유진', 'D99');\n- 단, 부서 릴레이션에 부서코드가 'D99'인 튜플은 없다.",
     "choices": [
@@ -4384,6 +4421,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "db-design-steps",
+    "concept": "DB 설계는 요구 분석→개념적→논리적→물리적→구현 순으로 진행한다.",
     "question": "데이터베이스 설계 단계를 순서대로 바르게 나열한 것은?",
     "code": "ㄱ. 논리적 설계\nㄴ. 물리적 설계\nㄷ. 요구조건 분석\nㄹ. 개념적 설계\nㅁ. 구현",
     "choices": [
@@ -4400,6 +4438,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "db-design-steps",
+    "concept": "물리적 설계는 저장 구조·인덱스·접근 경로를 정한다(트랜잭션 모델링은 개념 단계).",
     "question": "물리적 설계 단계에서 수행하는 작업이나 고려 사항에 해당하지 않는 것은?",
     "choices": [
       "저장 레코드 양식 설계",
@@ -4431,6 +4470,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "db-design-steps",
+    "concept": "논리적 설계는 개념 모델을 DBMS 스키마(테이블)로 옮긴다(저장 형식은 물리적 설계).",
     "question": "논리적 설계 단계에 대한 설명으로 틀린 것은?",
     "choices": [
       "사용할 DBMS에 맞는 논리 스키마로 변환한다",
@@ -4446,6 +4486,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "db-design-steps",
+    "concept": "데이터 사전은 시스템이 관리하며 사용자가 직접 갱신하지 못한다.",
     "question": "데이터 사전(Data Dictionary)에 대한 설명으로 틀린 것은?",
     "choices": [
       "사용자가 INSERT·UPDATE 문으로 그 내용을 직접 갱신할 수 있다",
@@ -4461,6 +4502,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "distributed-db",
+    "concept": "분산 DB 투명성은 위치·중복·분할·병행·장애 투명성이다.",
     "question": "분산 데이터베이스가 제공해야 하는 투명성(Transparency)이 아닌 것은?",
     "choices": [
       "위치 투명성(Location Transparency)",
@@ -4492,6 +4534,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "distributed-db",
+    "concept": "분산 DB는 가용성·확장성이 좋은 대신 설계와 관리가 복잡하다.",
     "question": "분산 데이터베이스 시스템에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "여러 지역에 물리적으로 분산된 데이터베이스를 논리적으로는 하나처럼 사용한다",
@@ -4522,6 +4565,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "distributed-db",
+    "concept": "투명성은 데이터가 분산·중복돼 있다는 사실을 사용자가 몰라도 되게 감추는 것이다.",
     "question": "분산 데이터베이스의 투명성이 지향하는 바와 가장 거리가 먼 것은?",
     "choices": [
       "데이터가 여러 사이트에 분산되어 있다는 사실을 사용자가 인식하도록 드러내야 한다",
@@ -4569,6 +4613,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "sql-query-basics",
+    "concept": "GRANT는 권한을 부여하고, WITH GRANT OPTION은 그 권한의 재부여를 허용한다.",
     "question": "다음 SQL문에 대한 설명으로 틀린 것은?",
     "code": "[SQL]\nGRANT SELECT ON 학생 TO KIM WITH GRANT OPTION;",
     "choices": [
@@ -4585,6 +4630,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "sql-query-basics",
+    "concept": "REVOKE의 CASCADE는 그 사용자가 넘겨준 권한까지 연쇄로 회수한다.",
     "question": "권한을 제어하는 DCL(Data Control Language) 구문에 대한 설명으로 틀린 것은?",
     "choices": [
       "GRANT는 'GRANT 권한 ON 객체 TO 사용자' 형태로 쓴다",
@@ -5819,6 +5865,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "er-modeling",
+    "concept": "E-R 기호는 개체 사각형·관계 마름모·속성 타원이다.",
     "question": "E-R 다이어그램의 구성 요소와 표기 기호를 짝지은 것으로 틀린 것은?",
     "choices": [
       "개체(Entity) — 사각형",
@@ -5850,6 +5897,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "er-modeling",
+    "concept": "약한 개체는 자신의 속성만으로 식별되지 않아 다른 개체에 의존한다(이중 사각형).",
     "question": "E-R 모델의 약한 개체(Weak Entity)에 대한 설명으로 옳은 것은?",
     "choices": [
       "자신의 속성만으로는 식별되지 않아 다른 개체에 의존하며 이중 사각형으로 표기한다",
@@ -5865,6 +5913,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "er-modeling",
+    "concept": "대응수(카디널리티)는 1:1·1:N·N:M으로 표현한다.",
     "question": "다음 업무 규칙을 E-R 다이어그램으로 옮길 때 학생 개체와 강좌 개체 사이의 대응수(Cardinality)로 옳은 것은?",
     "code": "- 한 명의 학생은 여러 개의 강좌를 수강 신청할 수 있다\n- 하나의 강좌에는 여러 명의 학생이 등록할 수 있다\n- 두 개체는 '수강' 관계로 연결된다",
     "choices": [
@@ -6314,6 +6363,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "sql-advanced",
+    "concept": "상관 서브쿼리는 바깥 쿼리의 행마다 실행되고, 비상관 서브쿼리는 한 번만 실행된다.",
     "question": "서브쿼리(Subquery)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "상관 서브쿼리(Correlated Subquery)는 바깥 쿼리와 무관하게 한 번만 실행되고 그 값이 모든 행에 재사용된다",
@@ -6329,6 +6379,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "sql-advanced",
+    "concept": "NOT IN 비교 목록에 NULL이 섞이면 결과가 모두 사라질 수 있다.",
     "question": "다음 [부서]와 [사원] 테이블에 대해 [SQL문]을 실행한 결과로 옳은 것은?",
     "code": "[부서]\n부서코드 | 부서명\n---------+-------\nD1       | 영업\nD2       | 개발\nD3       | 총무\n\n[사원]\n사번 | 이름   | 부서코드\n-----+--------+---------\n1    | 김철수 | D1\n2    | 이영희 | D2\n3    | 박민준 | NULL\n\n[SQL문]\nSELECT 부서명\n  FROM 부서\n WHERE 부서코드 NOT IN (SELECT 부서코드 FROM 사원);",
     "choices": [
@@ -6345,6 +6396,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "sql-advanced",
+    "concept": "RANK는 동점 뒤 순위를 건너뛰고, DENSE_RANK는 건너뛰지 않는다.",
     "question": "다음 [SQL문]을 실행했을 때 최수빈 행의 R1과 R2 값으로 옳은 것은?",
     "code": "[성적]\n이름   | 점수\n-------+-----\n김철수 |  95\n이영희 |  90\n박민준 |  90\n최수빈 |  85\n\n[SQL문]\nSELECT 이름,\n       RANK()       OVER (ORDER BY 점수 DESC) AS R1,\n       DENSE_RANK() OVER (ORDER BY 점수 DESC) AS R2\n  FROM 성적;",
     "choices": [
@@ -6361,6 +6413,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "sql-advanced",
+    "concept": "RANK는 동점에 같은 순위를 준 뒤 다음 순위를 건너뛴다.",
     "question": "윈도우 함수(Window Function)에 대한 설명으로 틀린 것은?",
     "choices": [
       "OVER 절의 PARTITION BY는 계산을 나눌 그룹의 기준 열을 지정한다",
@@ -6376,6 +6429,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "sql-advanced",
+    "concept": "ROLLUP은 그룹 소계와 총계 행을 추가로 만든다.",
     "question": "다음 [SQL문]의 결과로 출력되는 행의 총 개수는?",
     "code": "[판매]\n지점 | 품목   | 수량\n-----+--------+-----\n서울 | TV     |  10\n서울 | 냉장고 |   5\n부산 | TV     |   7\n\n[SQL문]\nSELECT 지점, 품목, SUM(수량)\n  FROM 판매\n GROUP BY ROLLUP(지점, 품목);",
     "choices": [
@@ -6424,6 +6478,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "sql-advanced",
+    "concept": "ALL은 서브쿼리의 모든 값과의 비교를 만족해야 참이 된다.",
     "question": "다음 [SQL문]을 실행한 결과로 출력되는 이름은?",
     "code": "[사원]\n이름   | 부서 | 급여\n-------+------+------\n김철수 | 영업 | 3000\n이영희 | 영업 | 4000\n박민준 | 개발 | 3500\n최수빈 | 개발 | 4500\n\n[SQL문]\nSELECT 이름\n  FROM 사원\n WHERE 급여 > ALL (SELECT 급여 FROM 사원 WHERE 부서 = '영업');",
     "choices": [
@@ -6440,6 +6495,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "physical-db-design",
+    "concept": "파티셔닝은 범위·해시·목록·복합 방식으로 나뉜다.",
     "question": "파티셔닝(Partitioning) 기법과 그 설명의 연결로 틀린 것은?",
     "choices": [
       "범위(Range) 분할 — 분할 키 값의 구간을 기준으로 나눈다",
@@ -6471,6 +6527,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "physical-db-design",
+    "concept": "옵티마이저는 규칙 기반(RBO)과 통계를 쓰는 비용 기반(CBO)으로 나뉜다.",
     "question": "옵티마이저(Optimizer)에 대한 설명으로 틀린 것은?",
     "choices": [
       "규칙 기반 옵티마이저(RBO)는 데이터의 실제 건수와 분포를 반영하므로 통계 정보 없이도 항상 최적 경로를 보장한다",
@@ -6486,6 +6543,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "physical-db-design",
+    "concept": "CRUD 매트릭스는 프로세스와 테이블의 생성·조회·갱신·삭제 관계를 적는다.",
     "question": "CRUD 매트릭스에 대한 설명으로 가장 거리가 먼 것은?",
     "choices": [
       "단위 프로세스와 테이블을 행·열에 놓고 각 칸에 C·R·U·D를 표시한 표다",
@@ -6501,6 +6559,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "physical-db-design",
+    "concept": "차등 백업 복구는 마지막 전체 백업 + 가장 최근 차등 하나면 된다.",
     "question": "매주 일요일 밤에 전체(Full) 백업을 하고 월요일부터 매일 밤 차등(Differential) 백업을 수행하는 시스템에서 금요일 오전에 디스크 장애가 발생했다. 복구에 필요한 백업본으로 옳은 것은?",
     "choices": [
       "일요일 전체 백업 + 월·화·수·목요일 차등 백업 4개",
@@ -6516,6 +6575,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "physical-db-design",
+    "concept": "힌트는 옵티마이저의 실행 계획을 유도할 뿐 저장 구조를 바꾸지 않는다.",
     "question": "실행 계획(Execution Plan)과 힌트(Hint)에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "힌트를 사용하면 SQL 문장을 고치지 않아도 테이블의 물리적 저장 구조가 자동으로 재구성된다",
@@ -6531,6 +6591,7 @@
     "area": "데이터베이스",
     "difficulty": "하",
     "topic": "data-migration",
+    "concept": "ETL은 추출(Extract)·변환(Transform)·적재(Load) 세 단계다.",
     "question": "데이터 전환의 핵심 기술인 ETL의 세 단계에 해당하지 않는 것은?",
     "choices": [
       "추출(Extraction)",
@@ -6562,6 +6623,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "data-migration",
+    "concept": "데이터 정제는 전환 전에도 오류 데이터를 찾아 다룬다.",
     "question": "데이터 품질 분석과 데이터 정제에 대한 설명으로 틀린 것은?",
     "choices": [
       "데이터 품질 분석은 결측값·중복·형식 오류·업무 규칙 위반을 찾아 오류 데이터의 양을 측정한다",
@@ -6577,6 +6639,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "data-migration",
+    "concept": "전환 검증은 전환을 마친 뒤 건수·값을 대조하는 일이다(계획서 작성은 사전 단계).",
     "question": "데이터 전환을 마친 뒤 수행하는 검증 활동이 아닌 것은?",
     "choices": [
       "전환 대상과 범위·방식·일정을 확정해 전환 계획서를 작성한다",
@@ -7598,6 +7661,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "relational-algebra",
+    "concept": "나누기(÷)는 S가 가진 모든 값과 짝을 이루는 R의 값만 남긴다.",
     "question": "관계대수의 순수 관계 연산자인 나누기(Division, ÷) 연산에 대한 설명으로 옳은 것은?",
     "choices": [
       "R ÷ S는 S가 가진 모든 값과 짝을 이루는 R의 값만 결과로 남긴다",
@@ -7613,6 +7677,7 @@
     "area": "데이터베이스",
     "difficulty": "상",
     "topic": "relational-algebra",
+    "concept": "카티션 곱의 차수는 두 릴레이션 차수의 합, 카디널리티는 곱이다.",
     "question": "다음 두 릴레이션에 카티션 프로덕트(Cartesian Product, ×) 연산을 수행한 결과의 차수(Degree)와 카디널리티(Cardinality)로 옳은 것은?",
     "code": "릴레이션 EMPLOYEE : 차수(Degree) 4, 카디널리티(Cardinality) 5\n릴레이션 PROJECT  : 차수(Degree) 3, 카디널리티(Cardinality) 6",
     "choices": [
@@ -7629,6 +7694,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "isolation-levels",
+    "concept": "MVCC는 버전을 여러 개 두어 읽기와 쓰기가 서로를 차단하지 않게 한다.",
     "question": "병행 제어(Concurrency Control) 기법에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "낙관적 검증(Optimistic Validation)은 트랜잭션을 일단 수행한 뒤 커밋 직전에 충돌 여부를 확인해 문제가 있으면 되돌린다",
@@ -7644,6 +7710,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "isolation-levels",
+    "concept": "로킹 단위가 크면 오버헤드는 작고 병행성은 떨어진다(작으면 반대).",
     "question": "로킹(Locking) 단위의 크기에 따른 특성으로 옳은 것은?",
     "choices": [
       "로킹 단위를 테이블처럼 크게 잡으면 관리할 로크 수가 줄어 오버헤드는 작아지지만 병행성은 떨어진다",
@@ -7659,6 +7726,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "physical-db-design",
+    "concept": "수평 분할은 행을 나눠 담고, 수직 분할은 열을 나눈다.",
     "question": "테이블 분할의 방향에 대한 설명으로 거리가 먼 것은?",
     "choices": [
       "수평 분할은 행(레코드)을 기준으로 테이블을 여러 조각으로 나누는 방식이다",
