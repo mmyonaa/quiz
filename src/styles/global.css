@@ -32,6 +32,14 @@
      읽힌다. 두 시험이 같은 노랑을 쓰고, 종이에 형광펜을 그은 것처럼 보이면 된다. */
   --hl: #fdf0a6;
   --hl-text: #3d3406;
+  /* 난이도 — 한 색(보라)의 농담 3단. 정답 초록·오답 코랄·형광 노랑·시험 액센트(코랄/블루)와
+     겹치지 않는 계열이라 '난이도가 오른다'가 색이 진해지는 것으로만 읽힌다(정오답과 혼동 없음). */
+  --diff-1-bg: #eae7f6;  /* 하 */
+  --diff-1-fg: #5b528a;
+  --diff-2-bg: #d6d0ee;  /* 중 */
+  --diff-2-fg: #443a7a;
+  --diff-3-bg: #b6a8e2;  /* 상 */
+  --diff-3-fg: #2e2560;
   /* ── 타입 스케일 ──
      고유 font-size가 24종까지 불어나 있었다(0.68·0.7·0.72·0.74·0.75·0.76·0.78·0.79·0.8·0.82…).
      "조금 작게"를 매번 새 숫자로 정한 값들이라 같은 층위의 글자가 화면마다 달랐다.
@@ -106,6 +114,13 @@
        낮추고 글자를 밝은 쪽으로 뒤집는다(액센트를 다루던 방식과 같다). */
     --hl: #4a3c12;
     --hl-text: #f7e9b0;
+    /* 난이도 보라 — 어두운 면으로 낮추고 글자를 밝은 보라로 */
+    --diff-1-bg: #2b2740;
+    --diff-1-fg: #b6aee0;
+    --diff-2-bg: #383056;
+    --diff-2-fg: #cfc6f2;
+    --diff-3-bg: #4a3f7a;
+    --diff-3-fg: #e5def8;
     color-scheme: dark;
   }
   :root[data-exam="sec"]:not([data-theme="light"]) {
@@ -136,6 +151,12 @@
      낮추고 글자를 밝은 쪽으로 뒤집는다(액센트를 다루던 방식과 같다). */
   --hl: #4a3c12;
   --hl-text: #f7e9b0;
+  --diff-1-bg: #2b2740;
+  --diff-1-fg: #b6aee0;
+  --diff-2-bg: #383056;
+  --diff-2-fg: #cfc6f2;
+  --diff-3-bg: #4a3f7a;
+  --diff-3-fg: #e5def8;
   color-scheme: dark;
 }
 :root[data-theme="dark"][data-exam="sec"] {
@@ -1505,17 +1526,24 @@ button.linklike:hover {
   justify-content: center;
   min-width: 1.5em;
   padding: 0.1em 0.45em;
-  border: 1px solid var(--border);
+  border: 1px solid transparent;
   border-radius: var(--r-pill);
-  color: var(--muted);
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.4;
 }
+/* 한 색(보라)의 농담 3단 — 하→상으로 진해진다. 정오답 색과 겹치지 않아 난이도 축으로만 읽힌다 */
+.badge.diff[data-level="하"] {
+  background: var(--diff-1-bg);
+  color: var(--diff-1-fg);
+}
+.badge.diff[data-level="중"] {
+  background: var(--diff-2-bg);
+  color: var(--diff-2-fg);
+}
 .badge.diff[data-level="상"] {
-  border-color: var(--muted);
-  color: var(--text);
-  font-weight: 700;
+  background: var(--diff-3-bg);
+  color: var(--diff-3-fg);
 }
 /* 문항 번호를 본문 왼쪽 여백에 건다 — 문제집 조판. 번호가 글줄 앞에 끼어들지 않고
    왼쪽에 기둥처럼 서서, 발문·보기·해설이 한 문항의 묶음으로 읽힌다. */
@@ -2419,6 +2447,28 @@ button.side-link {
 }
 .toc-chip.on em {
   color: inherit;
+}
+/* 난이도 필터 칩 — 라벨 앞에 배지와 같은 보라 농담 점을 찍어 색을 잇는다('전체'는 점 없음).
+   칩 전체를 물들이면 선택(.on)의 액센트와 부딪히므로 점으로만 표시한다. */
+.diff-chip[data-diff="하"]::before,
+.diff-chip[data-diff="중"]::before,
+.diff-chip[data-diff="상"]::before {
+  content: "";
+  display: inline-block;
+  width: 0.6em;
+  height: 0.6em;
+  border-radius: 50%;
+  margin-right: 0.4em;
+  vertical-align: baseline;
+}
+.diff-chip[data-diff="하"]::before {
+  background: var(--diff-1-fg);
+}
+.diff-chip[data-diff="중"]::before {
+  background: var(--diff-2-fg);
+}
+.diff-chip[data-diff="상"]::before {
+  background: var(--diff-3-fg);
 }
 /* 주제 바로가기 — 알약 칩(영역 이동·난이도 필터)과 구분되는 해시 링크풍 목차 */
 .topic-jumps-box {
