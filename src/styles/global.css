@@ -32,6 +32,13 @@
      읽힌다. 두 시험이 같은 노랑을 쓰고, 종이에 형광펜을 그은 것처럼 보이면 된다. */
   --hl: #fdf0a6;
   --hl-text: #3d3406;
+  /* 개념 줄 메모지 — 문제 위의 '외울 한 줄'을 붙여 둔 종이 한 장. 형광펜과 같은 '면' 축이라
+     둘을 겹치면 노랑 위에 노랑이 된다 — 이 줄에서는 메모지가 형광펜을 대신한다. */
+  --memo: #fbf7e9;
+  --memo-text: var(--text);
+  /* 테이프는 종이보다 조용해야 한다 — 크라프트 갈색은 이 화면에 없는 색이라 혼자 튀었다.
+     뉴트럴 계열(--surface-2·--border 언저리)로 낮춰 "노랑은 종이, 테이프는 무채"로 가른다. */
+  --tape: #e2d8c5;
   /* 난이도 — 한 색(보라)의 농담 3단. 정답 초록·오답 코랄·형광 노랑·시험 액센트(코랄/블루)와
      겹치지 않는 계열이라 '난이도가 오른다'가 색이 진해지는 것으로만 읽힌다(정오답과 혼동 없음). */
   --diff-1-bg: #eae7f6;  /* 하 */
@@ -114,6 +121,10 @@
        낮추고 글자를 밝은 쪽으로 뒤집는다(액센트를 다루던 방식과 같다). */
     --hl: #4a3c12;
     --hl-text: #f7e9b0;
+    /* 메모지도 같은 방식 — 면은 어두운 종이로 낮추고 글자를 밝은 쪽으로 뒤집는다 */
+    --memo: #2a2720;
+    --memo-text: #ebe4d3;
+    --tape: #464034;
     /* 난이도 보라 — 어두운 면으로 낮추고 글자를 밝은 보라로 */
     --diff-1-bg: #2b2740;
     --diff-1-fg: #b6aee0;
@@ -151,6 +162,9 @@
      낮추고 글자를 밝은 쪽으로 뒤집는다(액센트를 다루던 방식과 같다). */
   --hl: #4a3c12;
   --hl-text: #f7e9b0;
+  --memo: #2a2720;
+  --memo-text: #ebe4d3;
+  --tape: #464034;
   --diff-1-bg: #2b2740;
   --diff-1-fg: #b6aee0;
   --diff-2-bg: #383056;
@@ -3095,29 +3109,57 @@ button.toc-chip {
 .cn-concept {
   margin: 0.1rem 0 0.7rem;
   font-size: var(--t-base);
-  /* 형광펜 띠가 줄마다 겹치지 않게 줄간격을 살짝 넉넉히 */
-  line-height: 1.9;
-}
-/* 개념 하이라이트 — 박스 대신 텍스트에 형광펜을 그은 모양. ==형광펜==과 같은 노랑을 쓰되
-   문장 전체라 굵기는 주지 않고, 여러 줄로 접혀도 줄마다 띠가 이어지게 clone 한다. */
-.cn-hl {
-  background: var(--hl);
-  color: var(--hl-text);
-  padding: 0.06em 0.2em;
-  border-radius: 3px;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
+  line-height: 1.7;
 }
 /* 개념 줄 + 난이도·별을 한 줄로 묶어 세로 중앙정렬 — float은 뒤 블록과 중앙을 맞출 수 없다 */
 .cn-crow {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin: 0.1rem 0 0.7rem;
+  gap: 0.6rem;
+  margin: 1.4rem 0 1rem;
 }
+/* 개념 줄 — 문제 위에 붙여 둔 메모지 한 장. 예전에는 문장 전체에 형광펜 띠를 그었는데,
+   한 화면에 노란 띠가 대여섯 줄씩 깔려 "이 문제에서 들고 갈 한 줄"이라는 신호가 도로 묻혔다.
+   메모지는 같은 노랑을 쓰되 종이 한 장으로 끊겨 있어 낱개로 읽힌다. 형광펜과 같은 '면' 축이라
+   안쪽에 <mark>를 겹쳐 두지 않는다 — 노랑 위의 노랑은 강조가 아니다. */
 .cn-crow .cn-concept {
-  flex: 1;
+  /* 글자만큼만 넓어진다 — 읽기 폭 전체로 늘어난 종이는 메모지가 아니라 띠로 보인다 */
+  flex: 0 1 auto;
+  position: relative;
   margin: 0;
+  padding: 0.8rem 1.1rem;
+  background: var(--memo);
+  color: var(--memo-text);
+  border-radius: 1px;
+  /* 이 사이트는 카드에도 그림자를 두지 않는 평면이다 — 종이가 떠 보이지 않을 만큼만 남긴다 */
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 4px 10px -8px rgba(0, 0, 0, 0.22);
+  transform: rotate(-0.25deg);
+}
+/* 마스킹 테이프 — 종이 윗변에 걸쳐 "붙여 둔 것"으로 읽히게 하는 유일한 장치 */
+.cn-crow .cn-concept::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 1.4rem;
+  width: 3rem;
+  height: 17px;
+  background: var(--tape);
+  transform: rotate(-3deg);
+}
+/* 한 페이지에 수십 장이 같은 각도·같은 자리로 늘어서면 손으로 붙인 것이 아니라 격자로 보인다 */
+.cn:nth-of-type(2n) .cn-crow .cn-concept {
+  transform: rotate(0.2deg);
+}
+.cn:nth-of-type(2n) .cn-crow .cn-concept::before {
+  left: auto;
+  right: 1.6rem;
+  transform: rotate(2.5deg);
+}
+.cn:nth-of-type(3n) .cn-crow .cn-concept::before {
+  left: 45%;
+  transform: rotate(-1.5deg);
 }
 .cn-crow .cn-diff,
 .cn-crow .cn-save {
