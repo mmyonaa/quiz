@@ -105,18 +105,24 @@ const blankLabel = (q: PQ, i: number) =>
           {/* 개념이 있으면 개념 메모지와 난이도·별을 한 줄(flex)로 묶어 세로 중앙정렬한다.
               메모지 자체가 강조(면)라서 안쪽에 형광펜을 겹치지 않는다 — 노랑 위의 노랑은
               강조가 아니다. 없으면(순수 정의형) 예전처럼 문제 첫 줄에 우측으로 띄운다. */}
+          {/* 난이도는 화면 폭에 따라 자리가 다르다 — 넓은 화면은 별 옆(카드 머리),
+              좁은 화면은 발문 맨 앞. 좁은 화면에서는 카드 오른쪽 끝이 시선에서 멀고
+              메모지에 내줄 폭도 아깝다. 자리를 옮기는 것이라 두 배지 중 한쪽만 그려진다
+              (display:none은 접근성 트리에서도 빠져 스크린리더가 두 번 읽지 않는다). */}
           {q.concept ? (
             <div class="cn-crow">
               <p class="cn-concept" set:html={md(q.concept)} />
+              <span class="badge diff cn-diff cn-diff-wide" data-level={q.difficulty}>{q.difficulty}</span>
               <button class="save-star cn-save" type="button" title="이 개념 저장" aria-label="이 개념 저장">☆</button>
             </div>
           ) : (
-            <button class="save-star cn-save" type="button" title="이 개념 저장" aria-label="이 개념 저장">☆</button>
+            <>
+              <button class="save-star cn-save" type="button" title="이 개념 저장" aria-label="이 개념 저장">☆</button>
+              <span class="badge diff cn-diff cn-diff-wide" data-level={q.difficulty}>{q.difficulty}</span>
+            </>
           )}
-          {/* 난이도는 발문 맨 앞 — 카드 오른쪽 끝에 떠 있으면 '이 문제가 어렵나'를 물을 때
-              눈이 한 번 건너갔다 돌아와야 했다. 읽기 시작하는 자리인 'Q.' 앞에 둔다. */}
           <div class="cn-qrow">
-            <span class="badge diff cn-diff" data-level={q.difficulty}>{q.difficulty}</span>
+            <span class="badge diff cn-diff cn-diff-narrow" data-level={q.difficulty}>{q.difficulty}</span>
             <p class="cn-question" set:html={md(q.question)} />
           </div>
           {q.code && <pre class="q-code mono">{q.code}</pre>}

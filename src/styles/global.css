@@ -3175,6 +3175,7 @@ button.toc-chip {
   left: 45%;
   transform: rotate(-1.5deg);
 }
+.cn-crow .cn-diff-wide,
 .cn-crow .cn-save {
   float: none;
   margin: 0;
@@ -3202,8 +3203,8 @@ button.toc-chip {
 .cn-exp .cn-x {
   margin: 0;
 }
-/* 난이도 배지 — 발문 맨 앞, 'Q.' 왼쪽에 놓는다. 둘째 줄부터는 발문이 배지 아래로
-   흘러들지 않게 flex로 칸을 나눈다(매달린 들여쓰기). */
+/* 난이도 배지 — 넓은 화면은 카드 머리(별 왼쪽), 좁은 화면은 발문 맨 앞. 자리만 다를 뿐
+   같은 배지라, 그리는 쪽만 남기고 반대쪽은 display:none으로 접어 둔다. */
 .cn-qrow {
   display: flex;
   align-items: baseline;
@@ -3215,6 +3216,24 @@ button.toc-chip {
 }
 .cn-diff {
   flex-shrink: 0;
+}
+/* 넓은 화면 — 카드 첫 줄을 비켜 float(개념 줄이 있으면 그 줄의 flex 항목이 된다) */
+.cn-diff-wide {
+  float: right;
+  margin: 0.1rem 0.15rem 0 0.4rem;
+}
+.badge.diff.cn-diff-narrow {
+  display: none;
+}
+/* 좁은 화면 — 난이도를 발문 앞으로 옮긴다(카드 오른쪽 끝은 시선에서 멀고 폭도 아깝다).
+   기본 규칙과 특정도가 같으므로 반드시 그 뒤에 온다. */
+@media (max-width: 700px) {
+  .badge.diff.cn-diff-wide {
+    display: none;
+  }
+  .badge.diff.cn-diff-narrow {
+    display: inline-flex;
+  }
 }
 
 /* 키보드 힌트 — 포인터가 있는(=키보드가 있을 법한) 환경에서만 */
