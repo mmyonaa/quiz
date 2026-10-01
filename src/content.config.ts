@@ -173,7 +173,20 @@ const TOPIC_KEYS = Object.keys(TOPICS) as [string, ...string[]];
 const HIGHLIGHT = /==(?=\S)([^=\n]+)(?<=\S)==/g;
 /** 형광펜이 이보다 길면 '표시'가 아니라 노란 문단이 되어 눈이 다시 갈 곳을 잃는다 */
 const HIGHLIGHT_MAX = 100;
-const anyEmphasis = /==(?=\S)[^=\n]+(?<=\S)==|\*\*[^*]+\*\*|`[^`\n]+`|^[>|] /m;
+/**
+ * 개수 상한 — 이게 없으면 게이트는 "칠했는가"만 보고 "무엇을 칠했는가"를 못 본다.
+ * 실제로 그렇게 됐다: 강조 체계(#67) 이후 쓰인 정보보안기사 콘텐츠는 한 커밋에서
+ * 해설 130개에 형광펜 124개가 한꺼번에 들어갔고(4bf7d6f), 신규 50문항에는 53개 —
+ * 문항당 하나꼴로 기계적으로 붙었다. 통과 조건이 "칠하면 통과"였기 때문이다.
+ * 결과는 영역당 해설의 31~64%가 노란색인 화면이고, 그러면 강조가 강조를 죽인다.
+ *
+ * 무엇을 칠했는지는 기계가 못 본다. 대신 몇 개를 칠했는지는 본다 — 상한이 좁으면
+ * 고를 수밖에 없고, 고르려면 무엇이 함정인지 생각하게 된다.
+ */
+const HIGHLIGHT_PER_INTRO = 2;
+/** 해설은 이미 짧고 초점이 하나다 — 둘을 칠하면 초점이 둘이 되어 어느 쪽도 서지 않는다 */
+const HIGHLIGHT_PER_EXPLANATION = 1;
+export const countHighlights = (s: string) => [...s.matchAll(HIGHLIGHT)].length;
 export const unpairedBacktick = (s: string) => ((s.match(/`/g) ?? []).length & 1) === 1;
 /** 상한을 넘는 형광펜을 찾아 돌려준다(없으면 undefined) — 도입부와 해설이 같은 자를 쓴다 */
 export const overlongHighlight = (s: string) => {
@@ -195,8 +208,15 @@ for (const [key, t] of Object.entries(TOPICS)) {
     throw new Error(
       `주제 ${key}의 형광펜이 ${long.length}자(상한 ${HIGHLIGHT_MAX}) — 설명구는 본문에 두고 외울 낱말에만 칠한다: "${long.slice(0, 40)}…"`,
     );
-  if (!anyEmphasis.test(t.intro))
-    throw new Error(`주제 ${key}의 도입부에 강조가 하나도 없음 — 이 주제에서 하나만 들고 간다면 무엇인지 ==형광펜==으로 한 줄 칠한다`);
+  // 강조 아무거나가 아니라 형광펜을 센다 — **·백틱으로도 통과하던 탓에 도입부 5개가
+  // 형광펜 없이 지나갔다(sec-cia-triad 등). "들고 갈 한 줄"은 형광펜만 세울 수 있다.
+  const hl = countHighlights(t.intro);
+  if (hl === 0)
+    throw new Error(`주제 ${key}의 도입부에 형광펜이 없음 — 이 주제에서 하나만 들고 간다면 무엇인지 ==형광펜==으로 한 줄 칠한다`);
+  if (hl > HIGHLIGHT_PER_INTRO)
+    throw new Error(
+      `주제 ${key}의 도입부에 형광펜이 ${hl}개(상한 ${HIGHLIGHT_PER_INTRO}) — 열거를 전부 칠하지 말고 그중 함정 하나만 남긴다`,
+    );
   // 대조표는 칸 수가 줄마다 같아야 한다 — 어긋나면 표가 조용히 어긋난 채로 그려진다
   for (const block of t.intro.split("\n\n")) {
     if (!block.startsWith("| ")) continue;
@@ -249,6 +269,11 @@ const quiz = defineCollection({
     // 해설의 형광펜도 도입부와 같은 상한을 쓴다 — 길면 표시가 아니라 문단이 된다
     .refine((q) => !overlongHighlight(q.question + "\n" + q.explanation), {
       message: `발문이나 해설의 형광펜이 ${HIGHLIGHT_MAX}자를 넘습니다 — 함정을 말하는 구절만 칠합니다`,
+      path: ["explanation"],
+    })
+    // 해설의 형광펜은 '오답의 뿌리' 한 군데뿐 — 영역 전체 밀도는 written-merge.mjs --report가 본다
+    .refine((q) => countHighlights(q.question + "\n" + q.explanation) <= HIGHLIGHT_PER_EXPLANATION, {
+      message: `해설의 형광펜이 ${HIGHLIGHT_PER_EXPLANATION}개를 넘습니다 — 오답의 뿌리를 짚는 한 구절만 남깁니다`,
       path: ["explanation"],
     }),
 });
@@ -315,7 +340,14 @@ const practical = defineCollection({
     .refine((q) => !overlongHighlight([q.question, q.explanation, q.modelAnswer ?? ""].join("\n")), {
       message: `발문·해설·모범답안의 형광펜이 ${HIGHLIGHT_MAX}자를 넘습니다 — 함정을 말하는 구절만 칠합니다`,
       path: ["explanation"],
-    }),
+    })
+    .refine(
+      (q) => countHighlights([q.question, q.explanation, q.modelAnswer ?? ""].join("\n")) <= HIGHLIGHT_PER_EXPLANATION,
+      {
+        message: `해설·모범답안의 형광펜이 ${HIGHLIGHT_PER_EXPLANATION}개를 넘습니다 — 오답의 뿌리를 짚는 한 구절만 남깁니다`,
+        path: ["explanation"],
+      },
+    ),
 });
 
 export const collections = { quiz, practical };

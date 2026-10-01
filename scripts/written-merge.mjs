@@ -146,6 +146,25 @@ const drift = (pool) => {
   };
 };
 
+/**
+ * 영역별 형광펜 밀도. 게이트(content.config.ts)는 한 항목만 보므로 "해설 하나에 하나까지"는
+ * 막을 수 있어도 "영역 해설의 절반이 노란색"은 못 본다 — 보기 쏠림과 같은 종류의 지표다.
+ *
+ * 실제로 그렇게 됐다: 정보보안기사 해설의 31~64%가 형광펜을 들고 있었고(정처기는 13%),
+ * 한 커밋이 130문항에 124개를 한꺼번에 붙인 결과였다. 기준은 "열 장 중 한둘"(10~20%)이다.
+ */
+const HL = /==(?=\S)[^=\n]+(?<=\S)==/g;
+const hlDensity = (pool, areaOf) => {
+  const m = {};
+  for (const q of pool) {
+    const a = areaOf(q);
+    (m[a] ??= [0, 0])[0] += 1;
+    if (HL.test(q.explanation + (q.modelAnswer ?? ""))) m[a][1] += 1;
+    HL.lastIndex = 0;
+  }
+  return m;
+};
+
 /** 현황 리포트 — "다음에 어느 주제를 낼까"를 고르기 위한 것 */
 const report = () => {
   const bank = read(BANK);
@@ -190,6 +209,21 @@ const report = () => {
         `  부정형 발문 ${d.neg}/${pool.length} (${Math.round((d.neg / pool.length) * 100)}%, 기출 참고치 약 50%)` +
           ` · 그중 정답지에 절대어 ${d.negAbsolute}`,
       );
+    }
+
+    // 형광펜 밀도 — 상한을 넘으면 그 영역 페이지가 통째로 노랗게 읽힌다
+    const areaOf = (q) => topics[q.topic].area;
+    for (const [label, src] of [
+      ["필기", pool],
+      ["실기", practical.filter((q) => topics[q.topic]?.exam === exam)],
+    ]) {
+      const d = hlDensity(src, areaOf);
+      // 표본이 작으면 한 건이 10%를 넘겨 비율이 튄다 — 20문항 미만은 경고하지 않는다
+      const over = Object.entries(d).filter(([, [n, h]]) => n >= 20 && h / n > 0.2);
+      const line = Object.entries(d)
+        .map(([a, [n, h]]) => `${a} ${Math.round((h / n) * 100)}%`)
+        .join(" · ");
+      if (line) console.log(`  ${label} 형광펜 밀도(기준 10~20%): ${line}${over.length ? "  ← 상한 초과" : ""}`);
     }
 
     const todo = keys.filter((k) => !w[k]);

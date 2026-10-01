@@ -501,6 +501,23 @@
     "2026-09-27-mcp-sampling-capability": {
       "sha": "208701ee50db5da04b81565bdd1a59b7242ec1ef",
       "section": "mcp"
+    },
+    "2026-09-28-software-cost-estimation-cocomo": {
+      "sha": "bbd4e312bf05fbceccbbbcd1be191b04735322ac",
+      "section": "jeongcheogi",
+      "gapReported": true
+    },
+    "2026-09-29-protobufjs-schema-code-execution": {
+      "sha": "fc3f8e6edd55f88a927004ac51d4e1f69bad501d",
+      "section": "security"
+    },
+    "2026-09-30-block-buzz-agent-identity-workspace": {
+      "sha": "c4c6a74cf0224c28b87885ab25e100df92e307f5",
+      "section": "mcp"
+    },
+    "2026-10-01-xss-vs-csrf": {
+      "sha": "0164b6076c1ac285f3587e203555a8ae7e2dfabb",
+      "section": "boangisa"
     }
   }
 }
