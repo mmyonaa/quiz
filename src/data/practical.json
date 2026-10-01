@@ -1010,7 +1010,7 @@
     "topic": "sec-security-models",
     "difficulty": "상",
     "kind": "단답형",
-    "question": "벨-라파듈라(BLP) 모델의 두 규칙에 대해, 단순 보안 규칙(Simple Security Property)이 금지하는 것(①)과 *-속성(star property)이 금지하는 것(②)을 각각 'No Read Up'처럼 영문으로 쓰시오. 또 무결성을 지키는 비바(Biba) 모델이 금지하는 쓰기 방향(③)도 같은 방식으로 쓰시오.",
+    "question": "벨-라파듈라(BLP) 모델의 두 규칙에 대해, 단순 보안 규칙(Simple Security Property)이 금지하는 것(①)과 *-속성(star property)이 금지하는 것(②)을 쓰시오. 또 무결성을 지키는 비바(Biba) 모델이 금지하는 쓰기 방향(③)도 쓰시오. (세 답 모두 읽기·쓰기와 방향을 조합한 영문 표기로 쓸 것)",
     "answers": [
       [
         "No Read Up",
@@ -1102,7 +1102,7 @@
     "topic": "sec-hash-mac",
     "difficulty": "상",
     "kind": "단답형",
-    "question": "비밀번호를 솔트 없이 해시만으로 저장했을 때, 미리 계산해 둔 표를 대조해 여러 계정을 한꺼번에 뚫는 공격의 이름(①)과, 그 공격을 막기 위해 계정마다 덧붙이는 값(②), 그리고 대입 시도 속도를 떨어뜨리는 키 스트레칭의 구현 알고리즘 하나(③)를 쓰시오.",
+    "question": "비밀번호를 해시 함수에만 넣어 그대로 저장했을 때, 미리 계산해 둔 표를 대조해 여러 계정을 한꺼번에 뚫는 공격의 이름(①)과, 그 공격을 막기 위해 계정마다 다르게 덧붙이는 무작위 값의 이름(②), 그리고 대입 시도 속도를 떨어뜨리는 키 스트레칭의 구현 알고리즘 하나(③)를 쓰시오.",
     "answers": [
       [
         "레인보우 테이블",
@@ -1938,5 +1938,519 @@
       "자격증명"
     ],
     "explanation": "==두 기한(`24시간` 망법 침해사고 신고 · `72시간` 개인정보보호법 유출 통지·신고)을 섞어 쓰면 핵심에서 감점==이다. 신고 기준 셋 가운데 '민감정보·고유식별정보'와 '외부의 불법적 접근'은 건수를 따지지 않는다는 점, 그리고 원인 규명을 기다리지 않는다는 점을 함께 짚어야 한다. 통지 항목 다섯과 주민등록번호의 수집 근거·암호화 의무를 적으면 기술적 조치 쪽도 채워진다."
+  },
+  {
+    "id": "p-linux-umask-reverse",
+    "topic": "linux-admin",
+    "difficulty": "상",
+    "kind": "계산형",
+    "question": "어떤 사용자가 파일과 디렉터리를 새로 만든 결과가 아래와 같다. 이 결과를 만든 umask 값을 8진수 세 자리로 쓰시오.",
+    "code": "$ touch app.log\n$ mkdir logs\n$ ls -l\n-rw-r-----  1 dev dev    0  app.log\ndrwxr-x---  2 dev dev 4096  logs",
+    "answers": [
+      [
+        "027",
+        "0027"
+      ]
+    ],
+    "explanation": "거꾸로 셈한다 — 파일은 기준 `666`에서 `640`이 나왔으니 걷어낸 비트가 `026`이고, 디렉터리는 기준 `777`에서 `750`이 나왔으니 `027`이다. ==둘을 함께 만족하는 값이 umask이므로 `027`==이다(파일에는 애초에 실행 비트가 없어 umask의 실행 비트 1이 드러나지 않는다). 파일과 디렉터리의 기준값이 다르다는 점이 이 역산의 함정이다."
+  },
+  {
+    "id": "p-linux-setuid-notation",
+    "topic": "linux-admin",
+    "difficulty": "중",
+    "kind": "단답형",
+    "question": "다음 `ls -l` 결과에서 소유자 실행 자리에 `x` 대신 `s`가 보인다. 이 파일에 걸려 있는 특수 권한의 이름(①)과, 이 파일의 권한을 `chmod`에 넘길 때 쓰는 8진수 네 자리(②)를 쓰시오.",
+    "code": "$ ls -l /usr/bin/passwd\n-rwsr-xr-x  1 root root 68208  /usr/bin/passwd",
+    "answers": [
+      [
+        "SetUID",
+        "SUID",
+        "Set User ID"
+      ],
+      [
+        "4755"
+      ]
+    ],
+    "labels": [
+      "①",
+      "②"
+    ],
+    "explanation": "`rws`의 `s`가 SetUID이고, 특수 권한은 ==네 자리로 적어 맨 앞자리에 둔다 — SetUID `4` · SetGID `2` · 스티키 비트 `1`==. 뒤 세 자리 `755`에 SetUID를 얹어 `4755`가 된다. 이 비트 덕에 일반 사용자가 `passwd`를 실행할 때 root 권한으로 `/etc/shadow`를 고칠 수 있고, 불필요한 파일에 걸리면 권한 상승 통로가 되어 `find / -perm -4000`으로 점검한다."
+  },
+  {
+    "id": "p-relation-degree-cardinality",
+    "topic": "relation-basics",
+    "difficulty": "하",
+    "kind": "단답형",
+    "question": "다음 [사원] 릴레이션의 차수(Degree)(①)와 카디널리티(Cardinality)(②)를 각각 쓰시오.",
+    "code": "[사원]\n사번    이름     부서     직급\n1001   김민수   영업     대리\n1002   이서연   개발     과장\n1003   박지훈   개발     사원",
+    "answers": [
+      [
+        "4",
+        "4개"
+      ],
+      [
+        "3",
+        "3개"
+      ]
+    ],
+    "labels": [
+      "①",
+      "②"
+    ],
+    "explanation": "==차수는 속성(열)의 개수, 카디널리티는 튜플(행)의 개수==다 — 열이 사번·이름·부서·직급 넷이라 차수 4, 행이 셋이라 카디널리티 3이다. 머리글 줄은 속성 이름이라 튜플로 세지 않는다. 카티션 프로덕트를 하면 차수는 더하고 카디널리티는 곱한다는 성질도 함께 나온다."
+  },
+  {
+    "id": "p-isolation-nonrepeatable",
+    "topic": "isolation-levels",
+    "difficulty": "상",
+    "kind": "단답형",
+    "question": "다음은 두 트랜잭션이 실행된 순서다. T1이 같은 조건으로 두 번 조회했는데 결과가 달라졌다. 이 동시성 이상현상의 이름(①)과, 이 현상을 막아 주는 가장 낮은 격리 수준(②)을 쓰시오.",
+    "code": "T1: SELECT 잔액 FROM 계좌 WHERE id = 1;   -- 10000 조회\nT2: UPDATE 계좌 SET 잔액 = 50000 WHERE id = 1;\nT2: COMMIT;\nT1: SELECT 잔액 FROM 계좌 WHERE id = 1;   -- 50000 조회\nT1: COMMIT;",
+    "answers": [
+      [
+        "반복 불가능 읽기",
+        "Non-Repeatable Read",
+        "비반복 읽기",
+        "반복 불가능 조회"
+      ],
+      [
+        "REPEATABLE READ",
+        "반복 가능 읽기"
+      ]
+    ],
+    "labels": [
+      "①",
+      "②"
+    ],
+    "explanation": "==같은 행을 두 번 읽었는데 값이 달라지는 것이 반복 불가능 읽기==다. T2가 커밋한 값을 읽었으므로 `READ COMMITTED`는 통과해 버리고, 조회한 행을 트랜잭션이 끝날 때까지 잡아 두는 `REPEATABLE READ`부터 막힌다. 커밋되지 않은 값을 읽는 것은 Dirty Read, 행의 '개수'가 달라지는 것은 Phantom Read로 구분한다 — 세 현상과 네 격리 수준을 표로 맞춰 외운다."
+  },
+  {
+    "id": "p-ip-header-ttl-protocol",
+    "topic": "ip-protocol",
+    "difficulty": "중",
+    "kind": "단답형",
+    "question": "다음은 캡처한 IPv4 헤더의 일부다. 라우터를 지날 때마다 1씩 줄어들고 0이 되면 패킷이 버려지는 필드 ㉠의 이름(①)과, ㉡의 값 6이 가리키는 상위 계층 프로토콜의 이름(②)을 쓰시오.",
+    "code": "Version: 4        IHL: 5         Total Length: 1500\nIdentification: 0x1c46          Flags: 0x00\n㉠ : 64           ㉡ : 6          Header Checksum: 0xb1e6\nSource: 192.168.1.10            Destination: 93.184.216.34",
+    "answers": [
+      [
+        "TTL",
+        "Time To Live",
+        "생존 시간"
+      ],
+      [
+        "TCP"
+      ]
+    ],
+    "labels": [
+      "①",
+      "②"
+    ],
+    "explanation": "TTL은 ==패킷이 라우팅 루프에 갇혀 무한히 돌아다니는 것을 막는 장치==이고, 0이 되면 라우터가 버리면서 ICMP Time Exceeded를 송신 측에 돌려준다 — `traceroute`가 TTL을 1부터 늘려 가며 경로를 그리는 원리가 이것이다. Protocol 필드는 `1` ICMP · `6` TCP · `17` UDP로 외운다."
+  },
+  {
+    "id": "p-hash-collision-chaining",
+    "topic": "hashing",
+    "difficulty": "중",
+    "kind": "단답형",
+    "question": "해시 함수 `h(k) = k mod 7`로 키 15, 11, 22, 8을 차례로 삽입한 결과가 다음과 같다. 서로 다른 키가 같은 버킷으로 계산되는 현상의 이름(①)과, 제시문처럼 같은 버킷에 연결 리스트로 이어 붙여 그 현상을 해결하는 방법의 이름(②)을 쓰시오.",
+    "code": "0 │\n1 │ → 15 → 22 → 8\n2 │\n3 │\n4 │ → 11\n5 │\n6 │",
+    "answers": [
+      [
+        "충돌",
+        "Collision",
+        "해시 충돌"
+      ],
+      [
+        "체이닝",
+        "Chaining",
+        "연결법",
+        "분리 연결법",
+        "Separate Chaining"
+      ]
+    ],
+    "labels": [
+      "①",
+      "②"
+    ],
+    "explanation": "`15 mod 7`·`22 mod 7`·`8 mod 7`이 모두 1이라 한 버킷에 셋이 몰렸다 — 이것이 충돌이다. ==체이닝은 버킷 밖에 리스트를 매달아 받아내므로 적재율이 1을 넘어도 삽입이 되고==, 빈 버킷을 찾아 들어가는 개방 주소법(선형 탐사·이차 탐사·이중 해싱)은 테이블이 차면 더 넣을 수 없다. 두 방식을 뒤바꿔 적는 답안이 잦다."
+  },
+  {
+    "id": "p-secure-coding-sqli-prepared",
+    "topic": "secure-coding",
+    "difficulty": "중",
+    "kind": "단답형",
+    "question": "다음 Java 코드에서 발생할 수 있는 취약점의 이름(①)과, 질의의 구조와 값을 분리해 이 취약점을 근본적으로 막기 위해 `Statement` 대신 사용해야 하는 JDBC 인터페이스의 이름(②)을 쓰시오.",
+    "code": "String userId = request.getParameter(\"id\");\nString sql = \"SELECT * FROM member WHERE id = '\" + userId + \"'\";\n\nStatement st = conn.createStatement();\nResultSet rs = st.executeQuery(sql);",
+    "answers": [
+      [
+        "SQL 삽입",
+        "SQL Injection",
+        "SQL 인젝션",
+        "SQL 삽입 공격"
+      ],
+      [
+        "PreparedStatement",
+        "준비된 문장"
+      ]
+    ],
+    "labels": [
+      "①",
+      "②"
+    ],
+    "explanation": "사용자 입력이 문자열로 이어 붙여지므로 `' OR '1'='1`을 넣으면 조건이 참이 되어 인증을 우회한다. ==`PreparedStatement`는 질의 구조를 먼저 확정하고 입력을 값으로만 넘기므로, 무엇이 들어와도 구문이 바뀌지 않는다==. 특수문자 필터링은 인코딩 변형과 숫자형 파라미터로 계속 우회되어 보조 수단에 그친다."
+  },
+  {
+    "id": "p-java-finally-exception",
+    "topic": "exception-language-types",
+    "difficulty": "중",
+    "kind": "단답형",
+    "question": "다음 Java 코드에서 발생하는 예외 클래스의 이름(①)과, 예외가 발생하든 하지 않든 반드시 실행되어 자원 반납 등에 쓰이는 블록의 키워드(②)를 쓰시오.",
+    "code": "int[] a = new int[2];\ntry {\n    a[3] = 1;\n    System.out.print(\"A\");\n} catch (Exception e) {\n    System.out.print(\"B\");\n} ( ② ) {\n    System.out.print(\"C\");\n}",
+    "answers": [
+      [
+        "ArrayIndexOutOfBoundsException",
+        "배열 인덱스 초과 예외",
+        "IndexOutOfBoundsException"
+      ],
+      [
+        "finally"
+      ]
+    ],
+    "labels": [
+      "①",
+      "②"
+    ],
+    "explanation": "길이가 2인 배열의 유효 인덱스는 0과 1이라 `a[3]`은 `ArrayIndexOutOfBoundsException`을 던지고, `catch`가 받아 `B`를 찍은 뒤 `finally`가 `C`를 찍어 출력은 `BC`가 된다 — ==`try` 안의 `A`는 예외 지점 뒤라 실행되지 않는다==. 이 예외는 컴파일러가 처리를 강제하지 않는 비검사(Unchecked) 예외로 `RuntimeException` 계열에 속한다."
+  },
+  {
+    "id": "p-memory-fit-strategies",
+    "topic": "memory-allocation",
+    "difficulty": "상",
+    "kind": "계산형",
+    "question": "메모리의 빈 공간이 아래 순서로 나열되어 있고 7KB를 요청받았다. 최초 적합(First Fit)·최적 적합(Best Fit)·최악 적합(Worst Fit)이 각각 배정하는 공간의 크기를 쓰시오.",
+    "code": "빈 공간 목록(앞에서부터) :  12KB   6KB   20KB   8KB\n요청 크기 : 7KB",
+    "answers": [
+      [
+        "12KB",
+        "12"
+      ],
+      [
+        "8KB",
+        "8"
+      ],
+      [
+        "20KB",
+        "20"
+      ]
+    ],
+    "labels": [
+      "최초 적합",
+      "최적 적합",
+      "최악 적합"
+    ],
+    "explanation": "최초 적합은 ==앞에서부터 처음 만나는 충분한 공간==이라 `12KB`(`6KB`는 7KB가 안 들어간다), 최적 적합은 들어가는 것 중 가장 작은 `8KB`, 최악 적합은 가장 큰 `20KB`다. 최적 적합은 남는 조각이 가장 작아(`1KB`) 쓸모없는 조각을 많이 남기고, 최악 적합은 큰 공간을 먼저 깨뜨린다 — 이렇게 할당 안에 남는 자리를 내부 단편화라 한다."
+  },
+  {
+    "id": "p-thrashing-workingset",
+    "topic": "virtual-memory",
+    "difficulty": "중",
+    "kind": "단답형",
+    "question": "다음은 다중 프로그래밍 정도를 높여 갈 때의 CPU 이용률 변화다. 어느 지점을 넘자 이용률이 급격히 떨어졌다. 이 현상의 이름(①)과, 프로세스가 일정 시간 동안 실제로 참조한 페이지 집합을 메모리에 유지해 이 현상을 막는 기법의 이름(②)을 쓰시오.",
+    "code": "CPU\n이용률\n 100% ┤        ╱▔▔╲\n      │      ╱      ╲\n  50% ┤    ╱          ╲▁▁▁▁\n      │  ╱\n      └─────────────────────── 다중 프로그래밍 정도",
+    "answers": [
+      [
+        "스래싱",
+        "Thrashing",
+        "스레싱"
+      ],
+      [
+        "워킹셋",
+        "Working Set",
+        "워킹셋 기법"
+      ]
+    ],
+    "labels": [
+      "①",
+      "②"
+    ],
+    "explanation": "프로세스를 너무 많이 올리면 ==각자에게 돌아가는 프레임이 줄어 페이지 부재가 폭증하고, CPU가 일하는 대신 페이지 교체에만 매달린다==. 이것이 스래싱이다. 워킹셋은 최근 참조한 페이지 묶음을 통째로 메모리에 유지해 부재를 줄이고, 페이지 부재율이 상한을 넘으면 프레임을 더 주는 PFF(페이지 부재 빈도) 기법도 함께 쓰인다."
+  },
+  {
+    "id": "p-block-cipher-table",
+    "topic": "symmetric-asymmetric",
+    "difficulty": "중",
+    "kind": "단답형",
+    "question": "다음은 대칭키 블록 암호 알고리즘을 정리한 표다. 빈칸 ㉠에 들어갈 암호 구조의 이름(①)과 ㉡에 들어갈 키 길이(②, 단위: 비트)를 쓰시오.",
+    "code": "알고리즘   구조        블록 크기    키 길이\nAES        SPN         128비트      128 / 192 / 256비트\nARIA       SPN         128비트      128 / 192 / 256비트\nSEED       (  ㉠  )    128비트      128비트\nDES        Feistel     64비트       (  ㉡  )비트",
+    "answers": [
+      [
+        "Feistel",
+        "페이스텔",
+        "파이스텔",
+        "Feistel 구조"
+      ],
+      [
+        "56"
+      ]
+    ],
+    "labels": [
+      "①",
+      "②"
+    ],
+    "explanation": "==국산 `SEED`는 Feistel 구조, `ARIA`는 AES와 같은 SPN 구조==라는 짝이 그대로 출제된다. DES는 키를 `64비트`로 입력받지만 8비트가 패리티라 ==실제 유효 키는 `56비트`==이고, 그 짧은 길이 때문에 전수 조사로 깨져 3DES를 거쳐 AES로 대체됐다. 국산 경량 암호 `LEA`는 S-box 없는 ARX 구조라는 점도 함께 묶인다."
+  },
+  {
+    "id": "p-signature-hash-privatekey",
+    "topic": "hash-digital-signature",
+    "difficulty": "중",
+    "kind": "단답형",
+    "question": "다음은 전자서명을 만들고 검증하는 절차다. 빈칸 ㉠과 ㉡에 들어갈 말을 각각 쓰시오.",
+    "code": "[서명 생성]\n  송신자는 원문을 해시 함수에 넣어 (  ㉠  )을 구한 뒤,\n  그 값을 자신의 (  ㉡  )로 암호화해 전자서명을 만들어 원문과 함께 보낸다.\n\n[서명 검증]\n  수신자는 송신자의 공개키로 서명을 풀어 얻은 값과,\n  받은 원문을 같은 해시 함수에 넣어 직접 구한 (  ㉠  )을 견준다.",
+    "answers": [
+      [
+        "해시값",
+        "메시지 다이제스트",
+        "다이제스트",
+        "Message Digest",
+        "해시"
+      ],
+      [
+        "개인키",
+        "사설키",
+        "비밀키",
+        "Private Key"
+      ]
+    ],
+    "labels": [
+      "㉠",
+      "㉡"
+    ],
+    "explanation": "==서명자만 가진 개인키로 서명하므로 '그 사람이 했다'가 증명되어 부인방지가 성립한다==. 원문 전체가 아니라 해시값에 서명하는 이유는 공개키 연산이 무거워 길이가 고정된 값에만 걸어 비용을 줄이는 것이다. 전자서명은 무결성·인증·부인방지를 주지만 ==원문을 감추지 않으므로 기밀성은 주지 않는다== — 기밀성이 필요하면 따로 암호화한다."
+  },
+  {
+    "id": "p-dfd-symbols",
+    "topic": "structured-analysis-notation",
+    "difficulty": "중",
+    "kind": "단답형",
+    "question": "다음은 구조적 분석에서 쓰는 DFD의 네 가지 기호다. ㉠~㉣이 각각 무엇을 나타내는지 쓰시오.",
+    "code": "㉠  ○  (원 또는 둥근 사각형)\n㉡  →  (화살표)\n㉢  ═  (두 줄의 평행선)\n㉣  □  (사각형)",
+    "answers": [
+      [
+        "처리",
+        "프로세스",
+        "Process",
+        "처리 과정"
+      ],
+      [
+        "자료 흐름",
+        "Data Flow"
+      ],
+      [
+        "자료 저장소",
+        "Data Store",
+        "데이터 저장소"
+      ],
+      [
+        "단말",
+        "Terminator",
+        "외부 엔티티",
+        "단말기",
+        "Terminal"
+      ]
+    ],
+    "labels": [
+      "㉠",
+      "㉡",
+      "㉢",
+      "㉣"
+    ],
+    "explanation": "네 기호를 그림과 짝지어 외운다 — ==원은 처리, 화살표는 자료 흐름, 평행선은 자료 저장소, 사각형은 단말(외부 엔티티)==. 자료 저장소를 마름모로 적는 보기가 함정으로 나오는데 마름모는 ER 다이어그램의 관계 기호다. DFD는 자료가 어디서 와서 어떻게 바뀌어 어디로 가는지만 보이고 ==처리의 시간 순서나 조건 분기는 나타내지 않는다==."
+  },
+  {
+    "id": "p-storage-das-nas-san",
+    "topic": "storage-ha",
+    "difficulty": "중",
+    "kind": "단답형",
+    "question": "다음은 서버와 저장장치를 잇는 세 가지 방식이다. ㉠~㉢이 각각 무엇인지 약어로 쓰시오.",
+    "code": "㉠  서버에 케이블로 직접 붙인다. 구성이 단순하고 저렴하지만 그 서버만 쓸 수 있다.\n㉡  이더넷(TCP/IP)에 붙어 파일 단위로 여러 서버가 나눠 쓴다. 구축이 쉽다.\n㉢  파이버 채널 전용 망을 따로 두어 블록 단위로 접근한다. 빠르지만 비싸고 복잡하다.",
+    "answers": [
+      [
+        "DAS",
+        "Direct Attached Storage"
+      ],
+      [
+        "NAS",
+        "Network Attached Storage"
+      ],
+      [
+        "SAN",
+        "Storage Area Network"
+      ]
+    ],
+    "labels": [
+      "㉠",
+      "㉡",
+      "㉢"
+    ],
+    "explanation": "==가르는 축은 '무엇에 붙는가'와 '무슨 단위로 접근하는가'==다 — DAS는 서버에 직접, NAS는 기존 이더넷에 파일 단위로, SAN은 전용 망에 블록 단위로 붙는다. NAS가 구축이 쉬운 쪽이고 전용 망을 깔아야 하는 SAN이 까다로운 쪽이라, 둘을 뒤바꿔 적는 보기가 기출에 그대로 나온다."
+  },
+  {
+    "id": "p-nat-pat",
+    "topic": "ip-operations",
+    "difficulty": "중",
+    "kind": "단답형",
+    "question": "다음과 같이 사설 IP를 쓰는 내부 호스트 여럿이 공인 IP 하나로 인터넷에 나간다. 사설 주소를 공인 주소로 바꿔 주는 기술의 이름(①)과, 제시문처럼 포트 번호까지 함께 바꿔 여러 호스트가 공인 IP 하나를 나눠 쓰게 하는 방식의 이름(②)을 쓰시오.",
+    "code": "내부                              공유기            외부\n192.168.0.10 : 5000  ─┐\n                      ├─→  203.0.113.7 : 40001  ─→  인터넷\n192.168.0.11 : 5000  ─┘     203.0.113.7 : 40002",
+    "answers": [
+      [
+        "NAT",
+        "Network Address Translation",
+        "주소 변환"
+      ],
+      [
+        "PAT",
+        "NAPT",
+        "Port Address Translation",
+        "IP 마스커레이딩",
+        "포트 주소 변환"
+      ]
+    ],
+    "labels": [
+      "①",
+      "②"
+    ],
+    "explanation": "두 내부 호스트가 같은 `5000`번을 쓰는데 밖에서는 포트가 서로 다르게 바뀌어 나간다 — ==포트까지 바꿔 하나의 공인 IP를 나눠 쓰게 하는 것이 PAT(NAPT)==이고, 주소만 1:1로 바꾸는 쪽이 기본 NAT다. 내부 주소 구조가 밖에 드러나지 않는 부수 효과가 있지만, ==NAT는 주소를 바꾸는 기능일 뿐 접근을 통제하는 장치가 아니라== 방화벽을 대신하지 못한다."
+  },
+  {
+    "id": "p-http-status-class",
+    "topic": "http-status-codes",
+    "difficulty": "하",
+    "kind": "단답형",
+    "question": "다음 두 응답의 상태 코드가 속한 백번대 분류가 각각 무엇을 뜻하는지 쓰시오.",
+    "code": "①  HTTP/1.1 301 Moved Permanently\n②  HTTP/1.1 503 Service Unavailable",
+    "answers": [
+      [
+        "리다이렉션",
+        "리다이렉션(3xx)",
+        "Redirection",
+        "재지정",
+        "리다이렉트"
+      ],
+      [
+        "서버 오류",
+        "서버 에러",
+        "Server Error",
+        "서버 측 오류"
+      ]
+    ],
+    "labels": [
+      "①",
+      "②"
+    ],
+    "explanation": "다섯 분류를 외운다 — ==`1xx` 정보 · `2xx` 성공 · `3xx` 리다이렉션 · `4xx` 클라이언트 오류 · `5xx` 서버 오류==. `301`은 영구 이동이라 이후 새 주소를 기준으로 삼아도 되고 `302`는 임시 이동이라 원래 주소를 계속 쓴다. `404`는 클라이언트 오류이고 `500`·`503`은 서버 쪽 문제라, 둘을 가르는 것이 장애 대응의 첫 갈림길이 된다."
+  },
+  {
+    "id": "p-sjf-average-wait",
+    "topic": "cpu-scheduling",
+    "difficulty": "상",
+    "kind": "계산형",
+    "question": "네 프로세스가 모두 시각 0에 동시에 도착했다. SJF(Shortest Job First) 스케줄링으로 처리할 때 평균 대기시간(①)과 평균 반환시간(②)을 각각 구하시오.",
+    "code": "프로세스   실행시간\n  P1         6\n  P2         2\n  P3         8\n  P4         4\n\n(네 프로세스 모두 도착시각 0, 비선점 방식)",
+    "answers": [
+      [
+        "5"
+      ],
+      [
+        "10"
+      ]
+    ],
+    "labels": [
+      "평균 대기시간",
+      "평균 반환시간"
+    ],
+    "explanation": "SJF는 실행시간이 짧은 것부터 처리하므로 순서가 ==P2(2) → P4(4) → P1(6) → P3(8)==이다. 각자 앞선 작업이 끝날 때까지 기다리므로 대기시간은 `0`·`2`·`6`·`12`로 합이 `20`, 평균 `5`다. 반환시간은 대기시간에 자기 실행시간을 더한 `2`·`6`·`12`·`20`으로 합이 `40`, 평균 `10`이다. SJF는 평균 대기시간이 가장 짧은 대신 긴 작업이 계속 밀리는 기아가 생겨 에이징으로 보완한다."
+  },
+  {
+    "id": "p-cpm-critical-path",
+    "topic": "project-management",
+    "difficulty": "상",
+    "kind": "계산형",
+    "question": "다음 작업 목록으로 CPM 네트워크를 구성했을 때, 프로젝트를 끝내는 데 걸리는 최소 기간(①, 임계 경로의 길이)과 작업 C가 가진 여유 시간(②, 단위: 일)을 각각 구하시오.",
+    "code": "작업   선행작업   소요일수\n  A       -          3\n  B       A          4\n  C       A          2\n  D      B, C        5",
+    "answers": [
+      [
+        "12",
+        "12일"
+      ],
+      [
+        "2",
+        "2일"
+      ]
+    ],
+    "labels": [
+      "①",
+      "②"
+    ],
+    "explanation": "경로가 둘이다 — `A→B→D`는 `3+4+5 = 12`일, `A→C→D`는 `3+2+5 = 10`일. ==가장 긴 경로가 전체 기간을 정하므로 임계 경로는 12일==이고, D는 B와 C가 모두 끝나야 시작하므로 C는 2일을 늦어도 전체 일정에 영향을 주지 않는다(여유 `2`일). ==임계 경로 위의 작업은 여유가 0이라 하루만 밀려도 프로젝트가 밀린다== — 간트 차트는 이 선후 관계와 임계 경로를 보여 주지 못한다."
+  },
+  {
+    "id": "p-rootkit-integrity",
+    "topic": "malware-types",
+    "difficulty": "상",
+    "kind": "단답형",
+    "question": "침해가 의심되는 리눅스 서버를 점검한 결과가 다음과 같다. 프로세스 목록에는 아무것도 보이지 않는데 시스템 명령 자체가 변조된 것으로 확인됐다. 이런 악성코드의 유형(①)과, 제시문의 `rpm -V`처럼 기준 값과 현재 값을 견주어 변조를 찾아내는 점검의 이름(②)을 쓰시오.",
+    "code": "$ ps -ef | grep suspicious\n(출력 없음)\n\n$ netstat -antp | grep ESTABLISHED\n(출력 없음)\n\n$ rpm -V procps-ng net-tools\nS.5....T.    /usr/bin/ps\nS.5....T.    /usr/bin/netstat",
+    "answers": [
+      [
+        "루트킷",
+        "Rootkit"
+      ],
+      [
+        "무결성 검사",
+        "무결성 점검",
+        "Integrity Check",
+        "무결성 검증"
+      ]
+    ],
+    "labels": [
+      "①",
+      "②"
+    ],
+    "explanation": "`S.5....T.`는 크기·해시·수정시각이 모두 바뀌었다는 표시다 — ==`ps`와 `netstat`이 바꿔치기되어 자신을 숨기도록 조작된 것이 루트킷==이다. 그래서 ==감염된 시스템 안에서 실행한 명령의 결과는 믿을 수 없고==, 외부 매체로 부팅하거나 디스크를 떼어 다른 시스템에서 분석한다. 무결성 검사 도구로는 `Tripwire`·`AIDE`가 쓰이며 기준값은 읽기 전용 매체에 둔다."
+  },
+  {
+    "id": "p-er-symbols",
+    "topic": "er-modeling",
+    "difficulty": "중",
+    "kind": "단답형",
+    "question": "다음은 피터 첸(Peter Chen) 표기법의 E-R 다이어그램 기호다. ㉠~㉢이 각각 무엇을 나타내는지 쓰시오.",
+    "code": "㉠  □  (사각형)\n㉡  ○  (타원)\n㉢  ◇  (마름모)",
+    "answers": [
+      [
+        "엔티티",
+        "개체",
+        "Entity",
+        "엔터티",
+        "개체 집합"
+      ],
+      [
+        "속성",
+        "Attribute",
+        "애트리뷰트"
+      ],
+      [
+        "관계",
+        "Relationship",
+        "관계 집합",
+        "릴레이션십"
+      ]
+    ],
+    "labels": [
+      "㉠",
+      "㉡",
+      "㉢"
+    ],
+    "explanation": "==사각형은 엔티티, 타원은 속성, 마름모는 관계==이고, 기본키가 되는 속성은 타원 안에 밑줄을 그어 표시한다. 자료 흐름도(DFD)의 기호와 섞어 내는 함정이 잦다 — DFD에서는 원이 처리, 평행선이 자료 저장소, 사각형이 단말이라 ==같은 사각형이 ER에서는 엔티티, DFD에서는 단말==로 뜻이 갈린다."
   }
 ]

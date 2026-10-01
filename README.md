@@ -40,7 +40,7 @@
 유저 데이터(북마크·오답 기록)만 Supabase에 저장하며 RLS로 사용자별 격리한다.
 
 - **문제 은행**: 필기 `src/data/questions.json`, 실기 `src/data/practical.json` — 콘텐츠 컬렉션 + zod 스키마(`src/content.config.ts`)가 발행 게이트. 스키마 위반 문제는 빌드가 실패한다.
-  규모는 정처기 필기 515 · 실기 49, 정보보안기사 필기 436 · 실기 36 (주제 137개).
+  규모는 정처기 필기 515 · 실기 69, 정보보안기사 필기 436 · 실기 36 (주제 137개).
 - **문항 추가**: 초안 JSON을 `scripts/written-merge.mjs`(필기) · `scripts/practical-merge.mjs`(실기)로
   병합한다. 은행에 **쓰이기 전에** 검증하고, 특히 zod가 원리상 못 보는 것 — 문항 사이의 id·발문
   중복 — 을 잡는다. `--dry`는 검증만, `--report`는 은행 현황과 다음에 낼 주제를 고른다.
