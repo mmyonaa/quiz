@@ -836,9 +836,19 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
         startSession(shuffle(pickPool()).slice(0, count));
       });
 
+      // 모의고사 편성 — 유형별 문항 수를 시험 형식에서 읽어 뽑는다.
+      // 무작위로 total개만 집으면 유형 구성이 그때그때 달라지는데, 만점(maxPoints)은
+      // composition으로 고정 계산되므로 둘이 어긋나 합격 판정이 깨진다
+      // (단답형만 뽑히면 36점이 상한인데 만점은 100으로 셈한다).
+      const pickMock = (): P[] => {
+        const comp = examFmt.composition;
+        if (!comp) return shuffle(bank).slice(0, examFmt.total); // 균일 배점 시험(정처기)
+        return shuffle(comp.flatMap((c) => shuffle(bank.filter((q) => q.kind === c.kind)).slice(0, c.asked)));
+      };
+
       $("#start-mock").addEventListener("click", () => {
         mode = "mock";
-        startSession(shuffle(bank).slice(0, examFmt.total));
+        startSession(pickMock());
       });
 
       // 약점 CTA의 "더 풀기" — 그 영역만 다시 뽑아 방금과 같은 문항 수로 이어 푼다
