@@ -15144,5 +15144,623 @@
     ],
     "answer": 1,
     "explanation": "==보관을 잘하고 있다는 것은 '통제가 적용되어 있다'는 뜻이지 그 자산의 무결성 요구가 낮다는 뜻이 아니다== — 백업은 원본이 망가졌을 때 기대는 마지막 근거라 오히려 무결성 요구가 가장 높은 자산에 속한다. 중요도는 통제의 유무와 무관하게 '그 자산이 훼손되면 업무에 어떤 영향이 있는가'로 매기며, 통제는 그다음에 위험을 줄이는 쪽에서 셈한다."
+  },
+  {
+    "id": "ise-integrity-check-tool-set",
+    "area": "시스템 보안",
+    "difficulty": "하",
+    "topic": "sec-analysis-tools",
+    "concept": "파일 무결성 점검 도구는 기준 해시를 미리 떠 두고 현재 값과 대조한다 — Tripwire·AIDE·Fcheck·Samhain이 대표다.",
+    "question": "다음 중 파일 무결성 점검 도구에 해당하지 않는 것은?",
+    "choices": [
+      "Tripwire",
+      "Fcheck",
+      "prstat",
+      "Samhain"
+    ],
+    "answer": 2,
+    "explanation": "`prstat`은 솔라리스에서 프로세스별 CPU·메모리 사용량을 실시간으로 보여 주는 모니터링 명령이라 파일이 바뀌었는지와는 무관하다. 나머지 셋은 정상 상태의 해시를 기준 DB로 떠 두고 현재 파일과 대조해 변조를 알리는 무결성 점검 도구이며, 리눅스에서는 `AIDE`도 같은 자리에 쓴다."
+  },
+  {
+    "id": "ise-stealth-virus-behavior",
+    "area": "시스템 보안",
+    "difficulty": "중",
+    "topic": "sec-malware",
+    "concept": "은폐형 바이러스는 감염 사실 자체를 숨겨, 검사 도구에 감염 전 상태를 돌려준다.",
+    "question": "다음 중 은폐형(Stealth) 바이러스에 대한 설명으로 가장 적합한 것은?",
+    "choices": [
+      "파일 길이가 늘지 않은 것처럼 보이게 하고 감염 전 내용을 돌려주어 백신과 사용자를 속인다",
+      "감염된 파일은 내용을 열어 볼 수 없게 잠긴다",
+      "감염할 때마다 코드를 변형해 같은 시그니처가 두 번 나오지 않게 한다",
+      "분석을 지연시키려고 역공학을 방해하는 여러 겹의 보호 기법을 두른다"
+    ],
+    "answer": 0,
+    "explanation": "은폐형은 ==감염 사실을 숨기는 쪽==이라, 검사 요청이 오면 감염 전에 보관해 둔 길이와 내용을 대신 돌려준다. 3번은 감염마다 코드가 달라지는 다형성(Polymorphic), 4번은 분석을 방해하는 갑옷형(Armored)의 설명이고, 코드 일부를 암호화해 시그니처를 가리는 것은 암호화형이다."
+  },
+  {
+    "id": "ise-polymorphic-vs-armored",
+    "area": "시스템 보안",
+    "difficulty": "중",
+    "topic": "sec-malware",
+    "concept": "탐지 회피 기법은 겨냥하는 상대가 다르다 — 다형성은 시그니처를, 갑옷형은 분석가를 겨냥한다.",
+    "question": "악성코드의 탐지 회피 기법에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "암호화형은 코드의 일부나 전체를 암호화해 두고 실행 시점에 복호화한다",
+      "다형성은 감염할 때마다 복호화 루틴까지 바꿔 동일한 시그니처가 반복되지 않게 한다",
+      "갑옷형은 디버거 탐지·코드 난독화로 분석가의 역공학을 어렵게 만든다",
+      "은폐형은 자기 복제로 다른 호스트까지 번져 피해 범위를 넓히는 것이 핵심 기법이다"
+    ],
+    "answer": 3,
+    "explanation": "자기 복제로 번지는 것은 웜의 성질이고, 은폐형이 하는 일은 번지는 것이 아니라 이미 감염된 사실을 감추는 것이다. 앞의 셋은 각각 시그니처를 가리고(암호화형), 시그니처를 매번 바꾸고(다형성), 분석 자체를 늦추는(갑옷형) 회피 기법으로 올바른 설명이다."
+  },
+  {
+    "id": "ise-meltdown-spectre",
+    "area": "시스템 보안",
+    "difficulty": "상",
+    "topic": "sec-secure-os",
+    "concept": "멜트다운·스펙터는 CPU가 성능을 위해 미리 실행해 둔 결과가 캐시에 남는 것을 측면 채널로 읽어 내는 하드웨어 취약점이다.",
+    "question": "멜트다운(Meltdown)과 스펙터(Spectre) 취약점에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "성능을 위해 CPU가 미리 수행하는 비순차·투기적 실행이 원인이다",
+      "버려질 실행의 흔적이 캐시에 남고, 접근 시간 차이로 그 값을 읽어 낸다",
+      "멜트다운은 사용자 프로세스와 커널 메모리 사이의 격리를 무너뜨린다",
+      "설계가 아니라 특정 운영체제의 구현 결함이므로 커널 패치만으로 완전히 제거된다"
+    ],
+    "answer": 3,
+    "explanation": "원인이 CPU 설계에 있어 운영체제를 바꿔도 사라지지 않는다 — 커널 주소 공간을 분리하는 KPTI 같은 패치와 마이크로코드 갱신으로 완화할 뿐이고, 그 대가로 성능이 떨어진다. 둘 다 투기적 실행의 흔적이 캐시에 남는다는 점을 캐시 타이밍 측면 채널로 읽어 내는 구조다."
+  },
+  {
+    "id": "ise-find-nouser-nogroup",
+    "area": "시스템 보안",
+    "difficulty": "중",
+    "topic": "sec-linux-permission",
+    "concept": "계정을 지우면 그 계정이 갖고 있던 파일은 UID만 남아 소유자 없는 파일이 된다 — `-nouser`·`-nogroup`으로 찾는다.",
+    "question": "리눅스에서 소유자나 소유 그룹이 존재하지 않는 파일을 찾는 명령으로 알맞은 것은?",
+    "choices": [
+      "find / -ls 2>/dev/null",
+      "find / \\( -nouser -o -nogroup \\) -print",
+      "find / -perm -4000 -print",
+      "find / -type f -size +0 -print"
+    ],
+    "answer": 1,
+    "explanation": "`-nouser`는 `/etc/passwd`에 없는 UID를, `-nogroup`은 `/etc/group`에 없는 GID를 가진 파일을 걸러 낸다. 계정을 지울 때 그 계정의 파일을 함께 정리하지 않으면 남는 것들로, 나중에 같은 UID가 재사용되면 새 계정이 그 파일을 그대로 가져가므로 점검 항목이 된다. 3번은 SetUID 파일을, 1번과 4번은 조건 없이 전체를 나열한다."
+  },
+  {
+    "id": "ise-aslr-proc-setting",
+    "area": "시스템 보안",
+    "difficulty": "중",
+    "topic": "sec-buffer-overflow",
+    "concept": "리눅스의 ASLR 수준은 `/proc/sys/kernel/randomize_va_space`가 들고 있다.",
+    "question": "리눅스에서 ASLR(Address Space Layout Randomization)의 적용 수준을 확인·변경할 수 있는 파일은?",
+    "choices": [
+      "/proc/sys/kernel/randomize_va_space",
+      "/proc/sys/kernel/panic",
+      "/proc/sys/kernel/watchdog",
+      "/proc/sys/kernel/random"
+    ],
+    "answer": 0,
+    "explanation": "값은 셋이다 — `0`은 끔, `1`은 스택·공유 라이브러리·mmap만 무작위화, `2`는 여기에 힙까지 더한 전체 무작위화이며 대부분의 배포판 기본값이 `2`다. `panic`은 커널 패닉 후 재부팅 대기 시간, `watchdog`은 하드웨어 워치독, `random`은 난수 생성기 관련 디렉터리로 주소 배치와 무관하다."
+  },
+  {
+    "id": "ise-windows-boot-time-cmd",
+    "area": "시스템 보안",
+    "difficulty": "하",
+    "topic": "sec-windows-security",
+    "concept": "윈도우에서 마지막 부팅 시각은 워크스테이션 서비스의 통계 시작 시각으로 확인한다.",
+    "question": "윈도우에서 해당 PC가 마지막으로 부팅된 시각을 확인하기 위해 사용하는 명령은?",
+    "choices": [
+      "net computer boot time",
+      "net reboot time",
+      "net statistics workstation",
+      "net time boot"
+    ],
+    "answer": 2,
+    "explanation": "`net statistics workstation`이 돌려주는 '통계 시작 시간'이 워크스테이션 서비스가 올라온 시점, 곧 마지막 부팅 시각이다. `systeminfo`의 '시스템 부팅 시간' 항목으로도 같은 값을 볼 수 있다. 나머지 셋은 존재하지 않는 명령 형식이다."
+  },
+  {
+    "id": "ise-access-log-referer",
+    "area": "시스템 보안",
+    "difficulty": "하",
+    "topic": "sec-system-logs",
+    "concept": "웹 접근 로그의 referer는 그 요청이 어느 페이지에서 출발했는지를 담는다.",
+    "question": "웹 서버 access log의 referer 필드가 담는 정보로 옳은 것은?",
+    "choices": [
+      "요청을 보낸 클라이언트의 브라우저와 운영체제 종류",
+      "사용자가 어느 페이지를 거쳐 이 요청에 이르렀는지를 가리키는 이전 페이지 주소",
+      "서버가 응답으로 돌려준 본문의 바이트 크기",
+      "요청을 처리하는 데 걸린 시간"
+    ],
+    "answer": 1,
+    "explanation": "referer는 링크를 눌러 들어온 출발지 URL이라 유입 경로 분석에 쓰이고, 침해 분석에서는 공격 요청이 어디서 시작됐는지를 되짚는 단서가 된다. 브라우저·OS 종류는 `User-Agent`, 응답 크기와 처리 시간은 각각 별도 필드다."
+  },
+  {
+    "id": "ise-soar-vs-siem",
+    "area": "네트워크 보안",
+    "difficulty": "중",
+    "topic": "sec-firewall-ids-ips",
+    "concept": "SIEM은 모아서 보여 주고, SOAR는 그다음의 대응 절차를 자동으로 굴린다.",
+    "question": "다음 설명에 해당하는 보안 솔루션은?",
+    "code": "흩어진 보안 장비의 경보를 받아, 미리 정의한 대응 절차(플레이북)에 따라\n티켓 발행·IP 차단·계정 잠금 같은 조치를 사람 손을 거치지 않고 실행한다.\n반복되는 단순 경보 처리를 자동화해 분석가가 중요한 사고에 집중하게 한다.",
+    "choices": [
+      "SIEM",
+      "SOAR",
+      "NGFW",
+      "UTM"
+    ],
+    "answer": 1,
+    "explanation": "SOAR(Security Orchestration, Automation and Response)는 플레이북으로 대응 절차 자체를 자동화한다. SIEM은 로그를 모아 상관분석해 경보를 '내놓는' 데까지가 몫이라 둘은 앞뒤로 이어 쓰고, NGFW와 UTM은 트래픽을 직접 다루는 경계 장비다."
+  },
+  {
+    "id": "ise-dlp-vs-drm-vdi",
+    "area": "네트워크 보안",
+    "difficulty": "하",
+    "topic": "sec-firewall-ids-ips",
+    "concept": "내부 정보가 조직 밖으로 나가는 경로를 감시·차단하는 솔루션이 DLP다.",
+    "question": "내부 정보가 외부로 유출되는 것을 탐지·차단하기 위해 메일·웹·이동식 매체 등 반출 경로를 감시하는 보안 솔루션은?",
+    "choices": [
+      "DLP",
+      "DRM",
+      "VDI",
+      "EDMS"
+    ],
+    "answer": 0,
+    "explanation": "DLP(Data Loss Prevention)는 나가는 트래픽과 단말의 반출 행위를 내용 기준으로 검사해 막는다. DRM은 문서 자체를 암호화해 열람·인쇄 권한을 통제하는 쪽이고, VDI는 작업 환경을 서버에 두어 단말에 자료가 남지 않게 하는 구성, EDMS는 전자문서를 보관·유통하는 관리 시스템이라 유출 차단이 목적이 아니다."
+  },
+  {
+    "id": "ise-land-attack",
+    "area": "네트워크 보안",
+    "difficulty": "중",
+    "topic": "sec-dos-ddos",
+    "concept": "LAND 공격은 출발지와 목적지를 같게 위조해 대상이 자기 자신에게 응답하게 만든다.",
+    "question": "다음 패킷의 특징에서 추정되는 공격은?",
+    "code": "출발지 IP  192.168.10.20   출발지 포트  80\n목적지 IP  192.168.10.20   목적지 포트  80\nTCP 플래그  SYN",
+    "choices": [
+      "SYN 플러딩",
+      "UDP 플러딩",
+      "LAND 공격",
+      "Teardrop 공격"
+    ],
+    "answer": 2,
+    "explanation": "출발지와 목적지의 주소·포트가 같다는 것이 LAND(Local Area Network Denial)의 표식이다. 대상은 자기 자신에게 SYN+ACK를 보내고 다시 받기를 되풀이해 자원을 소모한다. SYN 플러딩은 출발지를 제각기 위조한 SYN을 대량으로 보내는 쪽이고, Teardrop은 단편 오프셋을 겹치게 조작해 재조립을 깨뜨린다."
+  },
+  {
+    "id": "ise-rogue-ap-type",
+    "area": "네트워크 보안",
+    "difficulty": "하",
+    "topic": "sec-wireless-security",
+    "concept": "비인가 AP는 설치 주체와 의도로 갈린다 — Rogue AP는 허가 없이 꽂힌 AP, Evil Twin은 정상 AP를 흉내 낸 AP다.",
+    "question": "조직의 승인 없이 내부망에 연결되어 외부에서 무선으로 내부로 들어올 통로가 되는 비인가 AP를 가리키는 용어는?",
+    "choices": [
+      "Normal AP",
+      "Rogue AP",
+      "Honeypot AP",
+      "Ad-hoc 모드"
+    ],
+    "answer": 1,
+    "explanation": "Rogue AP는 직원이 편의로 꽂아 둔 것이든 공격자가 심은 것이든 관리 대상 밖에서 유선망에 붙은 AP를 말하며, 유선 경계를 통째로 우회하게 만든다. 같은 SSID로 정상 AP를 흉내 내 단말을 끌어오는 것은 Evil Twin, 공격자를 끌어들여 관찰하려고 일부러 둔 것은 Honeypot AP다."
+  },
+  {
+    "id": "ise-dot1x-port-auth",
+    "area": "네트워크 보안",
+    "difficulty": "중",
+    "topic": "sec-wireless-security",
+    "concept": "IEEE 802.1x는 포트에 붙은 단말을 인증 전까지 통과시키지 않는 포트 기반 접근통제 규격이다.",
+    "question": "다음 설명에 해당하는 표준은?",
+    "code": "단말이 스위치 포트나 AP에 붙어도 인증을 마치기 전에는 통신을 허용하지 않는다.\n신청자(Supplicant) · 인증자(Authenticator) · 인증 서버의 세 주체로 이뤄지고,\n인증 서버로는 보통 RADIUS를 쓰며 그 사이를 EAP가 실어 나른다.",
+    "choices": [
+      "IEEE 802.1x",
+      "IEEE 802.11i",
+      "IEEE 802.11a",
+      "IEEE 802.3"
+    ],
+    "answer": 0,
+    "explanation": "802.1x는 유선 스위치 포트와 무선 모두에 쓰는 포트 기반 네트워크 접근통제 규격이다. 802.11i는 WPA2의 바탕이 된 무선랜 보안 규격으로 802.1x를 인증 수단으로 끌어다 쓰며, 802.11a는 물리 계층 규격, 802.3은 이더넷 규격이다."
+  },
+  {
+    "id": "ise-tcp-client-state-transition",
+    "area": "네트워크 보안",
+    "difficulty": "하",
+    "topic": "sec-tcpip-vulnerability",
+    "concept": "3-way handshake에서 클라이언트와 서버가 거치는 상태 이름은 서로 다르다.",
+    "question": "TCP 3-way handshake로 연결에 성공한 클라이언트 측의 상태 변화 순서로 옳은 것은?",
+    "choices": [
+      "CLOSED → SYN_SENT → ESTABLISHED",
+      "CLOSED → SYN_RCVD → ESTABLISHED",
+      "LISTEN → SYN_SENT → ESTABLISHED",
+      "LISTEN → SYN_RCVD → ESTABLISHED"
+    ],
+    "answer": 0,
+    "explanation": "먼저 SYN을 보내는 쪽이 클라이언트라 `SYN_SENT`를 거친다. `LISTEN`과 `SYN_RCVD`는 받는 쪽인 서버의 상태이며, 서버는 `LISTEN → SYN_RCVD → ESTABLISHED`로 간다. SYN 플러딩이 고갈시키는 백로그 큐가 바로 `SYN_RCVD`에 머무는 연결들이 쌓이는 자리다."
+  },
+  {
+    "id": "ise-datalink-layer-function",
+    "area": "네트워크 보안",
+    "difficulty": "하",
+    "topic": "sec-network-basics",
+    "concept": "데이터 압축과 암호화는 데이터링크가 아니라 표현 계층의 일이다.",
+    "question": "OSI 7계층 중 데이터링크 계층의 기능으로 보기 어려운 것은?",
+    "choices": [
+      "인접한 두 지점 사이의 오류 없는 프레임 전송",
+      "데이터 압축과 암호화",
+      "매체 접근 제어와 멀티포인트 회선 제어",
+      "정지-대기 방식의 흐름 제어"
+    ],
+    "answer": 1,
+    "explanation": "압축과 암호화는 표현 계층(6계층)이 맡아 서로 다른 표현 방식을 맞추는 일이다. 데이터링크 계층은 프레임 단위로 인접 구간의 오류·흐름을 제어하고 MAC 주소로 매체 접근을 조정하는 데까지가 범위이며, 끝에서 끝까지의 신뢰성은 전송 계층이 따로 책임진다."
+  },
+  {
+    "id": "ise-nfv-vs-sdn",
+    "area": "네트워크 보안",
+    "difficulty": "중",
+    "topic": "sec-network-devices",
+    "concept": "SDN은 제어 평면을 떼어내 중앙으로 모으고, NFV는 전용 장비의 기능을 범용 서버의 소프트웨어로 옮긴다.",
+    "question": "다음 설명에 해당하는 기술은?",
+    "code": "방화벽·로드밸런서·라우터처럼 전용 하드웨어에 담겨 있던 네트워크 기능을\n범용 서버 위의 가상머신이나 컨테이너로 옮겨 소프트웨어로 제공한다.\n장비를 새로 들이지 않고 기능을 늘리거나 줄일 수 있다.",
+    "choices": [
+      "NFV",
+      "SDN",
+      "EDR",
+      "MDR"
+    ],
+    "answer": 0,
+    "explanation": "NFV(Network Function Virtualization)는 장비의 '기능'을 가상화하는 쪽이다. 제어 평면과 데이터 평면을 갈라 경로 결정을 중앙 컨트롤러로 모으는 것은 SDN이며 둘은 함께 쓰이지만 겨냥하는 대상이 다르다. EDR은 단말의 행위를 기록·분석해 대응하는 솔루션, MDR은 그 운영을 외부 전문 조직이 맡아 주는 서비스다."
+  },
+  {
+    "id": "ise-mail-agent-roles",
+    "area": "애플리케이션 보안",
+    "difficulty": "중",
+    "topic": "sec-mail-security",
+    "concept": "메일은 MUA → MSA → MTA → MDA의 손을 거쳐 수신함에 닿는다.",
+    "question": "인터넷 메일 구조의 구성 요소에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "MUA는 사용자가 메일을 쓰고 읽는 클라이언트 역할을 한다",
+      "MSA는 원격 서버에서 POP3나 IMAP으로 메시지를 가져온다",
+      "MDA는 MTA가 넘긴 메시지를 수신자의 사서함에 최종 배달한다",
+      "MTA는 목적지에 닿을 때까지 서버 사이에서 메시지를 중계한다"
+    ],
+    "answer": 1,
+    "explanation": "POP3·IMAP으로 사서함에서 메일을 꺼내 오는 것은 MUA가 하는 일이다. MSA(Message Submission Agent)는 반대 방향으로, MUA가 제출한 메일을 `587`번 포트에서 받아 검사한 뒤 MTA에 넘기는 제출 창구다. 보내는 길과 받는 길을 뒤집어 놓는 것이 이 유형의 단골 함정이다."
+  },
+  {
+    "id": "ise-spam-countermeasure-tool",
+    "area": "애플리케이션 보안",
+    "difficulty": "중",
+    "topic": "sec-mail-security",
+    "concept": "스팸 대응은 내용을 보는 필터와 발신 자격을 보는 인증으로 갈린다.",
+    "question": "다음 설명에 해당하는 스팸메일 대응 방안은?",
+    "code": "도메인 소유자가 그 도메인의 메일을 보낼 수 있는 서버의 IP 목록을\nDNS의 TXT 레코드로 공개해 둔다. 받는 서버는 메일이 실제로 그 목록 안의\n주소에서 왔는지 대조해, 발신 도메인을 사칭한 메일을 걸러 낸다.",
+    "choices": [
+      "procmail",
+      "Sender Policy Framework",
+      "Sanitizer",
+      "Spam Assassin"
+    ],
+    "answer": 1,
+    "explanation": "SPF는 내용이 아니라 '보낼 자격이 있는 서버인가'를 DNS로 확인하는 발신 도메인 인증이다. Spam Assassin은 제목·본문·헤더에 규칙별 점수를 매겨 임계값을 넘으면 스팸으로 분류하는 내용 기반 필터, procmail은 받은 메일을 규칙대로 분류·처리하는 도구, Sanitizer는 procmail과 함께 첨부파일을 무해화하는 쪽이다."
+  },
+  {
+    "id": "ise-tftp-characteristic",
+    "area": "애플리케이션 보안",
+    "difficulty": "중",
+    "topic": "sec-ftp-security",
+    "concept": "TFTP는 UDP `69`번에서 인증 없이 동작하는 최소 기능 전송 규약이다.",
+    "question": "TFTP(Trivial File Transfer Protocol)에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "RRQ와 WRQ는 클라이언트가 서버에 보내는 읽기·쓰기 요청이다",
+      "DATA와 ACK 메시지는 클라이언트와 서버가 모두 사용한다",
+      "사용자 인증 절차가 없어 접근 제어를 별도 수단으로 걸어야 한다",
+      "TCP 69번 포트로 연결을 맺은 뒤 데이터를 전송한다"
+    ],
+    "answer": 3,
+    "explanation": "TFTP는 UDP `69`번을 쓰며 연결을 맺지 않는다. 메시지는 RRQ·WRQ·DATA·ACK·ERROR 다섯 가지뿐이고 로그인 절차가 아예 없어, 네트워크 장비 펌웨어 배포처럼 통제된 구간에서만 쓰고 그 밖에서는 꺼 두는 것이 원칙이다."
+  },
+  {
+    "id": "ise-reverse-domain",
+    "area": "애플리케이션 보안",
+    "difficulty": "중",
+    "topic": "sec-dns-security",
+    "concept": "리버스 도메인은 IP를 도메인 이름으로 되짚기 위한 특수 도메인이다.",
+    "question": "리버스 도메인(Reverse Domain)에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "도메인 이름을 IP 주소로 바꾸기 위해 네임서버에 두는 특수 도메인이다",
+      "IP 주소로 도메인 이름을 찾는 역질의에 쓰인다",
+      "IPv4에서는 주소를 거꾸로 적고 뒤에 in-addr.arpa를 붙인 형태를 갖는다",
+      "역방향 조회의 응답은 PTR 레코드로 돌려준다"
+    ],
+    "answer": 0,
+    "explanation": "방향이 반대다 — 도메인 이름을 IP로 바꾸는 정방향 조회는 `A`·`AAAA` 레코드가 맡고, 리버스 도메인은 그 반대인 IP → 이름을 위한 것이다. `192.0.2.5`의 역방향 이름은 `5.2.0.192.in-addr.arpa`이며, 메일 서버가 발신지의 역방향 이름이 등록돼 있는지를 스팸 판단에 쓰기도 한다."
+  },
+  {
+    "id": "ise-dns-any-query",
+    "area": "애플리케이션 보안",
+    "difficulty": "하",
+    "topic": "sec-dns-security",
+    "concept": "ANY 질의는 한 번의 작은 요청에 큰 응답을 끌어내 증폭 공격의 지렛대가 된다.",
+    "question": "DNS 증폭 공격에 특히 악용되어, 많은 서버가 응답을 제한하게 된 질의 유형은?",
+    "choices": [
+      "A",
+      "NS",
+      "ANY",
+      "TXT"
+    ],
+    "answer": 2,
+    "explanation": "ANY는 그 이름에 달린 모든 레코드를 한꺼번에 돌려 달라는 질의라 요청 대비 응답이 가장 크게 불어난다. 출발지를 피해자로 위조해 뿌리면 증폭된 응답이 피해자에게 쏟아지므로, RFC 8482 이후 많은 구현이 ANY에 축약된 답만 돌려주도록 바뀌었다."
+  },
+  {
+    "id": "ise-http-request-smuggling",
+    "area": "애플리케이션 보안",
+    "difficulty": "상",
+    "topic": "sec-web-vulnerability",
+    "concept": "요청 스머글링은 앞단과 뒷단이 요청의 끝을 다르게 해석하는 틈을 파고든다.",
+    "question": "다음 설명에 해당하는 공격은?",
+    "code": "한 요청에 Content-Length와 Transfer-Encoding 헤더를 함께 넣어 보낸다.\n앞단의 프록시는 한쪽 헤더를, 뒷단의 웹 서버는 다른 쪽 헤더를 기준으로\n요청의 끝을 판단하게 되어, 남은 바이트가 다음 사용자의 요청 앞에 붙는다.",
+    "choices": [
+      "XSS",
+      "SSRF",
+      "HTTP 요청 스머글링",
+      "CSRF"
+    ],
+    "answer": 2,
+    "explanation": "요청 경계 해석이 앞단과 뒷단에서 어긋난다는 것이 이 공격의 전부라, 둘 중 한쪽이 모호한 요청을 거부하게 만드는 것이 대응이다. SSRF는 서버가 공격자가 지정한 주소로 대신 요청을 보내게 만드는 것이고, CSRF는 피해자의 브라우저가 인증된 상태로 요청을 보내게 만드는 것이라 겨냥하는 지점이 다르다."
+  },
+  {
+    "id": "ise-eauction-requirement",
+    "area": "애플리케이션 보안",
+    "difficulty": "중",
+    "topic": "sec-ecommerce-security",
+    "concept": "전자입찰은 일반 거래 요건에 더해 '아무도 미리 못 본다'와 '모두에게 같은 조건'을 요구한다.",
+    "question": "전자입찰 시스템이 갖추어야 할 보안 요구사항과 거리가 먼 것은?",
+    "choices": [
+      "비밀성",
+      "공평성",
+      "동시성",
+      "무결성"
+    ],
+    "answer": 2,
+    "explanation": "동시성은 여러 트랜잭션을 함께 처리하는 데이터베이스의 성능 개념이지 입찰의 보안 요건이 아니다. 전자입찰은 개찰 전까지 투찰 내용이 드러나지 않는 비밀성, 특정 참가자가 유리해지지 않는 공평성, 제출한 내용이 바뀌지 않는 무결성, 그리고 참가 사실을 숨기는 입찰자 익명성을 함께 요구한다."
+  },
+  {
+    "id": "ise-fds-fraud-detection",
+    "area": "애플리케이션 보안",
+    "difficulty": "하",
+    "topic": "sec-ecommerce-security",
+    "concept": "FDS는 거래 자체가 아니라 '평소와 다른 거래'를 본다.",
+    "question": "다음 설명에 해당하는 것은?",
+    "code": "결제 요청이 들어오면 접속 단말·IP·위치·금액·시간대 같은 정보를\n그 이용자의 평소 거래 양상과 견주어, 평소와 크게 어긋나면\n추가 인증을 요구하거나 거래를 보류한다.",
+    "choices": [
+      "FDS",
+      "IDS",
+      "블록체인",
+      "SET"
+    ],
+    "answer": 0,
+    "explanation": "FDS(Fraud Detection System)는 인증을 통과한 거래라도 행위 양상이 평소와 다르면 걸러 내는 이상금융거래 탐지 시스템이다. IDS는 네트워크나 호스트의 침입 징후를 보는 쪽이라 거래 맥락을 다루지 않고, SET은 거래 자체를 암호학적으로 보호하는 규격이다."
+  },
+  {
+    "id": "ise-rabin-decryption-candidates",
+    "area": "암호학",
+    "difficulty": "상",
+    "topic": "sec-symmetric-asymmetric",
+    "concept": "라빈 암호는 복호화가 제곱근 계산이라 평문 후보가 넷 나온다.",
+    "question": "라빈(Rabin) 암호 시스템에서 암호문을 복호화했을 때 나오는 평문 후보의 개수는?",
+    "choices": [
+      "1개",
+      "2개",
+      "3개",
+      "4개"
+    ],
+    "answer": 3,
+    "explanation": "복호화가 두 소수 `p`·`q`를 법으로 한 제곱근을 구하는 일이고 각각 근이 둘씩 나오므로, 중국인의 나머지 정리로 합치면 후보가 넷이다. 그중 어느 것이 원문인지는 암호학적으로 정해지지 않으므로 평문에 미리 정해 둔 중복 정보를 넣어 가려낸다. 안전성은 소인수분해 문제에 기대고 있다."
+  },
+  {
+    "id": "ise-pki-hierarchy-roles",
+    "area": "암호학",
+    "difficulty": "중",
+    "topic": "sec-digital-signature-pki",
+    "concept": "PKI는 정책을 세우는 층과 인증서를 발급하는 층이 나뉜다 — PAA·PCA·CA·RA.",
+    "question": "공개키 기반구조(PKI)의 구성요소에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "PAA는 전체 정책을 수립하고 하위 기관을 승인하는 최상위 기관이다",
+      "PCA는 자신의 도메인에 적용할 정책을 세우고 하위 CA를 인증한다",
+      "CA는 인증서를 발급·갱신·폐지하고 CRL을 관리한다",
+      "RA는 발급된 인증서에 최종 서명을 붙여 효력을 부여한다"
+    ],
+    "answer": 3,
+    "explanation": "RA(등록기관)는 신청자가 본인이 맞는지 확인해 CA에 전달하는 창구일 뿐 서명 권한이 없다 — 인증서에 서명해 효력을 주는 것은 언제나 CA다. 위에서부터 PAA가 전체 정책을, PCA가 도메인 정책을 세우고, 실제 발급은 CA가, 신원 확인은 RA가 맡는 구조다."
+  },
+  {
+    "id": "ise-signature-algorithm-origin",
+    "area": "암호학",
+    "difficulty": "중",
+    "topic": "sec-digital-signature-pki",
+    "concept": "전자서명 알고리즘은 바탕이 되는 수학 문제와 표준을 만든 곳으로 갈린다.",
+    "question": "전자서명 알고리즘에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "RSA 서명은 소인수분해 문제의 어려움에 기댄다",
+      "DSA는 미국 연방 표준 DSS에 채택된 서명 알고리즘이다",
+      "ECDSA는 타원곡선 이산대수 문제를 바탕으로 해 같은 안전성에 더 짧은 키를 쓴다",
+      "KCDSA는 국내에서 표준화된 알고리즘으로 소인수분해 문제에 기댄다"
+    ],
+    "answer": 3,
+    "explanation": "KCDSA는 국내 표준 전자서명이 맞지만 바탕은 소인수분해가 아니라 ==이산대수 문제==이고, 타원곡선판인 EC-KCDSA도 함께 표준화돼 있다. 소인수분해에 기대는 것은 RSA 쪽이며, DSA·ECDSA·KCDSA는 모두 이산대수 계열이라는 점이 갈림선이다."
+  },
+  {
+    "id": "ise-aes-ccm-vs-gcm",
+    "area": "암호학",
+    "difficulty": "상",
+    "topic": "sec-block-cipher-modes",
+    "concept": "CCM과 GCM은 둘 다 인증 암호지만 무결성을 만드는 부품이 다르다 — CBC-MAC과 GHASH.",
+    "question": "AES-CCM 운용 모드의 특징으로 옳지 않은 것은?",
+    "choices": [
+      "기밀성은 카운터(CTR) 방식으로, 무결성은 CBC-MAC으로 얻는다",
+      "암호화와 인증을 함께 제공하는 인증 암호(AEAD) 모드다",
+      "카운터 방식이라 평문을 블록 크기에 맞춰 채우는 패딩이 필요 없다",
+      "메시지 인증에 GHASH 함수를 사용한다"
+    ],
+    "answer": 3,
+    "explanation": "GHASH를 쓰는 것은 GCM이다. CCM은 이름 그대로 `Counter with CBC-MAC`이라 인증을 CBC-MAC으로 만들며, 둘 다 AEAD지만 GCM은 GHASH가 병렬 처리에 유리해 고속 구간에서 더 널리 쓰인다. 기밀성 쪽이 CTR이라 패딩이 필요 없는 것은 두 모드가 같다."
+  },
+  {
+    "id": "ise-domestic-lightweight-cipher",
+    "area": "암호학",
+    "difficulty": "중",
+    "topic": "sec-symmetric-asymmetric",
+    "concept": "국산 블록 암호는 쓰임새로 갈린다 — 범용의 SEED·ARIA, 경량 환경의 HIGHT·LEA.",
+    "question": "국산 블록 암호 알고리즘에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "SEED는 128비트 블록을 다루는 Feistel 구조의 알고리즘이다",
+      "ARIA는 AES와 같은 SPN 구조이며 블록 크기도 128비트다",
+      "LEA는 하드웨어 전용으로 설계되어 소프트웨어 구현이 불가능하다",
+      "HIGHT는 RFID·센서처럼 자원이 적은 환경을 겨냥한 64비트 블록 경량 암호다"
+    ],
+    "answer": 2,
+    "explanation": "LEA(Lightweight Encryption Algorithm)는 오히려 소프트웨어에서 빠르게 돌도록 설계된 128비트 블록 경량 암호다. 네 알고리즘 모두 국내 표준이며, 범용으로는 SEED와 ARIA를, 자원이 제한된 기기에는 HIGHT와 LEA를 쓴다고 묶어 두면 구분이 선다."
+  },
+  {
+    "id": "ise-radius-aaa-scope",
+    "area": "보안 일반",
+    "difficulty": "하",
+    "topic": "sec-identification-authentication",
+    "concept": "RADIUS가 제공하는 것은 AAA — 인증·인가·계정관리 셋이다.",
+    "question": "RADIUS 프로토콜이 제공하는 기본 기능과 가장 거리가 먼 것은?",
+    "choices": [
+      "인증(Authentication)",
+      "인가(Authorization)",
+      "계정관리(Accounting)",
+      "부인방지(Non-repudiation)"
+    ],
+    "answer": 3,
+    "explanation": "RADIUS는 AAA 서버 규약이라 누구인지 확인하고(인증), 무엇을 쓸 수 있는지 정하고(인가), 언제 얼마나 썼는지 기록한다(계정관리). 부인방지는 서명자만 가진 개인키로 서명하는 전자서명이 떠받치는 성질이라 RADIUS의 기능 목록에 들지 않는다."
+  },
+  {
+    "id": "ise-kerberos-v5-improvement",
+    "area": "보안 일반",
+    "difficulty": "상",
+    "topic": "sec-sso-kerberos",
+    "concept": "커버로스 V5는 V4의 알고리즘·주소·유효기간 제약을 풀었지만 기한 자체를 없앤 것은 아니다.",
+    "question": "커버로스 V4의 단점을 개선한 V5의 특징으로 옳지 않은 것은?",
+    "choices": [
+      "DES만 쓰던 제약을 풀어 다른 암호 알고리즘도 쓸 수 있다",
+      "IP 외의 네트워크 주소 유형도 쓸 수 있다",
+      "티켓에 유효기간 개념이 사라져 한 번 받은 티켓을 계속 쓸 수 있다",
+      "티켓에 시작·종료 시각을 담아 유효기간을 길게 지정할 수 있다"
+    ],
+    "answer": 2,
+    "explanation": "V5가 푼 것은 '최대 기한이 짧게 고정돼 있던 제약'이지 기한 자체가 아니다 — 티켓에 시작·종료 시각을 담아 필요한 만큼 길게 잡을 수 있게 됐을 뿐, 만료된 티켓은 여전히 쓸 수 없다. 재발급 없이 기간을 늘리는 갱신 가능(renewable) 티켓도 V5에서 들어왔다."
+  },
+  {
+    "id": "ise-cyber-crisis-alert-level",
+    "area": "보안관리·법규",
+    "difficulty": "중",
+    "topic": "sec-incident-response",
+    "concept": "사이버위기경보는 관심 → 주의 → 경계 → 심각의 네 단계로 올라간다.",
+    "question": "복수의 정보통신서비스 제공자(ISP) 망에 장애나 마비가 발생해 피해가 확산되는 상황에서 발령하는 사이버위기경보 단계는?",
+    "choices": [
+      "관심",
+      "주의",
+      "경계",
+      "심각"
+    ],
+    "answer": 2,
+    "explanation": "경계는 복수 ISP망·기간통신망의 장애처럼 피해가 여러 기관으로 번진 단계다. 관심은 위해 가능성이 높아진 정도, 주의는 일부 기관의 장애나 확산 조짐이 보이는 단계이고, 국가적 차원에서 망과 정보시스템을 쓸 수 없게 되면 심각으로 올린다."
+  },
+  {
+    "id": "ise-isac-role",
+    "area": "보안관리·법규",
+    "difficulty": "중",
+    "topic": "sec-incident-response",
+    "concept": "ISAC은 같은 분야 기관들이 침해 정보를 모아 나누는 분야별 공동 대응 조직이다.",
+    "question": "다음 업무를 모두 수행하는 기관은?",
+    "code": "· 금융·통신 등 같은 분야 기관들의 취약점과 침해 요인 정보를 모아 제공한다\n· 침해사고가 발생하면 실시간 경보·분석 체계를 운영한다\n· 회원 기관의 주요정보통신기반시설 취약점 분석·평가를 수행할 수 있다",
+    "choices": [
+      "정보공유·분석센터(ISAC)",
+      "한국인터넷진흥원(KISA)",
+      "관리기관",
+      "정보보호 전문서비스 기업"
+    ],
+    "answer": 0,
+    "explanation": "ISAC(Information Sharing and Analysis Center)은 정보통신기반보호법에 근거해 분야별로 설립되며, 혼자서는 보이지 않는 공격 흐름을 같은 업종끼리 모아야 보인다는 발상이 바탕이다. KISA는 분야를 가리지 않는 전국 단위 대응 기관이고, 관리기관은 기반시설을 실제로 운영하는 주체를 가리킨다."
+  },
+  {
+    "id": "ise-pseudonym-generalization",
+    "area": "보안관리·법규",
+    "difficulty": "중",
+    "topic": "sec-privacy-law",
+    "concept": "가명·익명처리의 일반화는 값을 뭉뚱그려 특정 개인을 가려내기 어렵게 만든다.",
+    "question": "가명·익명처리 기법 중 다음 설명에 해당하는 것은?",
+    "code": "나이 37세를 40세로, 금액 1,234,500원을 1,200,000원으로 바꾸듯\n정해진 자릿수에서 값을 반올림해 세부 수치를 지운다.",
+    "choices": [
+      "상하단코딩",
+      "제어 라운딩",
+      "랜덤 라운딩",
+      "일반 라운딩"
+    ],
+    "answer": 3,
+    "explanation": "가장 기본인 일반 라운딩은 정해진 기준으로 값을 반올림한다. 랜덤 라운딩은 올림·내림을 확률적으로 섞어 되돌리기 어렵게 만들고, 제어 라운딩은 반올림 뒤에도 합계가 원래 총계와 맞도록 조정하며, 상하단코딩은 양 끝의 희귀한 값들을 하나의 구간으로 묶는 기법이다."
+  },
+  {
+    "id": "ise-internal-mgmt-plan-item",
+    "area": "보안관리·법규",
+    "difficulty": "중",
+    "topic": "sec-privacy-law",
+    "concept": "내부관리계획에 담을 항목은 안전성 확보조치 기준이 정해 두고 있다.",
+    "question": "개인정보처리자가 수립·시행하는 내부관리계획에 반드시 포함해야 하는 사항이 아닌 것은?",
+    "choices": [
+      "개인정보 보호책임자의 지정에 관한 사항",
+      "개인정보취급자에 대한 상벌에 관한 사항",
+      "개인정보의 암호화 조치에 관한 사항",
+      "개인정보처리시스템의 접근 통제에 관한 사항"
+    ],
+    "answer": 1,
+    "explanation": "상벌은 조직이 알아서 정할 인사 사항이지 법령이 요구하는 내부관리계획 항목이 아니다. 기준이 정한 것은 보호책임자 지정, 취급자의 역할과 책임, 교육, 접근 권한 관리와 접근 통제, 암호화, 접속기록 보관·점검, 악성프로그램 방지, 물리적 안전조치, 유출 대응 계획 등이다."
+  },
+  {
+    "id": "ise-kiip-committee",
+    "area": "보안관리·법규",
+    "difficulty": "중",
+    "topic": "sec-privacy-law",
+    "concept": "정보통신기반보호위원회는 국무총리 소속이지만 위원장은 국무조정실장이다.",
+    "question": "정보통신기반보호법상 정보통신기반보호위원회에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "주요정보통신기반시설 보호에 관한 사항을 심의하기 위해 국무총리 소속으로 둔다",
+      "위원장은 국무총리가 맡고 위원은 중앙행정기관 차관급 공무원으로 구성한다",
+      "효율적 운영을 위해 공공분야와 민간분야를 각각 담당하는 실무위원회를 둔다",
+      "위원장 1인을 포함한 25인 이내의 위원으로 구성한다"
+    ],
+    "answer": 1,
+    "explanation": "소속과 위원장을 섞어 놓은 보기다 — 위원회가 국무총리 소속인 것은 맞지만 위원장은 국무조정실장이 맡는다. 소속 기관의 장이 곧 위원장이라고 넘겨짚게 만드는 자리라 반복 출제된다."
+  },
+  {
+    "id": "ise-security-disclosure-system",
+    "area": "보안관리·법규",
+    "difficulty": "중",
+    "topic": "sec-isms-p",
+    "concept": "정보보호 공시는 기업의 정보보호 투자·인력·인증 현황을 공개해 투자를 끌어내려는 제도다.",
+    "question": "「정보보호산업의 진흥에 관한 법률」에 따른 정보보호 공시제도에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "정보보호 투자 현황과 활동을 공개해 이용자와 투자자에게 정보를 제공한다",
+      "일정 기준에 해당하는 사업자는 공시가 의무이고 그 밖의 기업은 자율로 할 수 있다",
+      "공시 항목에는 정보보호 투자액, 전담인력 현황, 인증·점검 취득 현황이 들어간다",
+      "공시 항목에는 그 기업이 받은 정보보호 관련 행정처분 내역이 포함된다"
+    ],
+    "answer": 3,
+    "explanation": "행정처분 내역은 공시 항목이 아니다 — 제도의 목적이 제재 이력을 드러내는 것이 아니라 투자를 끌어내는 데 있기 때문이다. 공시하는 것은 투자액, 전담인력, 인증·평가·점검 획득 현황, 그 밖의 정보보호 활동이며 과학기술정보통신부가 종합 포털에 모아 공개한다."
+  },
+  {
+    "id": "ise-quantitative-analysis-method",
+    "area": "보안관리·법규",
+    "difficulty": "중",
+    "topic": "sec-risk-management",
+    "concept": "정량적 분석 방법론은 숫자를 어디서 가져오느냐로 갈린다 — 과거 자료, 수식, 확률 분포.",
+    "question": "정량적 위험분석 방법론에 대한 설명으로 다음에 해당하는 것은?",
+    "code": "과거 자료가 충분하지 않을 때, 위험 발생 빈도와 손실을 추정하는\n수학 산식에 값을 넣어 기대 손실을 계산한다.\n자료 수집 부담은 줄지만 산식의 가정이 결과를 좌우한다.",
+    "choices": [
+      "과거자료 분석법",
+      "수학공식 접근법",
+      "확률 분포법",
+      "델파이법"
+    ],
+    "answer": 1,
+    "explanation": "수학공식 접근법은 자료 대신 산식으로 값을 만들어 내므로 가정이 틀리면 결과도 함께 틀어진다. 과거자료 분석법은 축적된 사고 이력에서 빈도를 끌어내고, 확률 분포법은 미지의 사건에 확률 분포를 가정해 추정한다. 델파이법은 전문가 합의로 등급을 매기는 정성적 기법이라 애초에 다른 갈래다."
   }
 ]
