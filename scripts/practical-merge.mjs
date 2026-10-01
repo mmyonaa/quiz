@@ -32,6 +32,41 @@ const loadTopics = () =>
 /** 발문만으로는 코드형이 서로 같아 보인다("다음 코드의 출력은?") — 제시문까지 묶어 비교한다 */
 const stem = (q) => `${q.question?.trim()} ${q.code?.trim() ?? ""}`;
 
+/**
+ * 발문·제시문이 정답 낱말을 그대로 품고 있는지.
+ *
+ * 필답형은 학습자가 답을 **직접 적는다** — 그래서 문제에 적힌 낱말을 베껴 적으면
+ * 정답 처리되는 자리가 생기면 그 문항은 아무것도 묻지 않는 문항이 된다.
+ * 사람 눈으로는 걸러지지 않는 결함이다(실제로 한 작업에서 11번 만들었다):
+ * 답안 형식을 'No Read Up처럼'이라고 예시했는데 그 예시가 정답이었고, 표의 다른 행에
+ * 적어 둔 Feistel이 빈칸의 답이었고, '자료 흐름도'가 '자료 흐름'을 품고 있었다.
+ *
+ * 판정에 채점기의 normalize를 그대로 쓴다 — "베껴 적은 문자열이 실제로 정답으로
+ * 받아들여지는가"가 곧 이 검사의 뜻이기 때문이다. 점검용 정규화를 따로 만들면
+ * 두 규칙이 어긋나 이 게이트가 거짓말을 하기 시작한다.
+ */
+const leaks = (normAnswer, normStem) =>
+  // 한 글자는 제시문 아무 곳에나 걸린다. 숫자만으로 된 답(포트·개수·8진수)은 제시문의
+  // 주소·수치에 자연히 섞이므로 제외한다 — 그런 문항은 애초에 '제시문에서 읽어내기'다.
+  normAnswer.length >= 2 && !/^[\d.]+$/.test(normAnswer) && normStem.includes(normAnswer);
+
+/**
+ * 위 검사의 예외 — **제시문에서 답을 골라내는 것이 문제의 핵심인** 문항.
+ * 빈 공간 네 개 중 배치 전략별로 고르기, 라우팅 항목 중 최장 접두사 고르기,
+ * 데이터에서 후보키 판별하기, 두 선택지 중 고르기가 여기에 속한다.
+ * 여기에 id를 적는 일 자체가 "의도한 것"이라는 기록이 된다 — 늘리기 전에 한 번 더 생각할 것.
+ */
+const STEM_LEAK_OK = new Set([
+  "p-memory-fit-strategies",      // 빈 공간 12·6·20·8KB 중 전략별로 고른다
+  "p-candidate-superkey",         // 표의 속성 이름으로 후보키를 판별한다
+  "p-routing-longest-prefix",     // 라우팅 테이블의 다음 홉 주소를 고른다
+  "p-sstf-head-movement",         // 대기 큐의 트랙 번호 중 마지막 처리 대상을 고른다
+  "p-ise-ale-calc",               // '정당화됨 / 정당화되지 않음' 이지선다
+  "p-ise-uid-zero-detect",        // passwd 출력에서 의심 계정 이름을 고른다
+  "p-ise-cnc-connection",         // netstat 출력에서 목적지 포트를 고른다
+  "p-ise-fire-class-c",           // 표의 등급 열에서 빠진 등급을 고른다
+]);
+
 /** 문항 하나 점검 — 오류 목록을 돌려준다(빈 배열이면 통과) */
 const check = (q, seenIds, seenStems, topics) => {
   const e = [];
@@ -71,6 +106,7 @@ const check = (q, seenIds, seenStems, topics) => {
   if (q.labels && q.labels.length !== q.answers.length) e.push(`labels ${q.labels.length}개 vs 답란 ${q.answers.length}개`);
 
   // 답란별 허용 표기 — 채점기가 실제로 보는 값(정규화 결과)으로 점검한다
+  const leakable = !STEM_LEAK_OK.has(q.id) && normalize(`${q.question} ${q.code ?? ""}`);
   q.answers.forEach((accepted, i) => {
     const at = `답란 ${i + 1}`;
     if (!Array.isArray(accepted) || !accepted.length) return e.push(`${at}: 허용 표기가 비어 있음`);
@@ -80,6 +116,12 @@ const check = (q, seenIds, seenStems, topics) => {
     if (empty.length) e.push(`${at}: 정규화하면 빈 값이 되는 표기 ${JSON.stringify(empty)}`);
     const dup = norm.filter((n, j) => n && norm.indexOf(n) !== j);
     if (dup.length) e.push(`${at}: 정규화하면 서로 같은 표기 ${JSON.stringify([...new Set(dup)])}`);
+
+    if (leakable) {
+      const leaked = accepted.filter((_, j) => leaks(norm[j], leakable));
+      if (leaked.length)
+        e.push(`${at}: 발문·제시문에 정답 표기가 그대로 있음 ${JSON.stringify(leaked)} — 베껴 적으면 정답 처리된다`);
+    }
   });
   return e;
 };
