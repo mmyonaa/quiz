@@ -109,6 +109,43 @@ const merge = (paths, dry) => {
   if (!dry) console.log("  다음: npm run build 로 스키마 게이트를 통과시킬 것");
 };
 
+/**
+ * 보기에서 답이 유도되는 드리프트 지표.
+ *
+ * 필기는 정답이 보기 중 하나로 **이미 보이므로**, 실기처럼 "정답이 발문에 있으면 결함"이
+ * 성립하지 않는다(발문이 뜻을 설명하고 보기에서 이름을 고르는 것은 정상 유형이다).
+ * 대신 보기 묶음의 **모양**이 정답을 가리키는 경우가 결함이고, 이건 한 문항만 보면
+ * 판단할 수 없다 — 은행 전체의 치우침으로만 드러난다. 그래서 막지 않고 보이게만 한다.
+ *
+ * 실제로 정보보안기사 은행은 정답이 1번에 54%(234/436) 쏠려 있었고, 보기는 은행에 적힌
+ * 순서로 그대로 렌더되므로 그 자체가 답을 유도하는 구조였다. 숫자로 보고 있었다면
+ * 386문항이 쌓이기 전에 알아챘을 것이다.
+ */
+const NEG_STEM = /틀린 것|옳지 않은|아닌 것|해당하지 않|거리가 먼|적절하지 않|적합하지 않|되지 않는|할 수 없는|없는 것|보기 어려운/;
+const ABSOLUTE = /항상|절대|무조건|전혀|반드시|유일|100%|필요 없다|불필요하다|언제나/;
+const has = (re) => (c) => re.test(c);
+
+const drift = (pool) => {
+  const only = (pred) => pool.filter((q) => pred(q.choices[q.answer]) && q.choices.filter(pred).length === 1).length;
+  const skewed = pool.filter((q) => {
+    const len = q.choices.map((c) => c.length);
+    const mine = len[q.answer];
+    const rest = len.filter((_, i) => i !== q.answer);
+    const max = Math.max(...rest);
+    const min = Math.min(...rest);
+    return (mine > max * 1.6 && mine - max >= 10) || (mine * 1.6 < min && min - mine >= 10);
+  }).length;
+  const neg = pool.filter((q) => NEG_STEM.test(q.question));
+  return {
+    byIndex: [0, 1, 2, 3].map((i) => pool.filter((q) => q.answer === i).length),
+    skewed,
+    onlyParen: only(has(/[([]/)),
+    onlyLatin: only(has(/[A-Za-z]/)),
+    neg: neg.length,
+    negAbsolute: neg.filter((q) => ABSOLUTE.test(q.choices[q.answer])).length,
+  };
+};
+
 /** 현황 리포트 — "다음에 어느 주제를 낼까"를 고르기 위한 것 */
 const report = () => {
   const bank = read(BANK);
@@ -135,6 +172,25 @@ const report = () => {
         .map(([s, n]) => `${s} ${n}${n < 20 ? `(-${20 - n})` : ""}`)
         .join(" · ")}`,
     );
+
+    // 보기 모양이 답을 가리키는지 — 막지 않고 숫자로만 보여 준다(위 주석 참고)
+    const pool = bank.filter((q) => topics[q.topic]?.exam === exam);
+    if (pool.length) {
+      const d = drift(pool);
+      const even = Math.round(pool.length / 4);
+      const worst = Math.max(...d.byIndex);
+      console.log(
+        `  정답 위치: ${d.byIndex.join("·")} (고르면 각 ${even}) ` +
+          `${worst > even * 1.25 ? `← ${d.byIndex.indexOf(worst) + 1}번에 ${Math.round((worst / pool.length) * 100)}% 쏠렸다` : "균형"}`,
+      );
+      console.log(
+        `  보기 모양: 정답지만 유난히 길거나 짧음 ${d.skewed} · 정답지만 괄호 병기 ${d.onlyParen} · 정답지만 영문 포함 ${d.onlyLatin}`,
+      );
+      console.log(
+        `  부정형 발문 ${d.neg}/${pool.length} (${Math.round((d.neg / pool.length) * 100)}%, 기출 참고치 약 50%)` +
+          ` · 그중 정답지에 절대어 ${d.negAbsolute}`,
+      );
+    }
 
     const todo = keys.filter((k) => !w[k]);
     if (!todo.length) {
