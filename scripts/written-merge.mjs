@@ -218,12 +218,16 @@ const report = () => {
       ["실기", practical.filter((q) => topics[q.topic]?.exam === exam)],
     ]) {
       const d = hlDensity(src, areaOf);
-      // 표본이 작으면 한 건이 10%를 넘겨 비율이 튄다 — 20문항 미만은 경고하지 않는다
-      const over = Object.entries(d).filter(([, [n, h]]) => n >= 20 && h / n > 0.2);
+      // 아래쪽도 본다 — 상한만 보던 탓에 데이터베이스가 5%로 평평한 것을 오래 놓쳤다.
+      // 표본이 작으면 한 건이 10%를 넘겨 비율이 튀므로 20문항 미만은 경고하지 않는다.
+      const off = (f) => Object.entries(d).filter(([, [n, h]]) => n >= 20 && f(h / n));
+      const over = off((r) => r > 0.2);
+      const under = off((r) => r < 0.1);
       const line = Object.entries(d)
         .map(([a, [n, h]]) => `${a} ${Math.round((h / n) * 100)}%`)
         .join(" · ");
-      if (line) console.log(`  ${label} 형광펜 밀도(기준 10~20%): ${line}${over.length ? "  ← 상한 초과" : ""}`);
+      const flag = [over.length && "상한 초과", under.length && "하한 미만"].filter(Boolean).join(" · ");
+      if (line) console.log(`  ${label} 형광펜 밀도(기준 10~20%): ${line}${flag ? `  ← ${flag}` : ""}`);
     }
 
     const todo = keys.filter((k) => !w[k]);
