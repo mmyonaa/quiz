@@ -15762,5 +15762,88 @@
     ],
     "answer": 1,
     "explanation": "수학공식 접근법은 자료 대신 산식으로 값을 만들어 내므로 가정이 틀리면 결과도 함께 틀어진다. 과거자료 분석법은 축적된 사고 이력에서 빈도를 끌어내고, 확률 분포법은 미지의 사건에 확률 분포를 가정해 추정한다. 델파이법은 전문가 합의로 등급을 매기는 정성적 기법이라 애초에 다른 갈래다."
+  },
+  {
+    "id": "ise-syn-scan-packet-log",
+    "area": "네트워크 보안",
+    "difficulty": "상",
+    "topic": "sec-scanning-sniffing",
+    "concept": "SYN 스캔은 목적지 포트를 바꿔 가며 SYN을 보내고, 응답이 오면 RST로 끊은 흔적을 남긴다.",
+    "question": "NIDS가 수집한 다음 패킷 기록에 대한 설명으로 가장 알맞은 것은? (A는 공격 의심 호스트, B는 내부 서버다)",
+    "code": "시각        출발지        방향   목적지        TCP 플래그\n10:02:11.1  A:40001        →     B:22          SYN\n10:02:11.1  A:40002        →     B:80          SYN\n10:02:11.2  B:22           →     A:40001       SYN, ACK\n10:02:11.2  A:40001        →     B:22          RST\n10:02:11.2  B:80           →     A:40002       SYN, ACK\n10:02:11.3  A:40002        →     B:80          RST\n10:02:11.3  A:40003        →     B:445         SYN\n10:02:11.3  B:445          →     A:40003       RST, ACK",
+    "choices": [
+      "A가 B의 특정 포트에 SYN을 대량으로 보내는 SYN 플러딩 공격이다",
+      "A가 B에 대해 TCP SYN 스캔을 수행했고 22·80번 포트가 열려 있다",
+      "A가 B에 대해 TCP Connect 스캔을 수행해 세 연결을 모두 완성했다",
+      "A가 비정상 플래그 조합을 보내는 XMAS 스캔을 수행했다"
+    ],
+    "answer": 1,
+    "explanation": "목적지 포트를 바꿔 가며 SYN을 보내고, SYN+ACK가 돌아온 포트는 ACK 대신 RST로 끊었다 — 연결을 완성하지 않는 SYN(하프 오픈) 스캔의 전형적인 흔적이다. 응답으로 상태를 읽으면 SYN+ACK가 온 22·80은 열림, RST+ACK가 온 445는 닫힘이다. SYN 플러딩은 포트 하나에 SYN만 쌓고 응답에 답하지 않으며, Connect 스캔이라면 RST 자리에 ACK가 있어야 한다."
+  },
+  {
+    "id": "ise-scan-response-convention",
+    "area": "네트워크 보안",
+    "difficulty": "중",
+    "topic": "sec-scanning-sniffing",
+    "concept": "포트 스캔은 돌아오는 플래그로 상태를 읽는다 — 열림은 SYN+ACK, 닫힘은 RST+ACK다.",
+    "question": "TCP 포트 스캔에서 돌아오는 응답을 읽는 방법으로 옳지 않은 것은?",
+    "choices": [
+      "열린 포트에 SYN을 보내면 SYN+ACK가 돌아온다",
+      "닫힌 포트에 SYN을 보내면 RST+ACK가 돌아온다",
+      "하프 오픈 스캔은 SYN+ACK를 받으면 ACK를 보내 연결을 완성한 뒤 끊는다",
+      "FIN·NULL·XMAS 스캔은 응답이 없으면 열림이나 필터링으로 추정한다"
+    ],
+    "answer": 2,
+    "explanation": "ACK를 보내 연결을 완성하는 것은 Connect 스캔이다. 하프 오픈은 SYN+ACK를 받은 자리에서 RST를 보내 연결을 끝내지 않으며, 그래서 세션이 성립하지 않아 애플리케이션 로그에 덜 남는다. 패킷 기록에서 SYN → SYN+ACK → RST가 반복되면 이 스캔으로 읽는다."
+  },
+  {
+    "id": "ise-land-attack-dump",
+    "area": "네트워크 보안",
+    "difficulty": "중",
+    "topic": "sec-dos-ddos",
+    "concept": "출발지와 목적지를 같은 주소·포트로 위조해 자기 자신에게 응답하게 만드는 것이 랜드 공격이다.",
+    "question": "다음은 IP 주소가 10.0.2.15인 서버에서 받은 tcpdump 기록이다. 어떤 공격으로 보아야 하는가?",
+    "code": "13:27:51.042218 IP 10.0.2.15.139 > 10.0.2.15.139: Flags [S], seq 0, win 512, length 0\n13:27:51.042234 IP 10.0.2.15.139 > 10.0.2.15.139: Flags [S], seq 0, win 512, length 0\n13:27:51.042238 IP 10.0.2.15.139 > 10.0.2.15.139: Flags [S], seq 0, win 512, length 0",
+    "choices": [
+      "랜드(LAND) 공격",
+      "스머프(Smurf) 공격",
+      "티어드롭(Teardrop) 공격",
+      "UDP 플러딩"
+    ],
+    "answer": 0,
+    "explanation": "==출발지와 목적지가 같은 주소·같은 포트로 적혀 있다는 것==이 랜드 공격의 표식이다. 자기 자신에게 응답하게 만들어 자원을 소모시키는 공격이라 트래픽 양으로 보는 탐지에는 걸리지 않는다. 스머프는 브로드캐스트로 보낸 ICMP 응답이 피해자에게 쏟아지는 반사 공격이고, 티어드롭은 단편 정보를 겹치게 조작해 재조립을 깨뜨린다."
+  },
+  {
+    "id": "ise-router-vty-login-local",
+    "area": "네트워크 보안",
+    "difficulty": "중",
+    "topic": "sec-network-devices",
+    "concept": "사용자마다 계정과 비밀번호로 라우터에 원격 로그인시키려면 vty 아래에 login local을 건다.",
+    "question": "시스코 라우터에 사용자별 계정과 비밀번호를 만들어 두고, 원격 접속자가 그 계정으로 로그인하게 하려 한다. 가상 터미널 설정에 들어가야 하는 명령은?",
+    "code": "Router(config)#username admin password ****\nRouter(config)#line vty 0 4\nRouter(config-line)#________",
+    "choices": [
+      "no login",
+      "login",
+      "login local",
+      "enable secret"
+    ],
+    "answer": 2,
+    "explanation": "`login local`이 로컬 계정 데이터베이스(`username`으로 만든 계정)를 보고 사용자를 인증한다. `login`은 회선에 걸린 공용 비밀번호만 확인해 누가 접속했는지 남지 않고, `no login`은 인증 없이 들여보낸다. `enable secret`은 접속 이후 관리자 모드로 올라갈 때 쓰는 비밀번호라 로그인 인증과는 다른 자리다."
+  },
+  {
+    "id": "ise-router-remote-access-hardening",
+    "area": "네트워크 보안",
+    "difficulty": "중",
+    "topic": "sec-network-devices",
+    "concept": "라우터 원격 관리는 평문 텔넷을 막고 SSH·ACL·계정 인증으로 좁히는 것이 기본이다.",
+    "question": "라우터·스위치의 원격 관리 접속을 안전하게 하는 조치로 적절하지 않은 것은?",
+    "choices": [
+      "가상 터미널에 접속할 수 있는 출발지 IP를 ACL로 제한한다",
+      "텔넷을 막고 SSH만 받도록 접속 수단을 제한한다",
+      "관리자 모드 비밀번호를 평문으로 저장되는 명령 대신 해시로 저장되는 명령으로 설정한다",
+      "장비 관리는 내부망에서만 하므로 공용 계정 하나를 두고 비밀번호만 공유한다"
+    ],
+    "answer": 3,
+    "explanation": "공용 계정은 누가 무엇을 바꿨는지 가릴 수 없어 책임추적성이 무너지며, 비밀번호가 새면 그대로 장비 전체가 열린다. 장비 계정도 사용자마다 따로 두고 인증하는 것이 원칙이다. 텔넷은 계정과 비밀번호가 평문으로 흐르므로 SSH로 바꾸는 것이 기본 통제다."
   }
 ]
