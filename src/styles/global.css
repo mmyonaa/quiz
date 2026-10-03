@@ -3862,14 +3862,56 @@ select.sort {
   border-bottom: 0;
   padding-bottom: 0.3rem;
 }
+/* ── 카드 제목 — 붙여 둔 메모지 한 장 ──
+   카드 55장이 한 줄로 늘어서니 제목이 본문의 굵은 용어들(.def-k)과 같은 결로 읽혀 묻혔다.
+   크기를 더 키우면 영역 머리글(--t-xl)과 붙으므로 크기가 아니라 **면**으로 세운다 —
+   개념 노트의 개념 줄에 쓰는 그 메모지다. 암기 노트는 '외울 것을 적어 붙여 둔 쪽지 묶음'이라
+   한 장이 곧 한 카드라는 뜻이 그대로 맞아떨어지고, 이 페이지에는 개념 줄이 없어 같은 면이
+   두 가지를 뜻할 일도 없다.
+   두문자는 종이 밖 아랫줄로 내린다 — 쪽지 안에 섞으면 제목인지 실마리인지가 흐려진다. */
 .memo-title {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.3rem 0.65rem;
-  margin: 0 0 0.7rem;
+  margin: 0.35rem 0 0.75rem;
   font-size: var(--t-lg);
   letter-spacing: -0.01em;
+}
+.memo-name {
+  /* 글자만큼만 넓어진다 — 읽기 폭 전체로 늘어난 종이는 쪽지가 아니라 띠로 보인다 */
+  display: inline-block;
+  max-width: 100%;
+  position: relative;
+  padding: 0.55rem 1rem;
+  background: var(--memo);
+  color: var(--memo-text);
+  border-radius: 1px;
+  /* 이 사이트는 카드에도 그림자를 두지 않는 평면이다 — 종이가 떠 보이지 않을 만큼만 */
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 4px 10px -8px rgba(0, 0, 0, 0.22);
+  transform: rotate(-0.25deg);
+}
+/* 마스킹 테이프 — 종이 윗변에 걸쳐 "붙여 둔 것"으로 읽히게 하는 유일한 장치 */
+.memo-name::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: 1.2rem;
+  width: 2.6rem;
+  height: 15px;
+  background: var(--tape);
+  transform: rotate(-3deg);
+}
+/* 한 페이지에 쉰 장이 같은 각도·같은 자리로 늘어서면 손으로 붙인 것이 아니라 격자로 보인다 */
+.memo:nth-of-type(2n) .memo-name {
+  transform: rotate(0.2deg);
+}
+.memo:nth-of-type(2n) .memo-name::before {
+  left: auto;
+  right: 1.4rem;
+  transform: rotate(2.5deg);
+}
+.memo:nth-of-type(3n) .memo-name::before {
+  left: 42%;
+  transform: rotate(-1.5deg);
 }
 /* ── 두문자 ──
    외우는 실마리다. 회색 점선 칩 하나에 문자열을 통째로 담아 두었더니 비활성 꼬리표처럼
@@ -3879,7 +3921,10 @@ select.sort {
    (mono로 세우면 한글 음절의 낱자 사이가 벌어진다 — md.ts가 값 칩에서 겪은 것과 같다).
    액센트는 쓰지 않는다(채워진 액센트는 한 화면에 주 행동 하나뿐). */
 .memo-mn {
-  display: inline-flex;
+  display: flex;
+  /* 종이 아래 한 줄로 내려오면서 본문 첫 줄과 붙었다 — 아래 숨을 위보다 넉넉히 줘
+     "제목 묶음"으로 읽히게 한다 */
+  margin: 0.5rem 0 0.85rem;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.2em;
@@ -4052,6 +4097,10 @@ select.sort {
   background: var(--surface-2);
   font-size: var(--t-xs);
   line-height: 1.5;
+}
+/* 단계의 글 — 번호 구슬 옆 한 덩이. 구슬이 flex 항목 하나, 글이 하나다 */
+.flow .fl {
+  min-width: 0;
 }
 .flow li::before {
   counter-increment: flow;
@@ -4329,9 +4378,9 @@ select.sort {
     font-size: var(--t-sm);
   }
   /* 긴 값 하나가 칩을 판 밖으로 밀던 것(318px 대 314px) */
-  .memo-body .flow li {
+  .memo-body .flow li,
+  .memo-body .flow .fl {
     min-width: 0;
-    overflow-wrap: anywhere;
   }
 }
 
