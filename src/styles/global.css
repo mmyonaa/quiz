@@ -3827,30 +3827,63 @@ select.sort {
   position: sticky;
   top: calc(var(--top-h) - 1px);
   z-index: 2;
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-  margin: 0 0 var(--s-2);
-  padding: 0.5rem 0 0.4rem;
+  margin: 0 0 var(--s-3);
+  /* 위는 테이프가 설 자리, 아래는 지나가는 카드가 종이에 닿지 않을 만큼 */
+  padding: 0.85rem 0 0.5rem;
   background: var(--surface);
-  /* 괘선 바로 아래까지 면이 끝나면 지나가는 카드 제목이 선에 딱 붙어 반쯤 잘린 채로
-     비친다 — 면을 괘선 아래로 반 뼘 더 내려 지나갈 자리를 만든다 */
-  box-shadow: 0 0.8rem 0 var(--surface);
-  border-bottom: 2px solid var(--text);
+  /* 면이 종이보다 넉넉히 내려와야 지나가는 카드 제목이 종이 밑변에 붙어 반쯤 잘린 채로
+     비치지 않는다 */
+  box-shadow: 0 0.7rem 0 var(--surface);
   font-size: var(--t-xl);
   letter-spacing: -0.01em;
 }
+/* 영역 머리글 종이 — 카드 종이와 같은 재질이되 한 장 더 큰 쪽지다. 크기(--t-xl 대 --t-lg)에
+   더해 테이프를 둘 붙여 "묶음의 표지"로 읽히게 한다. 카드 종이는 테이프가 하나다.
+   각도는 카드보다 작게 둔다 — 머리글은 헤더 아래 고정돼 화면에 오래 남는 물건이라
+   많이 기울면 화면이 비뚤어 보인다. */
+.area-paper {
+  display: inline-block;
+  max-width: 100%;
+  position: relative;
+  padding: 0.5rem 1.4rem;
+  background: var(--memo);
+  color: var(--memo-text);
+  border-radius: 1px;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.05),
+    0 5px 12px -9px rgba(0, 0, 0, 0.26);
+  transform: rotate(-0.15deg);
+}
+.area-paper::before,
+.area-paper::after {
+  content: "";
+  position: absolute;
+  top: -8px;
+  width: 2.4rem;
+  height: 16px;
+  background: var(--tape);
+}
+.area-paper::before {
+  left: 1.1rem;
+  transform: rotate(-3.5deg);
+}
+.area-paper::after {
+  right: 1.1rem;
+  transform: rotate(2.5deg);
+}
 /* 영역의 카드 수 — 세는 것이므로 mono(화면 규약 3) */
+/* 영역의 카드 수 — 세는 것이므로 mono(화면 규약 3). 종이 위에 적힌 숫자라 알약 면은 걷는다 */
 .memo-area-title em {
   font-style: normal;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: var(--t-2xs);
+  font-size: var(--t-xs);
   font-weight: 500;
   font-variant-numeric: tabular-nums;
+  /* 보조 글씨는 --muted 를 그대로 쓴다. color-mix 로 종이색과 섞어 봤더니 테마마다
+     한쪽으로 쏠려 다크에서 대비가 1.4까지 떨어졌다(실측) — 이미 두 테마에 맞춰 둔
+     토큰이 있는데 새로 유도할 이유가 없다. */
   color: var(--muted);
-  background: var(--surface-2);
-  border-radius: var(--r-pill);
-  padding: 0.15em 0.55em;
+  margin-left: 0.15em;
 }
 .memo {
   padding: 1.15rem 0 1.3rem;
