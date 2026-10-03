@@ -1,0 +1,233 @@
+---
+import {
+  AREAS_BY_EXAM,
+  AREA_SLUGS,
+  EXAM_FORMAT,
+  EXAM_SLUGS,
+  MEMO_EXAMS,
+  examPath,
+  memosOf,
+  type Area,
+  type Exam,
+} from "../../content.config";
+import MdBlocks from "../../components/MdBlocks.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import "../../styles/global.css";
+
+// 암기 노트 — 개념 노트가 "왜"를 읽는 자리라면 여기는 "무엇"만 외우는 자리다.
+// 줄글 없이 두문자·표·목록으로 모은 카드를 영역 순으로 늘어놓고, 빨간 시트처럼
+// 외울 값(값 칩·형광펜)을 가렸다가 하나씩 눌러 확인하는 가리기 모드를 둔다.
+// 카드가 있는 시험만 라우트를 낸다 — 지금은 정처기(/memo/)뿐이다(#92).
+export function getStaticPaths() {
+  return MEMO_EXAMS.map((exam) => ({ params: { exam: EXAM_SLUGS[exam] }, props: { exam } }));
+}
+
+const { exam } = Astro.props as { exam: Exam };
+const px = examPath(exam);
+const examLabel = EXAM_FORMAT[exam].label;
+const cards = memosOf(exam);
+// 영역 순서는 시험의 영역 정의를 따르고, 카드 순서는 JSON의 정의 순서를 따른다. 빈 영역은 내지 않는다.
+const areas = (AREAS_BY_EXAM[exam] as readonly Area[])
+  .map((area) => ({ area, slug: AREA_SLUGS[area], cards: cards.filter((c) => c.area === area) }))
+  .filter((a) => a.cards.length > 0);
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+// ── 두문자 조각내기 ──
+// "물·데·네·전·세·표·응"처럼 ·로 바싹 붙은 짧은 음절은 외우는 실마리 그 자체라
+// 글자 블록으로 하나씩 세운다. 반대로 "대칭 키 하나 · 비대칭 키 둘"처럼 ·가 구절을
+// 가르는 자리에서 낱말을 블록으로 쪼개면 읽히지 않으므로 그냥 글로 둔다.
+// 가르는 기준은 "붙어 있는가"와 "짧은가" 둘 — 공백 없는 ·로 이어진 한 덩어리에서
+// 조각이 전부 세 글자 이하일 때만 블록이 된다("5만·50만·100만"은 100만이 길어 글로 남는다).
+const MN_RUN = /[^\s·]+(?:·[^\s·]+)+/g;
+const MN_SPACED = /^[^\s·]{1,3}(?: · [^\s·]{1,3})+$/;
+type MnSeg = { block: boolean; text: string };
+/** 블록 사이에 남는 글 — 양끝의 ·는 블록이 이미 자리로 말하는 구분이라 떼어 낸다
+    (떼지 않으면 "A C I D · DDL …"처럼 앞에 점 하나가 떠 있는 꼴이 된다). "/"는 남긴다 */
+const plain = (s: string) => s.replace(/^[\s·]+|[\s·]+$/g, "");
+const mnemonicSegs = (mn: string): MnSeg[] => {
+  // "지식 · 소유 · 존재 · 행동" — 띄어 쓴 ·로만 된 짧은 낱말 줄도 두문자로 본다
+  if (MN_SPACED.test(mn)) return mn.split(" · ").map((t) => ({ block: true, text: t }));
+  const out: MnSeg[] = [];
+  let last = 0;
+  for (const m of mn.matchAll(MN_RUN)) {
+    const parts = m[0].split("·");
+    if (parts.some((p) => [...p].length > 3)) continue;
+    const lead = plain(mn.slice(last, m.index));
+    if (lead) out.push({ block: false, text: lead });
+    for (const p of parts) out.push({ block: true, text: p });
+    last = m.index + m[0].length;
+  }
+  const tail = plain(mn.slice(last));
+  if (tail) out.push({ block: false, text: tail });
+  return out.length ? out : [{ block: false, text: mn }];
+};
+---
+
+<!doctype html>
+<html lang="ko" data-exam={EXAM_SLUGS[exam]}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{`daily.quiz — ${examLabel} 암기 노트`}</title>
+    <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
+    <meta
+      name="description"
+      content={`${examLabel} 필기·실기에서 그대로 외워야 하는 것만 두문자·표·목록으로 모은 암기 노트. 외울 값을 가렸다가 하나씩 확인합니다.`}
+    />
+  </head>
+  <body>
+    <SiteHeader current="memo" exam={exam} toc="영역" />
+
+    <main class="side-layout memo-main">
+      {/* 좌측 영역 목차 — 넓은 화면은 본문 옆에 고정, 좁은 화면은 헤더의 '영역' 버튼으로 여는 드로어 */}
+      <aside id="side-toc" class="side-toc as-drawer" aria-label="영역 바로가기">
+        <button id="toc-close" class="toc-close" type="button" aria-label="목차 닫기">×</button>
+        <span class="side-toc-title">영역</span>
+        {areas.map(({ area, slug, cards: cs }) => (
+          <a class="side-link memo-side" href={`#${slug}`} data-area={slug}>
+            <span class="side-label">{area}</span> <em>{cs.length}</em>
+          </a>
+        ))}
+      </aside>
+
+      <div class="side-body reading">
+        <section class="panel">
+          <h1>{examLabel} 암기 노트</h1>
+          <p class="lead">
+            그대로 외워야 하는 것만 모았습니다 — 두문자 · 표 · 한 줄 목록. 설명은
+            <a class="lead-link" href={`${base}${px}/notes/`}>개념 노트</a>에 있습니다.
+            <strong>가리기</strong>를 켜면 외울 값이 가려지고, 눌러서 하나씩 확인합니다.
+          </p>
+          {/* 좁은 화면 전용 — 영역 이동 칩 */}
+          <nav class="toc" aria-label="영역 이동">
+            {areas.map(({ area, slug, cards: cs }) => (
+              <a class="toc-chip" href={`#${slug}`}>{area} <em>{cs.length}</em></a>
+            ))}
+          </nav>
+          <div class="note-tools memo-tools">
+            <button id="cover-toggle" class="ghost" type="button" aria-pressed="false">가리기 켜기</button>
+            <button id="cover-reset" class="linklike" type="button" hidden>모두 다시 가리기</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          {areas.map(({ area, slug, cards: cs }) => (
+            <section class="memo-area" id={slug}>
+              <h2 class="memo-area-title">{area} <em>{cs.length}</em></h2>
+              {cs.map((c) => (
+                <article class="memo" id={`m-${c.key}`}>
+                  <h3 class="memo-title">
+                    <span class="memo-name">{c.title}</span>
+                    {/* 두문자 — 외우는 실마리라 가리기 모드에서도 남긴다 */}
+                    {c.mnemonic && (
+                      <span class="memo-mn">
+                        {mnemonicSegs(c.mnemonic).map((seg) =>
+                          seg.block ? <b class="mn-s">{seg.text}</b> : <span class="mn-t">{seg.text}</span>,
+                        )}
+                      </span>
+                    )}
+                  </h3>
+                  {/* 본문은 개념 도입부와 같은 렌더러·같은 글꼴 체계(.topic-intro)를 쓴다 */}
+                  <div class="topic-intro memo-body">
+                    <MdBlocks text={c.body} memo />
+                  </div>
+                </article>
+              ))}
+            </section>
+          ))}
+          <nav class="area-nav">
+            <a href={`${base}${px}/notes/`}><small>개념 노트</small>← 설명이 필요하면</a>
+            <a class="next" href={`${base}${px}/`}><small>필기 문제</small>외웠으면 풀어 보기 →</a>
+          </nav>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      // ── 가리기 모드(빨간 시트) ──
+      // 외울 값(.val)과 형광펜(.hl)을 덮고, 누르면 그것만 드러난다. 다시 누르면 다시 덮인다.
+      // 상태는 기기에 남긴다 — 외우는 중에 페이지를 오가도 시트가 벗겨지지 않게.
+      const KEY = "daily.quiz.memo-cover";
+      const main = document.querySelector<HTMLElement>(".memo-main")!;
+      const toggle = document.getElementById("cover-toggle") as HTMLButtonElement;
+      const reset = document.getElementById("cover-reset") as HTMLButtonElement;
+      const targets = [...document.querySelectorAll<HTMLElement>(".memo-body .hl, .memo-body .val")]
+        // 형광펜 안의 값 칩은 형광펜이 통째로 덮는다 — 안쪽까지 따로 덮으면 두 겹이 된다
+        .filter((el) => !(el.classList.contains("val") && el.closest(".hl")));
+
+      const setCover = (on: boolean) => {
+        main.classList.toggle("cover", on);
+        toggle.textContent = on ? "가리기 끄기" : "가리기 켜기";
+        toggle.setAttribute("aria-pressed", String(on));
+        reset.hidden = !on;
+        targets.forEach((el) => {
+          el.classList.remove("peek");
+          if (on) {
+            el.setAttribute("role", "button");
+            el.setAttribute("tabindex", "0");
+            el.setAttribute("aria-label", "가려진 값 — 눌러서 확인");
+          } else {
+            el.removeAttribute("role");
+            el.removeAttribute("tabindex");
+            el.removeAttribute("aria-label");
+          }
+        });
+        try {
+          localStorage.setItem(KEY, on ? "1" : "0");
+        } catch {
+          /* 저장 불가 환경이면 이 페이지에서만 */
+        }
+      };
+      toggle.addEventListener("click", () => setCover(!main.classList.contains("cover")));
+      reset.addEventListener("click", () => targets.forEach((el) => el.classList.remove("peek")));
+      const peek = (el: HTMLElement) => {
+        if (main.classList.contains("cover")) el.classList.toggle("peek");
+      };
+      targets.forEach((el) => {
+        el.addEventListener("click", () => peek(el));
+        el.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            peek(el);
+          }
+        });
+      });
+      try {
+        if (localStorage.getItem(KEY) === "1") setCover(true);
+      } catch {
+        /* ignore */
+      }
+
+      // ── 사이드 목차 — 지금 읽는 영역을 표시 ──
+      const links = [...document.querySelectorAll<HTMLAnchorElement>(".memo-side")];
+      const sections = links.map((a) => document.getElementById(a.dataset.area!)!);
+      let at = -1;
+      const spy = () => {
+        let cur = 0;
+        sections.forEach((s, i) => {
+          if (s.getBoundingClientRect().top <= 140) cur = i;
+        });
+        if (cur === at) return;
+        at = cur;
+        links.forEach((a, i) => a.classList.toggle("on", i === cur));
+      };
+      let ticking = false;
+      document.addEventListener(
+        "scroll",
+        () => {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(() => {
+            ticking = false;
+            spy();
+          });
+        },
+        { passive: true },
+      );
+      spy();
+    </script>
+
+    <SiteFooter />
+  </body>
+</html>

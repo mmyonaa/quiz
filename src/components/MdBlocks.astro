@@ -1,0 +1,115 @@
+---
+import { md } from "../lib/md";
+
+// 본문 블록 렌더러 — 개념 노트 도입부와 암기 노트 카드가 같은 표기를 같은 화면으로 편다.
+// 빈 줄이 문단 경계다. 덩어리의 첫 두 글자가 종류를 가른다 —
+//   "> " 시험 포인트 콜아웃 · "| " 대조표(첫 줄 머리글, 첫 칸이 견주는 축) · "- " 목록 · 나머지는 문단.
+// 암기 노트(#92)가 쓰는 시각 블록 셋 — 산문 대신 모양으로 외우게 한다:
+//   "~ " 순서 흐름(한 줄이 한 단계, 화살표로 잇는다 — 핸드셰이크·정규화 단계·절차)
+//   "# " 계층 스택(한 줄이 한 층, 칸은 "|"로 — OSI 7계층·복구 사이트 사다리. 첫 줄이 "#= "면 머리글)
+//   "* " 타일("이름 | 설명" — 인증 4유형·DoS 공격처럼 같은 급의 항목을 격자로)
+// 인라인 강조(==·**·`)는 md()가 편다. 두 화면에 각자 두면 한쪽만 고쳐져 같은 표기가
+// 화면마다 다르게 읽히므로 여기 하나로 모았다(NoteTopics에서 떼어 냈다).
+// memo=true면 암기 노트용으로 한 겹 더 간다 — 목록의 "**용어** 설명"을 용어 칸과 설명 칸으로
+// 갈라 세운다(한 블록 안에서 용어가 한 줄에 맞춰 서야 55장을 눈으로 훑을 수 있다).
+// 개념 노트 도입부는 읽는 글이라 목록이 목록으로 남는 편이 맞아 여기를 켜지 않는다.
+const { text, memo = false } = Astro.props as { text: string; memo?: boolean };
+
+/** "- **용어** 설명" 한 줄을 용어/설명으로 가른다. 용어가 없으면 null(줄 전체가 설명 칸을 넘어 선다) */
+const defPair = (s: string) => {
+  const m = /^\*\*([^*]+)\*\*[ \t]+([\s\S]+)$/.exec(s);
+  return m ? ([m[1], m[2]] as const) : null;
+};
+
+/** 대조표의 한 줄을 칸으로 가른다 — 양 끝의 "|"는 테두리일 뿐 칸이 아니다 */
+const cells = (row: string) =>
+  row
+    .replace(/^\s*\|/, "")
+    .replace(/\|\s*$/, "")
+    .split("|")
+    .map((c) => c.trim());
+---
+
+{text.split("\n\n").map((block) =>
+  block.startsWith("> ") ? (
+    <p class="topic-key" set:html={md(block.replace(/^> /gm, ""))} />
+  ) : block.startsWith("| ") ? (
+    /* "A는 …이고 B는 …이다" 식 산문은 눈으로 견줄 수가 없다 — 가로로 마주 세운다.
+       가로로 넘칠 수 있어 제 칸 안에서 스크롤한다. */
+    <div class="cmp-wrap">
+      {/* 값 열이 둘이면 '두 대상을 마주 세운 대조'라 폭을 반씩 나눠야 견주기 쉽고,
+          셋 이상이면 성격이 다른 축이 섞이므로(방식은 산문, 복잡도는 짧은 값) 내용대로 잡는다.
+          암기 노트는 그 경계가 한 칸 앞이다 — 표 23장 중 18장이 세 칸이고, 거기서 첫 칸은
+          견주는 축이 아니라 외울 값이다("포트 20 / FTP 데이터 / TCP"). 반씩 나누면
+          "TCP" 한 낱말이 판의 절반을 쓴다. */}
+      <table
+        class={cells(block.split("\n")[0]).length > (memo ? 2 : 3) ? "cmp cmp-wide" : "cmp"}
+      >
+        <thead>
+          <tr>{cells(block.split("\n")[0]).map((c) => <th set:html={md(c)} />)}</tr>
+        </thead>
+        <tbody>
+          {block.split("\n").slice(1).map((row) => (
+            <tr>{cells(row).map((c, ci) => (ci === 0 ? <th scope="row" set:html={md(c)} /> : <td set:html={md(c)} />))}</tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  ) : block.startsWith("~ ") ? (
+    <ol class="flow">{block.split("\n").map((li) => <li set:html={md(li.slice(2))} />)}</ol>
+  ) : block.startsWith("# ") || block.startsWith("#= ") ? (
+    (() => {
+      const rows = block.split("\n");
+      const head = rows[0].startsWith("#= ") ? cells(rows[0].slice(3)) : null;
+      const body = (head ? rows.slice(1) : rows).map((r) => cells(r.slice(2)));
+      const n = (head ?? body[0]).length;
+      return (
+        /* --rows는 띠의 농담을 층마다 다르게 주기 위한 값이다 — 위층이 짙고 아래로 갈수록
+           옅어져 "쌓인 것"으로 읽힌다(CSS가 행 수를 알 길이 없어 여기서 넘긴다). */
+        /* 대조표와 같이 제 칸 안에서 가로로 구른다 — 390px에서 네 칸을 욱여넣으면
+           마지막 칸이 낱말 하나 폭이 되어 한 층이 아홉 줄로 늘어난다 */
+        <div class="stack-wrap">
+          <div class="stack" style={`--n: ${n}; --rows: ${body.length}`}>
+            {head && <div class="stack-row stack-head">{head.map((c) => <span set:html={md(c)} />)}</div>}
+            {body.map((cs, i) => (
+              <div class="stack-row" style={`--i: ${i}; --tone: ${Math.round(100 - (i / Math.max(1, body.length - 1)) * 76)}%`}>
+                {cs.map((c, ci) => (ci === 0 ? <b class="stack-k" set:html={md(c)} /> : <span set:html={md(c)} />))}
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    })()
+  ) : block.startsWith("* ") ? (
+    <div class="tiles">
+      {block.split("\n").map((li) => {
+        const [k, v = ""] = cells(li.slice(2));
+        return (
+          <div class="tile">
+            <b class="tile-k" set:html={md(k)} />
+            <span class="tile-v" set:html={md(v)} />
+          </div>
+        );
+      })}
+    </div>
+  ) : block.startsWith("- ") ? (
+    /* "A는 …, B는 …, C는 …" 식 열거는 산문보다 목록이 훨씬 빨리 읽힌다.
+       암기 노트에서는 한 겹 더 — 앞머리 용어를 제 칸에 세워 목록이 용어 사전처럼 선다.
+       글머리 기호를 걷으면 사파리가 목록 의미까지 함께 떼어 가므로 role로 되돌린다. */
+    <ul class={memo ? "defs" : undefined} role={memo ? "list" : undefined}>
+      {block.split("\n").map((li) => {
+        const pair = memo ? defPair(li.slice(2)) : null;
+        return pair ? (
+          <li class="def">
+            <b class="def-k" set:html={md(pair[0])} />
+            <span class="def-v" set:html={md(pair[1])} />
+          </li>
+        ) : (
+          <li set:html={md(li.slice(2))} />
+        );
+      })}
+    </ul>
+  ) : (
+    <p set:html={md(block)} />
+  ),
+)}
