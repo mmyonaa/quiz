@@ -6,7 +6,12 @@ daily.quiz의 버전별 변경 기록. [Keep a Changelog](https://keepachangelog
 - 버전의 기준은 `package.json`의 `version`이며, 릴리스마다 git 태그(`v1.0.0` 형식)를 붙인다.
 - 일감 단위 기록은 [GitHub Project](https://github.com/users/mmyonaa/projects/6)와 이슈에 남긴다.
 
-## [Unreleased]
+## [2.6.1] - 2026-10-04
+
+2.6.0 으로 연 암기 노트를 **폰에서 쓸 수 있게** 다듬은 릴리스. 주로 모바일로 본다는 전제가
+빠져 있었다 — 390px 실측에서 블록 19개가 가로로 넘쳤고, 하필 가장 외워야 할 칸이 스크롤 뒤에
+숨었다(OSI 7계층의 프로토콜 열). 옆으로 미는 대신 행을 세로로 편다. 영역 머리글은 묶음의
+표지로 메모지 한 장을 얻었다.
 
 ### 변경
 
