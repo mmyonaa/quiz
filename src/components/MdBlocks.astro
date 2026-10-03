@@ -79,7 +79,16 @@ const cells = (row: string) =>
       );
     })()
   ) : block.startsWith("~ ") ? (
-    <ol class="flow">{block.split("\n").map((li) => <li set:html={md(li.slice(2))} />)}</ol>
+    /* 한 단계의 글은 한 겹 싸서 넘긴다 — li 가 번호 구슬과 글을 나란히 놓는 flex 라,
+       싸지 않으면 글 속의 값 칩마다 제 flex 항목이 되어 사이 글이 한 글자씩 쪼개진다
+       (390px에서 "종료는"이 세 줄로 섰다). 표 칸의 .cv 와 같은 이유·같은 처방이다. */
+    <ol class="flow">
+      {block.split("\n").map((li) => (
+        <li>
+          <span class="fl" set:html={md(li.slice(2))} />
+        </li>
+      ))}
+    </ol>
   ) : block.startsWith("# ") || block.startsWith("#= ") ? (
     (() => {
       const rows = block.split("\n");

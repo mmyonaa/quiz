@@ -3823,25 +3823,49 @@ select.sort {
    좌측 목차는 1100px 위에서만 있고 좁은 화면에는 아무 표시도 없었다. 머리글을 헤더 아래에
    붙여 두면 어느 폭에서든 그 자리를 지킨다(패널 면과 같은 바탕이라 글이 비쳐 지나가지 않는다).
    카드 제목과는 두 단 차이(--t-xl / --t-lg)에 진한 괘선까지 더해 한눈에 갈린다. */
+/* 영역 머리글 — 고정하지 않는다. 붙여 둔 쪽지가 스크롤을 따라다니면 종이라는 뜻이 깨지고,
+   영역이 여섯뿐이라 좌측 목차와 영역 칩으로 충분히 오갈 수 있다. */
 .memo-area-title {
-  position: sticky;
-  top: calc(var(--top-h) - 1px);
-  z-index: 2;
   display: flex;
   align-items: baseline;
-  gap: 0.5rem;
-  margin: 0 0 var(--s-2);
-  padding: 0.5rem 0 0.4rem;
-  background: var(--surface);
-  /* 괘선 바로 아래까지 면이 끝나면 지나가는 카드 제목이 선에 딱 붙어 반쯤 잘린 채로
-     비친다 — 면을 괘선 아래로 반 뼘 더 내려 지나갈 자리를 만든다 */
-  box-shadow: 0 0.8rem 0 var(--surface);
-  border-bottom: 2px solid var(--text);
+  gap: 0.55rem;
+  margin: 0 0 var(--s-3);
+  /* 위는 테이프가 설 자리 */
+  padding: 0.6rem 0 0;
   font-size: var(--t-xl);
   letter-spacing: -0.01em;
 }
-/* 영역의 카드 수 — 세는 것이므로 mono(화면 규약 3) */
+/* 영역 머리글 종이 — 묶음의 표지. 개념 노트의 개념 줄과 같은 재질이다.
+   각도는 작게 둔다 — 여섯 장이 페이지를 따라 내려오므로 많이 기울면 줄이 비뚤어 보인다.
+   종이에는 영역 이름만 담고 개수는 바깥에 세운다. */
+.area-paper {
+  display: inline-block;
+  max-width: 100%;
+  position: relative;
+  padding: 0.5rem 1.2rem;
+  background: var(--memo);
+  color: var(--memo-text);
+  border-radius: 1px;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.05),
+    0 5px 12px -9px rgba(0, 0, 0, 0.26);
+  transform: rotate(-0.15deg);
+}
+/* 마스킹 테이프 한 장 — 종이 윗변에 걸쳐 "붙여 둔 것"으로 읽히게 하는 유일한 장치 */
+.area-paper::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 1.2rem;
+  width: 2.6rem;
+  height: 16px;
+  background: var(--tape);
+  transform: rotate(-3.5deg);
+}
+/* 영역의 카드 수 — 세는 것이므로 mono(화면 규약 3). 종이 밖에 서므로 페이지 바탕 위의
+   알약으로 둔다(종이 위에 얹었을 때는 쪽지에 붙은 딴 물건처럼 보였다). */
 .memo-area-title em {
+  flex: none;
   font-style: normal;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: var(--t-2xs);
@@ -3855,8 +3879,7 @@ select.sort {
 .memo {
   padding: 1.15rem 0 1.3rem;
   border-bottom: 1px solid var(--border);
-  /* 영역 머리글이 헤더 아래에 붙어 있으므로 그 높이만큼 더 비켜선다 */
-  scroll-margin-top: calc(var(--top-h) + 3rem);
+  scroll-margin-top: calc(var(--top-h) + 0.75rem);
 }
 .memo:last-child {
   border-bottom: 0;
@@ -4052,6 +4075,10 @@ select.sort {
   background: var(--surface-2);
   font-size: var(--t-xs);
   line-height: 1.5;
+}
+/* 단계의 글 — 번호 구슬 옆 한 덩이. 구슬이 flex 항목 하나, 글이 하나다 */
+.flow .fl {
+  min-width: 0;
 }
 .flow li::before {
   counter-increment: flow;
@@ -4329,9 +4356,9 @@ select.sort {
     font-size: var(--t-sm);
   }
   /* 긴 값 하나가 칩을 판 밖으로 밀던 것(318px 대 314px) */
-  .memo-body .flow li {
+  .memo-body .flow li,
+  .memo-body .flow .fl {
     min-width: 0;
-    overflow-wrap: anywhere;
   }
 }
 
