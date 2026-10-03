@@ -3837,15 +3837,14 @@ select.sort {
   font-size: var(--t-xl);
   letter-spacing: -0.01em;
 }
-/* 영역 머리글 종이 — 카드 종이와 같은 재질이되 한 장 더 큰 쪽지다. 크기(--t-xl 대 --t-lg)에
-   더해 테이프를 둘 붙여 "묶음의 표지"로 읽히게 한다. 카드 종이는 테이프가 하나다.
-   각도는 카드보다 작게 둔다 — 머리글은 헤더 아래 고정돼 화면에 오래 남는 물건이라
+/* 영역 머리글 종이 — 묶음의 표지. 개념 노트의 개념 줄과 같은 재질이다.
+   각도는 작게 둔다 — 머리글은 헤더 아래 고정돼 화면에 오래 남는 물건이라
    많이 기울면 화면이 비뚤어 보인다. */
 .area-paper {
   display: inline-block;
   max-width: 100%;
   position: relative;
-  padding: 0.5rem 1.4rem;
+  padding: 0.5rem 1.2rem;
   background: var(--memo);
   color: var(--memo-text);
   border-radius: 1px;
@@ -3854,22 +3853,16 @@ select.sort {
     0 5px 12px -9px rgba(0, 0, 0, 0.26);
   transform: rotate(-0.15deg);
 }
-.area-paper::before,
-.area-paper::after {
+/* 마스킹 테이프 한 장 — 종이 윗변에 걸쳐 "붙여 둔 것"으로 읽히게 하는 유일한 장치 */
+.area-paper::before {
   content: "";
   position: absolute;
   top: -8px;
-  width: 2.4rem;
+  left: 1.2rem;
+  width: 2.6rem;
   height: 16px;
   background: var(--tape);
-}
-.area-paper::before {
-  left: 1.1rem;
   transform: rotate(-3.5deg);
-}
-.area-paper::after {
-  right: 1.1rem;
-  transform: rotate(2.5deg);
 }
 /* 영역의 카드 수 — 세는 것이므로 mono(화면 규약 3) */
 /* 영역의 카드 수 — 세는 것이므로 mono(화면 규약 3). 종이 위에 적힌 숫자라 알약 면은 걷는다 */
