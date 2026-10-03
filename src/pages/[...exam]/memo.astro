@@ -114,9 +114,9 @@ const mnemonicSegs = (mn: string): MnSeg[] => {
         <section class="panel">
           {areas.map(({ area, slug, cards: cs }) => (
             <section class="memo-area" id={slug}>
-              {/* 바깥 h2 는 고정되는 면이고, 안쪽 종이가 메모지다 — 기운 종이를 그대로 고정하면
-                  모서리 삼각 틈으로 지나가는 본문이 비친다. 면이 그 뒤를 받친다. */}
-              <h2 class="memo-area-title"><span class="area-paper">{area} <em>{cs.length}</em></span></h2>
+              {/* 종이에는 영역 이름만 — 개수는 종이 밖에 둔다(쪽지에 적은 제목과 세어 놓은 수는
+                  다른 물건이다) */}
+              <h2 class="memo-area-title"><span class="area-paper">{area}</span> <em>{cs.length}</em></h2>
               {cs.map((c) => (
                 <article class="memo" id={`m-${c.key}`}>
                   <h3 class="memo-title">
