@@ -4199,3 +4199,157 @@ select.sort {
 .tile-v {
   color: var(--muted);
 }
+
+/* ── 좁은 화면: 대조표·계층 스택을 세로로 편다 (암기 노트 모바일) ──
+   390px 실측에서 암기 카드의 대조표 17장과 계층 스택 3장이 전부 가로 스크롤이었다
+   (표 448px · 스택 480px 대 본문 칸 314px). 암기 노트는 폰에서 훑는 물건인데 정작
+   가장 외워야 할 칸이 스크롤 뒤에 숨는다 — OSI 7계층에서 프로토콜 열이 그랬다.
+   옆으로 미는 대신 행을 세로로 편다. 머리글 줄은 걷고, 각 칸이 제 머리글(data-h)을
+   앞에 달고 서서 "무엇의 값인지"는 그대로 남는다. subgrid 라 한 행 안에서 머리글이
+   한 줄에 맞춰 서고, 표의 모든 행이 같은 머리글을 쓰므로 행 사이에서도 저절로 맞는다.
+   경계를 640px로 두는 것은 흐름(.flow)이 세로 사다리로 바뀌는 지점과 같다. */
+@media (max-width: 640px) {
+  /* 구르지 않으니 가장자리 그늘도 걷는다 — 스크롤 신호가 남으면 없는 스크롤을 찾게 된다 */
+  .memo-body .cmp-wrap,
+  .memo-body .stack-wrap {
+    overflow-x: visible;
+    background: none;
+  }
+
+  .memo-body .cmp,
+  .memo-body .cmp-wide {
+    display: block;
+    width: auto;
+    min-width: 0;
+    font-size: var(--t-sm);
+  }
+  .memo-body .cmp thead {
+    display: none;
+  }
+  .memo-body .cmp tbody {
+    display: block;
+  }
+  .memo-body .cmp tbody tr {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: 0.6em;
+    padding: 0.5em 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .memo-body .cmp tbody tr:last-child {
+    border-bottom: 0;
+  }
+  /* 견주는 축이 행의 머리글이 된다 — 톤을 낮추지 않는다. 세로로 펴면 이게 줄의 시작이다 */
+  .memo-body .cmp tbody th {
+    grid-column: 1 / -1;
+    width: auto;
+    padding: 0 0 0.25em;
+    border: 0;
+    color: var(--text);
+    font-weight: 700;
+    white-space: normal;
+  }
+  /* 첫 칸에도 머리글이 있는 표(`포트 | 서비스 | 전송`)는 그 이름을 작은 꼬리표로 앞에 둔다 */
+  .memo-body .cmp tbody th[data-h]::before {
+    content: attr(data-h) " ";
+    color: var(--muted);
+    font-size: var(--t-xs);
+    font-weight: 400;
+  }
+  .memo-body .cmp tbody td {
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
+    width: auto;
+    padding: 0.05em 0;
+    border: 0;
+  }
+  .memo-body .cmp tbody td::before {
+    content: attr(data-h);
+    color: var(--muted);
+  }
+  /* 머리글이 없는 값 칸은 두 칸을 다 쓴다 — 안 그러면 혼자 머리글 자리에 선다 */
+  .memo-body .cmp tbody td:not([data-h]) > .cv,
+  .memo-body .stack-row > span:not([data-h]) > .cv {
+    grid-column: 1 / -1;
+  }
+
+  /* 계층 스택 — 층 이름이 머리 띠가 되고 값이 그 아래 붙는다. 농담 사다리는 그대로 남아
+     위층이 짙고 아래로 갈수록 옅어진다(세로로 펴도 "쌓인 것"이라는 신호가 유지된다). */
+  .memo-body .stack {
+    display: block;
+    width: auto;
+    min-width: 0;
+    font-size: var(--t-sm);
+  }
+  .memo-body .stack-row {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: 0.6em;
+    padding-bottom: 0.45em;
+    border-bottom: 1px solid var(--border);
+  }
+  .memo-body .stack-row:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+  .memo-body .stack-k {
+    grid-column: 1 / -1;
+    margin-bottom: 0.3em;
+    padding: 0.4em 0.7em;
+    border-right: 0;
+    white-space: normal;
+  }
+  .memo-body .stack-row > span {
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
+    padding: 0.05em 0.7em;
+    border: 0;
+  }
+  .memo-body .stack-row > span[data-h]::before {
+    content: attr(data-h);
+    color: var(--muted);
+  }
+  /* 머리글 줄은 통째로 걷는다 — 칸마다 제 머리글을 달고 서므로 중복이다.
+     .stack-head 는 .stack-row 이기도 해서, 같은 특정도면 뒤에 오는 쪽이 이긴다.
+     한 단 올려 순서와 무관하게 이기게 한다(실제로 순서에 밀려 머리글이 남았었다). */
+  .memo-body .stack .stack-head {
+    display: none;
+  }
+  /* 행 hover 는 가로로 눈을 옮길 때 쓰던 것이다 — 세로로 펴면 행이 곧 한 덩이라 필요 없고,
+     터치에서는 탭 뒤에 색이 눌어붙는다 */
+  .memo-body .stack-row:not(.stack-head):hover > * {
+    background: none;
+  }
+
+  /* 칸을 욱여넣지 않게 됐으니 타일·흐름 글자도 본문과 같은 단으로 올린다(13 → 14px) */
+  .memo-body .tile,
+  .memo-body .tile-v {
+    font-size: var(--t-sm);
+  }
+  /* 긴 값 하나가 칩을 판 밖으로 밀던 것(318px 대 314px) */
+  .memo-body .flow li {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* 가리기 모드의 탭 영역 — 덮개는 글자 높이만 감싸므로 실측 중앙값이 17.5px 다(266개 중
+   253개가 24px 미만). 손가락으로 벗기기엔 얇다. 글자 높이는 그대로 두고 — 키우면 줄간격이
+   들썩여 어디가 가려졌는지 자리로 세게 된다 — 투명한 덧면으로 히트 영역만 위아래로 넓힌다.
+   ±5px 까지만 — 줄 높이가 24px 안팎이라 더 넓히면 윗줄·아랫줄 칩과 영역이 겹쳐
+   엉뚱한 쪽이 벗겨진다. 포인터가 없는 기기에서만 건다(마우스는 이미 충분히 정확하다). */
+@media (pointer: coarse) {
+  .memo-main.cover .memo-body .hl,
+  .memo-main.cover .memo-body .val {
+    position: relative;
+    touch-action: manipulation;
+  }
+  .memo-main.cover .memo-body .hl::after,
+  .memo-main.cover .memo-body .val::after {
+    content: "";
+    position: absolute;
+    inset: -5px -3px;
+  }
+}

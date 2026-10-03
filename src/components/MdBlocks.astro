@@ -21,6 +21,10 @@ const defPair = (s: string) => {
   return m ? ([m[1], m[2]] as const) : null;
 };
 
+/** data-h 용 — 좁은 화면에서 표를 세로로 펼 때 머리글을 칸마다 되살린다.
+    속성값이라 마크업을 둘 수 없으므로 강조 표기만 걷어낸 맨 글자를 쓴다. */
+const plain = (s: string) => s.replace(/[=*`]/g, "").trim();
+
 /** 대조표의 한 줄을 칸으로 가른다 — 양 끝의 "|"는 테두리일 뿐 칸이 아니다 */
 const cells = (row: string) =>
   row
@@ -36,25 +40,44 @@ const cells = (row: string) =>
   ) : block.startsWith("| ") ? (
     /* "A는 …이고 B는 …이다" 식 산문은 눈으로 견줄 수가 없다 — 가로로 마주 세운다.
        가로로 넘칠 수 있어 제 칸 안에서 스크롤한다. */
-    <div class="cmp-wrap">
-      {/* 값 열이 둘이면 '두 대상을 마주 세운 대조'라 폭을 반씩 나눠야 견주기 쉽고,
-          셋 이상이면 성격이 다른 축이 섞이므로(방식은 산문, 복잡도는 짧은 값) 내용대로 잡는다.
-          암기 노트는 그 경계가 한 칸 앞이다 — 표 23장 중 18장이 세 칸이고, 거기서 첫 칸은
-          견주는 축이 아니라 외울 값이다("포트 20 / FTP 데이터 / TCP"). 반씩 나누면
-          "TCP" 한 낱말이 판의 절반을 쓴다. */}
-      <table
-        class={cells(block.split("\n")[0]).length > (memo ? 2 : 3) ? "cmp cmp-wide" : "cmp"}
-      >
-        <thead>
-          <tr>{cells(block.split("\n")[0]).map((c) => <th set:html={md(c)} />)}</tr>
-        </thead>
-        <tbody>
-          {block.split("\n").slice(1).map((row) => (
-            <tr>{cells(row).map((c, ci) => (ci === 0 ? <th scope="row" set:html={md(c)} /> : <td set:html={md(c)} />))}</tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    (() => {
+      const rows = block.split("\n");
+      const head = cells(rows[0]);
+      return (
+        <div class="cmp-wrap">
+          {/* 값 열이 둘이면 '두 대상을 마주 세운 대조'라 폭을 반씩 나눠야 견주기 쉽고,
+              셋 이상이면 성격이 다른 축이 섞이므로(방식은 산문, 복잡도는 짧은 값) 내용대로 잡는다.
+              암기 노트는 그 경계가 한 칸 앞이다 — 표 23장 중 18장이 세 칸이고, 거기서 첫 칸은
+              견주는 축이 아니라 외울 값이다("포트 20 / FTP 데이터 / TCP"). 반씩 나누면
+              "TCP" 한 낱말이 판의 절반을 쓴다. */}
+          <table class={head.length > (memo ? 2 : 3) ? "cmp cmp-wide" : "cmp"}>
+            <thead>
+              <tr>{head.map((c) => <th set:html={md(c)} />)}</tr>
+            </thead>
+            {/* data-h — 좁은 화면에서 머리글 줄이 사라지고 각 칸이 제 머리글을 앞에 달고 선다.
+                첫 칸의 머리글은 비어 있는 것이 대조표의 관례라(견주는 축 자리) 있을 때만 단다. */}
+            <tbody>
+              {rows.slice(1).map((row) => (
+                <tr>
+                  {cells(row).map((c, ci) =>
+                    ci === 0 ? (
+                      <th scope="row" data-h={plain(head[0]) || undefined} set:html={md(c)} />
+                    ) : (
+                      /* 값은 한 겹 싸서 넘긴다 — 좁은 화면에서 칸이 subgrid 격자가 되는데,
+                         칸 안의 인라인 요소(값 칩·굵은 용어)가 저마다 격자 항목이 되어
+                         머리글 칸으로 흘러내렸다("…전송(RIP은" 다음 줄에 `30`이 혼자). */
+                      <td data-h={plain(head[ci] ?? "") || undefined}>
+                        <span class="cv" set:html={md(c)} />
+                      </td>
+                    ),
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    })()
   ) : block.startsWith("~ ") ? (
     <ol class="flow">{block.split("\n").map((li) => <li set:html={md(li.slice(2))} />)}</ol>
   ) : block.startsWith("# ") || block.startsWith("#= ") ? (
@@ -73,7 +96,15 @@ const cells = (row: string) =>
             {head && <div class="stack-row stack-head">{head.map((c) => <span set:html={md(c)} />)}</div>}
             {body.map((cs, i) => (
               <div class="stack-row" style={`--i: ${i}; --tone: ${Math.round(100 - (i / Math.max(1, body.length - 1)) * 76)}%`}>
-                {cs.map((c, ci) => (ci === 0 ? <b class="stack-k" set:html={md(c)} /> : <span set:html={md(c)} />))}
+                {cs.map((c, ci) =>
+                  ci === 0 ? (
+                    <b class="stack-k" set:html={md(c)} />
+                  ) : (
+                    <span data-h={(head && plain(head[ci])) || undefined}>
+                      <span class="cv" set:html={md(c)} />
+                    </span>
+                  ),
+                )}
               </div>
             ))}
           </div>
