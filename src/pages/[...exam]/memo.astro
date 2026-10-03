@@ -119,16 +119,17 @@ const mnemonicSegs = (mn: string): MnSeg[] => {
               <h2 class="memo-area-title"><span class="area-paper">{area} <em>{cs.length}</em></span></h2>
               {cs.map((c) => (
                 <article class="memo" id={`m-${c.key}`}>
-                  {/* 제목은 붙여 둔 메모지 한 장, 두문자는 그 아래 줄 — 쪽지 안에 섞으면
-                      제목인지 실마리인지가 흐려진다. 두문자는 가리기 모드에서도 남는다. */}
-                  <h3 class="memo-title"><span class="memo-name">{c.title}</span></h3>
-                  {c.mnemonic && (
-                    <p class="memo-mn">
-                      {mnemonicSegs(c.mnemonic).map((seg) =>
-                        seg.block ? <b class="mn-s">{seg.text}</b> : <span class="mn-t">{seg.text}</span>,
-                      )}
-                    </p>
-                  )}
+                  <h3 class="memo-title">
+                    <span class="memo-name">{c.title}</span>
+                    {/* 두문자 — 외우는 실마리라 가리기 모드에서도 남긴다 */}
+                    {c.mnemonic && (
+                      <span class="memo-mn">
+                        {mnemonicSegs(c.mnemonic).map((seg) =>
+                          seg.block ? <b class="mn-s">{seg.text}</b> : <span class="mn-t">{seg.text}</span>,
+                        )}
+                      </span>
+                    )}
+                  </h3>
                   {/* 본문은 개념 도입부와 같은 렌더러·같은 글꼴 체계(.topic-intro)를 쓴다 */}
                   <div class="topic-intro memo-body">
                     <MdBlocks text={c.body} memo />
