@@ -1,6 +1,7 @@
 import { defineCollection, z } from "astro:content";
 import { file } from "astro/loaders";
 import topicNotes from "./data/topic-notes.json";
+import memoNotes from "./data/memo-notes.json";
 import { PRACTICAL_FORMAT, SELF_GRADED, isSelfGraded } from "./lib/practical-grade";
 
 /**
@@ -194,6 +195,17 @@ export const overlongHighlight = (s: string) => {
   return undefined;
 };
 
+/** 대조표는 칸 수가 줄마다 같아야 한다 — 어긋나면 표가 조용히 어긋난 채로 그려진다(도입부·암기 카드 공용) */
+const checkTables = (label: string, text: string) => {
+  for (const block of text.split("\n\n")) {
+    if (!block.startsWith("| ")) continue;
+    const rows = block.split("\n").map((r) => r.replace(/^\s*\|/, "").replace(/\|\s*$/, "").split("|").length);
+    if (rows.length < 2) throw new Error(`${label}의 대조표에 머리글만 있고 줄이 없음`);
+    if (new Set(rows).size > 1)
+      throw new Error(`${label}의 대조표 칸 수가 줄마다 다름(${rows.join("·")}) — 모든 줄의 칸 수가 같아야 한다`);
+  }
+};
+
 /** 주제 정의가 깨지면(시험·과목·영역 오타, 강조 표기 위반) 빌드에서 잡는다 */
 for (const [key, t] of Object.entries(TOPICS)) {
   if (!EXAMS.includes(t.exam)) throw new Error(`주제 ${key}의 exam이 잘못됨: ${t.exam}`);
@@ -217,14 +229,55 @@ for (const [key, t] of Object.entries(TOPICS)) {
     throw new Error(
       `주제 ${key}의 도입부에 형광펜이 ${hl}개(상한 ${HIGHLIGHT_PER_INTRO}) — 열거를 전부 칠하지 말고 그중 함정 하나만 남긴다`,
     );
-  // 대조표는 칸 수가 줄마다 같아야 한다 — 어긋나면 표가 조용히 어긋난 채로 그려진다
-  for (const block of t.intro.split("\n\n")) {
-    if (!block.startsWith("| ")) continue;
-    const rows = block.split("\n").map((r) => r.replace(/^\s*\|/, "").replace(/\|\s*$/, "").split("|").length);
-    if (rows.length < 2) throw new Error(`주제 ${key}의 대조표에 머리글만 있고 줄이 없음`);
-    if (new Set(rows).size > 1)
-      throw new Error(`주제 ${key}의 대조표 칸 수가 줄마다 다름(${rows.join("·")}) — 모든 줄의 칸 수가 같아야 한다`);
-  }
+  checkTables(`주제 ${key}`, t.intro);
+}
+
+/**
+ * 암기 노트 — 개념 노트 옆의 두 번째 노트. 줄글 없이 외울 것만 두문자·표·목록으로 모은 카드다.
+ * 정의는 src/data/memo-notes.json 하나에 모이고, 본문은 개념 도입부와 같은 블록 표기·강조 3층을
+ * 쓴다(렌더러도 MdBlocks 하나를 같이 쓴다). 문항은 붙지 않는다 — 읽고 가리고 떠올리는 용도다.
+ * exam을 생략하면 정처기다. 지금은 정처기만 있다(#92).
+ */
+export type Memo = {
+  exam: Exam;
+  area: Area;
+  title: string;
+  /** 두문자·외우기 구절(선택) — 카드 제목 옆에 칩으로 붙는다 */
+  mnemonic?: string;
+  body: string;
+};
+export const MEMOS: Record<string, Memo> = Object.fromEntries(
+  Object.entries(memoNotes as Record<string, Omit<Memo, "exam"> & { exam?: Exam }>).map(([key, m]) => [
+    key,
+    { exam: DEFAULT_EXAM, ...m },
+  ]),
+);
+/** 한 시험의 암기 카드 — 정의 순서를 지키되 화면은 영역 순으로 다시 묶는다 */
+export const memosOf = (exam: Exam) =>
+  Object.entries(MEMOS)
+    .filter(([, m]) => m.exam === exam)
+    .map(([key, m]) => ({ key, ...m }));
+/** 암기 노트가 있는 시험 — 라우트와 헤더 메뉴가 이 목록만 낸다(없는 시험에 빈 페이지를 내지 않는다) */
+export const MEMO_EXAMS = EXAMS.filter((e) => memosOf(e).length > 0);
+
+/**
+ * 암기 카드 게이트 — 도입부와 같은 자를 쓴다(백틱 짝 · 100자 형광펜 · 카드당 형광펜 2개 · 표 칸 수).
+ * 다른 점 하나: 형광펜 0개를 허용한다. 포트 번호 표처럼 카드 전체가 '외울 값'인 것은
+ * 형광펜을 둘 자리가 없다 — 억지로 한 줄을 칠하면 표가 아니라 그 줄만 외우게 된다.
+ */
+for (const [key, m] of Object.entries(MEMOS)) {
+  if (!EXAMS.includes(m.exam)) throw new Error(`암기 카드 ${key}의 exam이 잘못됨: ${m.exam}`);
+  const areas = AREAS_BY_EXAM[m.exam] as readonly string[];
+  if (!areas.includes(m.area)) throw new Error(`암기 카드 ${key}의 area가 ${m.exam}에 없음: ${m.area}`);
+  if (unpairedBacktick(m.body + (m.mnemonic ?? "")))
+    throw new Error(`암기 카드 ${key}의 백틱 짝이 맞지 않음 — 값 칩 대신 백틱 글자가 화면에 그대로 나온다`);
+  const long = overlongHighlight(m.body);
+  if (long)
+    throw new Error(`암기 카드 ${key}의 형광펜이 ${long.length}자(상한 ${HIGHLIGHT_MAX}): "${long.slice(0, 40)}…"`);
+  const hl = countHighlights(m.body);
+  if (hl > HIGHLIGHT_PER_INTRO)
+    throw new Error(`암기 카드 ${key}의 형광펜이 ${hl}개(상한 ${HIGHLIGHT_PER_INTRO}) — 함정 짝 하나만 남긴다`);
+  checkTables(`암기 카드 ${key}`, m.body);
 }
 
 const quiz = defineCollection({

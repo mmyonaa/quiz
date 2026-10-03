@@ -3807,3 +3807,106 @@ select.sort {
   color: var(--text);
   font-weight: 600;
 }
+
+/* ── 암기 노트(#92) ──
+   개념 노트가 "왜"를 읽는 자리라면 여기는 "무엇"만 외우는 자리다. 카드는 읽는 것이지
+   고르는 것이 아니므로 면·테두리를 걷고 괘선으로만 끊는다(화면 규약 2). 본문 글꼴 체계는
+   .topic-intro를 그대로 빌린다 — 같은 표기가 노트마다 다르게 보이면 안 된다. */
+.memo-area {
+  scroll-margin-top: calc(var(--top-h) + 0.75rem);
+  margin-bottom: 2.2rem;
+}
+.memo-area:last-of-type {
+  margin-bottom: 0;
+}
+.memo-area-title {
+  margin: 0 0 0.6rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--text);
+  font-size: var(--t-lg);
+}
+.memo-area-title em,
+.memo-title em {
+  font-style: normal;
+  font-size: 0.75em;
+  color: var(--muted);
+}
+.memo {
+  padding: 1rem 0 1.1rem;
+  border-bottom: 1px solid var(--border);
+  scroll-margin-top: calc(var(--top-h) + 0.75rem);
+}
+.memo:last-child {
+  border-bottom: 0;
+}
+.memo-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.7rem;
+  margin: 0 0 0.6rem;
+  font-size: var(--t-base);
+}
+/* 두문자 — 외우는 실마리. 세는 것도 재는 것도 아니지만 '표기'라 mono가 맞고, 제목과 층을
+   가르려면 칩이어야 한다. 액센트는 쓰지 않는다(한 화면에 채워진 액센트는 주 행동 하나뿐). */
+.memo-mn {
+  display: inline-block;
+  padding: 0.12em 0.55em;
+  border: 1px dashed var(--border);
+  border-radius: var(--r-pill);
+  font-size: var(--t-xs);
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.memo-body {
+  /* .topic-intro가 가진 아래 괘선·여백은 걷는다 — 카드 괘선과 겹쳐 두 줄이 된다 */
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: 0;
+  font-size: var(--t-sm);
+  line-height: 1.75;
+}
+.memo-body > ul {
+  padding-left: 1rem;
+}
+.memo-body li {
+  margin-bottom: 0.25em;
+}
+.memo-body .cmp {
+  min-width: 28rem;
+}
+.memo-tools {
+  margin-top: 0.9rem;
+}
+/* ── 가리기 모드(빨간 시트) ──
+   외울 값과 형광펜을 글자색 띠로 덮는다. 눌러 벗기면(.peek) 원래 모양으로 돌아온다.
+   덮개는 글자 높이만 감싼다 — 줄간격이 들썩이면 어디가 가려졌는지 자리로 세게 된다. */
+.memo-main.cover .memo-body .hl:not(.peek),
+.memo-main.cover .memo-body .val:not(.peek) {
+  background: var(--text);
+  color: transparent;
+  border-radius: 3px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.12s;
+}
+.memo-main.cover .memo-body .hl:not(.peek) .val {
+  background: transparent;
+  color: transparent;
+}
+.memo-main.cover .memo-body .hl:not(.peek):hover,
+.memo-main.cover .memo-body .val:not(.peek):hover {
+  background: var(--muted);
+}
+.memo-main.cover .memo-body .hl.peek,
+.memo-main.cover .memo-body .val.peek {
+  cursor: pointer;
+  outline: 1px dashed var(--muted);
+  outline-offset: 1px;
+}
+.memo-main.cover .memo-body .hl:focus-visible,
+.memo-main.cover .memo-body .val:focus-visible {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 2px;
+}

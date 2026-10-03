@@ -1,6 +1,6 @@
 ---
 import AuthBox from "./AuthBox.astro";
-import { DEFAULT_EXAM, EXAMS, EXAM_FORMAT, examPath, type Exam } from "../content.config";
+import { DEFAULT_EXAM, EXAMS, EXAM_FORMAT, MEMO_EXAMS, examPath, type Exam } from "../content.config";
 
 // 사이트 공용 헤더 — 데스크톱은 인라인 메뉴, 모바일은 햄버거 → 오른쪽 드로어.
 // 스크롤해도 메뉴에 닿을 수 있게 상단 고정이며, 높이는 --top-h로 알려 준다
@@ -20,6 +20,8 @@ const links = [
   { key: "quiz", href: `${base}${px}/`, label: "필기 문제" },
   { key: "practical", href: `${base}${px}/practical/`, label: "실기 필답" },
   { key: "notes", href: `${base}${px}/notes/`, label: "개념 노트" },
+  // 암기 노트는 카드가 있는 시험에만 — 없는 시험에 빈 페이지로 가는 메뉴를 내지 않는다
+  ...(MEMO_EXAMS.includes(exam) ? [{ key: "memo", href: `${base}${px}/memo/`, label: "암기 노트" }] : []),
 ];
 // 시험 전환 — 어느 시험의 개념 노트를 보는지 고른다
 const examTabs = EXAMS.map((e) => ({
