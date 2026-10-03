@@ -195,14 +195,34 @@ export const overlongHighlight = (s: string) => {
   return undefined;
 };
 
-/** 대조표는 칸 수가 줄마다 같아야 한다 — 어긋나면 표가 조용히 어긋난 채로 그려진다(도입부·암기 카드 공용) */
+/**
+ * 칸이 있는 블록은 칸 수가 줄마다 같아야 한다 — 어긋나면 표가 조용히 어긋난 채로 그려진다(도입부·암기 카드 공용).
+ * 대조표("| ")와 계층 스택("# "/"#= ")은 모든 줄의 칸 수가 같아야 하고, 타일("* ")은 "이름 | 설명" 두 칸이다.
+ * 한 블록 안에서 줄머리가 섞이면(목록 줄 사이에 타일 줄) 그 줄은 다른 종류로 그려지므로 그것도 막는다.
+ */
+const cellCount = (r: string) => r.replace(/^\s*\|/, "").replace(/\|\s*$/, "").split("|").length;
 const checkTables = (label: string, text: string) => {
   for (const block of text.split("\n\n")) {
-    if (!block.startsWith("| ")) continue;
-    const rows = block.split("\n").map((r) => r.replace(/^\s*\|/, "").replace(/\|\s*$/, "").split("|").length);
-    if (rows.length < 2) throw new Error(`${label}의 대조표에 머리글만 있고 줄이 없음`);
-    if (new Set(rows).size > 1)
-      throw new Error(`${label}의 대조표 칸 수가 줄마다 다름(${rows.join("·")}) — 모든 줄의 칸 수가 같아야 한다`);
+    const rows = block.split("\n");
+    if (block.startsWith("| ")) {
+      const ns = rows.map(cellCount);
+      if (rows.length < 2) throw new Error(`${label}의 대조표에 머리글만 있고 줄이 없음`);
+      if (new Set(ns).size > 1)
+        throw new Error(`${label}의 대조표 칸 수가 줄마다 다름(${ns.join("·")}) — 모든 줄의 칸 수가 같아야 한다`);
+    } else if (block.startsWith("# ") || block.startsWith("#= ")) {
+      if (!rows.every((r) => r.startsWith("# ") || r.startsWith("#= ")))
+        throw new Error(`${label}의 계층 스택에 "# "로 시작하지 않는 줄이 섞여 있음`);
+      const ns = rows.map((r) => cellCount(r.replace(/^#=? /, "")));
+      if (new Set(ns).size > 1)
+        throw new Error(`${label}의 계층 스택 칸 수가 줄마다 다름(${ns.join("·")})`);
+    } else if (block.startsWith("* ")) {
+      if (!rows.every((r) => r.startsWith("* ") && cellCount(r.slice(2)) === 2))
+        throw new Error(`${label}의 타일은 모든 줄이 "* 이름 | 설명" 두 칸이어야 함`);
+    } else if (block.startsWith("~ ") || block.startsWith("- ")) {
+      const mark = block.slice(0, 2);
+      if (!rows.every((r) => r.startsWith(mark)))
+        throw new Error(`${label}의 "${mark.trim()}" 블록에 다른 줄머리가 섞여 있음 — 빈 줄로 블록을 나눈다`);
+    }
   }
 };
 
@@ -236,7 +256,7 @@ for (const [key, t] of Object.entries(TOPICS)) {
  * 암기 노트 — 개념 노트 옆의 두 번째 노트. 줄글 없이 외울 것만 두문자·표·목록으로 모은 카드다.
  * 정의는 src/data/memo-notes.json 하나에 모이고, 본문은 개념 도입부와 같은 블록 표기·강조 3층을
  * 쓴다(렌더러도 MdBlocks 하나를 같이 쓴다). 문항은 붙지 않는다 — 읽고 가리고 떠올리는 용도다.
- * exam을 생략하면 정처기다. 지금은 정처기만 있다(#92).
+ * exam을 생략하면 정처기다. 정처기 25장 · 정보보안기사 31장(#92).
  */
 export type Memo = {
   exam: Exam;

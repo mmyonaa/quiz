@@ -32,6 +32,36 @@ const areas = (AREAS_BY_EXAM[exam] as readonly Area[])
   .map((area) => ({ area, slug: AREA_SLUGS[area], cards: cards.filter((c) => c.area === area) }))
   .filter((a) => a.cards.length > 0);
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+// ── 두문자 조각내기 ──
+// "물·데·네·전·세·표·응"처럼 ·로 바싹 붙은 짧은 음절은 외우는 실마리 그 자체라
+// 글자 블록으로 하나씩 세운다. 반대로 "대칭 키 하나 · 비대칭 키 둘"처럼 ·가 구절을
+// 가르는 자리에서 낱말을 블록으로 쪼개면 읽히지 않으므로 그냥 글로 둔다.
+// 가르는 기준은 "붙어 있는가"와 "짧은가" 둘 — 공백 없는 ·로 이어진 한 덩어리에서
+// 조각이 전부 세 글자 이하일 때만 블록이 된다("5만·50만·100만"은 100만이 길어 글로 남는다).
+const MN_RUN = /[^\s·]+(?:·[^\s·]+)+/g;
+const MN_SPACED = /^[^\s·]{1,3}(?: · [^\s·]{1,3})+$/;
+type MnSeg = { block: boolean; text: string };
+/** 블록 사이에 남는 글 — 양끝의 ·는 블록이 이미 자리로 말하는 구분이라 떼어 낸다
+    (떼지 않으면 "A C I D · DDL …"처럼 앞에 점 하나가 떠 있는 꼴이 된다). "/"는 남긴다 */
+const plain = (s: string) => s.replace(/^[\s·]+|[\s·]+$/g, "");
+const mnemonicSegs = (mn: string): MnSeg[] => {
+  // "지식 · 소유 · 존재 · 행동" — 띄어 쓴 ·로만 된 짧은 낱말 줄도 두문자로 본다
+  if (MN_SPACED.test(mn)) return mn.split(" · ").map((t) => ({ block: true, text: t }));
+  const out: MnSeg[] = [];
+  let last = 0;
+  for (const m of mn.matchAll(MN_RUN)) {
+    const parts = m[0].split("·");
+    if (parts.some((p) => [...p].length > 3)) continue;
+    const lead = plain(mn.slice(last, m.index));
+    if (lead) out.push({ block: false, text: lead });
+    for (const p of parts) out.push({ block: true, text: p });
+    last = m.index + m[0].length;
+  }
+  const tail = plain(mn.slice(last));
+  if (tail) out.push({ block: false, text: tail });
+  return out.length ? out : [{ block: false, text: mn }];
+};
 ---
 
 <!doctype html>
@@ -90,11 +120,17 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
                   <h3 class="memo-title">
                     <span class="memo-name">{c.title}</span>
                     {/* 두문자 — 외우는 실마리라 가리기 모드에서도 남긴다 */}
-                    {c.mnemonic && <span class="memo-mn mono">{c.mnemonic}</span>}
+                    {c.mnemonic && (
+                      <span class="memo-mn">
+                        {mnemonicSegs(c.mnemonic).map((seg) =>
+                          seg.block ? <b class="mn-s">{seg.text}</b> : <span class="mn-t">{seg.text}</span>,
+                        )}
+                      </span>
+                    )}
                   </h3>
                   {/* 본문은 개념 도입부와 같은 렌더러·같은 글꼴 체계(.topic-intro)를 쓴다 */}
                   <div class="topic-intro memo-body">
-                    <MdBlocks text={c.body} />
+                    <MdBlocks text={c.body} memo />
                   </div>
                 </article>
               ))}

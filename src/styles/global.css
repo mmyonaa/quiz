@@ -3814,50 +3814,93 @@ select.sort {
    .topic-intro를 그대로 빌린다 — 같은 표기가 노트마다 다르게 보이면 안 된다. */
 .memo-area {
   scroll-margin-top: calc(var(--top-h) + 0.75rem);
-  margin-bottom: 2.2rem;
+  margin-bottom: 2.6rem;
 }
 .memo-area:last-of-type {
   margin-bottom: 0;
 }
+/* 영역 머리글 — 카드 55장을 훑는 동안 "지금 어느 영역인가"가 늘 화면에 남아야 한다.
+   좌측 목차는 1100px 위에서만 있고 좁은 화면에는 아무 표시도 없었다. 머리글을 헤더 아래에
+   붙여 두면 어느 폭에서든 그 자리를 지킨다(패널 면과 같은 바탕이라 글이 비쳐 지나가지 않는다).
+   카드 제목과는 두 단 차이(--t-xl / --t-lg)에 진한 괘선까지 더해 한눈에 갈린다. */
 .memo-area-title {
-  margin: 0 0 0.6rem;
-  padding-bottom: 0.35rem;
-  border-bottom: 1px solid var(--text);
-  font-size: var(--t-lg);
+  position: sticky;
+  top: calc(var(--top-h) - 1px);
+  z-index: 2;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0 0 var(--s-2);
+  padding: 0.5rem 0 0.4rem;
+  background: var(--surface);
+  /* 괘선 바로 아래까지 면이 끝나면 지나가는 카드 제목이 선에 딱 붙어 반쯤 잘린 채로
+     비친다 — 면을 괘선 아래로 반 뼘 더 내려 지나갈 자리를 만든다 */
+  box-shadow: 0 0.8rem 0 var(--surface);
+  border-bottom: 2px solid var(--text);
+  font-size: var(--t-xl);
+  letter-spacing: -0.01em;
 }
-.memo-area-title em,
-.memo-title em {
+/* 영역의 카드 수 — 세는 것이므로 mono(화면 규약 3) */
+.memo-area-title em {
   font-style: normal;
-  font-size: 0.75em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--t-2xs);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
   color: var(--muted);
+  background: var(--surface-2);
+  border-radius: var(--r-pill);
+  padding: 0.15em 0.55em;
 }
 .memo {
-  padding: 1rem 0 1.1rem;
+  padding: 1.15rem 0 1.3rem;
   border-bottom: 1px solid var(--border);
-  scroll-margin-top: calc(var(--top-h) + 0.75rem);
+  /* 영역 머리글이 헤더 아래에 붙어 있으므로 그 높이만큼 더 비켜선다 */
+  scroll-margin-top: calc(var(--top-h) + 3rem);
 }
 .memo:last-child {
   border-bottom: 0;
+  padding-bottom: 0.3rem;
 }
 .memo-title {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 0.35rem 0.7rem;
-  margin: 0 0 0.6rem;
-  font-size: var(--t-base);
+  gap: 0.3rem 0.65rem;
+  margin: 0 0 0.7rem;
+  font-size: var(--t-lg);
+  letter-spacing: -0.01em;
 }
-/* 두문자 — 외우는 실마리. 세는 것도 재는 것도 아니지만 '표기'라 mono가 맞고, 제목과 층을
-   가르려면 칩이어야 한다. 액센트는 쓰지 않는다(한 화면에 채워진 액센트는 주 행동 하나뿐). */
+/* ── 두문자 ──
+   외우는 실마리다. 회색 점선 칩 하나에 문자열을 통째로 담아 두었더니 비활성 꼬리표처럼
+   보였고, 정작 "물·데·네·전·세·표·응"의 음절이 한 덩어리로 뭉쳐 세어지지 않았다.
+   음절은 글자 블록으로 하나씩 세우고, 블록이 못 되는 구절은 글로 남겨 톤을 낮춘다 —
+   블록이 튀고 구절이 물러나는 것이 그대로 위계가 된다. 글꼴은 본문 글꼴 그대로다
+   (mono로 세우면 한글 음절의 낱자 사이가 벌어진다 — md.ts가 값 칩에서 겪은 것과 같다).
+   액센트는 쓰지 않는다(채워진 액센트는 한 화면에 주 행동 하나뿐). */
 .memo-mn {
-  display: inline-block;
-  padding: 0.12em 0.55em;
-  border: 1px dashed var(--border);
-  border-radius: var(--r-pill);
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2em;
   font-size: var(--t-xs);
   font-weight: 500;
+  line-height: 1.4;
   color: var(--muted);
+}
+.mn-s {
+  min-width: 1.8em;
+  padding: 0.15em 0.35em;
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  text-align: center;
   white-space: nowrap;
+}
+.mn-t {
+  padding: 0 0.1em;
 }
 .memo-body {
   /* .topic-intro가 가진 아래 괘선·여백은 걷는다 — 카드 괘선과 겹쳐 두 줄이 된다 */
@@ -3865,7 +3908,7 @@ select.sort {
   padding-bottom: 0;
   border-bottom: 0;
   font-size: var(--t-sm);
-  line-height: 1.75;
+  line-height: 1.7;
 }
 .memo-body > ul {
   padding-left: 1rem;
@@ -3873,8 +3916,83 @@ select.sort {
 .memo-body li {
   margin-bottom: 0.25em;
 }
+/* ── 용어 사전 목록 ──
+   암기 노트 목록 252줄 중 196줄이 "**용어** 값 · 값 · 값" 꼴이다. 글머리 기호 뒤로 흘려
+   두면 용어가 줄마다 다른 자리에서 시작해, 훑을 때 눈이 매번 줄 앞머리를 다시 찾는다.
+   용어를 제 칸에 세워 한 줄로 맞추면 왼쪽이 색인이 되고 오른쪽이 외울 내용이 된다.
+   칸 폭은 그 블록의 용어가 정하되 9rem에서 멈춘다(한 줄만 긴 용어가 칸 전체를 끌고 가면
+   나머지 줄의 오른쪽이 통째로 밀린다). 용어가 없는 줄은 두 칸을 넘어 선다. */
+.memo-body > ul.defs {
+  display: grid;
+  grid-template-columns: fit-content(9rem) minmax(0, 1fr);
+  row-gap: 0.45em;
+  column-gap: 0.75em;
+  padding-left: 0;
+  list-style: none;
+}
+.memo-body > ul.defs > li {
+  grid-column: 1 / -1;
+  margin-bottom: 0;
+}
+.memo-body > ul.defs > li.def {
+  display: grid;
+  grid-template-columns: subgrid;
+  column-gap: inherit;
+}
+.def-k {
+  font-weight: 700;
+  color: var(--text);
+}
+/* 좁은 화면에서는 용어 칸이 가로의 절반을 가져간다("침해사고 신고(정보통신망법)" 같은 줄이
+   있다) — 칸을 걷고 용어를 줄 앞머리에 되돌린 뒤 내어쓰기로 이어지는 줄만 들여, 용어가
+   여전히 줄의 시작으로 읽히게 한다. */
+@media (max-width: 560px) {
+  .memo-body > ul.defs {
+    display: block;
+  }
+  .memo-body > ul.defs > li.def {
+    display: block;
+    padding-left: 0.9em;
+    text-indent: -0.9em;
+    margin-bottom: 0.45em;
+  }
+  .def-k {
+    margin-right: 0.4em;
+  }
+}
+/* 암기 노트의 표는 읽는 글이 아니라 훑는 목록이다(포트 번호 14줄) — 줄 높이를 한 단
+   조여야 한 화면에 표 하나가 들어온다 */
 .memo-body .cmp {
   min-width: 28rem;
+  line-height: 1.5;
+}
+.memo-body .cmp th,
+.memo-body .cmp td {
+  padding: 0.38em 0.7em;
+}
+/* 칸이 셋 이상인 암기 표는 판을 다 쓰지 않는다 — 100%로 늘이면 "TCP" 세 글자가 든 칸이
+   남는 폭을 나눠 가져, 포트 번호와 전송 방식이 손가락 두 마디만큼 떨어진다.
+   내용만큼만 서고 넘칠 때만 판 끝에서 멈춘다. */
+.memo-body .cmp-wide {
+  width: max-content;
+  max-width: 100%;
+}
+/* 좁은 화면에서 대조표·계층 스택은 제 칸 안에서 가로로 구른다 — 그런데 아무 표시가 없어 그냥 잘린
+   것처럼 보였다(모바일에서 표 23장이 전부 그랬다). 끝에 닿지 않았을 때만 가장자리에
+   그늘이 선다 — 스크롤과 함께 배경이 따라 움직이는 local/scroll 조합이 그 일을 한다. */
+.stack-wrap {
+  overflow-x: auto;
+  margin: 0 0 0.9em;
+}
+.memo-body .cmp-wrap,
+.memo-body .stack-wrap {
+  background:
+    linear-gradient(to right, var(--surface) 60%, transparent) 0 0 / 1.25rem 100% no-repeat local,
+    linear-gradient(to left, var(--surface) 60%, transparent) 100% 0 / 1.25rem 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, color-mix(in oklab, var(--text) 16%, transparent), transparent) 0 0 /
+      0.55rem 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, color-mix(in oklab, var(--text) 16%, transparent), transparent) 100% 0 /
+      0.55rem 100% no-repeat scroll;
 }
 .memo-tools {
   margin-top: 0.9rem;
@@ -3909,4 +4027,175 @@ select.sort {
 .memo-main.cover .memo-body .val:focus-visible {
   outline: 2px solid var(--accent-strong);
   outline-offset: 2px;
+}
+
+/* ── 암기 노트 시각 블록 — 순서 흐름 · 계층 스택 · 타일 ──
+   산문 대신 모양으로 외우게 한다. 셋 다 면 카드가 아니라 괘선·띠로만 세운다. */
+.flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.4rem 0;
+  margin: 0 0 0.9em;
+  padding: 0;
+  list-style: none;
+  counter-reset: flow;
+}
+.flow li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.3em 0.75em 0.3em 0.5em;
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  font-size: var(--t-xs);
+  line-height: 1.5;
+}
+.flow li::before {
+  counter-increment: flow;
+  content: counter(flow);
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+  background: var(--text);
+  color: var(--surface);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8em;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+/* 화살표는 "다음 칩의 왼쪽"이 아니라 "이 칩의 오른쪽"에 단다 — 왼쪽에 달면 줄이 바뀌는
+   자리에서 새 줄이 화살표로 시작해, 앞에 아무것도 없는 화살표가 생긴다(5단계 흐름에서 늘 그랬다). */
+.flow li:not(:last-child) {
+  margin-right: 1.35rem;
+}
+.flow li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: -1rem;
+  top: 50%;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-top: 2px solid var(--muted);
+  border-right: 2px solid var(--muted);
+  transform: translateY(-50%) rotate(45deg);
+}
+/* 좁은 화면에서는 칩 하나가 한 줄을 다 먹어 가로 흐름이 성립하지 않는다 — 세로 사다리로
+   세운다. 번호 구슬이 레일 위에 꿰이고 글은 그 오른쪽으로 흐른다. */
+@media (max-width: 640px) {
+  .flow {
+    display: block;
+  }
+  .flow li {
+    margin: 0;
+    padding: 0.3em 0 0.3em 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    align-items: flex-start;
+    gap: 0.55em;
+    font-size: var(--t-sm);
+  }
+  .flow li::before {
+    margin-top: 0.1em;
+  }
+  .flow li:not(:last-child) {
+    margin-right: 0;
+  }
+  .flow li:not(:last-child)::after {
+    top: 1.75em;
+    bottom: -0.15em;
+    left: 0.555em;
+    right: auto;
+    width: 2px;
+    height: auto;
+    border: 0;
+    background: var(--border);
+    transform: none;
+  }
+}
+/* ── 계층 스택 ──
+   OSI 7계층·복구 사이트처럼 "순서가 있는 층"이다. 표와 같은 격자를 쓰면서도 표로 읽히지
+   않아야 해서, 첫 칸(층 이름)에만 농담을 준다 — 위층이 짙고 아래로 갈수록 옅어지는 띠가
+   왼쪽에 서면 격자가 아니라 쌓인 것으로 보인다. 농담은 --surface-2와 --surface 사이에서만
+   움직여 어느 층에서도 글자 대비가 떨어지지 않는다(--tone은 렌더러가 행마다 넣는다). */
+.stack {
+  display: grid;
+  /* 값 칸을 1fr로 똑같이 나누면 "메시지" 한 낱말이 든 칸과 프로토콜 아홉 개가 든 칸이
+     같은 폭을 가져가, 한쪽은 텅 비고 한쪽은 줄바꿈이 났다. auto는 내용만큼 먼저 잡고
+     남는 폭만 고르게 나눈다(표가 내용대로 서는 그 배분이다). */
+  grid-template-columns: max-content repeat(calc(var(--n) - 1), minmax(0, auto));
+  /* 대조표와 같은 이유로 내용만큼만 선다 — 복구 사이트 넉 줄("즉시 · 수 시간 · 수 일 ·
+     수 주")이 판을 다 쓰면 층 이름과 복구 시간이 손가락 두 마디만큼 벌어진다.
+     min-width는 좁은 화면에서 칸을 욱여넣지 않고 .stack-wrap 안에서 구르게 하는 하한이다. */
+  width: max-content;
+  max-width: 100%;
+  min-width: 30rem;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  font-size: var(--t-xs);
+  line-height: 1.55;
+}
+/* subgrid라 행이 제 상자를 갖는다 — 네 칸짜리 표에서 가로로 눈을 옮길 때 행 전체가
+   따라 밝아진다(display: contents였을 때는 행에 상자가 없어 hover가 걸리지 않았다). */
+.stack-row {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+}
+.stack-row > * {
+  padding: 0.45em 0.7em;
+  border-bottom: 1px solid var(--border);
+}
+.stack-row:last-child > * {
+  border-bottom: 0;
+}
+.stack-head > * {
+  background: var(--surface-2);
+  color: var(--muted);
+  font-weight: 500;
+}
+.stack-head {
+  border-bottom: 1px solid var(--text);
+}
+.stack-k {
+  font-weight: 600;
+  white-space: nowrap;
+  border-right: 1px solid var(--border);
+  background: color-mix(in oklab, var(--surface-2) var(--tone, 100%), var(--surface));
+}
+.stack-row:not(.stack-head):hover > * {
+  background: color-mix(in oklab, var(--accent) 7%, transparent);
+}
+/* ── 타일 ──
+   같은 급의 항목 넷을 격자로 — 인증 4유형처럼 "몇 개인지"가 곧 외울 거리인 것들이다.
+   저마다 테두리 상자를 두르면 카드가 또 한 겹 생기므로(화면 규약 2) 위에 괘선만 긋는다.
+   나란한 괘선이 열을 세고, 그 아래 이름과 설명이 두 층으로 앉는다. */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 1.05rem 1.25rem;
+  margin: 0 0 0.9em;
+}
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
+  padding: 0.5em 0 0.2em;
+  border-top: 1px solid var(--text);
+  font-size: var(--t-xs);
+  line-height: 1.55;
+}
+.tile-k {
+  font-size: var(--t-sm);
+  letter-spacing: -0.01em;
+}
+.tile-v {
+  color: var(--muted);
 }
