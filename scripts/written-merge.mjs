@@ -2,7 +2,7 @@
 //
 //   written-merge.mjs draft.json [...]   초안을 검증한 뒤 questions.json 뒤에 붙인다
 //   written-merge.mjs --dry draft.json   검증만 하고 쓰지 않는다
-//   written-merge.mjs --report           시험별 은행 현황 + 다음에 낼 주제 고르기
+//   written-merge.mjs --report           시험별 은행 현황(필기·실기·암기 카드) + 다음에 낼 주제 고르기
 //
 // 실기용(practical-merge.mjs)과 같은 이유로 둔다 — 스키마의 최종 게이트는 빌드(zod .strict())지만,
 // 깨진 초안이 questions.json에 **쓰이기 전에** 잡고 zod가 원리상 못 보는 것(문항 사이의 id·발문 중복)을 본다.
@@ -17,6 +17,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const BANK = join(root, "src/data/questions.json");
 const PRACTICAL = join(root, "src/data/practical.json");
 const TOPIC_NOTES = join(root, "src/data/topic-notes.json");
+const MEMO_NOTES = join(root, "src/data/memo-notes.json");
 
 /** content.config.ts의 DEFAULT_EXAM과 같은 값 — topic-notes.json에서 exam을 생략하면 이 시험이다 */
 const DEFAULT_EXAM = "정처기";
@@ -169,6 +170,7 @@ const hlDensity = (pool, areaOf) => {
 const report = () => {
   const bank = read(BANK);
   const practical = read(PRACTICAL);
+  const memos = read(MEMO_NOTES);
   const topics = loadTopics();
   const per = (arr) => arr.reduce((m, q) => ({ ...m, [q.topic]: (m[q.topic] ?? 0) + 1 }), {});
   const w = per(bank);
@@ -228,6 +230,37 @@ const report = () => {
         .join(" · ");
       const flag = [over.length && "상한 초과", under.length && "하한 미만"].filter(Boolean).join(" · ");
       if (line) console.log(`  ${label} 형광펜 밀도(기준 10~20%): ${line}${flag ? `  ← ${flag}` : ""}`);
+    }
+
+    // ── 암기 카드 ──
+    // 카드는 주제를 통해 시험·영역을 물려받고, 한 카드가 두 시험에 걸칠 수 있다(#92).
+    // 여기서 보는 것은 "얼마나 많은가"가 아니라 **영역끼리 고른가**다. 암기 노트는 주제와
+    // 1:1일 이유가 없어 절대 목표치가 없지만, 영역 간 편차는 대개 "외울 게 그 영역에 몰려서"가
+    // 아니라 아직 그 영역을 안 썼기 때문이다(초안을 네트워크부터 쓴 탓에 정보보안기사
+    // 네트워크 보안이 11장, 나머지 다섯 영역이 각 4장이었다 — 2026-10-05 실측).
+    //
+    // 임계는 두지 않는다. 주제 수가 영역마다 3배 가까이 달라(소프트웨어공학 26 : 네트워크 9)
+    // 고정 퍼센트가 성립하지 않고, "몇 %가 옳다"는 근거도 없다. 적은 순으로 줄 세우고 평균을
+    // 함께 적어 꼬리가 어디인지만 보여 준다 — 어디를 메울지는 읽는 사람이 고른다.
+    //
+    // 형광펜 밀도는 재지 않는다. 해설은 열에 한둘만 칠하는 게 맞지만 카드는 한 장이 곧 한 주제라
+    // 저마다 "들고 갈 한 줄"을 갖는 것이 정상이다(실측 67~100%). 재면 전부 경보가 된다.
+    const mCards = Object.entries(memos).filter(([, m]) => m.topics.some((t) => topics[t]?.exam === exam));
+    if (mCards.length) {
+      const topicOf = (m) => m.topics.find((x) => topics[x]?.exam === exam);
+      const byArea = {};
+      for (const k of keys) (byArea[topics[k].area] ??= [0, 0])[1] += 1;
+      for (const [, m] of mCards) byArea[topics[topicOf(m)].area][0] += 1;
+      const held = new Set(mCards.map(([, m]) => topicOf(m)));
+      const avg = Math.round((mCards.length / keys.length) * 100);
+      console.log(`  암기 카드 ${mCards.length}장 · 주제 ${held.size}/${keys.length} 보유 · 영역 평균 ${avg}%`);
+      console.log(
+        `  영역별 카드/주제(적은 순): ${Object.entries(byArea)
+          .map(([a, [c, n]]) => [a, c, n, n ? c / n : 0])
+          .sort((x, y) => x[3] - y[3])
+          .map(([a, c, n, r]) => `${a} ${c}/${n} ${Math.round(r * 100)}%`)
+          .join(" · ")}`,
+      );
     }
 
     const todo = keys.filter((k) => !w[k]);
