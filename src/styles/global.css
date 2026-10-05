@@ -722,7 +722,14 @@ button.primary:not(:disabled):hover {
   align-items: center;
   gap: 0.75rem;
 }
-button.ghost {
+/* 링크도 같은 모양을 받는다 — 암기 노트처럼 '눌러서 이동'인 것은 버튼이 아니라 a 가 맞고
+   (새 탭·주소 복사가 되어야 한다), 모드 카드 안에서 모양까지 달라질 이유는 없다 */
+a.ghost {
+  display: inline-block;
+  text-decoration: none;
+}
+button.ghost,
+a.ghost {
   appearance: none;
   font: inherit;
   font-size: var(--t-sm);
@@ -734,7 +741,8 @@ button.ghost {
   color: var(--accent-strong);
   cursor: pointer;
 }
-button.ghost:hover {
+button.ghost:hover,
+a.ghost:hover {
   background: var(--accent-soft);
 }
 button.ghost:disabled {
@@ -4394,4 +4402,93 @@ select.sort {
 }
 .memo-src:hover {
   text-decoration: underline;
+}
+
+/* ── 외운 카드 기록(#92) ──
+   사이트의 다른 화면은 전부 "풀고 채점하고 쌓인다"인데 암기 노트만 읽기 전용이었다.
+   채점이 아니라 자기 선언이라(문항이 없어 기계가 가릴 수 없다) 토글 하나로 둔다. */
+.memo-done-btn {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  appearance: none;
+  padding: 0.2em 0.6em;
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: var(--t-xs);
+  font-weight: 500;
+  cursor: pointer;
+}
+/* '개념 →'이 오른쪽 끝을 잡고 있으므로 외웠다 버튼은 그 왼쪽에 붙는다 */
+.memo-src + .memo-done-btn {
+  margin-left: 0;
+}
+.memo-done-btn .mdb-mark {
+  font-size: 0.9em;
+  line-height: 1;
+}
+.memo-done-btn:hover {
+  border-color: var(--ok);
+  color: var(--ok);
+}
+/* 외운 카드는 정답의 초록을 빌린다 — 이 사이트에서 초록은 "맞았다·됐다"의 색이고
+   여기서도 같은 뜻이다(액센트를 쓰면 브랜드색이 상태를 말하게 된다). */
+.memo-done-btn[aria-pressed="true"] {
+  border-color: var(--ok);
+  background: var(--ok-soft);
+  color: var(--ok);
+  font-weight: 600;
+}
+/* 외운 카드는 지워지지 않고 물러선다 — 다시 볼 수 있어야 하므로 톤만 낮춘다 */
+.memo.done .memo-name,
+.memo.done .memo-body {
+  opacity: 0.55;
+}
+.memo.done:hover .memo-name,
+.memo.done:hover .memo-body {
+  opacity: 1;
+}
+/* 진행 — 맨 위 한 줄. 막대는 얇게, 숫자는 세는 것이므로 mono(화면 규약 3) */
+.memo-prog {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0.8rem 0 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--t-xs);
+  color: var(--muted);
+}
+#prog-bar {
+  flex: 1 1 auto;
+  max-width: 14rem;
+  height: 4px;
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  overflow: hidden;
+}
+#prog-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--ok);
+  transition: width 0.2s;
+}
+#prog-reset {
+  margin-left: auto;
+  font-size: var(--t-xs);
+}
+.memo-tool-right {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.9rem;
+}
+/* 영역 진행 — 알약 안이 "외운 수/전체"가 된다 */
+.area-prog b {
+  color: var(--text);
+  font-weight: 600;
 }

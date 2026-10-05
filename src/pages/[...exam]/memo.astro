@@ -116,8 +116,15 @@ const mnemonicSegs = (mn: string): MnSeg[] => {
           </nav>
           <div class="note-tools memo-tools">
             <button id="cover-toggle" class="ghost" type="button" aria-pressed="false">가리기 켜기</button>
-            <button id="cover-reset" class="linklike" type="button" hidden>모두 다시 가리기</button>
+            <span class="memo-tool-right">
+              <button id="hide-done" class="linklike" type="button" aria-pressed="false">외운 것 숨기기</button>
+              <button id="cover-reset" class="linklike" type="button" hidden>모두 다시 가리기</button>
+            </span>
           </div>
+          {/* 진행 — 쉰 장 넘는 카드 중 어디까지 봤는지가 남지 않았다(#92) */}
+          <p class="memo-prog"><span id="prog-bar"><i id="prog-fill"></i></span><span id="prog-text"></span>
+            <button id="prog-reset" class="linklike" type="button" hidden>기록 지우기</button>
+          </p>
         </section>
 
         <section class="panel">
@@ -125,7 +132,11 @@ const mnemonicSegs = (mn: string): MnSeg[] => {
             <section class="memo-area" id={slug}>
               {/* 종이에는 영역 이름만 — 개수는 종이 밖에 둔다(쪽지에 적은 제목과 세어 놓은 수는
                   다른 물건이다) */}
-              <h2 class="memo-area-title"><span class="area-paper">{area}</span> <em>{cs.length}</em></h2>
+              <h2 class="memo-area-title">
+                <span class="area-paper">{area}</span>
+                {/* 개수가 아니라 진행이다 — 외운 수가 앞, 전체가 뒤(스크립트가 앞 숫자를 채운다) */}
+                <em class="area-prog" data-total={cs.length}><b>0</b>/{cs.length}</em>
+              </h2>
               {cs.map((c) => (
                 <article class="memo" id={`m-${c.key}`}>
                   <h3 class="memo-title">
@@ -142,6 +153,10 @@ const mnemonicSegs = (mn: string): MnSeg[] => {
                     {topicHref(area, c.topic) && (
                       <a class="memo-src" href={topicHref(area, c.topic)} title={c.topicTitle}>개념 →</a>
                     )}
+                    {/* 외웠다 — 채점이 아니라 자기 선언이다(문항이 없으니 기계가 가릴 수 없다) */}
+                    <button class="memo-done-btn" type="button" aria-pressed="false" aria-label="외웠다고 표시">
+                      <span class="mdb-mark" aria-hidden="true">✓</span><span class="mdb-text">외웠다</span>
+                    </button>
                   </h3>
                   {/* 본문은 개념 도입부와 같은 렌더러·같은 글꼴 체계(.topic-intro)를 쓴다 */}
                   <div class="topic-intro memo-body">
@@ -160,6 +175,69 @@ const mnemonicSegs = (mn: string): MnSeg[] => {
     </main>
 
     <script>
+      // ── 외운 카드 기록 ──
+      // 채점이 아니라 자기 선언이다. 카드마다 토글 하나, 영역 머리글에 "외운 수/전체",
+      // 맨 위에 전체 진행과 "외운 것 숨기기". 기기에만 남고 시험별로 갈린다(오답노트와 같은 규약).
+      {
+        const { doneKey, loadDone, saveDone } = await import("../../lib/memo-done");
+        const KEY = doneKey(document.documentElement.dataset.exam ?? "");
+        const cards = [...document.querySelectorAll<HTMLElement>(".memo")];
+        const hideBtn = document.getElementById("hide-done") as HTMLButtonElement;
+        const fill = document.getElementById("prog-fill") as HTMLElement;
+        const text = document.getElementById("prog-text") as HTMLElement;
+        const resetBtn = document.getElementById("prog-reset") as HTMLButtonElement;
+        let done = loadDone(KEY);
+        let hiding = false;
+
+        const paint = () => {
+          cards.forEach((card) => {
+            const on = done.has(card.id);
+            card.classList.toggle("done", on);
+            // 숨기는 중에도 지금 막 외운 카드는 남긴다 — 누르자마자 사라지면 잘못 눌렀을 때 되돌릴 길이 없다
+            card.hidden = hiding && on && card.dataset.keep !== "1";
+            const b = card.querySelector<HTMLButtonElement>(".memo-done-btn");
+            b?.setAttribute("aria-pressed", String(on));
+            if (b) b.querySelector<HTMLElement>(".mdb-text")!.textContent = on ? "외움" : "외웠다";
+          });
+          // 영역별 진행 — 그 영역에서 외운 수
+          document.querySelectorAll<HTMLElement>(".memo-area").forEach((sec) => {
+            const n = [...sec.querySelectorAll<HTMLElement>(".memo")].filter((c) => done.has(c.id)).length;
+            sec.querySelector<HTMLElement>(".area-prog b")!.textContent = String(n);
+            // 한 영역을 다 외우면 영역 자체도 접힌다 — 숨기기를 켠 뜻이 "남은 것만 보자"이므로
+            sec.hidden = hiding && ![...sec.querySelectorAll<HTMLElement>(".memo")].some((c) => !c.hidden);
+          });
+          const n = cards.filter((c) => done.has(c.id)).length;
+          fill.style.width = `${Math.round((n / cards.length) * 100)}%`;
+          text.textContent = `${n} / ${cards.length}장 외움`;
+          resetBtn.hidden = n === 0;
+          hideBtn.hidden = n === 0;
+        };
+
+        cards.forEach((card) => {
+          card.querySelector<HTMLButtonElement>(".memo-done-btn")?.addEventListener("click", () => {
+            if (done.has(card.id)) done.delete(card.id);
+            else done.add(card.id);
+            card.dataset.keep = "1"; // 이번 칠에는 안 숨긴다
+            saveDone(KEY, done);
+            paint();
+          });
+        });
+        hideBtn.addEventListener("click", () => {
+          hiding = !hiding;
+          hideBtn.setAttribute("aria-pressed", String(hiding));
+          hideBtn.textContent = hiding ? "외운 것도 보기" : "외운 것 숨기기";
+          cards.forEach((c) => delete c.dataset.keep); // 다시 칠할 때는 예외를 걷는다
+          paint();
+        });
+        resetBtn.addEventListener("click", () => {
+          if (!confirm("외운 표시를 모두 지웁니다. 되돌릴 수 없습니다.")) return;
+          done = new Set();
+          saveDone(KEY, done);
+          paint();
+        });
+        paint();
+      }
+
       // ── 가리기 모드(빨간 시트) ──
       // 외울 값(.val)과 형광펜(.hl)을 덮고, 누르면 그것만 드러난다. 다시 누르면 다시 덮인다.
       // 상태는 기기에 남긴다 — 외우는 중에 페이지를 오가도 시트가 벗겨지지 않게.
