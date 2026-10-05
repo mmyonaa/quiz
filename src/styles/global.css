@@ -4380,3 +4380,18 @@ select.sort {
     inset: -5px -3px;
   }
 }
+
+/* 카드가 요약하는 개념 주제로 가는 길 — 제목 줄 오른쪽 끝. 개념 노트의 '개념 글 →'과
+   같은 자리·같은 톤이다. 암기 노트에서 막히면 설명은 늘 한 번에 닿는 데 있어야 한다. */
+.memo-src {
+  flex: none;
+  margin-left: auto;
+  font-size: var(--t-xs);
+  font-weight: 400;
+  color: var(--accent-strong);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.memo-src:hover {
+  text-decoration: underline;
+}

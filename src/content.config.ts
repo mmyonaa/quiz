@@ -256,27 +256,36 @@ for (const [key, t] of Object.entries(TOPICS)) {
  * 암기 노트 — 개념 노트 옆의 두 번째 노트. 줄글 없이 외울 것만 두문자·표·목록으로 모은 카드다.
  * 정의는 src/data/memo-notes.json 하나에 모이고, 본문은 개념 도입부와 같은 블록 표기·강조 3층을
  * 쓴다(렌더러도 MdBlocks 하나를 같이 쓴다). 문항은 붙지 않는다 — 읽고 가리고 떠올리는 용도다.
- * exam을 생략하면 정처기다. 정처기 25장 · 정보보안기사 31장(#92).
+ *
+ * 카드는 **시험·영역을 직접 들지 않는다**. 요약하는 개념 주제(topic)를 들고 거기서 물려받는다 —
+ * 문항이 그러는 것과 같은 방식이고, 분류축을 한 군데에만 두는 이 레포의 일관된 선택이다.
+ *
+ * 그래서 한 카드가 두 시험에 함께 설 수 있다. 주제를 시험마다 하나씩 들면 본문 한 벌이 양쪽
+ * 화면에 나가고, 영역은 각 시험의 주제를 따라 달라진다(OSI 카드는 정처기에서 '네트워크',
+ * 정보보안기사에서 '네트워크 보안'에 선다). 처음엔 시험별로 카드를 한 벌씩 복사해 두었는데
+ * 14쌍 6,744자가 글자 단위로 같았다 — 한쪽만 고치면 조용히 어긋나는 모양이라 접었다(#92).
  */
 export type Memo = {
-  exam: Exam;
-  area: Area;
+  /** 이 카드가 요약하는 개념 주제 — 시험당 하나. 시험·영역·과목·연결 글이 전부 여기서 나온다 */
+  topics: string[];
   title: string;
   /** 두문자·외우기 구절(선택) — 카드 제목 옆에 칩으로 붙는다 */
   mnemonic?: string;
   body: string;
 };
-export const MEMOS: Record<string, Memo> = Object.fromEntries(
-  Object.entries(memoNotes as Record<string, Omit<Memo, "exam"> & { exam?: Exam }>).map(([key, m]) => [
-    key,
-    { exam: DEFAULT_EXAM, ...m },
-  ]),
-);
-/** 한 시험의 암기 카드 — 정의 순서를 지키되 화면은 영역 순으로 다시 묶는다 */
+export const MEMOS = memoNotes as Record<string, Memo>;
+
+/**
+ * 한 시험의 암기 카드 — 그 시험의 주제를 가진 카드만 추려 정의 순서대로 돌려준다.
+ * 영역·과목·연결 글은 주제에서 풀어 얹는다(문항 로더가 하는 일과 같다).
+ */
 export const memosOf = (exam: Exam) =>
-  Object.entries(MEMOS)
-    .filter(([, m]) => m.exam === exam)
-    .map(([key, m]) => ({ key, ...m }));
+  Object.entries(MEMOS).flatMap(([key, m]) => {
+    const tk = m.topics.find((t) => TOPICS[t]?.exam === exam);
+    if (!tk) return [];
+    const t = TOPICS[tk];
+    return [{ key, ...m, topic: tk, topicTitle: t.title, area: t.area, subject: t.subject, post: t.post }];
+  });
 /** 암기 노트가 있는 시험 — 라우트와 헤더 메뉴가 이 목록만 낸다(없는 시험에 빈 페이지를 내지 않는다) */
 export const MEMO_EXAMS = EXAMS.filter((e) => memosOf(e).length > 0);
 
@@ -284,11 +293,20 @@ export const MEMO_EXAMS = EXAMS.filter((e) => memosOf(e).length > 0);
  * 암기 카드 게이트 — 도입부와 같은 자를 쓴다(백틱 짝 · 100자 형광펜 · 카드당 형광펜 2개 · 표 칸 수).
  * 다른 점 하나: 형광펜 0개를 허용한다. 포트 번호 표처럼 카드 전체가 '외울 값'인 것은
  * 형광펜을 둘 자리가 없다 — 억지로 한 줄을 칠하면 표가 아니라 그 줄만 외우게 된다.
+ *
+ * 주제 쪽은 둘을 본다 — 없는 주제를 쓰지 않았는가, 한 시험의 주제를 둘 이상 들지 않았는가.
+ * 뒤엣것을 놓치면 같은 카드가 한 화면에 두 번 선다.
  */
 for (const [key, m] of Object.entries(MEMOS)) {
-  if (!EXAMS.includes(m.exam)) throw new Error(`암기 카드 ${key}의 exam이 잘못됨: ${m.exam}`);
-  const areas = AREAS_BY_EXAM[m.exam] as readonly string[];
-  if (!areas.includes(m.area)) throw new Error(`암기 카드 ${key}의 area가 ${m.exam}에 없음: ${m.area}`);
+  if (!m.topics?.length) throw new Error(`암기 카드 ${key}에 주제가 없음 — 시험·영역이 주제에서 나온다`);
+  const seen = new Set<Exam>();
+  for (const tk of m.topics) {
+    const t = TOPICS[tk];
+    if (!t) throw new Error(`암기 카드 ${key}의 주제 ${tk}가 topic-notes.json에 없음`);
+    if (seen.has(t.exam))
+      throw new Error(`암기 카드 ${key}가 ${t.exam}의 주제를 둘 이상 가짐 — 시험당 하나여야 한 번만 선다`);
+    seen.add(t.exam);
+  }
   if (unpairedBacktick(m.body + (m.mnemonic ?? "")))
     throw new Error(`암기 카드 ${key}의 백틱 짝이 맞지 않음 — 값 칩 대신 백틱 글자가 화면에 그대로 나온다`);
   const long = overlongHighlight(m.body);

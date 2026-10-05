@@ -10,6 +10,7 @@ import {
   type Area,
   type Exam,
 } from "../../content.config";
+import { topicsOf } from "../../lib/bank";
 import MdBlocks from "../../components/MdBlocks.astro";
 import SiteHeader from "../../components/SiteHeader.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
@@ -18,7 +19,7 @@ import "../../styles/global.css";
 // 암기 노트 — 개념 노트가 "왜"를 읽는 자리라면 여기는 "무엇"만 외우는 자리다.
 // 줄글 없이 두문자·표·목록으로 모은 카드를 영역 순으로 늘어놓고, 빨간 시트처럼
 // 외울 값(값 칩·형광펜)을 가렸다가 하나씩 눌러 확인하는 가리기 모드를 둔다.
-// 카드가 있는 시험만 라우트를 낸다 — 지금은 정처기(/memo/)뿐이다(#92).
+// 카드가 있는 시험만 라우트를 낸다(#92).
 export function getStaticPaths() {
   return MEMO_EXAMS.map((exam) => ({ params: { exam: EXAM_SLUGS[exam] }, props: { exam } }));
 }
@@ -32,6 +33,14 @@ const areas = (AREAS_BY_EXAM[exam] as readonly Area[])
   .map((area) => ({ area, slug: AREA_SLUGS[area], cards: cards.filter((c) => c.area === area) }))
   .filter((a) => a.cards.length > 0);
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+// 카드 → 그 카드가 요약하는 개념 노트 주제로 가는 길. "외우다 막히면 왜인지 읽으러" 가는
+// 통로이고, 지금껏 페이지 맨 아래 링크 하나뿐이었다. 개념 노트의 주제 앵커는 영역 안에서의
+// 자리(#t<i>)라 여기서 그 번호를 찾아 둔다.
+const topicHref = (area: Area, topicKey: string) => {
+  const i = topicsOf(area, exam).findIndex((t) => t.key === topicKey);
+  return i < 0 ? undefined : `${base}${px}/notes/${AREA_SLUGS[area]}/#t${i}`;
+};
 
 // ── 두문자 조각내기 ──
 // "물·데·네·전·세·표·응"처럼 ·로 바싹 붙은 짧은 음절은 외우는 실마리 그 자체라
@@ -128,6 +137,10 @@ const mnemonicSegs = (mn: string): MnSeg[] => {
                           seg.block ? <b class="mn-s">{seg.text}</b> : <span class="mn-t">{seg.text}</span>,
                         )}
                       </span>
+                    )}
+                    {/* 이 카드가 요약하는 개념 주제 — 설명이 필요할 때 가는 곳 */}
+                    {topicHref(area, c.topic) && (
+                      <a class="memo-src" href={topicHref(area, c.topic)} title={c.topicTitle}>개념 →</a>
                     )}
                   </h3>
                   {/* 본문은 개념 도입부와 같은 렌더러·같은 글꼴 체계(.topic-intro)를 쓴다 */}
