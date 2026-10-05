@@ -397,11 +397,6 @@
       "sha": "e45c1976c4f6e51c0ad2f161e837d19ba59c60bd",
       "section": "mcp"
     },
-    "2026-09-03-graph-traversal-bfs-dfs": {
-      "sha": "287d037e18fe5f4f0bb50873b311e631f259e8ff",
-      "section": "jeongcheogi",
-      "gapReported": true
-    },
     "2026-09-04-jfrog-artifactory-auth-bypass-cve-2026-82329": {
       "sha": "9306b8a0fdf8c0a96692a727de1fbb7870150080",
       "section": "security"
@@ -460,11 +455,6 @@
       "sha": "8aeff22d3266574d09b31c99032025f532a6785b",
       "section": "mcp"
     },
-    "2026-09-18-db-normalization": {
-      "sha": "ad84ef812ee417db5dea94b66ef713d168d90a9a",
-      "section": "jeongcheogi",
-      "gapReported": true
-    },
     "2026-09-19-chrome-v8-zero-day-cve-2026-87491": {
       "sha": "efeda80cfda3f13128f775773765e4f4ff401245",
       "section": "security"
@@ -481,11 +471,6 @@
       "sha": "7ccd2c9d7ee8806b8bc1e3a119aeadf2732e01e2",
       "section": "mcp"
     },
-    "2026-09-23-virtual-memory-page-replacement": {
-      "sha": "4805b43436abf8b0b185a9172d874e28b4feea4c",
-      "section": "jeongcheogi",
-      "gapReported": true
-    },
     "2026-09-24-gitlab-cve-2026-85706-path-traversal": {
       "sha": "885ffdd1b4fb0cb5f2decdb96e8f0e66a91a8bfa",
       "section": "security"
@@ -497,10 +482,6 @@
     "2026-09-26-ddos-attack-types": {
       "sha": "0e25193a7e3540b8d8cbd5b05b16709f1c9969a6",
       "section": "boangisa"
-    },
-    "2026-09-27-mcp-sampling-capability": {
-      "sha": "208701ee50db5da04b81565bdd1a59b7242ec1ef",
-      "section": "mcp"
     },
     "2026-09-28-software-cost-estimation-cocomo": {
       "sha": "bbd4e312bf05fbceccbbbcd1be191b04735322ac",
@@ -518,6 +499,19 @@
     "2026-10-01-xss-vs-csrf": {
       "sha": "0164b6076c1ac285f3587e203555a8ae7e2dfabb",
       "section": "boangisa"
+    },
+    "2026-10-02-mcp-dynamic-tool-list-changed": {
+      "sha": "6727ca1d36f339d3cbdd454eb1be2dad2439e407",
+      "section": "mcp"
+    },
+    "2026-10-03-test-levels-integration-stub-driver": {
+      "sha": "f70d6627402758e6eca6b467941d8f5523563287",
+      "section": "jeongcheogi",
+      "gapReported": true
+    },
+    "2026-10-04-tanstack-npm-pwn-request-cache-poisoning": {
+      "sha": "cc66c816eee8ebdf5b0ec4b5412a56fbe45bf944",
+      "section": "security"
     }
   }
 }
