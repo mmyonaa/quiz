@@ -1,5 +1,6 @@
 ---
 import { AREA_SLUGS, DIFFICULTIES, EXAMS, EXAM_FORMAT, EXAM_SLUGS, examPath, type Exam } from "../../content.config";
+import { memosOf } from "../../content.config";
 import { areasOf, loadBank, subjectsOf } from "../../lib/bank";
 import SiteHeader from "../../components/SiteHeader.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
@@ -34,6 +35,10 @@ const topicCount = new Set(bank.map((q) => q.topic)).size;
 const mockTotal = format.written.perSubject * SUBJECTS.length;
 
 // 오답 리뷰의 "관련 글" 링크 — daily.mcp 블로그의 글 상세 URL
+// 암기 노트 — 카드가 있는 시험에만 모드 카드를 낸다(헤더 메뉴와 같은 기준)
+const memoCount = memosOf(exam).length;
+const hasMemo = memoCount > 0;
+
 const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 
 // 결과 화면의 약점 CTA가 영역별 개념 노트로 잇는다 — URL은 한글을 피해 영문 슬러그를 쓴다
@@ -161,6 +166,16 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
               <button id="note-clear" class="linklike">비우기</button>
             </span>
           </section>
+
+          {/* 암기 노트 — 들어오는 길이 헤더 메뉴 하나뿐이었다. 외운 진행은 기기에 남으므로
+              스크립트가 채운다(카드가 없는 시험에서는 라우트 자체가 없어 통째로 빠진다). */}
+          {hasMemo && (
+            <section class="mode-card" id="memo-box">
+              <h2>암기 노트</h2>
+              <p class="mode-desc" id="memo-info">외울 것만 모은 카드 {memoCount}장 — 두문자 · 표 · 한 줄 목록.</p>
+              <a class="ghost" href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}${px}/memo/`}>암기 노트 열기</a>
+            </section>
+          )}
         </div>
 
         {/* 조건 패널은 넓은 화면에서만 펴 둔다 — 좁은 화면에서 펼쳐 두면 칩이 화면을 채워
@@ -261,7 +276,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
 
     {/* 문제 은행 주입 — 빌드 타임 데이터, 런타임 요청 없음 */}
     <script is:inline type="application/json" id="bank" set:html={JSON.stringify(bank)} />
-    <script is:inline type="application/json" id="config" set:html={JSON.stringify({ blogPostBase: BLOG_POST_BASE, areas: AREAS, subjects: SUBJECTS, areaSlugs: AREA_SLUG_MAP, notesBase: NOTES_BASE, examSlug: EXAM_SLUGS[exam] ?? "", written: format.written })} />
+    <script is:inline type="application/json" id="config" set:html={JSON.stringify({ blogPostBase: BLOG_POST_BASE, areas: AREAS, subjects: SUBJECTS, areaSlugs: AREA_SLUG_MAP, notesBase: NOTES_BASE, examSlug: EXAM_SLUGS[exam] ?? "", written: format.written, memoCount })} />
 
     <script>
       type Q = {
@@ -291,12 +306,13 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
       } from "../../lib/wrong-note";
 
       const bank: Q[] = JSON.parse(document.getElementById("bank")!.textContent!);
-      const { blogPostBase, subjects: SUBJECT_LIST, areas: AREA_LIST, areaSlugs, notesBase, examSlug, written } = JSON.parse(document.getElementById("config")!.textContent!) as {
+      const { blogPostBase, subjects: SUBJECT_LIST, areas: AREA_LIST, areaSlugs, notesBase, examSlug, written, memoCount } = JSON.parse(document.getElementById("config")!.textContent!) as {
         blogPostBase: string;
         subjects: string[];
         areas: string[];
         areaSlugs: Record<string, string>; // 영역 → 개념 노트 URL 슬러그
         notesBase: string;
+        memoCount: number;
         examSlug: string; // 정처기는 "" — 기존 저장 키를 그대로 쓴다
         written: { perSubject: number; minutes: number; subjectPass: number; averagePass: number };
       };
@@ -497,6 +513,20 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
         $("#note-box").classList.toggle("due", due > 0);
         $("#retry-note").hidden = count === 0;
       };
+
+      // 암기 노트 진행 — 기기에 남은 기록을 읽어 카드 한 줄에 얹는다. 개수만 가져온다;
+      // 무엇을 외웠는지는 그 페이지가 안다. 기록이 없으면 원래 소개 문구를 그대로 둔다.
+      void (async () => {
+        const box = document.getElementById("memo-info");
+        if (!box || !memoCount) return;
+        try {
+          const { doneKey, loadDone } = await import("../../lib/memo-done");
+          const n = loadDone(doneKey(examSlug)).size;
+          if (n) box.textContent = `카드 ${memoCount}장 중 ${n}장 외움 — 남은 ${memoCount - n}장.`;
+        } catch {
+          /* 기록을 못 읽으면 소개 문구가 그대로 남는다 */
+        }
+      })();
 
       // ── 학습 기록 — 최근 일주일의 출석부 ──
       // 문항 단위 기록은 오답노트가 갖고 있다. 여기가 답하는 것은 "요즘 하고 있는가" 하나다.
