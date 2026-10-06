@@ -124,5 +124,8 @@
   "2026-09-30-block-buzz-agent-identity-workspace": "Block의 Buzz — 에이전트에게 계정 대신 키를 주면 무엇이 달라지나",
   "2026-10-01-xss-vs-csrf": "XSS와 CSRF — 헷갈리는 두 공격 구분하기",
   "2026-10-02-mcp-dynamic-tool-list-changed": "MCP 도구 목록은 고정이 아니다 — enable·disable과 tools/list_changed 알림",
-  "2026-10-03-test-levels-integration-stub-driver": "테스트 레벨과 통합 테스트 — 단위부터 인수까지, 하향식·상향식·스텁·드라이버"
+  "2026-10-03-test-levels-integration-stub-driver": "테스트 레벨과 통합 테스트 — 단위부터 인수까지, 하향식·상향식·스텁·드라이버",
+  "2026-10-04-tanstack-npm-pwn-request-cache-poisoning": "TanStack 침해: 2FA와 provenance가 다 켜져 있었는데 악성 버전이 나간 경로",
+  "2026-10-05-uber-mcp-gateway-registry-discovery": "Uber MCP Gateway 설계: 서버가 수백 개가 되면 MCP에서 무엇이 먼저 무너지나",
+  "2026-10-06-buffer-overflow": "버퍼 오버플로우 — 스택이 무너지는 원리와 방어"
 }
