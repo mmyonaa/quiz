@@ -2889,6 +2889,12 @@ button.toc-chip {
      둘로 보인다. 담기는 값이 스무 자 안쪽이라 모바일에서도 줄을 넘지 않는다. */
   white-space: nowrap;
 }
+/* 긴 값은 그 규칙에서 뺀다(md.ts가 30자를 넘으면 .long을 준다) — Snort 룰 한 줄이
+   390px에서 판 밖으로 100px 넘게 밀려났다. 쪼개질 걱정이 없는 길이이기도 하다. */
+.val.long {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
 /* <code>의 브라우저 기본 글꼴이 monospace라, mono를 떼도 한글이 mono로 남아
    "1년 이상"의 낱말 사이가 벌어졌다. mono가 붙은 칩만 mono로 두고 나머지는 본문 글꼴로
    되돌린다(:not으로 특정도를 올려야 뒤에 오는 이 규칙이 .mono를 덮지 않는다). */
