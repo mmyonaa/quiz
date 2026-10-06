@@ -18,6 +18,10 @@ const TITLES = join(root, "src/data/post-titles.json");
 const TOPIC_NOTES = join(root, "src/data/topic-notes.json");
 const STATE = join(root, "src/data/sync-state.json");
 
+// 커버리지 갭을 따질 글의 섹션 — 두 시험 글만 본다(MCP·개발기 글은 붙을 주제 축이 없다).
+// 판정이 --report와 --backlog 두 곳에 있어, 한쪽만 늘리면 주간 보고와 상시 이슈가 어긋난다.
+const EXAM_SECTIONS = new Set(["jeongcheogi", "boangisa"]);
+
 const RSS_URL = "https://mmyonaa.github.io/blog/rss.xml";
 const TREE_URL = "https://api.github.com/repos/mmyonaa/blog/git/trees/main?recursive=1";
 const RAW_BASE = "https://raw.githubusercontent.com/mmyonaa/blog/main/site/src/content/blog/";
@@ -103,7 +107,7 @@ const fetchTree = async () => {
 };
 
 // 섹션은 글을 처음 본 주에 한 번만 읽어 캐시한다. 그래서 여기서 실패를 삼키고 null을 남기면
-// 그 글은 영영 정처기 글로 잡히지 않는다 — 네트워크 문제는 상태를 조용히 오염시키는 대신
+// 그 글은 영영 시험 글로 잡히지 않는다 — 네트워크 문제는 상태를 조용히 오염시키는 대신
 // 실행을 세운다(fetchTree와 같은 규약). 상태를 쓰기 전에 던지므로 다음 주가 다시 시도한다.
 const fetchSection = async (id) => {
   const res = await fetch(`${RAW_BASE}${id}.md`, { signal: AbortSignal.timeout(10_000) });
@@ -123,7 +127,7 @@ const report = async () => {
   }
   const firstRun = Object.keys(state.posts).length === 0;
 
-  // 신규 글은 섹션을 raw frontmatter에서 읽어 캐시(정처기 글 판별용)
+  // 신규 글은 섹션을 raw frontmatter에서 읽어 캐시(시험 글 판별용)
   for (const [id, sha] of shas) {
     if (!state.posts[id]) state.posts[id] = { sha, section: await fetchSection(id) };
   }
@@ -135,7 +139,7 @@ const report = async () => {
   // 커버리지 갭은 문항을 쓸 때까지 남는 백로그다(전량은 --backlog가 맡는다).
   // 주간 이슈에는 이번 주에 새로 생긴 것만 싣는다 — 같은 글을 3주 연속 싣던 것이 이슈를 잡음으로 만들었다.
   const gaps = [...shas.keys()].filter(
-    (id) => state.posts[id]?.section === "jeongcheogi" && !refs.has(id),
+    (id) => EXAM_SECTIONS.has(state.posts[id]?.section) && !refs.has(id),
   );
   const newGaps = gaps.filter((id) => !state.posts[id].gapReported);
 
@@ -151,7 +155,7 @@ const report = async () => {
     lines.push("");
   }
   if (newGaps.length) {
-    lines.push("## 새 커버리지 갭 — 정처기 글이 올라왔는데 문항이 없음 (문항 제작 후보)", "");
+    lines.push("## 새 커버리지 갭 — 시험 글이 올라왔는데 문항이 없음 (문항 제작 후보)", "");
     for (const id of newGaps) lines.push(`- \`${id}\``);
     lines.push("");
   }
@@ -191,7 +195,7 @@ const backlog = () => {
 
   // 글 목록은 --report가 갱신해 둔 상태에서 온다(네트워크를 다시 치지 않는다).
   const gaps = Object.entries(state.posts)
-    .filter(([id, p]) => p.section === "jeongcheogi" && !refs.has(id))
+    .filter(([id, p]) => EXAM_SECTIONS.has(p.section) && !refs.has(id))
     .map(([id]) => id);
   // 글 연결 갭 — 도입부만 있고 아직 개념 글이 없는 주제(글감 후보).
   // 도입부 자체의 누락은 스키마(z.enum)와 topic-notes.json 구조가 이미 막는다.
@@ -213,7 +217,7 @@ const backlog = () => {
     "",
   ];
   if (gaps.length) {
-    lines.push("## 커버리지 갭 — 정처기 글인데 문항이 없음 (문항 제작 후보)", "");
+    lines.push("## 커버리지 갭 — 시험 글인데 문항이 없음 (문항 제작 후보)", "");
     for (const id of gaps) lines.push(`- \`${id}\``);
     lines.push("");
   }
