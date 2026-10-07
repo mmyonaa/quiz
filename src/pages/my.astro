@@ -24,7 +24,7 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
     <meta name="description" content="내 오답노트와 저장한 문제 — 계정에 영구 보관됩니다." />
   </head>
   <body>
-    <SiteHeader current="my" />
+    <SiteHeader current="my" shared />
 
     <main class="side-layout">
       {/* 넓은 화면 전용 — 좌측 보관함 메뉴(개념 노트의 사이드 목차와 같은 자리). 좁으면 상단 탭 */}
