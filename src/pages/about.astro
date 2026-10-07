@@ -51,6 +51,10 @@ const FIRST_RELEASE = "2026-08-24";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const BLOG = "https://mmyonaa.github.io/blog/";
 const REPO = "https://github.com/mmyonaa/quiz";
+const GITHUB = "https://github.com/mmyonaa";
+const LINKEDIN = "https://www.linkedin.com/in/hyona-lim-a3a626319/";
+const PORTFOLIO = "https://mmyonaa.github.io";
+const AUTHOR = "Hyona Lim";
 /** 한 시험의 실기 형식을 한 줄로 — 두 시험이 다르다(정처기 20문항 균일 / 정보보안기사 유형별 배점).
     값은 채점기(PRACTICAL_FORMAT)가 단일 정의를 갖고 여기서는 읽기만 한다. */
 const practicalLine = (f: (typeof stats)[number]["format"]["practical"]) =>
@@ -107,13 +111,26 @@ const rows = ROWS.map((r) => ({ ...r, same: new Set(stats.map((s) => cellText(r,
             거기는 사람의 블로그라 저자 이름과 프로필 사진이 서고, 여기는 사이트라 사이트명과
             파비콘이 그 자리에 선다. */}
         <div class="about-hero">
-          <img class="about-logo" src={`${base}/favicon.svg`} alt="" width="56" height="56" />
-          <h1>daily.quiz</h1>
+          {/* 머리는 좌우로 갈린다 — 왼쪽은 정체(아이콘·이름·만든 이), 오른쪽은 바깥으로
+              나가는 링크. daily.mcp 블로그의 /about/과 같은 배치다. */}
+          <div class="about-id">
+            <img class="about-logo" src={`${base}/favicon.svg`} alt="" width="52" height="52" />
+            <div>
+              <h1>daily.quiz</h1>
+              <p class="about-by">
+                <a href={PORTFOLIO} target="_blank" rel="noopener">{AUTHOR}</a>
+                <span>mmyonaa.github.io/quiz</span>
+              </p>
+            </div>
+          </div>
           <p class="about-links">
-            <a href={REPO} target="_blank" rel="noopener">GitHub</a>
-            <a href={BLOG} target="_blank" rel="noopener">daily.mcp 블로그</a>
-            <a href={`${REPO}/blob/main/CHANGELOG.md`} target="_blank" rel="noopener">v{version}</a>
+            <a href={GITHUB} target="_blank" rel="noopener">GitHub</a>
+            <a href={LINKEDIN} target="_blank" rel="noopener">LinkedIn</a>
+            <a href={BLOG} target="_blank" rel="noopener">daily.mcp</a>
           </p>
+        </div>
+
+        <div class="about-body">
           <p class="lead">
             정보처리기사와 정보보안기사를 <strong>풀고 · 읽고 · 외우는</strong> 연습장입니다.
             필기는 4지선다로, 실기는 답을 직접 적어 풀고 즉시 채점과 해설을 받습니다.
@@ -127,7 +144,6 @@ const rows = ROWS.map((r) => ({ ...r, same: new Set(stats.map((s) => cellText(r,
             실기 <b class="mono">{total.practical}</b>문항 · 개념 주제 <b class="mono">{total.topics}</b>개 ·
             암기 카드 <b class="mono">{total.memo}</b>장을 쌓았습니다.
           </p>
-        </div>
 
         {/* 현황 — 이 사이트가 지금 무엇을 들고 있는지. 손으로 적지 않고 은행에서 센다 */}
         <h2 class="group-title">시험별로는</h2>
@@ -247,6 +263,7 @@ const rows = ROWS.map((r) => ({ ...r, same: new Set(stats.map((s) => cellText(r,
           <a href={`${REPO}/blob/main/CHANGELOG.md`} target="_blank" rel="noopener">v{version} 변경 기록</a> ·
           <a href={BLOG} target="_blank" rel="noopener">daily.mcp 블로그 →</a>
         </p>
+        </div>
       </section>
     </main>
 

@@ -4517,19 +4517,13 @@ select.sort {
 
    폭은 화면 규약 1을 따른다 — 산문은 --measure, 표와 격자는 --measure-wide. 셸 전폭으로
    흘리면 한 줄이 65자를 넘어 눈이 다음 줄 머리를 못 찾는다(실제로 처음에 그랬다). */
-.about > p,
-.about > dl,
+/* 산문만 읽기 폭을 지킨다 — 괘선·표·격자 같은 블록 경계는 헤더와 같은 끝까지 간다.
+   경계가 헤더보다 안쪽에서 끊기면 바디가 따로 노는 판으로 보인다. */
+.about-body > p:not(.about-foot),
 .about-note,
 .about-caution,
-.about-foot {
+.about-principles dd {
   max-width: var(--measure);
-}
-.about > .cmp-wrap,
-.about-grid {
-  max-width: var(--measure-wide);
-}
-.about > h2 {
-  max-width: var(--measure-wide);
 }
 .about-grid {
   display: grid;
@@ -4631,24 +4625,61 @@ select.sort {
    거기는 사람의 블로그라 저자 이름과 프로필 사진이 서고, 여기는 사이트라 사이트명과
    파비콘이 그 자리에 선다. 가운데로 모으지 않는다 — 이 사이트의 다른 화면이 전부
    왼쪽에서 시작하므로 머리만 가운데면 다른 사이트처럼 보인다. */
+/* 머리 — 왼쪽은 정체(아이콘 · 이름 · 만든 이), 오른쪽은 바깥으로 나가는 링크.
+   헤더와 같은 폭을 쓰므로 둘이 양 끝에서 마주 선다. */
 .about-hero {
-  max-width: var(--measure);
-  margin: 0 0 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.9rem 1.5rem;
+  margin: 0 0 1.6rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid var(--border);
+}
+.about-id {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
 }
 .about-logo {
-  display: block;
-  margin: 0 0 0.7rem;
+  flex: none;
   border-radius: var(--r-sm);
 }
 .about-hero h1 {
-  margin: 0 0 0.45rem;
+  margin: 0;
+}
+/* 만든 이와 주소 — 이름 아래 한 줄. 블로그가 "Hyona Lim / mmyonaa.github.io"를 두는 자리다 */
+.about-by {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.6rem;
+  margin: 0.2rem 0 0;
+  font-size: var(--t-sm);
+  color: var(--muted);
+}
+.about-by a {
+  color: var(--accent-strong);
+  text-decoration: none;
+}
+.about-by a:hover {
+  text-decoration: underline;
+}
+.about-by span::before {
+  content: "·";
+  margin-right: 0.5rem;
+  color: var(--border);
 }
 /* 링크 줄 — 이름 바로 아래. 본문 링크가 아니라 꼬리표에 가까워 작게 두고 가운뎃점으로 가른다 */
 .about-links {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 0.2rem 0.9rem;
-  margin: 0 0 1rem;
+  margin: 0;
+  /* 아이콘 줄과 세로 중앙을 맞춘다 — 왼쪽 묶음이 52px 아이콘을 품고 있다 */
+  min-height: 52px;
   font-size: var(--t-sm);
 }
 .about-links a {
@@ -4668,9 +4699,8 @@ select.sort {
 }
 /* 현황 — 큰 숫자 타일로 세우면 자랑이 되고, 문장에 담으면 사실로 읽힌다(블로그와 같은 선택) */
 .about-count {
-  margin: 0;
-  padding-top: 0.9rem;
-  border-top: 1px solid var(--border);
+  max-width: var(--measure);
+  margin: 0 0 1.6rem;
   font-size: var(--t-sm);
   line-height: 1.8;
   color: var(--muted);
