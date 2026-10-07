@@ -4369,8 +4369,9 @@ select.sort {
   fill: currentColor;
   stroke: none;
 }
+/* 캡션은 본문과 같은 폭을 쓴다 — 그림 폭에 맞춰 28rem으로 묶었더니 판이 넉넉한데도
+   한 문장이 두 줄로 접혔다. 줄바꿈은 글이 정할 일이지 그림 너비가 정할 일이 아니다. */
 .dg figcaption {
-  max-width: 28rem;
   font-size: var(--t-xs);
   line-height: 1.6;
   color: var(--muted);

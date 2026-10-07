@@ -524,4 +524,288 @@ export const DIAGRAMS: Record<string, Diagram> = {
   <text class="dg-2xs" x="235" y="130">멈춰 있어도 되는 시간</text>
 </svg>`,
   },
+
+  "array-pointer": {
+    alt: "정수 배열 a의 다섯 칸을 늘어놓은 그림. 각 칸에 값과 주소(100·104·108·112·116)가 적혀 있고, 포인터 p는 첫 칸을, p+1은 둘째 칸을 가리켜 주소가 4만큼 커진다.",
+    caption: "`p+1`은 1바이트가 아니라 자료형 한 칸이다 — `int`면 주소가 `4`만큼 커진다.",
+    svg: `<svg viewBox="0 0 360 162" class="dg-svg" focusable="false">
+  <defs>
+    <marker id="ap-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="currentColor" />
+    </marker>
+  </defs>
+  <text class="dg-2xs" x="58" y="28">a[0]</text><text class="dg-2xs" x="114" y="28">a[1]</text><text class="dg-2xs" x="170" y="28">a[2]</text><text class="dg-2xs" x="226" y="28">a[3]</text><text class="dg-2xs" x="282" y="28">a[4]</text>
+  <g class="dg-box">
+    <rect x="30" y="40" width="56" height="38" /><rect x="86" y="40" width="56" height="38" /><rect x="142" y="40" width="56" height="38" /><rect x="198" y="40" width="56" height="38" /><rect x="254" y="40" width="56" height="38" />
+  </g>
+  <text class="dg-xs" x="58" y="54">10</text><text class="dg-xs" x="114" y="54">20</text><text class="dg-xs" x="170" y="54">30</text><text class="dg-xs" x="226" y="54">40</text><text class="dg-xs" x="282" y="54">50</text>
+  <text class="dg-2xs" x="58" y="70">100</text><text class="dg-2xs" x="114" y="70">104</text><text class="dg-2xs" x="170" y="70">108</text><text class="dg-2xs" x="226" y="70">112</text><text class="dg-2xs" x="282" y="70">116</text>
+  <g class="dg-line" marker-end="url(#ap-ah)">
+    <path d="M58 104 V82" /><path d="M114 104 V82" />
+  </g>
+  <text class="dg-sub" x="58" y="118">p</text>
+  <text class="dg-sub" x="114" y="118">p+1</text>
+  <path class="dg-line dg-dash" d="M58 132 V140 H114 V132" />
+  <text class="dg-sub" x="86" y="152">주소는 4만큼 커진다</text>
+</svg>`,
+  },
+
+  "stack-queue-ends": {
+    alt: "스택과 큐의 입출구를 견준 그림. 스택은 위쪽 한 끝으로만 push와 pop이 드나들고, 큐는 오른쪽 뒤로 넣어 왼쪽 앞으로 빠진다.",
+    caption: "스택은 한쪽 끝만 열려 있고 큐는 양 끝이 열려 있다 — 입구와 출구가 같은가 다른가가 LIFO와 FIFO를 가른다.",
+    svg: `<svg viewBox="0 0 360 276" class="dg-svg" focusable="false">
+  <defs>
+    <marker id="sq-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="currentColor" />
+    </marker>
+  </defs>
+  <text class="dg-sub" x="155" y="26">push</text>
+  <text class="dg-sub" x="205" y="26">pop</text>
+  <g class="dg-line" marker-end="url(#sq-ah)">
+    <path d="M155 36 V62" /><path d="M205 62 V36" />
+  </g>
+  <g class="dg-box">
+    <rect x="135" y="70" width="90" height="28" /><rect x="135" y="98" width="90" height="28" /><rect x="135" y="126" width="90" height="28" />
+  </g>
+  <text class="dg-xs" x="180" y="84">C — top</text>
+  <text class="dg-xs" x="180" y="112">B</text>
+  <text class="dg-xs" x="180" y="140">A</text>
+  <text class="dg-sub" x="180" y="174">스택 — 한쪽 끝(top)만 열린다</text>
+  <g class="dg-box">
+    <rect x="105" y="210" width="50" height="28" /><rect x="155" y="210" width="50" height="28" /><rect x="205" y="210" width="50" height="28" /><rect x="255" y="210" width="50" height="28" />
+  </g>
+  <text class="dg-xs" x="130" y="224">A</text><text class="dg-xs" x="180" y="224">B</text><text class="dg-xs" x="230" y="224">C</text><text class="dg-xs" x="280" y="224">D</text>
+  <g class="dg-line" marker-end="url(#sq-ah)">
+    <path d="M345 224 H310" /><path d="M100 224 H64" />
+  </g>
+  <text class="dg-sub dg-end" x="352" y="200">enqueue — rear</text>
+  <text class="dg-sub dg-start" x="58" y="200">dequeue — front</text>
+  <text class="dg-sub" x="180" y="262">큐 — 뒤로 넣고 앞에서 뺀다</text>
+</svg>`,
+  },
+
+  "hash-bucket": {
+    alt: "해시 테이블의 버킷 일곱 칸. 키 8은 1번, 20은 6번 칸에 들어가고, 3번 칸으로 몰린 17·24·31은 옆으로 이어 붙은 연결 리스트가 된다.",
+    caption: "해시 값이 곧 자리다 — 같은 자리로 온 것을 옆으로 이어 붙이면 체이닝, 빈 칸을 찾아 옮기면 개방 주소법이다.",
+    svg: `<svg viewBox="0 0 360 206" class="dg-svg" focusable="false">
+  <defs>
+    <marker id="hb-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="currentColor" />
+    </marker>
+  </defs>
+  <text class="dg-sub" x="150" y="18">h(k) = k mod 7</text>
+  <g class="dg-box">
+    <rect x="120" y="30" width="60" height="22" /><rect x="120" y="52" width="60" height="22" /><rect x="120" y="74" width="60" height="22" />
+    <rect x="120" y="118" width="60" height="22" /><rect x="120" y="140" width="60" height="22" /><rect x="120" y="162" width="60" height="22" />
+  </g>
+  <rect class="dg-box dg-on" x="120" y="96" width="60" height="22" />
+  <text class="dg-2xs dg-end" x="112" y="41">0</text><text class="dg-2xs dg-end" x="112" y="63">1</text><text class="dg-2xs dg-end" x="112" y="85">2</text><text class="dg-2xs dg-end" x="112" y="107">3</text><text class="dg-2xs dg-end" x="112" y="129">4</text><text class="dg-2xs dg-end" x="112" y="151">5</text><text class="dg-2xs dg-end" x="112" y="173">6</text>
+  <text class="dg-xs" x="150" y="63">8</text>
+  <text class="dg-xs" x="150" y="107">17</text>
+  <text class="dg-xs" x="150" y="173">20</text>
+  <g class="dg-box">
+    <rect x="202" y="96" width="54" height="22" rx="4" /><rect x="278" y="96" width="54" height="22" rx="4" />
+  </g>
+  <text class="dg-xs" x="229" y="107">24</text>
+  <text class="dg-xs" x="305" y="107">31</text>
+  <g class="dg-line" marker-end="url(#hb-ah)">
+    <path d="M180 107 H198" /><path d="M256 107 H274" />
+  </g>
+  <text class="dg-sub" x="267" y="138">체이닝 — 같은 자리를 잇는다</text>
+</svg>`,
+  },
+
+  "gantt-chart": {
+    alt: "같은 작업 셋(P1 7 · P2 4 · P3 1, 모두 0에 도착)을 FCFS와 SJF로 돌린 간트 차트. FCFS는 도착 순서대로 P1·P2·P3를 처리해 평균 대기가 6이고, SJF는 짧은 것부터 P3·P2·P1을 처리해 평균 대기가 2다.",
+    caption: "짧은 것을 먼저 보내면 뒤에 선 모두의 기다림이 줄어든다 — 같은 작업 셋에 평균 대기가 `6`에서 `2`로 바뀐다.",
+    svg: `<svg viewBox="0 0 360 196" class="dg-svg" focusable="false">
+  <text class="dg-sub" x="180" y="20">P1 7 · P2 4 · P3 1 — 모두 0에 도착</text>
+  <text class="dg-sub dg-end" x="34" y="59">FCFS</text>
+  <g class="dg-box">
+    <rect x="40" y="46" width="168" height="26" /><rect x="208" y="46" width="96" height="26" />
+  </g>
+  <rect class="dg-box dg-on" x="304" y="46" width="24" height="26" />
+  <text class="dg-xs" x="124" y="59">P1</text><text class="dg-xs" x="256" y="59">P2</text><text class="dg-2xs" x="316" y="59">P3</text>
+  <text class="dg-2xs" x="40" y="84">0</text><text class="dg-2xs" x="208" y="84">7</text><text class="dg-2xs" x="304" y="84">11</text><text class="dg-2xs" x="328" y="84">12</text>
+  <text class="dg-sub" x="180" y="102">평균 대기 (0+7+11)/3 = 6</text>
+  <text class="dg-sub dg-end" x="34" y="137">SJF</text>
+  <rect class="dg-box dg-on" x="40" y="124" width="24" height="26" />
+  <g class="dg-box">
+    <rect x="64" y="124" width="96" height="26" /><rect x="160" y="124" width="168" height="26" />
+  </g>
+  <text class="dg-2xs" x="52" y="137">P3</text><text class="dg-xs" x="112" y="137">P2</text><text class="dg-xs" x="244" y="137">P1</text>
+  <text class="dg-2xs" x="40" y="162">0</text><text class="dg-2xs" x="64" y="162">1</text><text class="dg-2xs" x="160" y="162">5</text><text class="dg-2xs" x="328" y="162">12</text>
+  <text class="dg-sub" x="180" y="180">평균 대기 (0+1+5)/3 = 2</text>
+</svg>`,
+  },
+
+  "dirty-read": {
+    alt: "두 트랜잭션의 시간선. T1이 값을 바꾼 뒤 아직 커밋하지 않은 사이에 T2가 그 값을 읽고, T1은 그 뒤 롤백해 T2가 읽은 값은 존재한 적 없는 값이 된다.",
+    caption: "커밋 전 값을 읽은 뒤 그 트랜잭션이 되돌아가면, T2가 손에 쥔 값은 존재한 적 없는 값이 된다.",
+    svg: `<svg viewBox="0 0 360 176" class="dg-svg" focusable="false">
+  <defs>
+    <marker id="dr-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="currentColor" />
+    </marker>
+  </defs>
+  <text class="dg-sub dg-end" x="30" y="56">T1</text>
+  <path class="dg-line" d="M40 56 H336" marker-end="url(#dr-ah)" />
+  <g class="dg-box">
+    <rect x="56" y="44" width="104" height="24" rx="4" /><rect x="234" y="44" width="86" height="24" rx="4" />
+  </g>
+  <text class="dg-2xs" x="108" y="56">UPDATE 잔액</text>
+  <text class="dg-2xs" x="277" y="56">ROLLBACK</text>
+  <text class="dg-sub dg-end" x="30" y="132">T2</text>
+  <path class="dg-line" d="M40 132 H336" marker-end="url(#dr-ah)" />
+  <rect class="dg-chip" x="150" y="120" width="86" height="24" rx="4" />
+  <text class="dg-2xs" x="193" y="132">SELECT 잔액</text>
+  <path class="dg-line dg-dash" d="M193 118 V70" marker-end="url(#dr-ah)" />
+  <text class="dg-sub dg-start" x="204" y="96">아직 커밋되지 않은 값</text>
+  <text class="dg-2xs dg-end" x="336" y="160">시간 →</text>
+</svg>`,
+  },
+
+  "dmz-layout": {
+    alt: "방화벽 두 겹 사이에 DMZ를 둔 구성. 인터넷에서 방화벽을 지나면 웹·메일 서버가 놓인 DMZ가 있고, 그 다음 방화벽을 한 겹 더 지나야 내부망에 닿는다.",
+    caption: "DMZ는 방화벽 둘 사이의 완충지다 — 밖에서 닿아야 하는 서버를 내부망과 같은 자리에 두지 않는다.",
+    svg: `<svg viewBox="0 0 360 134" class="dg-svg" focusable="false">
+  <g class="dg-box">
+    <rect x="6" y="52" width="52" height="34" rx="4" /><text class="dg-2xs" x="32" y="69">인터넷</text>
+    <rect x="302" y="52" width="52" height="34" rx="4" /><text class="dg-2xs" x="328" y="69">내부망</text>
+  </g>
+  <g class="dg-chip">
+    <rect x="70" y="46" width="44" height="46" rx="4" /><text class="dg-2xs" x="92" y="69">방화벽</text>
+    <rect x="246" y="46" width="44" height="46" rx="4" /><text class="dg-2xs" x="268" y="69">방화벽</text>
+  </g>
+  <rect class="dg-box" x="126" y="34" width="108" height="70" rx="6" />
+  <text class="dg-2xs" x="180" y="46">DMZ</text>
+  <g class="dg-box">
+    <rect x="132" y="56" width="46" height="30" rx="4" /><text class="dg-2xs" x="155" y="71">웹</text>
+    <rect x="182" y="56" width="46" height="30" rx="4" /><text class="dg-2xs" x="205" y="71">메일</text>
+  </g>
+  <path class="dg-line" d="M58 69 H70 M114 69 H126 M234 69 H246 M290 69 H302" />
+  <text class="dg-sub" x="180" y="122">밖에서 닿는 것만 DMZ에 둔다</text>
+</svg>`,
+  },
+
+  "mitm-arp": {
+    alt: "정상 경로와 ARP 스푸핑 경로를 견준 그림. 정상일 때는 피해자에서 게이트웨이로 곧장 가지만, 스푸핑이 걸리면 피해자의 트래픽이 공격자를 거쳐 게이트웨이로 흐른다.",
+    caption: "거짓 ARP 응답 한 번이면 경로가 한 칸 꺾인다 — 공격자가 그대로 흘려보내므로 양쪽은 눈치채지 못한다.",
+    svg: `<svg viewBox="0 0 360 220" class="dg-svg" focusable="false">
+  <defs>
+    <marker id="ma-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="currentColor" />
+    </marker>
+  </defs>
+  <text class="dg-sub" x="180" y="22">정상</text>
+  <g class="dg-box">
+    <rect x="30" y="36" width="56" height="28" rx="4" /><text class="dg-2xs" x="58" y="50">피해자</text>
+    <rect x="274" y="36" width="56" height="28" rx="4" /><text class="dg-2xs" x="302" y="50">게이트웨이</text>
+  </g>
+  <path class="dg-line" d="M90 50 H270" marker-end="url(#ma-ah)" />
+  <text class="dg-sub" x="180" y="104">ARP 스푸핑 — "그 IP의 MAC은 나다"</text>
+  <g class="dg-box">
+    <rect x="30" y="120" width="56" height="28" rx="4" /><text class="dg-2xs" x="58" y="134">피해자</text>
+    <rect x="274" y="120" width="56" height="28" rx="4" /><text class="dg-2xs" x="302" y="134">게이트웨이</text>
+  </g>
+  <rect class="dg-chip" x="146" y="174" width="68" height="28" rx="4" />
+  <text class="dg-2xs" x="180" y="188">공격자</text>
+  <g class="dg-line" marker-end="url(#ma-ah)">
+    <path d="M70 152 L168 170" /><path d="M192 170 L290 152" />
+  </g>
+</svg>`,
+  },
+
+  "pki-trust": {
+    alt: "PKI 신뢰 구조 두 가지. 계층형은 루트 CA 아래로 하위 CA와 사용자가 뻗는 나무이고, 메시형은 대등한 CA 셋이 서로를 상호 인증해 삼각형으로 이어진다.",
+    caption: "계층형은 위가 무너지면 전체가 흔들리고, 메시형은 피해가 국지적인 대신 경로 찾기가 복잡해진다.",
+    svg: `<svg viewBox="0 0 360 186" class="dg-svg" focusable="false">
+  <defs>
+    <marker id="pk-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="currentColor" />
+    </marker>
+  </defs>
+  <g class="dg-line dg-thin">
+    <path d="M90 44 L54 68" /><path d="M90 44 L126 68" />
+    <path d="M54 94 L42 114" /><path d="M54 94 L66 114" /><path d="M126 94 L114 114" /><path d="M126 94 L138 114" />
+  </g>
+  <g class="dg-chip">
+    <rect x="66" y="22" width="48" height="22" rx="4" /><text class="dg-2xs" x="90" y="33">루트 CA</text>
+  </g>
+  <g class="dg-box">
+    <rect x="30" y="72" width="48" height="22" rx="4" /><text class="dg-2xs" x="54" y="83">하위 CA</text>
+    <rect x="102" y="72" width="48" height="22" rx="4" /><text class="dg-2xs" x="126" y="83">하위 CA</text>
+  </g>
+  <g class="dg-node">
+    <circle cx="42" cy="120" r="6" /><circle cx="66" cy="120" r="6" /><circle cx="114" cy="120" r="6" /><circle cx="138" cy="120" r="6" />
+  </g>
+  <g class="dg-line dg-thin" marker-start="url(#pk-ah)" marker-end="url(#pk-ah)">
+    <path d="M262 46 L242 74" /><path d="M278 46 L298 74" /><path d="M258 88 L282 88" />
+  </g>
+  <g class="dg-box">
+    <rect x="246" y="24" width="48" height="22" rx="4" /><text class="dg-2xs" x="270" y="35">CA</text>
+    <rect x="210" y="76" width="48" height="22" rx="4" /><text class="dg-2xs" x="234" y="87">CA</text>
+    <rect x="282" y="76" width="48" height="22" rx="4" /><text class="dg-2xs" x="306" y="87">CA</text>
+  </g>
+  <text class="dg-sub" x="90" y="158">계층형 — 경로가 단순하다</text>
+  <text class="dg-sub" x="270" y="158">메시형 — 서로 상호 인증</text>
+</svg>`,
+  },
+
+  "txn-states": {
+    alt: "트랜잭션의 상태 전이. 활동에서 부분 완료를 거쳐 완료로 가거나, 활동이나 부분 완료에서 실패로 떨어져 철회로 간다.",
+    caption: "완료로 가는 길은 하나뿐이고 어디서 넘어지든 철회로 모인다 — 절반만 반영되는 자리는 없다.",
+    svg: `<svg viewBox="0 0 360 164" class="dg-svg" focusable="false">
+  <defs>
+    <marker id="tx-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="currentColor" />
+    </marker>
+  </defs>
+  <g class="dg-line" marker-end="url(#tx-ah)">
+    <path d="M97 40 H141" /><path d="M217 40 H261" />
+    <path d="M60 56 L104 104" /><path d="M176 56 L140 104" />
+    <path d="M157 120 H226" />
+  </g>
+  <g class="dg-box">
+    <rect x="25" y="26" width="72" height="28" rx="4" /><text class="dg-xs" x="61" y="40">활동</text>
+    <rect x="145" y="26" width="72" height="28" rx="4" /><text class="dg-2xs" x="181" y="40">부분 완료</text>
+    <rect x="85" y="106" width="72" height="28" rx="4" /><text class="dg-xs" x="121" y="120">실패</text>
+  </g>
+  <g class="dg-chip">
+    <rect x="265" y="26" width="72" height="28" rx="4" /><text class="dg-xs" x="301" y="40">완료</text>
+    <rect x="229" y="106" width="72" height="28" rx="4" /><text class="dg-xs" x="265" y="120">철회</text>
+  </g>
+</svg>`,
+  },
+
+  "index-cluster": {
+    alt: "클러스터드 인덱스와 넌클러스터드 인덱스의 배치. 클러스터드는 테이블의 행 자체가 키 순서로 줄 서 있고, 넌클러스터드는 키만 따로 정렬해 두고 화살표로 흩어진 행을 가리킨다.",
+    caption: "클러스터드는 테이블 자체를 줄 세우므로 하나뿐이고, 넌클러스터드는 따로 선 뒤 행을 가리킨다.",
+    svg: `<svg viewBox="0 0 360 216" class="dg-svg" focusable="false">
+  <defs>
+    <marker id="ic-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="currentColor" />
+    </marker>
+  </defs>
+  <text class="dg-sub" x="180" y="20">클러스터드 — 테이블 자체가 키 순서</text>
+  <g class="dg-box dg-on">
+    <rect x="50" y="32" width="52" height="26" /><rect x="102" y="32" width="52" height="26" /><rect x="154" y="32" width="52" height="26" /><rect x="206" y="32" width="52" height="26" /><rect x="258" y="32" width="52" height="26" />
+  </g>
+  <text class="dg-xs" x="76" y="45">1</text><text class="dg-xs" x="128" y="45">2</text><text class="dg-xs" x="180" y="45">3</text><text class="dg-xs" x="232" y="45">4</text><text class="dg-xs" x="284" y="45">5</text>
+  <text class="dg-sub" x="180" y="94">넌클러스터드 — 따로 서서 행을 가리킨다</text>
+  <g class="dg-chip">
+    <rect x="50" y="106" width="52" height="26" /><rect x="102" y="106" width="52" height="26" /><rect x="154" y="106" width="52" height="26" /><rect x="206" y="106" width="52" height="26" /><rect x="258" y="106" width="52" height="26" />
+  </g>
+  <text class="dg-xs" x="76" y="119">1</text><text class="dg-xs" x="128" y="119">2</text><text class="dg-xs" x="180" y="119">3</text><text class="dg-xs" x="232" y="119">4</text><text class="dg-xs" x="284" y="119">5</text>
+  <text class="dg-2xs dg-end" x="44" y="119">인덱스</text>
+  <g class="dg-line dg-thin" marker-end="url(#ic-ah)">
+    <path d="M76 134 L128 170" /><path d="M128 134 L232 170" /><path d="M180 134 L76 170" /><path d="M232 134 L284 170" /><path d="M284 134 L180 170" />
+  </g>
+  <g class="dg-box">
+    <rect x="50" y="174" width="52" height="26" /><rect x="102" y="174" width="52" height="26" /><rect x="154" y="174" width="52" height="26" /><rect x="206" y="174" width="52" height="26" /><rect x="258" y="174" width="52" height="26" />
+  </g>
+  <text class="dg-xs" x="76" y="187">3</text><text class="dg-xs" x="128" y="187">1</text><text class="dg-xs" x="180" y="187">5</text><text class="dg-xs" x="232" y="187">2</text><text class="dg-xs" x="284" y="187">4</text>
+  <text class="dg-2xs dg-end" x="44" y="187">테이블</text>
+</svg>`,
+  },
 };
