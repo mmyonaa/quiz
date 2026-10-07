@@ -1,0 +1,193 @@
+---
+import {
+  AREAS_BY_EXAM,
+  EXAMS,
+  EXAM_FORMAT,
+  SUBJECTS_BY_EXAM,
+  TOPICS,
+  examPath,
+  memosOf,
+} from "../content.config";
+import { loadBank, loadPractical } from "../lib/bank";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import { version } from "../../package.json";
+import "../styles/global.css";
+
+// 소개 — 이 사이트가 무엇이고 무엇으로 만들어졌는지. daily.mcp 블로그의 /about/과 짝이다.
+//
+// 숫자는 하나도 손으로 적지 않는다. 문항·주제·카드 수는 늘 바뀌는데 소개 글이 그걸 서술로
+// 들고 있으면 가장 먼저 낡는다(CLAUDE.md가 "숫자로 적힌 서술이 특히 어긋나기 쉽다"고 적어 둔
+// 바로 그 자리다). 전부 빌드 타임에 은행에서 센다.
+const bank = await loadBank();
+const pbank = await loadPractical();
+
+const stats = EXAMS.map((exam) => {
+  const f = EXAM_FORMAT[exam];
+  const topics = Object.values(TOPICS).filter((t) => t.exam === exam);
+  return {
+    exam,
+    label: f.label,
+    path: examPath(exam),
+    written: bank.filter((q) => q.exam === exam).length,
+    practical: pbank.filter((q) => q.exam === exam).length,
+    memo: memosOf(exam).length,
+    topics: topics.length,
+    areas: AREAS_BY_EXAM[exam].length,
+    subjects: SUBJECTS_BY_EXAM[exam].length,
+    format: f,
+  };
+});
+const total = {
+  written: bank.length,
+  practical: pbank.length,
+  topics: Object.keys(TOPICS).length,
+  linked: Object.values(TOPICS).filter((t) => t.post).length,
+};
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const BLOG = "https://mmyonaa.github.io/blog/";
+const REPO = "https://github.com/mmyonaa/quiz";
+/** 한 시험의 실기 형식을 한 줄로 — 두 시험이 다르다(정처기 20문항 균일 / 정보보안기사 유형별 배점).
+    값은 채점기(PRACTICAL_FORMAT)가 단일 정의를 갖고 여기서는 읽기만 한다. */
+const practicalLine = (f: (typeof stats)[number]["format"]["practical"]) =>
+  [`${f.total}문항`, `${f.minutes}분`, `${f.pass}점 합격`].join(" · ");
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>daily.quiz — 소개</title>
+    <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
+    <meta
+      name="description"
+      content={`정보처리기사·정보보안기사를 풀고 외우는 정적 연습장 — 필기 ${total.written}문항 · 실기 ${total.practical}문항 · ${total.topics}개 주제. 서버 없이 동작하고 모든 문항은 AI가 만든 자체 제작 콘텐츠입니다.`}
+    />
+  </head>
+  <body>
+    <SiteHeader current="about" />
+
+    <main>
+      <section class="panel flat about">
+        <h1>daily.quiz 소개</h1>
+        <p class="lead">
+          정보처리기사와 정보보안기사를 <strong>풀고 · 읽고 · 외우는</strong> 연습장입니다.
+          필기는 4지선다로, 실기는 답을 직접 적어 풀고 즉시 채점과 해설을 받습니다.
+          <a class="lead-link" href={BLOG} target="_blank" rel="noopener">daily.mcp</a> 블로그의 자매 프로젝트로,
+          문제의 해설이 블로그의 개념 글로 이어집니다.
+        </p>
+
+        {/* 현황 — 이 사이트가 지금 무엇을 들고 있는지. 손으로 적지 않고 은행에서 센다 */}
+        <h2 class="group-title">지금 담긴 것</h2>
+        {/* data-h — 좁은 화면에서는 머리글 줄이 걷히고 각 칸이 제 시험 이름을 앞에 달고 선다
+            (암기 노트의 대조표와 같은 장치다). 가로로 미는 대신 행을 세로로 편다. */}
+        <div class="cmp-wrap">
+          <table class="cmp cmp-wide">
+            <thead>
+              <tr><th></th>{stats.map((s) => <th>{s.label}</th>)}</tr>
+            </thead>
+            <tbody>
+              {[
+                { k: "필기", v: (s: (typeof stats)[number]) => <><b class="mono">{s.written}</b>문항</> },
+                { k: "실기", v: (s: (typeof stats)[number]) => <><b class="mono">{s.practical}</b>문항</> },
+                { k: "개념 주제", v: (s: (typeof stats)[number]) => <><b class="mono">{s.topics}</b>개</> },
+                { k: "암기 카드", v: (s: (typeof stats)[number]) => <><b class="mono">{s.memo}</b>장</> },
+                { k: "과목 · 영역", v: (s: (typeof stats)[number]) => <>{s.subjects}과목 · {s.areas}영역</> },
+                { k: "필기 시험", v: (s: (typeof stats)[number]) => <>{s.subjects * s.format.written.perSubject}문항 · {s.format.written.minutes}분</> },
+                { k: "실기 시험", v: (s: (typeof stats)[number]) => <>{practicalLine(s.format.practical)}</> },
+              ].map((row) => (
+                <tr>
+                  <th scope="row">{row.k}</th>
+                  {stats.map((s) => <td data-h={s.label}><span class="cv">{row.v(s)}</span></td>)}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="about-note">
+          주제 {total.topics}개 가운데 {total.linked}개가 블로그 개념 글과 이어져 있습니다.
+          나머지는 노트 안의 도입부만으로 완결됩니다.
+        </p>
+
+        {/* 무엇이 있나 — 화면 하나하나가 무슨 자리인지 */}
+        <h2 class="group-title">무엇이 있나</h2>
+        <div class="about-grid">
+          <section class="about-card">
+            <h3><a href={`${base}/`}>필기 연습 · 모의고사</a></h3>
+            <p>영역·문항 수·난이도를 골라 풀고 바로 채점합니다. 모의고사는 실제 비중대로 100문항·150분을 재고 과락까지 판정합니다.</p>
+          </section>
+          <section class="about-card">
+            <h3><a href={`${base}/practical/`}>실기 필답</a></h3>
+            <p>보기 없이 답을 직접 입력합니다. 단답·계산·코드 출력·SQL은 자동 채점하고, 약술형은 모범답안과 핵심어를 대조해 스스로 매깁니다.</p>
+          </section>
+          <section class="about-card">
+            <h3><a href={`${base}/notes/`}>개념 노트</a></h3>
+            <p>해설을 영역·주제별로 모아 읽는 자리입니다. 주제마다 자족적인 도입부가 먼저 오고, 그 아래 정답을 가린 확인 문제가 붙습니다.</p>
+          </section>
+          <section class="about-card">
+            <h3><a href={`${base}/memo/`}>암기 노트</a></h3>
+            <p>개념 노트가 "왜"라면 여기는 "무엇"입니다. 줄글 없이 두문자·표·순서 흐름으로만 모았고, 가리기를 켜면 외울 값이 덮입니다.</p>
+          </section>
+          <section class="about-card">
+            <h3>오답노트</h3>
+            <p>틀린 문제가 저절로 쌓이고, 맞히면 <b class="mono">1</b> → <b class="mono">3</b> → <b class="mono">7</b>일로 다시 볼 시점을 미룹니다. 마지막 단계를 넘기면 졸업합니다.</p>
+          </section>
+          <section class="about-card">
+            <h3><a href={`${base}/my/`}>마이페이지</a></h3>
+            <p>로그인하면 북마크와 오답 기록이 계정에 남아 기기를 옮겨도 이어집니다. 로그인 전에도 이 기기에 쌓인 것은 그대로 보입니다.</p>
+          </section>
+        </div>
+
+        {/* 어떻게 만들어지나 — 블로그 /about/의 같은 절과 짝이다 */}
+        <h2 class="group-title">어떻게 만들어지나</h2>
+        <p>
+          모든 문항과 해설은 <strong>AI(Claude)</strong>가 블로그의 개념 글을 바탕으로 쓴 자체 제작
+          콘텐츠입니다. 기출을 복제하지 않고, 대신 기출을 <strong>기준선</strong>으로 삼아 유형과 난이도를
+          맞춥니다. 사람이 읽어야 지켜지는 규칙은 지켜지지 않으므로, 품질은 문서가 아니라
+          <strong>빌드 게이트</strong>가 강제합니다.
+        </p>
+        <div class="about-grid">
+          <section class="about-card">
+            <h3>발행 게이트</h3>
+            <p>스키마를 어긴 문항은 빌드가 실패해 사이트에 실리지 않습니다. 없는 주제를 쓰거나, 영역이 어긋나거나, 강조 표기가 상한을 넘으면 그 자리에서 막힙니다.</p>
+          </section>
+          <section class="about-card">
+            <h3>병합 도구</h3>
+            <p>새 문항은 은행에 <em>쓰이기 전에</em> 검사합니다. 스키마가 원리상 못 보는 것 — 문항 사이의 중복, 발문이 정답을 품는 결함 — 이 여기서 걸립니다.</p>
+          </section>
+          <section class="about-card">
+            <h3>현황 리포트</h3>
+            <p>기계는 "무엇을 칠했는가"를 못 봅니다. 대신 영역별 밀도와 정답 위치 분포를 숫자로 보여 주고, 다음에 어디를 메울지는 사람이 고릅니다.</p>
+          </section>
+        </div>
+
+        <h2 class="group-title">세 가지 원칙</h2>
+        <dl class="about-principles">
+          <dt>서버 없이</dt>
+          <dd>문제·정답·해설을 빌드 타임에 HTML로 굽고, 출제와 채점은 브라우저 안에서 끝납니다. 계정 기록만 Supabase에 남습니다.</dd>
+          <dt>단일 정의</dt>
+          <dd>같은 사실을 두 곳에 적지 않습니다. 시험 형식은 채점기가, 주제는 주제 파일이, 강조 표기는 렌더러 하나가 갖습니다. 두 곳에 두면 한쪽만 고쳐져 화면마다 다르게 읽힙니다.</dd>
+          <dt>검산된 정답</dt>
+          <dd>코드 출력 문항은 실제로 실행해 답을 맞춰 보고, 계산 문항은 수치를 다시 셉니다. 자동 채점은 표기 흔들림(대소문자·띄어쓰기·전각)을 정규화로 흡수합니다.</dd>
+        </dl>
+
+        <h2 class="group-title">읽기 전에</h2>
+        <p class="about-caution">
+          AI가 만든 콘텐츠라 오류가 있을 수 있습니다. <strong>학습 보조로만</strong> 쓰시고,
+          시험을 앞두고는 공식 출제기준과 교재로 한 번 더 확인하세요.
+          틀린 곳을 찾으면 <a href={`${REPO}/issues`} target="_blank" rel="noopener">이슈</a>로 알려 주시면 고치겠습니다.
+        </p>
+
+        <p class="about-foot">
+          <a href={REPO} target="_blank" rel="noopener">GitHub 저장소</a> ·
+          <a href={`${REPO}/blob/main/CHANGELOG.md`} target="_blank" rel="noopener">v{version} 변경 기록</a> ·
+          <a href={BLOG} target="_blank" rel="noopener">daily.mcp 블로그 →</a>
+        </p>
+      </section>
+    </main>
+
+    <SiteFooter />
+  </body>
+</html>
