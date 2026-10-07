@@ -4604,3 +4604,24 @@ select.sort {
   font-size: 1.05em;
   color: var(--text);
 }
+
+/* 두 시험이 같은 값인 항목 — 표에서 빠져 아래 한 줄로 합쳐진다.
+   라벨과 값이 둘 다 가운뎃점을 쓰므로(과목 · 영역 / 5과목 · 6영역) 값은 괄호로 받아 가른다. */
+.about-note > b {
+  color: var(--text);
+  margin-right: 0.3em;
+}
+.about-same {
+  display: inline-block;
+  margin-left: 0.7em;
+}
+.about-same em {
+  font-style: normal;
+  color: var(--text);
+}
+.about-same em::before {
+  content: "(";
+}
+.about-same em::after {
+  content: ")";
+}
