@@ -4251,9 +4251,12 @@ select.sort {
 }
 
 /* ── 개념 그림 ──
-   2D가 아니면 안 되는 관계(고리·중첩·비트 자리)를 글 옆에 겹쳐 둔다. 색은 전부 토큰이라
-   다크에서 따로 둘 그림이 없고, 선 색은 wrapper의 color를 타고 들어간다(currentColor).
-   도입부 폭(--measure)을 다 쓰면 그림이 본문보다 커져 주인공이 바뀌므로 폭을 묶어 가운데 세운다. */
+   2D가 아니면 안 되는 관계(고리·비트 자리·사슬·중첩·트리)를 글 옆에 겹쳐 둔다. 색은 전부
+   토큰이라 다크에서 따로 둘 그림이 없고, 선 색은 wrapper의 color를 타고 들어간다(currentColor).
+   도입부 폭(--measure)을 다 쓰면 그림이 본문보다 커져 주인공이 바뀌므로 폭을 묶어 가운데 세운다.
+   어휘는 그림들이 나눠 쓴다 — dg-node(주체) · dg-box(거쳐 가는 것) · dg-chip(외울 값) ·
+   dg-line(선) · dg-tick(눈금). 교착상태 전용 이름(dg-wait·dg-hold)으로 시작했다가, 그림이
+   둘째·셋째가 되자 같은 모양을 다른 이름으로 다시 칠하게 되어 공용으로 바꿨다. */
 .dg {
   margin: 0 0 1em;
   display: flex;
@@ -4263,7 +4266,7 @@ select.sort {
 }
 .dg-art {
   width: 100%;
-  max-width: 21rem;
+  max-width: 22rem;
   color: var(--text);
 }
 .dg-svg {
@@ -4274,45 +4277,84 @@ select.sort {
 /* 글꼴은 본문에서 물려받는다 — SVG 기본 글꼴(serif)로 떨어지면 라벨만 다른 글씨가 된다 */
 .dg-svg text {
   fill: currentColor;
+  stroke: none;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 600;
   text-anchor: middle;
   dominant-baseline: central;
 }
-/* 요청(점선·옅게)과 점유(실선)를 선 모양으로 가른다 — 색을 둘로 쓰면 정답·오답의 초록·빨강과
-   뜻이 겹친다. 화살촉은 marker 안에서 fill을 직접 들어 g의 fill:none에 지워지지 않는다. */
-.dg-svg .dg-wait,
-.dg-svg .dg-hold {
+.dg-svg .dg-lg {
+  font-size: 15px;
+}
+.dg-svg .dg-sub {
+  font-size: 11px;
+  font-weight: 500;
+  fill: var(--muted);
+}
+.dg-svg .dg-xs {
+  font-size: 9.5px;
+  font-weight: 600;
+}
+/* 차례로 읽는 줄 — 글자 사이를 띄우지 않으면 "ABDECFG" 한 덩어리로 뭉쳐 자리를 셀 수 없다 */
+.dg-svg .dg-seq {
+  font-size: 12.5px;
+  letter-spacing: 1.3px;
+}
+/* 짚는 글자 — 세 줄에서 같은 글자의 자리만 다르다는 것을 보일 때처럼, 눈이 먼저 닿아야 하는 곳 */
+.dg-svg .dg-em {
+  fill: var(--accent-strong);
+  font-weight: 700;
+}
+.dg-svg .dg-start {
+  text-anchor: start;
+}
+.dg-svg .dg-end {
+  text-anchor: end;
+}
+/* 선 모양으로 뜻을 가른다 — 색을 둘로 쓰면 정답·오답의 초록·빨강과 뜻이 겹친다.
+   화살촉은 marker 안에서 fill을 직접 들어 묶음의 fill:none에 지워지지 않는다. */
+.dg-svg .dg-line {
   fill: none;
   stroke: currentColor;
   stroke-width: 1.7;
 }
-.dg-svg .dg-wait {
+.dg-svg .dg-dash {
   stroke-dasharray: 4 3.5;
   opacity: 0.68;
 }
-.dg-svg .dg-proc circle {
+.dg-svg .dg-tick {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  opacity: 0.22;
+}
+.dg-svg .dg-node {
   fill: var(--surface);
   stroke: var(--accent);
   stroke-width: 1.7;
 }
-.dg-svg .dg-res rect {
+.dg-svg .dg-box {
   fill: var(--surface-2);
   stroke: var(--border);
   stroke-width: 1.5;
 }
-.dg-svg .dg-center {
-  font-size: 12.5px;
-  font-weight: 500;
-  fill: var(--muted);
-  letter-spacing: 0.04em;
+.dg-svg .dg-chip {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+  stroke-width: 1.4;
 }
-.dg-svg .dg-legend text {
-  font-size: 11.5px;
-  font-weight: 500;
-  fill: var(--muted);
-  text-anchor: start;
+/* 영역을 "켜진 쪽"으로 칠한다 — 비트 띠의 네트워크부처럼 테두리가 아니라 면으로 갈려야
+   하는 자리다(넓은 면에 강조색 테두리를 두르면 그림이 아니라 경고 상자로 읽힌다) */
+.dg-svg .dg-on {
+  fill: var(--accent-soft);
+}
+/* 묶음에 준 면·테두리가 그 안의 글자까지 칠하지 않게 되돌린다 */
+.dg-svg .dg-node text,
+.dg-svg .dg-box text,
+.dg-svg .dg-chip text {
+  fill: currentColor;
+  stroke: none;
 }
 .dg figcaption {
   max-width: 28rem;

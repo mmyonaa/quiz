@@ -236,6 +236,22 @@ const checkTables = (label: string, text: string) => {
  * 가장 무거워서, 주제마다 하나씩 붙으면 #67 이전의 "굵게 13개"가 그림으로 재현된다.
  * 게이트는 **무엇을 그렸는지는 못 본다** — 하나로 좁혀 고르게 만들 뿐이다.
  */
+/**
+ * 그림 자체의 게이트 — 캡션에 형광펜을 두지 않는다.
+ *
+ * 캡션은 도입부 밖이라 형광펜을 칠해도 도입부 상한(2개)에 안 잡힌다. 그런데 화면에서는
+ * 같은 노란 띠로 보이므로, 막지 않으면 상한을 우회하는 길이 하나 열린 셈이 된다.
+ * 애초에 캡션은 그림 아래 한 줄이라 이미 초점이 하나다 — 그림이라는 가장 무거운 강조
+ * 바로 밑에서 또 칠하면 둘 다 죽는다. 값 칩(`값`)은 둘 수 있다(도입부와 같은 값을
+ * 같은 모양으로 보여야 "외울 값"이라는 신호가 흐려지지 않는다).
+ */
+for (const [name, d] of Object.entries(DIAGRAMS)) {
+  if (!d.alt || !d.caption) throw new Error(`개념 그림 ${name}에 alt나 caption이 없음 — 눈으로 못 보는 쪽과 들고 갈 한 줄이 둘 다 필요하다`);
+  if (countHighlights(d.caption))
+    throw new Error(`개념 그림 ${name}의 캡션에 형광펜이 있음 — 그림 밑에서 또 칠하면 둘 다 죽는다(값 칩은 둘 수 있다)`);
+  if (unpairedBacktick(d.caption)) throw new Error(`개념 그림 ${name}의 캡션에 백틱 짝이 맞지 않음`);
+}
+
 const checkDiagrams = (label: string, text: string) => {
   const names = text
     .split("\n\n")
