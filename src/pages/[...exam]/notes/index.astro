@@ -49,7 +49,7 @@ const areas = AREAS_BY_EXAM[exam].map((area) => {
     count: bank.filter((q) => q.area === area).length,
     practicalKinds: practicalSignature(pbank.filter((q) => q.area === area)),
     topicCount: topics.length,
-    preview: topics.slice(0, 3).map((t) => t.title),
+    preview: topics.map((t) => t.title),
   };
 });
 
@@ -140,8 +140,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
                   {practicalKinds.length > 0 && (
                     <> · <span class="ac-pa">실기 {practicalKinds.join("·")}</span></>
                   )}
-                  {preview.length > 0 &&
-                    `${count > 0 ? " — " : ""}${preview.join(" · ")}${topicCount > preview.length ? " …" : ""}`}
+                  {preview.length > 0 && `${count > 0 ? " — " : ""}${preview.join(" · ")}`}
                 </p>
               </a>
             ))}
