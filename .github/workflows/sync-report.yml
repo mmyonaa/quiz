@@ -11,6 +11,10 @@
 #    조용한 주에는 이슈가 아예 열리지 않는다.
 # ② 상시 이슈(아직 메워지지 않은 자리 전량): 커버리지 갭 · 글 연결 갭. 매주 같은 이슈의
 #    본문을 덮어쓴다. 남은 자리가 없어지면 닫는다.
+# ③ 검증 이슈(자동 연결분): 제목이 또렷하게 겹치는 자리는 --link가 직접 붙이고, 붙인 것을
+#    이 이슈로 올린다. 사람 몫은 둘로 좁혀진다 — 붙은 것을 검증하고, 임계 아래로 남은
+#    후보에서 고르는 것. 조용히 들어가는 연결을 만들지 않는 것이 자동 연결의 조건이라,
+#    보고가 안 되면(이슈 생성 실패) 연결도 하지 않은 것으로 봐야 한다.
 name: Weekly blog sync report
 
 on:
@@ -46,7 +50,36 @@ jobs:
               --body-file report.md \
               --repo "$GITHUB_REPOSITORY"
           fi
-      # --report가 갱신해 둔 상태 위에서 돌아야 하므로 순서가 중요하다.
+      # 임계값 역채점. 주제·글이 늘어 안전선이 흔들리면 여기서 멈춘다 — 자동 연결은 이 선으로만
+      # 지켜지므로, 통과하지 못하면 이번 주는 붙이지 않고 사람이 후보로 받는 편이 낫다.
+      - name: Backtest auto-link thresholds
+        run: node scripts/blog-sync.mjs --backtest
+
+      # --report가 섹션을 캐시한 뒤에 돈다(갓 올라온 글이 시험 글인지 상태를 봐야 안다).
+      # 자동분은 별도 커밋 하나로 남긴다 — 검증에서 뒤집히면 그 커밋만 되돌리면 된다.
+      - name: Auto-link posts and propose candidates
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node scripts/blog-sync.mjs --link > link.md
+          # 보고가 먼저다. 이슈 생성이 실패하면 이 단계가 여기서 죽고 연결은 커밋되지 않는다 —
+          # 검증 목록 없이 들어간 자동 연결을 남기지 않기 위한 순서다.
+          if grep -q "^NO_FINDINGS$" link.md; then
+            echo "자동 연결·후보 없음"
+          else
+            gh issue create \
+              --title "자동 연결 검증 $(TZ=Asia/Seoul date +%F)" \
+              --body-file link.md \
+              --repo "$GITHUB_REPOSITORY"
+          fi
+          if ! git diff --quiet src/data/topic-notes.json; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git commit -q -m "chore(sync): 자동 연결 — 제목 유사도 임계 통과분" src/data/topic-notes.json
+            git push
+          fi
+
+      # --report가 갱신해 둔 상태와 --link가 붙인 연결 위에서 돌아야 하므로 순서가 중요하다.
       - name: Update standing backlog issue
         env:
           GH_TOKEN: ${{ github.token }}
