@@ -4250,6 +4250,147 @@ select.sort {
   color: var(--muted);
 }
 
+/* ── 개념 그림 ──
+   2D가 아니면 안 되는 관계(고리·비트 자리·사슬·중첩·트리)를 글 옆에 겹쳐 둔다. 색은 전부
+   토큰이라 다크에서 따로 둘 그림이 없고, 선 색은 wrapper의 color를 타고 들어간다(currentColor).
+   도입부 폭(--measure)을 다 쓰면 그림이 본문보다 커져 주인공이 바뀌므로 폭을 묶어 가운데 세운다.
+   어휘는 그림들이 나눠 쓴다 — dg-node(주체) · dg-box(거쳐 가는 것) · dg-chip(외울 값) ·
+   dg-line(선) · dg-tick(눈금). 교착상태 전용 이름(dg-wait·dg-hold)으로 시작했다가, 그림이
+   둘째·셋째가 되자 같은 모양을 다른 이름으로 다시 칠하게 되어 공용으로 바꿨다. */
+.dg {
+  margin: 0 0 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45em;
+}
+.dg-art {
+  width: 100%;
+  /* 폭의 상한은 글자가 정한다 — SVG 안의 라벨(13 단위)이 판 폭에 비례해 커지므로,
+     여기를 더 넓히면 라벨이 본문(16px)보다 커져 그림이 글 위로 올라선다. 26rem이
+     라벨 15px로, 본문 바로 아래에서 멈추는 자리다. 22rem으로 두었더니 910px 칼럼
+     한가운데 352px짜리 섬이 떠 있었다. */
+  max-width: 26rem;
+  color: var(--text);
+}
+.dg-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+/* 글꼴은 본문에서 물려받는다 — SVG 기본 글꼴(serif)로 떨어지면 라벨만 다른 글씨가 된다 */
+.dg-svg text {
+  fill: currentColor;
+  stroke: none;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+.dg-svg .dg-lg {
+  font-size: 15px;
+}
+.dg-svg .dg-sub {
+  font-size: 11px;
+  font-weight: 500;
+  fill: var(--muted);
+}
+.dg-svg .dg-xs {
+  font-size: 9.5px;
+  font-weight: 600;
+}
+/* 격자 칸에 들어가는 글씨 — IP 헤더의 4비트 칸(40px)처럼 칸이 글자보다 좁은 자리 */
+.dg-svg .dg-2xs {
+  font-size: 8.5px;
+  font-weight: 600;
+}
+/* 차례로 읽는 줄 — 글자 사이를 띄우지 않으면 "ABDECFG" 한 덩어리로 뭉쳐 자리를 셀 수 없다 */
+.dg-svg .dg-seq {
+  font-size: 12.5px;
+  letter-spacing: 1.3px;
+}
+/* 짚는 글자 — 세 줄에서 같은 글자의 자리만 다르다는 것을 보일 때처럼, 눈이 먼저 닿아야 하는 곳 */
+.dg-svg .dg-em {
+  fill: var(--accent-strong);
+  font-weight: 700;
+}
+.dg-svg .dg-start {
+  text-anchor: start;
+}
+.dg-svg .dg-end {
+  text-anchor: end;
+}
+/* 선 모양으로 뜻을 가른다 — 색을 둘로 쓰면 정답·오답의 초록·빨강과 뜻이 겹친다.
+   화살촉은 marker 안에서 fill을 직접 들어 묶음의 fill:none에 지워지지 않는다. */
+.dg-svg .dg-line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+}
+/* 점선 테두리 — 유도 속성처럼 "점선이 곧 뜻"인 기호는 흐려지면 안 된다(dg-dash와 달리 옅게 하지 않는다) */
+.dg-svg .dg-dot {
+  stroke-dasharray: 3 2.5;
+}
+.dg-svg .dg-thin {
+  stroke-width: 1.2;
+  opacity: 0.75;
+}
+.dg-svg .dg-dash {
+  stroke-dasharray: 4 3.5;
+  opacity: 0.68;
+}
+/* 증폭 공격의 큰 응답 화살표 — 작은 질의보다 굵어야 "몇십 배로 돌아온다"가 선 굵기로도 읽힌다 */
+.dg-svg .dg-fat {
+  stroke-width: 3;
+}
+.dg-svg .dg-tick {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  opacity: 0.22;
+}
+.dg-svg .dg-node {
+  fill: var(--surface);
+  stroke: var(--accent);
+  stroke-width: 1.7;
+}
+.dg-svg .dg-box {
+  fill: var(--surface-2);
+  stroke: var(--border);
+  stroke-width: 1.5;
+}
+.dg-svg .dg-chip {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+  stroke-width: 1.4;
+}
+/* 영역을 "켜진 쪽"으로 칠한다 — 비트 띠의 네트워크부처럼 테두리가 아니라 면으로 갈려야
+   하는 자리다(넓은 면에 강조색 테두리를 두르면 그림이 아니라 경고 상자로 읽힌다) */
+.dg-svg .dg-on {
+  fill: var(--accent-soft);
+}
+/* 지워진 쪽 — 이진 탐색처럼 "버린 후보"를 아예 지우면 그 전 상태를 못 보여준다.
+   남겨 두되 눈이 먼저 안 가게 낮춘다 */
+.dg-svg .dg-faint {
+  opacity: 0.4;
+}
+/* 묶음에 준 면·테두리가 그 안의 글자까지 칠하지 않게 되돌린다 */
+.dg-svg .dg-node text,
+.dg-svg .dg-box text,
+.dg-svg .dg-chip text {
+  fill: currentColor;
+  stroke: none;
+}
+/* 캡션은 본문과 같은 폭을 쓴다 — 그림 폭에 맞춰 28rem으로 묶었더니 판이 넉넉한데도
+   한 문장이 두 줄로 접혔다. 줄바꿈은 글이 정할 일이지 그림 너비가 정할 일이 아니다. */
+.dg figcaption {
+  font-size: var(--t-xs);
+  line-height: 1.6;
+  color: var(--muted);
+  text-align: center;
+}
+
 /* ── 좁은 화면: 대조표·계층 스택을 세로로 편다 (암기 노트 모바일) ──
    390px 실측에서 암기 카드의 대조표 17장과 계층 스택 3장이 전부 가로 스크롤이었다
    (표 448px · 스택 480px 대 본문 칸 314px). 암기 노트는 폰에서 훑는 물건인데 정작

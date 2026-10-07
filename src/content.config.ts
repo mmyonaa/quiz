@@ -4,6 +4,7 @@ import topicNotes from "./data/topic-notes.json";
 import memoNotes from "./data/memo-notes.json";
 import blogSeeds from "./data/blog-seeds.json";
 import { PRACTICAL_FORMAT, SELF_GRADED, isSelfGraded } from "./lib/practical-grade";
+import { DIAGRAMS } from "./lib/diagrams";
 
 /**
  * 문제 은행 스키마 — 발행 게이트 역할(블로그 publish_post의 검증과 같은 철학).
@@ -228,6 +229,45 @@ const checkTables = (label: string, text: string) => {
 };
 
 /**
+ * 개념 그림("^ 이름") — 이름이 실존 그림을 가리켜야 하고, 한 본문에 하나여야 한다.
+ *
+ * 이름 검사는 번역표(blog-seeds)와 같은 이유다 — 가리키는 곳이 사라진 참조는 조용히 빈
+ * 자리로 그려지는 것이 가장 나쁘다. 개수 상한은 형광펜과 같은 이유다: 그림은 강조 층 중
+ * 가장 무거워서, 주제마다 하나씩 붙으면 #67 이전의 "굵게 13개"가 그림으로 재현된다.
+ * 게이트는 **무엇을 그렸는지는 못 본다** — 하나로 좁혀 고르게 만들 뿐이다.
+ */
+/**
+ * 그림 자체의 게이트 — 캡션에 형광펜을 두지 않는다.
+ *
+ * 캡션은 도입부 밖이라 형광펜을 칠해도 도입부 상한(2개)에 안 잡힌다. 그런데 화면에서는
+ * 같은 노란 띠로 보이므로, 막지 않으면 상한을 우회하는 길이 하나 열린 셈이 된다.
+ * 애초에 캡션은 그림 아래 한 줄이라 이미 초점이 하나다 — 그림이라는 가장 무거운 강조
+ * 바로 밑에서 또 칠하면 둘 다 죽는다. 값 칩(`값`)은 둘 수 있다(도입부와 같은 값을
+ * 같은 모양으로 보여야 "외울 값"이라는 신호가 흐려지지 않는다).
+ */
+for (const [name, d] of Object.entries(DIAGRAMS)) {
+  if (!d.alt || !d.caption) throw new Error(`개념 그림 ${name}에 alt나 caption이 없음 — 눈으로 못 보는 쪽과 들고 갈 한 줄이 둘 다 필요하다`);
+  if (countHighlights(d.caption))
+    throw new Error(`개념 그림 ${name}의 캡션에 형광펜이 있음 — 그림 밑에서 또 칠하면 둘 다 죽는다(값 칩은 둘 수 있다)`);
+  if (unpairedBacktick(d.caption)) throw new Error(`개념 그림 ${name}의 캡션에 백틱 짝이 맞지 않음`);
+}
+
+const checkDiagrams = (label: string, text: string) => {
+  const names = text
+    .split("\n\n")
+    .filter((b) => b.startsWith("^ "))
+    .map((b) => b.trim());
+  if (names.length > 1)
+    throw new Error(`${label}에 개념 그림이 ${names.length}개 — 본문당 하나다(둘이면 어느 쪽도 보지 않는다)`);
+  for (const line of names) {
+    if (line.includes("\n")) throw new Error(`${label}의 개념 그림 블록이 여러 줄 — "^ 이름" 한 줄이어야 한다`);
+    const name = line.slice(2).trim();
+    if (!DIAGRAMS[name])
+      throw new Error(`${label}이 없는 개념 그림을 가리킴: ${name} — lib/diagrams.ts에 두거나 이름을 맞춘다`);
+  }
+};
+
+/**
  * 번역표(blog-seeds.json)의 값은 실존 주제 키여야 한다.
  *
  * 블로그 시드 → 주제 연결은 블로그가 아니라 이쪽이 든다(블로그는 부가 서비스 때문에 바뀌지
@@ -266,6 +306,7 @@ for (const [key, t] of Object.entries(TOPICS)) {
       `주제 ${key}의 도입부에 형광펜이 ${hl}개(상한 ${HIGHLIGHT_PER_INTRO}) — 열거를 전부 칠하지 말고 그중 함정 하나만 남긴다`,
     );
   checkTables(`주제 ${key}`, t.intro);
+  checkDiagrams(`주제 ${key}`, t.intro);
 }
 
 /**
@@ -332,6 +373,7 @@ for (const [key, m] of Object.entries(MEMOS)) {
   if (hl > HIGHLIGHT_PER_INTRO)
     throw new Error(`암기 카드 ${key}의 형광펜이 ${hl}개(상한 ${HIGHLIGHT_PER_INTRO}) — 함정 짝 하나만 남긴다`);
   checkTables(`암기 카드 ${key}`, m.body);
+  checkDiagrams(`암기 카드 ${key}`, m.body);
 }
 
 const quiz = defineCollection({

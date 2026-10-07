@@ -1,5 +1,6 @@
 ---
 import { md } from "../lib/md";
+import { DIAGRAMS } from "../lib/diagrams";
 
 // 본문 블록 렌더러 — 개념 노트 도입부와 암기 노트 카드가 같은 표기를 같은 화면으로 편다.
 // 빈 줄이 문단 경계다. 덩어리의 첫 두 글자가 종류를 가른다 —
@@ -8,6 +9,8 @@ import { md } from "../lib/md";
 //   "~ " 순서 흐름(한 줄이 한 단계, 화살표로 잇는다 — 핸드셰이크·정규화 단계·절차)
 //   "# " 계층 스택(한 줄이 한 층, 칸은 "|"로 — OSI 7계층·복구 사이트 사다리. 첫 줄이 "#= "면 머리글)
 //   "* " 타일("이름 | 설명" — 인증 4유형·DoS 공격처럼 같은 급의 항목을 격자로)
+// "^ " 개념 그림 — 글로는 독자가 머릿속에서 다시 그려야 하는 2D 관계만(고리·중첩·비트 자리·교차).
+// 그림 자체는 lib/diagrams.ts에 있고 여기는 이름으로 불러 figure로 세운다(주제당 하나, 게이트가 센다).
 // 인라인 강조(==·**·`)는 md()가 편다. 두 화면에 각자 두면 한쪽만 고쳐져 같은 표기가
 // 화면마다 다르게 읽히므로 여기 하나로 모았다(NoteTopics에서 떼어 냈다).
 // memo=true면 암기 노트용으로 한 겹 더 간다 — 목록의 "**용어** 설명"을 용어 칸과 설명 칸으로
@@ -132,6 +135,19 @@ const cells = (row: string) =>
         );
       })}
     </div>
+  ) : block.startsWith("^ ") ? (
+    (() => {
+      /* 이름이 가리키는 그림이 없으면 빌드가 이미 막았다(content.config.ts) — 여기선 믿고 세운다.
+         role="img"는 래퍼가 든다. 그래야 스크린리더가 그림을 잎으로 보고 안쪽 라벨(P1·R1·요청…)을
+         낱낱이 읽는 대신 alt 한 벌을 읽는다. */
+      const d = DIAGRAMS[block.slice(2).trim()];
+      return (
+        <figure class="dg">
+          <div class="dg-art" role="img" aria-label={d.alt} set:html={d.svg} />
+          <figcaption set:html={md(d.caption)} />
+        </figure>
+      );
+    })()
   ) : block.startsWith("- ") ? (
     /* "A는 …, B는 …, C는 …" 식 열거는 산문보다 목록이 훨씬 빨리 읽힌다.
        암기 노트에서는 한 겹 더 — 앞머리 용어를 제 칸에 세워 목록이 용어 사전처럼 선다.

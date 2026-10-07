@@ -57,7 +57,13 @@ export function topicsOf(area: Area, exam: Exam = DEFAULT_EXAM) {
  * 본문(도입부)까지 검색되게 하되, 사이드 목차는 모든 노트 페이지에 실리므로 해설은 넣지 않는다(무게).
  */
 export function topicSearchText(t: { title: string; intro: string; aliases?: string }) {
-  return [t.title, t.aliases ?? "", t.intro]
+  // 개념 그림 블록("^ 이름")은 글이 아니라 그림 참조다 — 슬러그가 검색어로 잡히면
+  // "cycle"을 친 사람에게 글자 어디에도 없는 주제가 걸린다.
+  const intro = t.intro
+    .split("\n\n")
+    .filter((b) => !b.startsWith("^ "))
+    .join(" ");
+  return [t.title, t.aliases ?? "", intro]
     .join(" ")
     .replace(/[=*`>|#]/g, " ")
     .replace(/\s+/g, " ")
