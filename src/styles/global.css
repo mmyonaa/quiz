@@ -4250,6 +4250,78 @@ select.sort {
   color: var(--muted);
 }
 
+/* ── 개념 그림 ──
+   2D가 아니면 안 되는 관계(고리·중첩·비트 자리)를 글 옆에 겹쳐 둔다. 색은 전부 토큰이라
+   다크에서 따로 둘 그림이 없고, 선 색은 wrapper의 color를 타고 들어간다(currentColor).
+   도입부 폭(--measure)을 다 쓰면 그림이 본문보다 커져 주인공이 바뀌므로 폭을 묶어 가운데 세운다. */
+.dg {
+  margin: 0 0 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45em;
+}
+.dg-art {
+  width: 100%;
+  max-width: 21rem;
+  color: var(--text);
+}
+.dg-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+/* 글꼴은 본문에서 물려받는다 — SVG 기본 글꼴(serif)로 떨어지면 라벨만 다른 글씨가 된다 */
+.dg-svg text {
+  fill: currentColor;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+/* 요청(점선·옅게)과 점유(실선)를 선 모양으로 가른다 — 색을 둘로 쓰면 정답·오답의 초록·빨강과
+   뜻이 겹친다. 화살촉은 marker 안에서 fill을 직접 들어 g의 fill:none에 지워지지 않는다. */
+.dg-svg .dg-wait,
+.dg-svg .dg-hold {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+}
+.dg-svg .dg-wait {
+  stroke-dasharray: 4 3.5;
+  opacity: 0.68;
+}
+.dg-svg .dg-proc circle {
+  fill: var(--surface);
+  stroke: var(--accent);
+  stroke-width: 1.7;
+}
+.dg-svg .dg-res rect {
+  fill: var(--surface-2);
+  stroke: var(--border);
+  stroke-width: 1.5;
+}
+.dg-svg .dg-center {
+  font-size: 12.5px;
+  font-weight: 500;
+  fill: var(--muted);
+  letter-spacing: 0.04em;
+}
+.dg-svg .dg-legend text {
+  font-size: 11.5px;
+  font-weight: 500;
+  fill: var(--muted);
+  text-anchor: start;
+}
+.dg figcaption {
+  max-width: 28rem;
+  font-size: var(--t-xs);
+  line-height: 1.6;
+  color: var(--muted);
+  text-align: center;
+}
+
 /* ── 좁은 화면: 대조표·계층 스택을 세로로 편다 (암기 노트 모바일) ──
    390px 실측에서 암기 카드의 대조표 17장과 계층 스택 3장이 전부 가로 스크롤이었다
    (표 448px · 스택 480px 대 본문 칸 314px). 암기 노트는 폰에서 훑는 물건인데 정작
