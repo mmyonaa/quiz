@@ -2,6 +2,7 @@ import { defineCollection, z } from "astro:content";
 import { file } from "astro/loaders";
 import topicNotes from "./data/topic-notes.json";
 import memoNotes from "./data/memo-notes.json";
+import blogSeeds from "./data/blog-seeds.json";
 import { PRACTICAL_FORMAT, SELF_GRADED, isSelfGraded } from "./lib/practical-grade";
 
 /**
@@ -225,6 +226,21 @@ const checkTables = (label: string, text: string) => {
     }
   }
 };
+
+/**
+ * 번역표(blog-seeds.json)의 값은 실존 주제 키여야 한다.
+ *
+ * 블로그 시드 → 주제 연결은 블로그가 아니라 이쪽이 든다(블로그는 부가 서비스 때문에 바뀌지
+ * 않는다). 그래서 주제 키를 바꾸거나 주제를 지우면 번역표가 가리키는 곳이 사라지는데,
+ * --link는 모르는 키를 만나면 조용히 유사도로 내려가 버린다 — 결정적이어야 할 경로가 추측으로
+ * 바뀌는 것을 알려줄 자리가 여기뿐이다.
+ */
+for (const [seed, value] of Object.entries(blogSeeds as Record<string, string | string[]>)) {
+  for (const key of Array.isArray(value) ? value : [value]) {
+    if (!TOPIC_KEYS.includes(key))
+      throw new Error(`번역표(blog-seeds.json)의 시드 ${seed}가 없는 주제를 가리킴: ${key}`);
+  }
+}
 
 /** 주제 정의가 깨지면(시험·과목·영역 오타, 강조 표기 위반) 빌드에서 잡는다 */
 for (const [key, t] of Object.entries(TOPICS)) {
