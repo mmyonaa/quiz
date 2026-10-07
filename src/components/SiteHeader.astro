@@ -8,7 +8,7 @@ import { DEFAULT_EXAM, EXAMS, EXAM_FORMAT, MEMO_EXAMS, examPath, type Exam } fro
 // current: 현재 페이지 키("quiz" | "notes" | "my") — 활성 메뉴 표시에 쓴다.
 // toc: 좌측 목차(.side-toc.as-drawer)를 가진 페이지가 넘기는 라벨 — 좁은 화면용 여는 버튼이 붙는다.
 // exam: 지금 보고 있는 시험. 메뉴와 시험 전환 링크가 이 값을 따라간다.
-// shared: 시험 축이 없는 공용 페이지(소개·마이페이지)가 켠다. 시험 탭에서 활성 표시를 걷는다 —
+// shared: 시험 축이 없는 공용 페이지(about·마이페이지)가 켠다. 시험 탭에서 활성 표시를 걷는다 —
 //   두 시험을 함께 말하는 페이지에서 한쪽이 켜져 있으면 "지금 그 시험을 보는 중"이라는 거짓이 된다.
 //   링크 자체는 남긴다(거기서 시험을 골라 들어가는 것이 자연스러운 다음 걸음이다).
 const {
@@ -26,8 +26,6 @@ const links = [
   { key: "notes", href: `${base}${px}/notes/`, label: "개념 노트" },
   // 암기 노트는 카드가 있는 시험에만 — 없는 시험에 빈 페이지로 가는 메뉴를 내지 않는다
   ...(MEMO_EXAMS.includes(exam) ? [{ key: "memo", href: `${base}${px}/memo/`, label: "암기 노트" }] : []),
-  // 소개는 시험 축이 없는 공용 페이지라 접두어를 붙이지 않는다. 푸터에만 두었더니 찾지 못했다.
-  { key: "about", href: `${base}/about/`, label: "소개" },
 ];
 // 시험 전환 — 어느 시험의 개념 노트를 보는지 고른다
 const examTabs = EXAMS.map((e) => ({
@@ -78,6 +76,9 @@ const examTabs = EXAMS.map((e) => ({
       </span>
       <span class="nav-sep" aria-hidden="true"></span>
       <AuthBox />
+      {/* about 은 학습 화면이 아니라 사이트 자체를 말하는 자리라 마이페이지·daily.mcp 와 같은
+          층에 선다(시험 축이 없어 접두어도 붙지 않는다). 푸터에만 두었더니 찾지 못했다. */}
+      <a class="nav-link" href={`${base}/about/`} aria-current={current === "about" ? "page" : undefined}>about</a>
       <a class="nav-link" href="https://mmyonaa.github.io/blog/" target="_blank" rel="noopener">daily.mcp →</a>
     </nav>
     <button id="theme-toggle" class="icon-btn" type="button" aria-label="테마 전환">
