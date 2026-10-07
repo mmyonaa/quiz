@@ -8,6 +8,12 @@
 //   --backlog 아직 메워지지 않은 자리 전량(커버리지 갭·글 연결 갭). 주간 이슈를 새로 여는 대신
 //             상시 이슈 하나의 본문을 덮어쓰는 용도라, 갱신된 상태 위에서 돌도록 --report 뒤에 온다.
 //             네트워크를 쓰지 않는다 — sync-state.json이 이미 아는 것만 읽는다.
+//   --link    제목 유사도로 또렷한 자리만 topic-notes.json에 붙이고(자동 연결), 애매한 자리는
+//             후보 목록으로 남긴다. 붙인 것은 전부 "검증 필요"로 보고된다 — 조용히 들어가는
+//             연결을 만들지 않는 것이 이 모드의 조건이다. 섹션을 상태에서 읽으므로 --report 뒤에 온다.
+//             --dry-run을 주면 파일을 쓰지 않고 결과만 보여준다.
+//   --backtest 손으로 이어 둔 연결을 정답으로 두고 같은 계산을 되본다. 임계 위에서 오답이 하나라도
+//             나오면 실패로 끝낸다 — 자동 연결의 안전선은 이 역채점으로만 지킨다. 네트워크를 쓰지 않는다.
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -21,6 +27,17 @@ const STATE = join(root, "src/data/sync-state.json");
 // 커버리지 갭을 따질 글의 섹션 — 두 시험 글만 본다(MCP·개발기 글은 붙을 주제 축이 없다).
 // 판정이 --report와 --backlog 두 곳에 있어, 한쪽만 늘리면 주간 보고와 상시 이슈가 어긋난다.
 const EXAM_SECTIONS = new Set(["jeongcheogi", "boangisa"]);
+
+// 자동 연결의 기준선. 제목끼리 문자 바이그램 Dice 계수로 재고, 이 선을 넘는 자리만 기계가 붙인다.
+// 형태소 분석기 없이 한글 제목에 쓸 수 있어 의존성이 늘지 않는다.
+//
+// 선은 손으로 이어 둔 42편을 역채점해 정했다(--backtest가 같은 계산을 다시 돈다). 오답 4편
+// (SQL 인젝션 · XSS와 CSRF · RSA/DH · 위험 관리)이 전부 0.276 이하에 몰려, 0.45면 0.174 여유가 남는다.
+// 격차 조건은 제목이 똑같은 자리를 자동에서 빼기 위한 것이다 — 두 시험의 쌍둥이 주제가 그렇고,
+// 그건 "둘 다 붙일까"를 사람이 정할 일이다.
+const AUTO_SCORE = 0.45;
+const AUTO_MARGIN = 0.15;
+const CANDIDATES = 3;
 
 const RSS_URL = "https://mmyonaa.github.io/blog/rss.xml";
 const TREE_URL = "https://api.github.com/repos/mmyonaa/blog/git/trees/main?recursive=1";
@@ -62,6 +79,42 @@ const questionRefs = () => {
   }
   return refs;
 };
+
+/** 제목을 비교용으로 눌러 둔 문자 바이그램. 공백·기호·대소문자는 제목마다 달라 축에서 뺀다. */
+const bigrams = (s) => {
+  const t = s.toLowerCase().replace(/[^0-9a-z가-힣]/g, "");
+  if (t.length < 2) return t ? [t] : [];
+  return Array.from({ length: t.length - 1 }, (_, i) => t.slice(i, i + 2));
+};
+
+/** 두 제목의 Dice 계수(0~1). 다중집합 교집합이라 같은 바이그램이 두 번 나오는 것도 센다. */
+const similarity = (a, b) => {
+  const A = bigrams(a);
+  const B = bigrams(b);
+  if (!A.length || !B.length) return 0;
+  const left = new Map();
+  for (const g of A) left.set(g, (left.get(g) ?? 0) + 1);
+  let inter = 0;
+  for (const g of B) {
+    const n = left.get(g);
+    if (n) {
+      inter++;
+      left.set(g, n - 1);
+    }
+  }
+  return (2 * inter) / (A.length + B.length);
+};
+
+/**
+ * 글 제목에 대한 주제 순위(점수 내림차순).
+ * 기본적으로 글이 아직 없는 주제만 자리로 본다 — 주제당 글은 하나이고, 이미 찬 자리를 추천하면
+ * 사람이 기존 연결을 걷어내야 한다. all을 주면 채점용으로 전부 본다(--backtest).
+ */
+const rankTopics = (title, topics, { taken = new Set(), all = false } = {}) =>
+  Object.entries(topics)
+    .filter(([key, t]) => all || (!t.post && !taken.has(key)))
+    .map(([key, t]) => ({ key, title: t.title, score: similarity(title, t.title) }))
+    .sort((a, b) => b.score - a.score);
 
 // ── --check: 빌드 게이트 + 제목 자동화 ──
 const check = async () => {
@@ -186,6 +239,146 @@ const report = async () => {
   console.log(lines.join("\n").trim());
 };
 
+// ── --link: 또렷한 자리는 붙이고, 애매한 자리는 후보로 ──
+// 사람과 기계의 분업이 이 모드의 전부다. 기계는 제목이 또렷하게 겹치는 자리만 붙이고,
+// 사람은 ① 붙은 것을 검증하고 ② 후보 목록에서 나머지를 고른다. 그래서 붙인 것을 반드시
+// 보고한다 — 보고되지 않는 자동 연결은 틀려도 아무도 모른다(--check는 글의 실존만 본다).
+const link = async ({ dry }) => {
+  const state = JSON.parse(readFileSync(STATE, "utf8"));
+  const topics = JSON.parse(readFileSync(TOPIC_NOTES, "utf8"));
+  // 제목은 RSS에서 바로 받는다. post-titles.json은 배포가 돌아야 갱신돼 갓 올라온 글이 빠지는데,
+  // 자동 연결이 가장 필요한 것이 바로 그 글이다.
+  const posts = await fetchPosts();
+  const linked = new Set(
+    Object.values(topics)
+      .map((t) => t.post)
+      .filter(Boolean),
+  );
+  const targets = [...posts.keys()].filter(
+    (id) => EXAM_SECTIONS.has(state.posts[id]?.section) && !linked.has(id),
+  );
+
+  // 점수가 높은 글부터 자리를 집는다. 같은 주제를 여럿이 노리면 더 또렷한 글이 갖고 나머지는
+  // 후보로 남는다 — 자동이 엉뚱한 글로 자리를 먼저 막는 것이 사람 손으로만 되돌려지는 실패다.
+  const order = targets
+    .map((id) => ({ id, title: posts.get(id), top: rankTopics(posts.get(id), topics)[0]?.score ?? 0 }))
+    .sort((a, b) => b.top - a.top);
+
+  const taken = new Set();
+  const made = [];
+  const leftover = [];
+  for (const { id, title } of order) {
+    const list = rankTopics(title, topics, { taken });
+    const [first, second] = list;
+    if (first && first.score >= AUTO_SCORE && first.score - (second?.score ?? 0) >= AUTO_MARGIN) {
+      taken.add(first.key);
+      made.push({ id, title, pick: first });
+    } else {
+      leftover.push({ id, title, list: list.slice(0, CANDIDATES) });
+    }
+  }
+
+  if (made.length && !dry) {
+    for (const m of made) {
+      // 키 순서를 지켜 넣는다 — title 바로 뒤가 post 자리다. 손으로 쓴 것과 같은 모양으로 남는다.
+      const t = topics[m.pick.key];
+      const rebuilt = {};
+      for (const [k, v] of Object.entries(t)) {
+        rebuilt[k] = v;
+        if (k === "title") rebuilt.post = m.id;
+      }
+      if (!rebuilt.post) rebuilt.post = m.id;
+      topics[m.pick.key] = rebuilt;
+    }
+    writeFileSync(TOPIC_NOTES, `${JSON.stringify(topics, null, 2)}\n`);
+  }
+
+  if (made.length === 0 && leftover.length === 0) {
+    console.log("NO_FINDINGS");
+    return;
+  }
+
+  const pct = (n) => n.toFixed(2);
+  const lines = [];
+  if (made.length) {
+    lines.push(
+      `## 자동 연결 — 검증 필요 (${made.length}건)`,
+      "",
+      `제목 유사도 ${AUTO_SCORE} 이상 · 2위와 격차 ${AUTO_MARGIN} 이상이라 기계가 붙였다.`,
+      "글이 그 주제의 개념 노트로 맞는지 확인하고, 아니면 `topic-notes.json`에서 고친다",
+      "(자동분은 커밋 하나로 들어가므로 통째로 되돌리기도 쉽다).",
+      "",
+    );
+    for (const m of made) {
+      lines.push(`- \`${m.id}\` → \`${m.pick.key}\` (${pct(m.pick.score)}) — ${m.pick.title}`);
+    }
+    lines.push("");
+  }
+  if (leftover.length) {
+    lines.push(
+      `## 연결 후보 — 사람이 고를 자리 (${leftover.length}건)`,
+      "",
+      "자동으로 붙이기엔 제목이 또렷하지 않다. 맞는 주제가 있으면 `post`를 넣고, 없으면 그대로 둔다",
+      "(주제가 아직 없는 글은 글감이 아니라 주제를 새로 낼 후보다).",
+      "",
+    );
+    for (const l of leftover) {
+      const cand = l.list.map((c) => `\`${c.key}\`(${pct(c.score)})`).join(" · ") || "후보 없음";
+      lines.push(`- \`${l.id}\` — ${l.title}`, `  - 후보: ${cand}`);
+    }
+    lines.push("");
+  }
+  console.log(lines.join("\n").trim());
+  if (dry) console.error("[blog-sync] --dry-run — topic-notes.json을 쓰지 않았습니다.");
+};
+
+// ── --backtest: 임계값이 아직 유효한지 지금 데이터로 되본다 ──
+// 손으로 이어 둔 연결을 정답으로 보고, 제목만으로 같은 답이 나오는지 센다. 주제·글이 늘면 선이
+// 흔들릴 수 있어, 주간 워크플로가 자동 연결 전에 이걸 먼저 돌려 오답이 생기면 멈춘다.
+const backtest = () => {
+  const state = JSON.parse(readFileSync(STATE, "utf8"));
+  const topics = JSON.parse(readFileSync(TOPIC_NOTES, "utf8"));
+  const titles = JSON.parse(readFileSync(TITLES, "utf8"));
+
+  // 한 글이 두 시험의 주제에 함께 걸릴 수 있다(쌍둥이). 그 글의 정답은 양쪽 모두다.
+  const answer = new Map();
+  for (const [key, t] of Object.entries(topics)) {
+    if (!t.post) continue;
+    if (!answer.has(t.post)) answer.set(t.post, new Set());
+    answer.get(t.post).add(key);
+  }
+
+  const rows = [];
+  for (const [post, keys] of answer) {
+    const title = titles[post];
+    // 섹션을 모르는 글(상태가 아직 못 본 신규)과 제목이 없는 글은 채점에서 뺀다.
+    if (!title || !EXAM_SECTIONS.has(state.posts[post]?.section)) continue;
+    const [first, second] = rankTopics(title, topics, { all: true });
+    rows.push({
+      post,
+      score: first.score,
+      margin: first.score - second.score,
+      pick: first.key,
+      ok: keys.has(first.key),
+    });
+  }
+  rows.sort((a, b) => b.score - a.score);
+
+  const auto = rows.filter((r) => r.score >= AUTO_SCORE && r.margin >= AUTO_MARGIN);
+  const wrong = auto.filter((r) => !r.ok);
+  const nearest = Math.max(...rows.filter((r) => !r.ok).map((r) => r.score), 0);
+  console.log(`표본 ${rows.length}편(손으로 이은 시험 글) · 임계 ${AUTO_SCORE}/격차 ${AUTO_MARGIN}`);
+  console.log(`  자동 연결 대상 ${auto.length}편 · 그 중 오답 ${wrong.length}편`);
+  console.log(`  1위가 틀린 글 중 최고점 ${nearest.toFixed(2)} — 임계까지 여유 ${(AUTO_SCORE - nearest).toFixed(2)}`);
+  for (const r of wrong) {
+    console.error(`  오답: ${r.post} → ${r.pick} (${r.score.toFixed(2)}, 격차 ${r.margin.toFixed(2)})`);
+  }
+  if (wrong.length) {
+    console.error("[blog-sync] 임계 위에서 오답이 나왔습니다 — AUTO_SCORE/AUTO_MARGIN을 다시 재기 전에는 자동 연결을 돌리지 마십시오.");
+    process.exit(1);
+  }
+};
+
 // ── --backlog: 아직 메워지지 않은 자리 전량(상시 이슈 본문) ──
 const backlog = () => {
   const state = JSON.parse(readFileSync(STATE, "utf8"));
@@ -233,7 +426,11 @@ const mode = process.argv[2];
 if (mode === "--check") await check();
 else if (mode === "--report") await report();
 else if (mode === "--backlog") backlog();
+else if (mode === "--link") await link({ dry: process.argv.includes("--dry-run") });
+else if (mode === "--backtest") backtest();
 else {
-  console.error("사용법: node scripts/blog-sync.mjs --check | --report | --backlog");
+  console.error(
+    "사용법: node scripts/blog-sync.mjs --check | --report | --link [--dry-run] | --backtest | --backlog",
+  );
   process.exit(1);
 }

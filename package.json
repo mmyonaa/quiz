@@ -11,6 +11,8 @@
     "preview": "astro preview --port 4322",
     "check": "astro check",
     "sync-report": "node scripts/blog-sync.mjs --report",
+    "sync-link": "node scripts/blog-sync.mjs --link",
+    "sync-backtest": "node scripts/blog-sync.mjs --backtest",
     "sync-backlog": "node scripts/blog-sync.mjs --backlog"
   },
   "dependencies": {
