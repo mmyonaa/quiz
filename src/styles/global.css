@@ -4625,3 +4625,57 @@ select.sort {
 .about-same em::after {
   content: ")";
 }
+
+/* ── about 머리 ──
+   daily.mcp 블로그의 /about/과 같은 차례다: 아이콘 · 이름 · 링크 줄 · 설명 · 현황 한 문장.
+   거기는 사람의 블로그라 저자 이름과 프로필 사진이 서고, 여기는 사이트라 사이트명과
+   파비콘이 그 자리에 선다. 가운데로 모으지 않는다 — 이 사이트의 다른 화면이 전부
+   왼쪽에서 시작하므로 머리만 가운데면 다른 사이트처럼 보인다. */
+.about-hero {
+  max-width: var(--measure);
+  margin: 0 0 2rem;
+}
+.about-logo {
+  display: block;
+  margin: 0 0 0.7rem;
+  border-radius: var(--r-sm);
+}
+.about-hero h1 {
+  margin: 0 0 0.45rem;
+}
+/* 링크 줄 — 이름 바로 아래. 본문 링크가 아니라 꼬리표에 가까워 작게 두고 가운뎃점으로 가른다 */
+.about-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.9rem;
+  margin: 0 0 1rem;
+  font-size: var(--t-sm);
+}
+.about-links a {
+  position: relative;
+  color: var(--accent-strong);
+  text-decoration: none;
+}
+.about-links a:hover {
+  text-decoration: underline;
+}
+.about-links a + a::before {
+  content: "·";
+  position: absolute;
+  left: -0.5rem;
+  color: var(--border);
+  text-decoration: none;
+}
+/* 현황 — 큰 숫자 타일로 세우면 자랑이 되고, 문장에 담으면 사실로 읽힌다(블로그와 같은 선택) */
+.about-count {
+  margin: 0;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--border);
+  font-size: var(--t-sm);
+  line-height: 1.8;
+  color: var(--muted);
+}
+.about-count b {
+  color: var(--text);
+  font-size: 1.05em;
+}
