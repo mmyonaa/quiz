@@ -1,9 +1,13 @@
 /** 개념 그림 — 도입부·암기 카드 본문의 "^ 이름" 블록이 가리키는 그림들.
  *
- *  그림은 강조 층 중에서도 가장 무겁다. 그래서 글로 되는 것은 두지 않는다 —
- *  순서(핸드셰이크·절차)는 MdBlocks의 "~ " 흐름이, 층(OSI·사다리)은 "# " 스택이,
- *  한두 축 대조는 형광펜이, 세 축부터는 대조표가 이미 받는다. 여기 남는 것은
- *  **2D가 아니면 안 되는 것**뿐이다: 고리 · 비트 자리 · 사슬 · 중첩 · 트리.
+ *  기준은 "그림이 있으면 더 빨리 읽히는가"다. 다만 그림은 강조 층 중 가장 무거우므로
+ *  **다른 블록이 이미 받는 자리는 비운다** — 순서(핸드셰이크·절차)는 MdBlocks의 "~ " 흐름,
+ *  층(OSI·사다리)은 "# " 스택, 한두 축 대조는 형광펜, 세 축부터는 대조표의 몫이다.
+ *  여기 남는 것은 고리 · 비트 자리 · 사슬 · 중첩 · 트리 · 궤적 · 기호 그 자체다.
+ *
+ *  계산 유형은 그림이 예제 수치를 새로 들여와도 된다(페이지 교체의 참조열, 디스크 헤드의 요청 큐).
+ *  본문이 계산법만 말하고 수를 들지 않는 자리에서는 본보기 한 벌이 곧 설명이기 때문이다 —
+ *  "본문에 없는 것을 그리지 않는다"는 처음의 규칙이 여기서만 느슨해진다.
  *
  *  래스터 이미지가 아니라 손으로 쓴 인라인 SVG인 이유 —
  *    · 빌드가 읽는다. 이름이 틀리면 content.config.ts가 막는다(PNG는 아무도 못 본다).
@@ -215,6 +219,309 @@ export const DIAGRAMS: Record<string, Diagram> = {
   <text class="dg-seq dg-start" x="146" y="194">D B E <tspan class="dg-em">A</tspan> F C G</text>
   <text class="dg-sub dg-start" x="112" y="212">후위</text>
   <text class="dg-seq dg-start" x="146" y="212">D E B F G C <tspan class="dg-em">A</tspan></text>
+</svg>`,
+  },
+
+  "er-symbols": {
+    alt: "E-R 다이어그램의 기호 일곱. 개체는 사각형, 관계는 마름모, 속성은 타원이고, 기본키 속성은 타원 안에 밑줄, 다중값 속성은 이중 타원, 유도 속성은 점선 타원, 약한 개체는 이중 사각형이다.",
+    caption: "기호가 그대로 출제된다 — 사각형·마름모·타원 셋을 먼저 붙이고 나머지는 그 위의 변형으로 외운다.",
+    svg: `<svg viewBox="0 0 360 162" class="dg-svg" focusable="false">
+  <g class="dg-box">
+    <rect x="37" y="22" width="66" height="32" rx="3" /><text class="dg-xs" x="70" y="38">학생</text>
+    <polygon points="180,20 222,38 180,56 138,38" /><text class="dg-xs" x="180" y="38">수강</text>
+    <ellipse cx="290" cy="38" rx="38" ry="18" /><text class="dg-xs" x="290" y="38">이름</text>
+  </g>
+  <text class="dg-sub" x="70" y="72">개체 — 사각형</text>
+  <text class="dg-sub" x="180" y="72">관계 — 마름모</text>
+  <text class="dg-sub" x="290" y="72">속성 — 타원</text>
+  <g class="dg-box">
+    <ellipse cx="45" cy="112" rx="34" ry="16" />
+    <ellipse cx="135" cy="112" rx="34" ry="16" /><ellipse cx="135" cy="112" rx="26" ry="10" />
+    <ellipse class="dg-dot" cx="225" cy="112" rx="34" ry="16" />
+    <rect x="279" y="94" width="72" height="36" rx="3" /><rect x="285" y="100" width="60" height="24" rx="2" />
+  </g>
+  <text class="dg-xs" x="45" y="110">학번</text>
+  <path class="dg-line" d="M31 120 H59" />
+  <text class="dg-xs" x="135" y="112">전화</text>
+  <text class="dg-xs" x="225" y="112">나이</text>
+  <text class="dg-xs" x="315" y="112">주문</text>
+  <text class="dg-sub" x="45" y="146">기본키 — 밑줄</text>
+  <text class="dg-sub" x="135" y="146">다중값 — 이중</text>
+  <text class="dg-sub" x="225" y="146">유도 — 점선</text>
+  <text class="dg-sub" x="315" y="146">약한 개체</text>
+</svg>`,
+  },
+
+  "topology-shapes": {
+    alt: "네 가지 토폴로지의 모양. 성형은 중앙 장치에 다섯 노드가 모여 붙고, 버스형은 하나의 공용 회선에 네 노드가 매달리며, 링형은 다섯 노드가 원형으로 이어지고, 망형은 다섯 노드가 서로 모두 직접 이어져 회선이 열 개다.",
+    caption: "망형만 중계를 거치지 않는다 — 그 대가가 회선 수다. 노드 다섯이면 벌써 `10`개다.",
+    svg: `<svg viewBox="0 0 360 228" class="dg-svg" focusable="false">
+  <g class="dg-line dg-thin">
+    <path d="M90 54 L90 24 M90 54 L122.3 44.7 M90 54 L110 78.3 M90 54 L70 78.3 M90 54 L57.7 44.7" />
+    <path d="M226 48 H314 M240 48 V64 M262 48 V64 M284 48 V64 M306 48 V64" />
+    <path d="M90 134 L122.3 154.7 M122.3 154.7 L110 188.3 M110 188.3 L70 188.3 M70 188.3 L57.7 154.7 M57.7 154.7 L90 134" />
+    <path d="M270 134 L302.3 154.7 M270 134 L290 188.3 M270 134 L250 188.3 M270 134 L237.7 154.7 M302.3 154.7 L290 188.3 M302.3 154.7 L250 188.3 M302.3 154.7 L237.7 154.7 M290 188.3 L250 188.3 M290 188.3 L237.7 154.7 M250 188.3 L237.7 154.7" />
+  </g>
+  <g class="dg-node">
+    <circle cx="90" cy="54" r="8" />
+    <circle cx="90" cy="24" r="5" /><circle cx="122.3" cy="44.7" r="5" /><circle cx="110" cy="78.3" r="5" /><circle cx="70" cy="78.3" r="5" /><circle cx="57.7" cy="44.7" r="5" />
+    <circle cx="240" cy="68" r="5" /><circle cx="262" cy="68" r="5" /><circle cx="284" cy="68" r="5" /><circle cx="306" cy="68" r="5" />
+    <circle cx="90" cy="134" r="5" /><circle cx="122.3" cy="154.7" r="5" /><circle cx="110" cy="188.3" r="5" /><circle cx="70" cy="188.3" r="5" /><circle cx="57.7" cy="154.7" r="5" />
+    <circle cx="270" cy="134" r="5" /><circle cx="302.3" cy="154.7" r="5" /><circle cx="290" cy="188.3" r="5" /><circle cx="250" cy="188.3" r="5" /><circle cx="237.7" cy="154.7" r="5" />
+  </g>
+  <text class="dg-sub" x="90" y="100">성형 — 중앙이 죽으면 전체</text>
+  <text class="dg-sub" x="270" y="100">버스형 — 회선 하나에 매달린다</text>
+  <text class="dg-sub" x="90" y="212">링형 — 한 방향으로 돈다</text>
+  <text class="dg-sub" x="270" y="212">망형 — 회선 n(n-1)/2</text>
+</svg>`,
+  },
+
+  "perm-umask": {
+    alt: "파일 권한 9비트를 세 줄로 견준 그림. 기준값 666은 rw-rw-rw-, umask 027은 그룹의 w와 기타의 rwx 자리를 걷어내고, 그 결과 640은 rw-r-----이 된다.",
+    caption: "뺄셈이 아니라 자리마다 걷어내는 것이다 — `umask 027`을 8진으로 빼면 `637`이지만 실제 권한은 `640`이다.",
+    svg: `<svg viewBox="0 0 360 150" class="dg-svg" focusable="false">
+  <text class="dg-sub" x="99" y="24">소유자</text>
+  <text class="dg-sub" x="183" y="24">그룹</text>
+  <text class="dg-sub" x="267" y="24">기타</text>
+  <text class="dg-sub dg-end" x="52" y="49">기준값</text>
+  <rect class="dg-box" x="60" y="36" width="26" height="26" /><text class="dg-xs" x="73" y="49">r</text>
+  <rect class="dg-box" x="86" y="36" width="26" height="26" /><text class="dg-xs" x="99" y="49">w</text>
+  <rect class="dg-box" x="112" y="36" width="26" height="26" /><text class="dg-xs" x="125" y="49">-</text>
+  <rect class="dg-box" x="144" y="36" width="26" height="26" /><text class="dg-xs" x="157" y="49">r</text>
+  <rect class="dg-box" x="170" y="36" width="26" height="26" /><text class="dg-xs" x="183" y="49">w</text>
+  <rect class="dg-box" x="196" y="36" width="26" height="26" /><text class="dg-xs" x="209" y="49">-</text>
+  <rect class="dg-box" x="228" y="36" width="26" height="26" /><text class="dg-xs" x="241" y="49">r</text>
+  <rect class="dg-box" x="254" y="36" width="26" height="26" /><text class="dg-xs" x="267" y="49">w</text>
+  <rect class="dg-box" x="280" y="36" width="26" height="26" /><text class="dg-xs" x="293" y="49">-</text>
+  <text class="dg-seq dg-start" x="316" y="49">666</text>
+  <text class="dg-sub dg-end" x="52" y="87">umask</text>
+  <rect class="dg-box" x="60" y="74" width="26" height="26" /><text class="dg-xs" x="73" y="87">-</text>
+  <rect class="dg-box" x="86" y="74" width="26" height="26" /><text class="dg-xs" x="99" y="87">-</text>
+  <rect class="dg-box" x="112" y="74" width="26" height="26" /><text class="dg-xs" x="125" y="87">-</text>
+  <rect class="dg-box" x="144" y="74" width="26" height="26" /><text class="dg-xs" x="157" y="87">-</text>
+  <rect class="dg-box dg-on" x="170" y="74" width="26" height="26" /><text class="dg-xs" x="183" y="87">w</text>
+  <rect class="dg-box" x="196" y="74" width="26" height="26" /><text class="dg-xs" x="209" y="87">-</text>
+  <rect class="dg-box dg-on" x="228" y="74" width="26" height="26" /><text class="dg-xs" x="241" y="87">r</text>
+  <rect class="dg-box dg-on" x="254" y="74" width="26" height="26" /><text class="dg-xs" x="267" y="87">w</text>
+  <rect class="dg-box dg-on" x="280" y="74" width="26" height="26" /><text class="dg-xs" x="293" y="87">x</text>
+  <text class="dg-seq dg-start" x="316" y="87">027</text>
+  <text class="dg-sub dg-end" x="52" y="125">결과</text>
+  <rect class="dg-box" x="60" y="112" width="26" height="26" /><text class="dg-xs" x="73" y="125">r</text>
+  <rect class="dg-box" x="86" y="112" width="26" height="26" /><text class="dg-xs" x="99" y="125">w</text>
+  <rect class="dg-box" x="112" y="112" width="26" height="26" /><text class="dg-xs" x="125" y="125">-</text>
+  <rect class="dg-box" x="144" y="112" width="26" height="26" /><text class="dg-xs" x="157" y="125">r</text>
+  <rect class="dg-box" x="170" y="112" width="26" height="26" /><text class="dg-xs" x="183" y="125">-</text>
+  <rect class="dg-box" x="196" y="112" width="26" height="26" /><text class="dg-xs" x="209" y="125">-</text>
+  <rect class="dg-box" x="228" y="112" width="26" height="26" /><text class="dg-xs" x="241" y="125">-</text>
+  <rect class="dg-box" x="254" y="112" width="26" height="26" /><text class="dg-xs" x="267" y="125">-</text>
+  <rect class="dg-box" x="280" y="112" width="26" height="26" /><text class="dg-xs" x="293" y="125">-</text>
+  <text class="dg-seq dg-start" x="316" y="125">640</text>
+</svg>`,
+  },
+
+  "memory-fit": {
+    alt: "빈 공간 세 곳(20K·15K·30K)이 섞인 메모리 띠. 12K 요청에 대해 최초 적합은 앞쪽 20K, 최적 적합은 담을 수 있는 가장 작은 15K, 최악 적합은 가장 큰 30K를 고른다.",
+    caption: "같은 요청이 전략마다 다른 자리에 들어간다 — 최적은 담을 수 있는 가장 작은 곳, 최악은 가장 큰 곳이다.",
+    svg: `<svg viewBox="0 0 360 134" class="dg-svg" focusable="false">
+  <defs>
+    <marker id="mf-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="currentColor" />
+    </marker>
+  </defs>
+  <rect class="dg-chip" x="20" y="14" width="66" height="22" rx="5" />
+  <text class="dg-xs" x="53" y="25">요청 12K</text>
+  <g class="dg-box">
+    <rect x="20" y="50" width="40" height="34" /><rect x="120" y="50" width="40" height="34" /><rect x="205" y="50" width="40" height="34" />
+  </g>
+  <g class="dg-box dg-on">
+    <rect x="60" y="50" width="60" height="34" /><rect x="160" y="50" width="45" height="34" /><rect x="245" y="50" width="90" height="34" />
+  </g>
+  <text class="dg-xs" x="90" y="67">20K</text>
+  <text class="dg-xs" x="182" y="67">15K</text>
+  <text class="dg-xs" x="290" y="67">30K</text>
+  <text class="dg-2xs" x="40" y="67">사용 중</text>
+  <text class="dg-2xs" x="140" y="67">사용 중</text>
+  <text class="dg-2xs" x="225" y="67">사용 중</text>
+  <g class="dg-line" marker-end="url(#mf-ah)">
+    <path d="M90 104 V88" /><path d="M182 104 V88" /><path d="M290 104 V88" />
+  </g>
+  <text class="dg-sub" x="90" y="118">최초 적합</text>
+  <text class="dg-sub" x="182" y="118">최적 적합</text>
+  <text class="dg-sub" x="290" y="118">최악 적합</text>
+</svg>`,
+  },
+
+  "stack-frame": {
+    alt: "스택 프레임을 높은 주소부터 쌓아 그린 그림. 위에서부터 복귀 주소, SFP, 카나리, 지역 변수 버퍼가 놓이고, 버퍼에서 넘친 쓰기가 위쪽 복귀 주소까지 올라간다.",
+    caption: "버퍼는 위로 넘친다 — 넘친 쓰기가 닿는 곳이 복귀 주소이고, 그 앞을 막아선 것이 카나리다.",
+    svg: `<svg viewBox="0 0 360 178" class="dg-svg" focusable="false">
+  <defs>
+    <marker id="sf-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="currentColor" />
+    </marker>
+  </defs>
+  <rect class="dg-chip" x="100" y="26" width="160" height="30" rx="4" />
+  <text class="dg-xs" x="180" y="41">복귀 주소(RET)</text>
+  <g class="dg-box">
+    <rect x="100" y="60" width="160" height="30" rx="4" /><text class="dg-xs" x="180" y="75">SFP</text>
+    <rect x="100" y="94" width="160" height="30" rx="4" /><text class="dg-xs" x="180" y="109">카나리</text>
+    <rect x="100" y="128" width="160" height="30" rx="4" /><text class="dg-xs" x="180" y="143">버퍼 char[8]</text>
+  </g>
+  <path class="dg-line" d="M82 150 V34" marker-end="url(#sf-ah)" />
+  <text class="dg-sub dg-end" x="72" y="92">넘친 쓰기</text>
+  <text class="dg-sub dg-start" x="270" y="41">높은 주소</text>
+  <text class="dg-sub dg-start" x="270" y="143">낮은 주소</text>
+</svg>`,
+  },
+
+  "ipsec-modes": {
+    alt: "IPSec 두 모드의 패킷 배치. 원본은 IP 헤더와 데이터뿐이고, 전송 모드는 원래 IP 헤더를 그대로 둔 채 ESP와 데이터를 보호하며, 터널 모드는 새 IP 헤더로 감싸 원래 헤더까지 보호 범위에 넣는다.",
+    caption: "터널 모드는 원래 헤더까지 감싼다 — 그래서 내부 주소가 밖에서 보이지 않고, 게이트웨이 사이의 VPN이 이 모드를 쓴다.",
+    svg: `<svg viewBox="0 0 360 224" class="dg-svg" focusable="false">
+  <text class="dg-sub dg-end" x="72" y="33">원본</text>
+  <g class="dg-box">
+    <rect x="80" y="20" width="60" height="26" /><text class="dg-2xs" x="110" y="33">IP 헤더</text>
+    <rect x="140" y="20" width="120" height="26" /><text class="dg-2xs" x="200" y="33">데이터</text>
+  </g>
+  <text class="dg-sub dg-end" x="72" y="93">전송 모드</text>
+  <g class="dg-box">
+    <rect x="80" y="80" width="60" height="26" /><text class="dg-2xs" x="110" y="93">IP 헤더</text>
+  </g>
+  <g class="dg-box dg-on">
+    <rect x="140" y="80" width="40" height="26" /><text class="dg-2xs" x="160" y="93">ESP</text>
+    <rect x="180" y="80" width="120" height="26" /><text class="dg-2xs" x="240" y="93">데이터</text>
+  </g>
+  <path class="dg-line dg-dash" d="M140 112 V120 H300 V112" />
+  <text class="dg-sub" x="220" y="132">보호 범위</text>
+  <text class="dg-sub dg-end" x="72" y="165">터널 모드</text>
+  <g class="dg-box">
+    <rect x="80" y="152" width="70" height="26" /><text class="dg-2xs" x="115" y="165">새 IP 헤더</text>
+  </g>
+  <g class="dg-box dg-on">
+    <rect x="150" y="152" width="40" height="26" /><text class="dg-2xs" x="170" y="165">ESP</text>
+    <rect x="190" y="152" width="60" height="26" /><text class="dg-2xs" x="220" y="165">IP 헤더</text>
+    <rect x="250" y="152" width="90" height="26" /><text class="dg-2xs" x="295" y="165">데이터</text>
+  </g>
+  <path class="dg-line dg-dash" d="M150 184 V192 H340 V184" />
+  <text class="dg-sub" x="245" y="204">보호 범위 — 원래 헤더까지</text>
+</svg>`,
+  },
+
+  "ip-header": {
+    alt: "IPv4 헤더를 32비트 한 줄씩 다섯 줄로 그린 격자. 첫 줄은 버전·헤더 길이·서비스 타입·전체 길이, 둘째 줄은 식별자·플래그·단편 오프셋, 셋째 줄은 TTL·프로토콜·헤더 체크섬, 넷째와 다섯째 줄은 출발지와 목적지 IP 주소다.",
+    caption: "한 줄이 32비트 한 워드다 — 헤더 길이를 워드 단위로 세는 이유가 여기 있고, 체크섬이 덮는 것도 이 격자뿐이다.",
+    svg: `<svg viewBox="0 0 360 176" class="dg-svg" focusable="false">
+  <text class="dg-sub dg-start" x="20" y="26">비트 0</text><text class="dg-sub" x="180" y="26">16</text><text class="dg-sub dg-end" x="340" y="26">31</text>
+  <rect class="dg-box" x="20" y="36" width="40" height="26" /><text class="dg-2xs" x="40" y="49">버전</text>
+  <rect class="dg-box" x="60" y="36" width="40" height="26" /><text class="dg-2xs" x="80" y="49">길이</text>
+  <rect class="dg-box" x="100" y="36" width="80" height="26" /><text class="dg-xs" x="140" y="49">서비스 타입</text>
+  <rect class="dg-box" x="180" y="36" width="160" height="26" /><text class="dg-xs" x="260" y="49">전체 길이</text>
+  <rect class="dg-box" x="20" y="62" width="160" height="26" /><text class="dg-xs" x="100" y="75">식별자</text>
+  <rect class="dg-box" x="180" y="62" width="30" height="26" /><text class="dg-2xs" x="195" y="75">플래그</text>
+  <rect class="dg-box" x="210" y="62" width="130" height="26" /><text class="dg-xs" x="275" y="75">단편 오프셋</text>
+  <rect class="dg-box" x="20" y="88" width="80" height="26" /><text class="dg-xs" x="60" y="101">TTL</text>
+  <rect class="dg-box" x="100" y="88" width="80" height="26" /><text class="dg-xs" x="140" y="101">프로토콜</text>
+  <rect class="dg-box dg-on" x="180" y="88" width="160" height="26" /><text class="dg-xs" x="260" y="101">헤더 체크섬</text>
+  <rect class="dg-box" x="20" y="114" width="320" height="26" /><text class="dg-xs" x="180" y="127">출발지 IP 주소</text>
+  <rect class="dg-box" x="20" y="140" width="320" height="26" /><text class="dg-xs" x="180" y="153">목적지 IP 주소</text>
+</svg>`,
+  },
+
+  "disk-head-path": {
+    alt: "디스크 헤드의 이동 궤적 두 가지. 현재 53번 실린더에서 출발해 SSTF는 65·37·14·98·122 순으로 가까운 쪽부터 꺾어 다니고, SCAN은 65·98·122를 지나 끝까지 올라갔다가 방향을 바꿔 37·14로 내려온다.",
+    caption: "SSTF는 가까운 쪽으로 꺾어 다녀 이동이 짧지만 멀리 있는 요청이 밀린다 — SCAN은 끝까지 훑어 그 밀림을 없앤다.",
+    svg: `<svg viewBox="0 0 360 284" class="dg-svg" focusable="false">
+  <text class="dg-2xs" x="180" y="14">현재 53 · 요청 98 · 37 · 122 · 14 · 65</text>
+  <text class="dg-sub dg-start" x="20" y="34">SSTF — 가까운 것부터</text>
+  <path class="dg-tick" d="M30 48 H328.5 M30 44 V52 M109.5 44 V52 M328.5 44 V52" />
+  <text class="dg-2xs dg-start" x="30" y="62">0</text>
+  <text class="dg-2xs dg-end" x="328.5" y="62">199</text>
+  <path class="dg-line" d="M109.5 74 L127.5 87 L85.5 100 L51 113 L177 126 L213 139" />
+  <g class="dg-node"><circle cx="109.5" cy="74" r="4" /><circle cx="127.5" cy="87" r="4" /><circle cx="85.5" cy="100" r="4" /><circle cx="51" cy="113" r="4" /><circle cx="177" cy="126" r="4" /><circle cx="213" cy="139" r="4" /></g>
+  <text class="dg-2xs dg-start" x="118.5" y="65">53</text><text class="dg-2xs dg-start" x="136.5" y="78">65</text><text class="dg-2xs dg-start" x="94.5" y="91">37</text><text class="dg-2xs dg-start" x="60.0" y="104">14</text><text class="dg-2xs dg-start" x="186.0" y="117">98</text><text class="dg-2xs dg-start" x="222.0" y="130">122</text>
+  <text class="dg-sub dg-start" x="20" y="166">SCAN — 한 방향으로 훑고 되돌아온다</text>
+  <path class="dg-tick" d="M30 180 H328.5 M30 176 V184 M109.5 176 V184 M328.5 176 V184" />
+  <path class="dg-line" d="M109.5 194 L127.5 207 L177 220 L213 233 L328.5 246 L85.5 259 L51 272" />
+  <g class="dg-node"><circle cx="109.5" cy="194" r="4" /><circle cx="127.5" cy="207" r="4" /><circle cx="177" cy="220" r="4" /><circle cx="213" cy="233" r="4" /><circle cx="328.5" cy="246" r="4" /><circle cx="85.5" cy="259" r="4" /><circle cx="51" cy="272" r="4" /></g>
+  <text class="dg-2xs dg-start" x="118.5" y="185">53</text><text class="dg-2xs dg-start" x="136.5" y="198">65</text><text class="dg-2xs dg-start" x="186.0" y="211">98</text><text class="dg-2xs dg-start" x="222.0" y="224">122</text><text class="dg-2xs dg-end" x="319.5" y="237">199</text><text class="dg-2xs dg-start" x="94.5" y="250">37</text><text class="dg-2xs dg-start" x="60.0" y="263">14</text>
+</svg>`,
+  },
+
+  "page-trace": {
+    alt: "프레임 세 칸에 FIFO로 페이지를 채우는 표. 참조열 7 0 1 2 0 3 0 4에 대해 들어온 순서대로 내보내며, 여덟 번 참조 중 다섯 번째만 적중이고 나머지 일곱 번은 페이지 폴트다.",
+    caption: "FIFO는 들어온 순서대로 내보낸다 — 여덟 번 참조에 폴트 일곱, 적중은 한 번뿐이다. 바뀐 칸만 색이 들어 있다.",
+    svg: `<svg viewBox="0 0 360 150" class="dg-svg" focusable="false">
+  <text class="dg-sub dg-end" x="52" y="28">참조열</text>
+  <text class="dg-seq" x="77" y="28">7</text>
+  <text class="dg-seq" x="111" y="28">0</text>
+  <text class="dg-seq" x="145" y="28">1</text>
+  <text class="dg-seq" x="179" y="28">2</text>
+  <text class="dg-seq" x="213" y="28">0</text>
+  <text class="dg-seq" x="247" y="28">3</text>
+  <text class="dg-seq" x="281" y="28">0</text>
+  <text class="dg-seq" x="315" y="28">4</text>
+  <rect class="dg-box" x="60" y="40" width="272" height="78" rx="5" />
+  <path class="dg-tick" d="M94 40 V118 M128 40 V118 M162 40 V118 M196 40 V118 M230 40 V118 M264 40 V118 M298 40 V118 M60 66 H332 M60 92 H332" />
+  <text class="dg-sub dg-end" x="52" y="53">프레임 1</text>
+  <text class="dg-seq dg-em" x="77" y="53">7</text>
+  <text class="dg-seq" x="111" y="53">7</text>
+  <text class="dg-seq" x="145" y="53">7</text>
+  <text class="dg-seq dg-em" x="179" y="53">2</text>
+  <text class="dg-seq" x="213" y="53">2</text>
+  <text class="dg-seq" x="247" y="53">2</text>
+  <text class="dg-seq" x="281" y="53">2</text>
+  <text class="dg-seq dg-em" x="315" y="53">4</text>
+  <text class="dg-sub dg-end" x="52" y="79">프레임 2</text>
+  <text class="dg-seq dg-em" x="111" y="79">0</text>
+  <text class="dg-seq" x="145" y="79">0</text>
+  <text class="dg-seq" x="179" y="79">0</text>
+  <text class="dg-seq" x="213" y="79">0</text>
+  <text class="dg-seq dg-em" x="247" y="79">3</text>
+  <text class="dg-seq" x="281" y="79">3</text>
+  <text class="dg-seq" x="315" y="79">3</text>
+  <text class="dg-sub dg-end" x="52" y="105">프레임 3</text>
+  <text class="dg-seq dg-em" x="145" y="105">1</text>
+  <text class="dg-seq" x="179" y="105">1</text>
+  <text class="dg-seq" x="213" y="105">1</text>
+  <text class="dg-seq" x="247" y="105">1</text>
+  <text class="dg-seq dg-em" x="281" y="105">0</text>
+  <text class="dg-seq" x="315" y="105">0</text>
+  <text class="dg-sub dg-end" x="52" y="140">폴트</text>
+  <text class="dg-seq dg-em" x="77" y="140">●</text>
+  <text class="dg-seq dg-em" x="111" y="140">●</text>
+  <text class="dg-seq dg-em" x="145" y="140">●</text>
+  <text class="dg-seq dg-em" x="179" y="140">●</text>
+  <text class="dg-sub" x="213" y="140">적중</text>
+  <text class="dg-seq dg-em" x="247" y="140">●</text>
+  <text class="dg-seq dg-em" x="281" y="140">●</text>
+  <text class="dg-seq dg-em" x="315" y="140">●</text>
+</svg>`,
+  },
+
+  "rpo-rto": {
+    alt: "장애 발생 시점을 가운데 둔 시간축. 왼쪽은 마지막 백업부터 장애까지로 잃는 데이터의 폭인 RPO이고, 오른쪽은 장애부터 서비스 재개까지로 멈춰 있는 시간인 RTO다.",
+    caption: "사고 시점을 가운데 두고 왼쪽이 잃는 데이터(`RPO`), 오른쪽이 멈춘 시간(`RTO`)이다.",
+    svg: `<svg viewBox="0 0 360 142" class="dg-svg" focusable="false">
+  <defs>
+    <marker id="rr-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="currentColor" />
+    </marker>
+  </defs>
+  <text class="dg-sub" x="80" y="30">마지막 백업</text>
+  <text class="dg-sub" x="180" y="30">장애 발생</text>
+  <text class="dg-sub" x="290" y="30">서비스 재개</text>
+  <path class="dg-line" d="M20 62 H340" marker-end="url(#rr-ah)" />
+  <path class="dg-tick" d="M80 44 V80 M290 44 V80" />
+  <path class="dg-line" d="M180 40 V84" />
+  <g class="dg-node">
+    <circle cx="80" cy="62" r="5" /><circle cx="290" cy="62" r="5" />
+  </g>
+  <path class="dg-line dg-dash" d="M80 96 H180" marker-start="url(#rr-ah)" marker-end="url(#rr-ah)" />
+  <path class="dg-line dg-dash" d="M180 96 H290" marker-start="url(#rr-ah)" marker-end="url(#rr-ah)" />
+  <text class="dg-sub" x="130" y="114">RPO</text>
+  <text class="dg-sub" x="235" y="114">RTO</text>
+  <text class="dg-2xs" x="130" y="130">잃어도 되는 데이터</text>
+  <text class="dg-2xs" x="235" y="130">멈춰 있어도 되는 시간</text>
 </svg>`,
   },
 };
