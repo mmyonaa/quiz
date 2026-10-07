@@ -37,9 +37,10 @@ const EXAM_SECTIONS = new Set(["jeongcheogi", "boangisa"]);
 // (SQL 인젝션 · XSS와 CSRF · RSA/DH · 위험 관리)이 전부 0.276 이하에 몰려, 0.45면 0.174 여유가 남는다.
 // 격차 조건은 제목이 똑같은 자리를 자동에서 빼기 위한 것이다 — 두 시험의 쌍둥이 주제가 그렇고,
 // 그건 "둘 다 붙일까"를 사람이 정할 일이다.
-const AUTO_SCORE = 0.45;
-const AUTO_MARGIN = 0.15;
-const CANDIDATES = 3;
+//
+// 값 자체는 src/lib/auto-link.mjs가 갖는다 — 소개 페이지가 같은 값을 읽어 설명하므로,
+// 여기 적어 두면 한쪽만 고쳐져 화면이 조용히 거짓말을 한다.
+import { AUTO_SCORE, AUTO_MARGIN, CANDIDATES } from "../src/lib/auto-link.mjs";
 
 const RSS_URL = "https://mmyonaa.github.io/blog/rss.xml";
 const TREE_URL = "https://api.github.com/repos/mmyonaa/blog/git/trees/main?recursive=1";

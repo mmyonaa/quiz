@@ -1,0 +1,206 @@
+---
+// 블로그 글 ↔ 문항 은행을 맞추는 주간 작업을 '궤도'로 시각화한다.
+// 중심 = 주간 작업, 궤도 = 주 1회 도는 6단계(새 글 확인 → 기준 점검 → 번역표 →
+// 제목 유사도 → 후보 남기기 → 사람 검증).
+//
+// 여덟에서 여섯으로 줄였다. 주간 보고·백로그 갱신은 GitHub 이슈를 어떻게 여닫는지의
+// 얘기라, 읽는 사람의 질문("이 링크를 믿어도 되나")에 아무 답을 하지 않는다. 노드 이름에
+// 붙어 있던 CLI 플래그(--report·--link)도 걷었다 — 여기는 레포가 아니라 공부하는 사람이
+// 읽는 자리다. 구체적인 값(번역표 수·임계)은 캡션 한 겹 아래로 내려 둔다.
+//
+// daily.mcp 블로그의 McpOrbit.astro를 그대로 옮겨 토큰만 이 레포 것으로 바꿨다 — about 머리를
+// 블로그 코드에서 옮겨 온 것과 같은 수법이다. 궤도가 맞는 형태인 것도 같은 이유다: 저쪽은
+// '글 한 편이 만들어지는 8단계'가 매일 돌고, 이쪽은 '연결을 맞추는 6단계'가 매주 돈다.
+// 되돌아오지 않는 분기였다면 궤도가 거짓이 됐겠지만, 이 작업은 실제로 순환한다.
+//
+// 연결이 갈리는 세 길(번역표 · 유사도 · 후보)은 궤도의 3·4·5번 단계로 들어가 있다 —
+// 분기 자체가 이 작업의 한가운데라 캡션이 그 자리에서 길게 설명한다.
+//
+// 블로그와 다른 점 하나 — 캡션을 live region으로 두지 않는다. 2초마다 바뀌는 글상자를
+// aria-live로 두면 스크린리더가 끝없이 읽는다. 캡션은 aria-hidden으로 내리고, 대신 각 단계의
+// 설명을 노드 안에 숨은 글로 넣어 **여섯 개를 다 읽을 수 있게** 둔다.
+import { AUTO_SCORE, AUTO_MARGIN, CANDIDATES } from "../lib/auto-link.mjs";
+import seeds from "../data/blog-seeds.json";
+
+/** 번역표에 적힌 시드 수 — 손으로 적지 않고 번역표에서 센다 */
+const seedCount = Object.keys(seeds).length;
+
+interface OrbitNode {
+  /** 그 단계의 역할 — 노드 머리의 작은 라벨 */
+  kind: string;
+  name: string;
+  /** 캡션 머리의 알약 */
+  tool: string;
+  desc: string;
+}
+
+const NODES: OrbitNode[] = [
+  {
+    kind: "수집",
+    name: "새 글 확인",
+    tool: "주 1회",
+    desc: "블로그에 새 글이 올라왔는지, 이어 둔 글이 사라지거나 고쳐졌는지 먼저 봅니다. 해설이 가리키던 글이 없어졌다면 그건 고쳐야 할 깨진 링크입니다.",
+  },
+  {
+    kind: "안전선",
+    name: "기준 점검",
+    tool: "되채점",
+    desc: "손으로 이어 둔 글을 정답으로 두고 기준을 먼저 시험합니다. 기준 위에서 틀린 짝이 하나라도 나오면 이번 주에는 아무것도 붙이지 않습니다 — 어긋난 기준으로 붙이느니 사람이 고르는 편이 낫습니다.",
+  },
+  {
+    kind: "연결 ①",
+    name: "번역표",
+    tool: "적어 둔 자리",
+    desc: `글과 주제를 미리 짝지어 적어 둔 표(${seedCount}개)입니다. 여기 적힌 글은 따져 보지 않고 그대로 붙습니다 — 이름이 비슷한지로 맞추는 길은 절반에서 멈추기 때문입니다. 남는 쪽은 이름이 아니라 묶는 단위가 다릅니다(블로그 글 한 편 ≠ 시험 출제 단위).`,
+  },
+  {
+    kind: "연결 ②",
+    name: "제목 유사도",
+    tool: "또렷한 자리만",
+    desc: `표에 없으면 글 제목과 주제 제목이 얼마나 겹치는지 잽니다. ${AUTO_SCORE} 이상이면서 2등과 ${AUTO_MARGIN} 이상 벌어진 자리만 붙습니다 — 점수만 보면 제목이 엇비슷한 쌍둥이 주제에서 아무 쪽이나 집습니다.`,
+  },
+  {
+    kind: "연결 ③",
+    name: "후보 남기기",
+    tool: "안 붙인다",
+    desc: `그래도 애매하면 붙이지 않고 후보 ${CANDIDATES}개만 남깁니다. 엉뚱한 글이 자리를 먼저 차지하는 것이 사람 손으로만 되돌려지는 실패라, 애매할 때는 비워 두는 쪽을 고릅니다.`,
+  },
+  {
+    kind: "사람",
+    name: "검증",
+    tool: "목록이 먼저",
+    desc: "자동으로 붙인 것은 전부 사람이 볼 목록으로 올라간 뒤에야 반영됩니다. 잘못 붙은 연결은 링크 검사로는 잡히지 않습니다 — 글이 실제로 있으니 통과해 버립니다. 그래서 조용히 들어가는 연결을 만들지 않습니다.",
+  },
+];
+
+const N = NODES.length;
+const R = 38; // 궤도 반지름(스테이지 대비 %) — 데스크톱 기본값(--orbit-rx/ry)
+// 각 노드는 단위 cos·sin만 갖고 실제 반경은 CSS 변수가 준다. 그래서 데스크톱=원,
+// 모바일=세로 타원을 마크업을 건드리지 않고 CSS로만 바꾼다.
+const nodes = NODES.map((n, i) => {
+  const phi = (i / N) * 360; // 12시에서 시계방향
+  const rad = ((phi - 90) * Math.PI) / 180;
+  const cos = Math.round(Math.cos(rad) * 1000) / 1000;
+  const sin = Math.round(Math.sin(rad) * 1000) / 1000;
+  const x = Math.round((50 + R * cos) * 100) / 100;
+  const y = Math.round((50 + R * sin) * 100) / 100;
+  return { ...n, i, cos, sin, x, y };
+});
+const first = NODES[0];
+---
+
+<figure class="orbit">
+  <div class="orbit-bar">
+    <span class="orbit-live"><i class="orbit-dot" aria-hidden="true"></i>LIVE · WEEKLY_SYNC</span>
+    <span class="orbit-tag">블로그 글 → 개념 주제</span>
+  </div>
+
+  <div class="orbit-stage">
+    <div class="orbit-rings" aria-hidden="true">
+      <span class="orbit-ring orbit-ring-outer"></span>
+      <span class="orbit-ring orbit-ring-inner"></span>
+    </div>
+
+    <div class="orbit-hub">
+      <span class="orbit-hub-tag">주간 작업</span>
+      <b>연결 맞추기</b>
+      <span class="orbit-hub-sub">주 <b>1</b>회</span>
+    </div>
+
+    {
+      nodes.map((n) => (
+        <div
+          class="orbit-sat"
+          data-i={n.i}
+          data-name={n.name}
+          data-tool={n.tool}
+          data-desc={n.desc}
+          data-x={n.x}
+          data-y={n.y}
+          style={`--cos:${n.cos};--sin:${n.sin};left:calc(50% + var(--cos) * var(--orbit-rx));top:calc(50% + var(--sin) * var(--orbit-ry))`}
+        >
+          <span class="orbit-sat-kind">{n.kind}</span>
+          <span class="orbit-sat-name">{n.name}</span>
+          {/* 캡션은 돌기 때문에 읽히지 않는다 — 설명은 노드마다 숨은 글로 함께 둔다 */}
+          <span class="sr-only">{n.desc}</span>
+        </div>
+      ))
+    }
+
+    <div class="orbit-pulse" aria-hidden="true"></div>
+  </div>
+
+  {/* 돌아가는 글상자라 live region으로 두지 않는다(위 노드의 숨은 글이 같은 내용을 갖는다) */}
+  <figcaption class="orbit-caption" aria-hidden="true">
+    <span class="orbit-cap-head">
+      <span class="orbit-cap-tool">{first.tool}</span>
+      <span class="orbit-cap-name">{first.name}</span>
+    </span>
+    <span class="orbit-cap-text">{first.desc}</span>
+  </figcaption>
+</figure>
+
+<script>
+  // 단계 하이라이트 — 신호가 궤도를 돌며 단계를 밝히고 캡션을 갱신한다.
+  // 캡션이 없어도(JS 꺼짐·실패) 노드의 숨은 글에 같은 설명이 있으므로 내용은 읽힌다.
+  function initOrbits() {
+    document.querySelectorAll<HTMLElement>(".orbit").forEach((fig) => {
+      const f = fig as HTMLElement & { __orbitTimer?: number | null };
+      if (f.__orbitTimer) {
+        clearInterval(f.__orbitTimer);
+        f.__orbitTimer = null;
+      }
+      const sats = [...fig.querySelectorAll<HTMLElement>(".orbit-sat")];
+      if (!sats.length) return;
+      const pulse = fig.querySelector<HTMLElement>(".orbit-pulse");
+      const nameEl = fig.querySelector<HTMLElement>(".orbit-cap-name");
+      const toolEl = fig.querySelector<HTMLElement>(".orbit-cap-tool");
+      const textEl = fig.querySelector<HTMLElement>(".orbit-cap-text");
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      const apply = (idx: number) => {
+        sats.forEach((s, k) => s.classList.toggle("is-active", k === idx));
+        const s = sats[idx];
+        if (pulse) {
+          pulse.style.left = `${s.dataset.x || "50"}%`;
+          pulse.style.top = `${s.dataset.y || "50"}%`;
+        }
+        if (nameEl) nameEl.textContent = s.dataset.name || "";
+        if (toolEl) toolEl.textContent = s.dataset.tool || "";
+        if (textEl) textEl.textContent = s.dataset.desc || "";
+      };
+
+      let i = 0;
+      apply(0);
+      // 움직임을 싫다고 한 사람에게는 첫 단계만 켜 두고 돌리지 않는다.
+      if (reduce) return;
+
+      const start = () => {
+        if (f.__orbitTimer) return;
+        f.__orbitTimer = window.setInterval(() => {
+          i = (i + 1) % sats.length;
+          apply(i);
+        }, 2600);
+      };
+      const stop = () => {
+        if (!f.__orbitTimer) return;
+        clearInterval(f.__orbitTimer);
+        f.__orbitTimer = null;
+      };
+
+      // 들여다보는 동안은 멈춘다 — 읽으려는 설명이 2.6초마다 바뀌면 읽히지 않는다.
+      sats.forEach((s, k) =>
+        s.addEventListener("pointerenter", () => {
+          stop();
+          i = k;
+          apply(k);
+        }),
+      );
+      fig.addEventListener("pointerleave", start);
+      start();
+    });
+  }
+
+  if (document.readyState !== "loading") initOrbits();
+  else document.addEventListener("DOMContentLoaded", initOrbits);
+</script>

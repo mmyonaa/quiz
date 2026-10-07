@@ -10,6 +10,7 @@ import {
 } from "../content.config";
 import { loadBank, loadPractical } from "../lib/bank";
 import SiteHeader from "../components/SiteHeader.astro";
+import LinkFlow from "../components/LinkFlow.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import { AUTHOR } from "../lib/author";
 import { version } from "../../package.json";
@@ -241,6 +242,21 @@ const rows = ROWS.map((r) => ({ ...r, same: new Set(stats.map((s) => cellText(r,
             <p>기계는 "무엇을 칠했는가"를 못 봅니다. 대신 영역별 밀도와 정답 위치 분포를 숫자로 보여 주고, 다음에 어디를 메울지는 사람이 고릅니다.</p>
           </section>
         </div>
+
+        {/* 블로그와 어떻게 이어지나 — 위의 세 카드가 '문항을 어떻게 지키나'라면 여기는
+            '블로그 글이 어떻게 주제에 붙나'다. 숫자(임계·시드 수)는 판정하는 쪽과 같은
+            파일에서 읽는다(src/lib/auto-link.mjs) — 여기 적어 두면 기준이 바뀔 때
+            화면만 옛 숫자를 들고 남는다. */}
+        <h2 class="group-title">블로그 글은 어떻게 붙나</h2>
+        <p>
+          해설에서 이어지는 개념 글은 주제마다 손으로 적어 두는 것이었습니다. 그런데 블로그는
+          <strong>매일 자동으로 발행</strong>되니 연결만 뒤처집니다. 그렇다고 기계에 다 맡기면
+          엉뚱한 글이 자리를 먼저 막고, 그건 사람 손으로만 되돌릴 수 있습니다. 그래서
+          주 <b class="mono">1</b>회 도는 작업이 <strong>또렷한 자리만 붙이고 애매하면 사람에게
+          넘깁니다</strong>. 아래 궤도가 그 여섯 단계입니다 — 새 글을 확인하고, 기준을 먼저
+          점검하고, 세 갈래로 연결을 가르고, 붙인 것을 사람이 확인하기까지.
+        </p>
+        <LinkFlow />
 
         <h2 class="group-title">세 가지 원칙</h2>
         <dl class="about-principles">
