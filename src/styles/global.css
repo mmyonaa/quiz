@@ -4336,6 +4336,10 @@ select.sort {
   stroke-dasharray: 4 3.5;
   opacity: 0.68;
 }
+/* 증폭 공격의 큰 응답 화살표 — 작은 질의보다 굵어야 "몇십 배로 돌아온다"가 선 굵기로도 읽힌다 */
+.dg-svg .dg-fat {
+  stroke-width: 3;
+}
 .dg-svg .dg-tick {
   fill: none;
   stroke: currentColor;
@@ -4361,6 +4365,11 @@ select.sort {
    하는 자리다(넓은 면에 강조색 테두리를 두르면 그림이 아니라 경고 상자로 읽힌다) */
 .dg-svg .dg-on {
   fill: var(--accent-soft);
+}
+/* 지워진 쪽 — 이진 탐색처럼 "버린 후보"를 아예 지우면 그 전 상태를 못 보여준다.
+   남겨 두되 눈이 먼저 안 가게 낮춘다 */
+.dg-svg .dg-faint {
+  opacity: 0.4;
 }
 /* 묶음에 준 면·테두리가 그 안의 글자까지 칠하지 않게 되돌린다 */
 .dg-svg .dg-node text,

@@ -808,4 +808,267 @@ export const DIAGRAMS: Record<string, Diagram> = {
   <text class="dg-2xs dg-end" x="44" y="187">테이블</text>
 </svg>`,
   },
+
+  "select-project": {
+    alt: "같은 4행 4열 표 둘. 왼쪽은 σ(select)가 조건에 맞는 한 행을 가로로 통째 골라낸 모습이고, 오른쪽은 π(project)가 한 열을 세로로 골라낸 모습이다.",
+    caption: "σ는 가로로 행을, π는 세로로 열을 고른다 — `SQL`의 `WHERE`가 σ이고 `SELECT` 절이 π다.",
+    svg: `<svg viewBox="0 0 360 142" class="dg-svg" focusable="false">
+  <text class="dg-sub" x="94" y="20">σ select — 행</text>
+  <text class="dg-sub" x="266" y="20">π project — 열</text>
+  <g>
+    <rect class="dg-box" x="30" y="32" width="32" height="19" />
+    <rect class="dg-box" x="62" y="32" width="32" height="19" />
+    <rect class="dg-box" x="94" y="32" width="32" height="19" />
+    <rect class="dg-box" x="126" y="32" width="32" height="19" />
+    <rect class="dg-box" x="30" y="51" width="32" height="19" />
+    <rect class="dg-box" x="62" y="51" width="32" height="19" />
+    <rect class="dg-box" x="94" y="51" width="32" height="19" />
+    <rect class="dg-box" x="126" y="51" width="32" height="19" />
+    <rect class="dg-box dg-on" x="30" y="70" width="32" height="19" />
+    <rect class="dg-box dg-on" x="62" y="70" width="32" height="19" />
+    <rect class="dg-box dg-on" x="94" y="70" width="32" height="19" />
+    <rect class="dg-box dg-on" x="126" y="70" width="32" height="19" />
+    <rect class="dg-box" x="30" y="89" width="32" height="19" />
+    <rect class="dg-box" x="62" y="89" width="32" height="19" />
+    <rect class="dg-box" x="94" y="89" width="32" height="19" />
+    <rect class="dg-box" x="126" y="89" width="32" height="19" />
+  </g>
+  <g>
+    <rect class="dg-box" x="202" y="32" width="32" height="19" />
+    <rect class="dg-box dg-on" x="234" y="32" width="32" height="19" />
+    <rect class="dg-box" x="266" y="32" width="32" height="19" />
+    <rect class="dg-box" x="298" y="32" width="32" height="19" />
+    <rect class="dg-box" x="202" y="51" width="32" height="19" />
+    <rect class="dg-box dg-on" x="234" y="51" width="32" height="19" />
+    <rect class="dg-box" x="266" y="51" width="32" height="19" />
+    <rect class="dg-box" x="298" y="51" width="32" height="19" />
+    <rect class="dg-box" x="202" y="70" width="32" height="19" />
+    <rect class="dg-box dg-on" x="234" y="70" width="32" height="19" />
+    <rect class="dg-box" x="266" y="70" width="32" height="19" />
+    <rect class="dg-box" x="298" y="70" width="32" height="19" />
+    <rect class="dg-box" x="202" y="89" width="32" height="19" />
+    <rect class="dg-box dg-on" x="234" y="89" width="32" height="19" />
+    <rect class="dg-box" x="266" y="89" width="32" height="19" />
+    <rect class="dg-box" x="298" y="89" width="32" height="19" />
+  </g>
+  <text class="dg-sub" x="94" y="130">조건에 맞는 튜플</text>
+  <text class="dg-sub" x="266" y="130">지정한 속성</text>
+</svg>`,
+  },
+
+  "arq-resend": {
+    alt: "프레임 여섯 개를 보내다 3번에서 오류가 난 상황. Go-Back-N은 3번부터 6번까지 전부 다시 보내고, 선택적 재전송은 3번만 다시 보낸다.",
+    caption: "오류 하나에 뒤까지 전부 되돌리면 `Go-Back-N`, 그것만 골라 보내면 선택적 재전송이다.",
+    svg: `<svg viewBox="0 0 360 150" class="dg-svg" focusable="false">
+  <text class="dg-sub dg-start" x="20" y="20">Go-Back-N — 3번부터 전부</text>
+  <g>
+    <rect class="dg-box" x="60" y="32" width="40" height="24" /><text class="dg-xs" x="80" y="44">1</text>
+    <rect class="dg-box" x="100" y="32" width="40" height="24" /><text class="dg-xs" x="120" y="44">2</text>
+    <rect class="dg-box dg-on" x="140" y="32" width="40" height="24" /><text class="dg-xs" x="160" y="44">3</text>
+    <rect class="dg-box dg-on" x="180" y="32" width="40" height="24" /><text class="dg-xs" x="200" y="44">4</text>
+    <rect class="dg-box dg-on" x="220" y="32" width="40" height="24" /><text class="dg-xs" x="240" y="44">5</text>
+    <rect class="dg-box dg-on" x="260" y="32" width="40" height="24" /><text class="dg-xs" x="280" y="44">6</text>
+  </g>
+  <path class="dg-line" d="M140 62 V72" />
+  <text class="dg-2xs" x="140" y="80">오류</text>
+  <text class="dg-sub dg-start" x="20" y="104">선택적 재전송 — 3번만</text>
+  <g>
+    <rect class="dg-box" x="60" y="116" width="40" height="24" /><text class="dg-xs" x="80" y="128">1</text>
+    <rect class="dg-box" x="100" y="116" width="40" height="24" /><text class="dg-xs" x="120" y="128">2</text>
+    <rect class="dg-box dg-on" x="140" y="116" width="40" height="24" /><text class="dg-xs" x="160" y="128">3</text>
+    <rect class="dg-box" x="180" y="116" width="40" height="24" /><text class="dg-xs" x="200" y="128">4</text>
+    <rect class="dg-box" x="220" y="116" width="40" height="24" /><text class="dg-xs" x="240" y="128">5</text>
+    <rect class="dg-box" x="260" y="116" width="40" height="24" /><text class="dg-xs" x="280" y="128">6</text>
+  </g>
+</svg>`,
+  },
+
+  "dfd-symbols": {
+    alt: "자료 흐름도의 네 기호. 처리는 원, 자료 흐름은 화살표, 자료 저장소는 위아래 평행선만 그은 열린 상자, 단말은 사각형이다.",
+    caption: "자료 저장소만 옆이 트인 평행선이다 — 네모난 단말과 헷갈리는 자리가 여기다.",
+    svg: `<svg viewBox="0 0 360 128" class="dg-svg" focusable="false">
+  <defs>
+    <marker id="df-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="currentColor" />
+    </marker>
+  </defs>
+  <g class="dg-box">
+    <circle cx="48" cy="52" r="26" /><text class="dg-2xs" x="48" y="52">처리</text>
+    <rect x="258" y="30" width="76" height="44" rx="3" /><text class="dg-2xs" x="296" y="52">단말</text>
+  </g>
+  <path class="dg-line" d="M104 52 H160" marker-end="url(#df-ah)" />
+  <path class="dg-line" d="M186 34 H240 M186 70 H240" />
+  <text class="dg-2xs" x="213" y="52">자료 저장소</text>
+  <text class="dg-sub" x="48" y="100">처리 — 원</text>
+  <text class="dg-sub" x="132" y="100">자료 흐름</text>
+  <text class="dg-sub" x="213" y="100">저장소 — 평행선</text>
+  <text class="dg-sub" x="296" y="100">단말 — 사각형</text>
+</svg>`,
+  },
+
+  "usecase-relations": {
+    alt: "유스케이스 관계 네 가지의 선 표기. 연관은 민무늬 실선, 포함과 확장은 점선 화살표에 각각 include·extend 꼬리표가 붙고, 일반화는 속이 빈 삼각형 화살촉이 달린 실선이다.",
+    caption: "선 모양이 곧 관계다 — 점선이면 포함·확장, 속 빈 삼각형이면 일반화다.",
+    svg: `<svg viewBox="0 0 360 160" class="dg-svg" focusable="false">
+  <defs>
+    <marker id="uc-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="currentColor" />
+    </marker>
+    <marker id="uc-tri" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0 0 L11 6 L0 12 Z" fill="var(--surface)" stroke="currentColor" stroke-width="1.4" />
+    </marker>
+  </defs>
+  <text class="dg-sub dg-end" x="104" y="22">연관</text>
+  <path class="dg-line" d="M120 22 H250" />
+  <text class="dg-sub dg-start" x="262" y="22">액터 — 유스케이스</text>
+  <text class="dg-sub dg-end" x="104" y="62">포함</text>
+  <path class="dg-line dg-dot" d="M120 62 H250" marker-end="url(#uc-ah)" />
+  <text class="dg-2xs" x="185" y="50">«include»</text>
+  <text class="dg-sub dg-start" x="262" y="62">반드시 전제</text>
+  <text class="dg-sub dg-end" x="104" y="102">확장</text>
+  <path class="dg-line dg-dot" d="M250 102 H120" marker-end="url(#uc-ah)" />
+  <text class="dg-2xs" x="185" y="90">«extend»</text>
+  <text class="dg-sub dg-start" x="262" y="102">조건부로 덧붙임</text>
+  <text class="dg-sub dg-end" x="104" y="142">일반화</text>
+  <path class="dg-line" d="M120 142 H246" marker-end="url(#uc-tri)" />
+  <text class="dg-sub dg-start" x="262" y="142">상위로 묶음</text>
+</svg>`,
+  },
+
+  "bfs-dfs-order": {
+    alt: "노드 여섯 개 그래프. A 아래 B와 C가 있고 B 아래로 D와 E가 한 줄로 더 내려가며 C 아래에 F가 있다. BFS는 A B C D F E 순으로, DFS는 A B D E C F 순으로 방문한다.",
+    caption: "같은 그래프인데 한쪽은 가까운 데를 먼저 훑고(`큐`) 다른 쪽은 한 갈래를 끝까지 판다(`스택`).",
+    svg: `<svg viewBox="0 0 360 248" class="dg-svg" focusable="false">
+  <g class="dg-line dg-thin">
+    <path d="M168.7 35.9 L141.3 60.1" /><path d="M191.3 35.9 L218.7 60.1" />
+    <path d="M130 85 V99" /><path d="M130 129 V143" /><path d="M230 85 V99" />
+  </g>
+  <g class="dg-node">
+    <circle cx="180" cy="26" r="14" /><text class="dg-xs" x="180" y="26">A</text>
+    <circle cx="130" cy="70" r="14" /><text class="dg-xs" x="130" y="70">B</text>
+    <circle cx="230" cy="70" r="14" /><text class="dg-xs" x="230" y="70">C</text>
+    <circle cx="130" cy="114" r="14" /><text class="dg-xs" x="130" y="114">D</text>
+    <circle cx="230" cy="114" r="14" /><text class="dg-xs" x="230" y="114">F</text>
+    <circle cx="130" cy="158" r="14" /><text class="dg-xs" x="130" y="158">E</text>
+  </g>
+  <text class="dg-sub dg-start" x="92" y="200">BFS</text>
+  <text class="dg-seq dg-start" x="134" y="200">A B <tspan class="dg-em">C</tspan> D F E</text>
+  <text class="dg-sub dg-start" x="92" y="224">DFS</text>
+  <text class="dg-seq dg-start" x="134" y="224">A B <tspan class="dg-em">D</tspan> E C F</text>
+</svg>`,
+  },
+
+  "binary-halving": {
+    alt: "후보 구간이 네 줄에 걸쳐 절반씩 줄어드는 띠. 16칸에서 8칸, 4칸, 2칸으로 좁아지고 지워진 쪽은 흐리게 남는다.",
+    caption: "한 번 비교에 후보가 절반씩 사라진다 — 백만 개여도 스무 번 남짓이면 끝난다.",
+    svg: `<svg viewBox="0 0 360 146" class="dg-svg" focusable="false">
+  <rect class="dg-box dg-on" x="36" y="26" width="288" height="20" />
+  <rect class="dg-box dg-faint" x="36" y="54" width="144" height="20" />
+  <rect class="dg-box dg-on" x="180" y="54" width="144" height="20" />
+  <rect class="dg-box dg-faint" x="36" y="82" width="216" height="20" />
+  <rect class="dg-box dg-on" x="252" y="82" width="72" height="20" />
+  <rect class="dg-box dg-faint" x="36" y="110" width="252" height="20" />
+  <rect class="dg-box dg-on" x="288" y="110" width="36" height="20" />
+  <path class="dg-tick" d="M180 22 V50 M252 50 V78 M288 78 V106" />
+  <text class="dg-2xs dg-end" x="30" y="36">16</text>
+  <text class="dg-2xs dg-end" x="30" y="64">8</text>
+  <text class="dg-2xs dg-end" x="30" y="92">4</text>
+  <text class="dg-2xs dg-end" x="30" y="120">2</text>
+  <text class="dg-sub dg-start" x="36" y="142">지워진 쪽</text>
+  <text class="dg-sub dg-end" x="324" y="142">남은 후보</text>
+</svg>`,
+  },
+
+  "bigo-curves": {
+    alt: "입력이 커질 때 연산 횟수가 오르는 다섯 곡선. 아래부터 O(1)은 평평하고, O(log n)은 완만하며, O(n)은 직선, O(n²)과 O(2ⁿ)은 금세 위로 꺾여 판을 벗어난다.",
+    caption: "아래쪽 둘은 n이 커져도 거의 눕고, 위쪽 둘은 금세 판을 벗어난다 — 사이에 있는 직선이 `O(n)`이다.",
+    svg: `<svg viewBox="0 0 360 150" class="dg-svg" focusable="false">
+  <path class="dg-tick" d="M34 20 V124 H290" />
+  <text class="dg-2xs dg-start" x="34" y="138">입력 n →</text>
+  <g class="dg-line dg-thin">
+    <path d="M34 117.8 L284 117.8" />
+    <path d="M34 124 L51.9 100.6 L69.7 92.3 L87.6 87.2 L105.4 83.5 L123.3 80.6 L141.1 78.2 L159 76.1 L176.9 74.3 L194.7 72.8 L212.6 71.3 L230.4 70.1 L248.3 68.9 L266.1 67.8 L284 66.8" />
+    <path d="M34 124 L284 28.3" />
+    <path d="M34 124 L60.8 120.9 L87.6 111.6 L114.4 96.1 L141.1 74.3 L167.9 46.4 L185.8 24.3 L194.7 20" />
+    <path d="M34 124 L60.8 121.5 L87.6 115.4 L114.4 100.6 L132.2 80.2 L150.1 43.3 L159 20" />
+  </g>
+  <text class="dg-2xs dg-start" x="290" y="117.8">O(1)</text>
+  <text class="dg-2xs dg-start" x="290" y="66.8">O(log n)</text>
+  <text class="dg-2xs dg-start" x="290" y="28.3">O(n)</text>
+  <text class="dg-2xs" x="203" y="14">O(n²)</text>
+  <text class="dg-2xs" x="155" y="14">O(2ⁿ)</text>
+</svg>`,
+  },
+
+  "amplification": {
+    alt: "반사·증폭 공격의 경로. 공격자가 출발지를 피해자로 위조한 작은 질의를 세 대의 공개 서버에 보내고, 서버들은 훨씬 큰 응답을 모두 피해자에게 쏟아붓는다.",
+    caption: "공격자가 보내는 것은 작은 질의이고, 피해자가 받는 것은 그 몇십 배의 응답이다 — 출발지를 피해자로 위조했기 때문이다.",
+    svg: `<svg viewBox="0 0 360 184" class="dg-svg" focusable="false">
+  <defs>
+    <marker id="am-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="currentColor" />
+    </marker>
+    <marker id="am-big" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="currentColor" />
+    </marker>
+  </defs>
+  <rect class="dg-chip" x="8" y="74" width="62" height="30" rx="4" />
+  <text class="dg-2xs" x="39" y="89">공격자</text>
+  <g class="dg-box">
+    <rect x="146" y="20" width="68" height="26" rx="4" /><text class="dg-2xs" x="180" y="33">DNS</text>
+    <rect x="146" y="76" width="68" height="26" rx="4" /><text class="dg-2xs" x="180" y="89">NTP</text>
+    <rect x="146" y="132" width="68" height="26" rx="4" /><text class="dg-2xs" x="180" y="145">memcached</text>
+  </g>
+  <rect class="dg-box" x="290" y="74" width="62" height="30" rx="4" />
+  <text class="dg-2xs" x="321" y="89">피해자</text>
+  <g class="dg-line dg-thin" marker-end="url(#am-ah)">
+    <path d="M74 82 L142 36" /><path d="M74 89 L142 89" /><path d="M74 96 L142 142" />
+  </g>
+  <g class="dg-line dg-fat" marker-end="url(#am-big)">
+    <path d="M218 36 L286 82" /><path d="M218 89 L286 89" /><path d="M218 142 L286 96" />
+  </g>
+  <text class="dg-2xs" x="108" y="58">작은 질의</text>
+  <text class="dg-2xs dg-end" x="340" y="58">큰 응답</text>
+  <text class="dg-sub" x="180" y="176">출발지를 피해자로 위조한다</text>
+</svg>`,
+  },
+
+  "blp-biba": {
+    alt: "등급 사다리 둘. 가운데 등급에 선 주체에게서, BLP는 읽기가 아래로 쓰기가 위로 향하고, Biba는 읽기가 위로 쓰기가 아래로 향해 방향이 정확히 뒤집힌다.",
+    caption: "가운데에 선 주체에게서 두 모델의 화살표가 정확히 뒤집힌다 — 기밀성은 아래를 읽고, 무결성은 위를 읽는다.",
+    svg: `<svg viewBox="0 0 360 192" class="dg-svg" focusable="false">
+  <defs>
+    <marker id="bb-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="currentColor" />
+    </marker>
+  </defs>
+  <text class="dg-sub" x="90" y="20">BLP — 기밀성</text>
+  <text class="dg-sub" x="270" y="20">Biba — 무결성</text>
+  <g class="dg-box">
+    <rect x="34" y="32" width="112" height="26" /><rect x="34" y="84" width="112" height="26" />
+    <rect x="214" y="32" width="112" height="26" /><rect x="214" y="84" width="112" height="26" />
+  </g>
+  <g class="dg-chip">
+    <rect x="34" y="58" width="112" height="26" /><rect x="214" y="58" width="112" height="26" />
+  </g>
+  <text class="dg-2xs" x="90" y="45">높은 등급</text>
+  <text class="dg-2xs" x="90" y="71">주체</text>
+  <text class="dg-2xs" x="90" y="97">낮은 등급</text>
+  <text class="dg-2xs" x="270" y="45">높은 등급</text>
+  <text class="dg-2xs" x="270" y="71">주체</text>
+  <text class="dg-2xs" x="270" y="97">낮은 등급</text>
+  <g class="dg-line" marker-end="url(#bb-ah)">
+    <path d="M56 78 V92" /><path d="M124 64 V50" />
+    <path d="M236 64 V50" /><path d="M304 78 V92" />
+  </g>
+  <text class="dg-2xs dg-start" x="34" y="124">읽기 ↓</text>
+  <text class="dg-2xs dg-end" x="146" y="124">쓰기 ↑</text>
+  <text class="dg-2xs dg-start" x="214" y="124">읽기 ↑</text>
+  <text class="dg-2xs dg-end" x="326" y="124">쓰기 ↓</text>
+  <text class="dg-sub" x="90" y="150">비밀이 아래로 새지 않게</text>
+  <text class="dg-sub" x="270" y="150">오염이 위로 오르지 않게</text>
+  <text class="dg-sub" x="90" y="172">No Read Up · No Write Down</text>
+  <text class="dg-sub" x="270" y="172">No Read Down · No Write Up</text>
+</svg>`,
+  },
 };
