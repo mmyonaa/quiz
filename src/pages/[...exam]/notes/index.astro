@@ -10,7 +10,14 @@ import {
   examPath,
   type Exam,
 } from "../../../content.config";
-import { loadBank, loadPractical, topicsOf, topicsOfSubject, areasOfSubject } from "../../../lib/bank";
+import {
+  loadBank,
+  loadPractical,
+  practicalSignature,
+  topicsOf,
+  topicsOfSubject,
+  areasOfSubject,
+} from "../../../lib/bank";
 import SiteHeader from "../../../components/SiteHeader.astro";
 import SiteFooter from "../../../components/SiteFooter.astro";
 import "../../../styles/global.css";
@@ -28,10 +35,10 @@ const { exam } = Astro.props as { exam: Exam };
 const px = examPath(exam);
 const examLabel = EXAM_FORMAT[exam].label;
 
-// 문항은 아직 정처기에만 있다. 시험으로 걸러 두면 정보보안기사는 0으로 나오고,
-// 문항이 붙는 순간(#29·#32) 별도 수정 없이 숫자가 채워진다.
+// 문항은 시험으로 걸러 센다 — 주제를 두 시험이 나눠 쓰므로 걸러 두지 않으면 수가 섞인다.
+// 문항이 아직 없는 시험이 생겨도 0으로 나올 뿐 별도 분기가 필요 없다.
 const bank = (await loadBank()).filter((q) => q.exam === exam);
-// 실기 문항도 같은 주제에 붙으므로 어느 영역·과목에 몇 개가 붙어 있는지 함께 보여준다
+// 실기 문항도 같은 주제에 붙는다 — 수는 주제 수의 그림자라 쓰지 않고, 간판 유형만 얹는다
 const pbank = (await loadPractical()).filter((q) => q.exam === exam);
 
 const areas = AREAS_BY_EXAM[exam].map((area) => {
@@ -40,7 +47,7 @@ const areas = AREAS_BY_EXAM[exam].map((area) => {
     area,
     slug: AREA_SLUGS[area],
     count: bank.filter((q) => q.area === area).length,
-    practicalCount: pbank.filter((q) => q.area === area).length,
+    practicalKinds: practicalSignature(pbank.filter((q) => q.area === area)),
     topicCount: topics.length,
     preview: topics.slice(0, 3).map((t) => t.title),
   };
@@ -52,7 +59,7 @@ const subjects = SUBJECTS_BY_EXAM[exam].map((subject, i) => ({
   no: i + 1,
   slug: SUBJECT_SLUGS[subject],
   count: bank.filter((q) => q.subject === subject).length,
-  practicalCount: pbank.filter((q) => q.subject === subject).length,
+  practicalKinds: practicalSignature(pbank.filter((q) => q.subject === subject)),
   topics: topicsOfSubject(subject, exam),
   areas: areasOfSubject(subject, exam),
 }));
@@ -96,7 +103,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
               : `${topicCount}개 주제의 개념을 모았습니다.`}
             실제 시험 과목으로 훑거나, 아래 영역으로 들어가 읽다가 '확인 문제'를 펼쳐
             스스로 점검하고, 더 깊게는 개념 글로 이어가세요.
-            {/* 실기는 아직 정처기에만 있다 — 없는 시험에서 죽은 링크를 내보내지 않는다 */}
+            {/* 실기 문항이 아직 없는 시험이 생길 수 있다 — 없으면 죽은 링크를 내보내지 않는다 */}
             {pbank.length > 0 && (
               <>
                 개념은 필기·실기를 나누지 않습니다 — 같은 주제 아래
@@ -108,13 +115,15 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
           {/* 시험 과목 — 실제 필기의 5과목. 영역보다 한 단계 위 */}
           <h2 class="group-title">시험 과목</h2>
           <div class="subject-cards">
-            {subjects.map(({ subject, no, slug, count, practicalCount, topics, areas: sAreas }) => (
+            {subjects.map(({ subject, no, slug, count, practicalKinds, topics, areas: sAreas }) => (
               <a class="subject-card" href={`${base}${px}/notes/s/${slug}/`}>
                 <h3><span class="subj-no">{no}과목</span> {subject} <em>{count > 0 ? `${count}문항` : `${topics.length}주제`}</em></h3>
                 <p class="ac-meta">
                   {/* 헤드라인이 이미 주제 수를 말하는 경우(문항 0)에는 되풀이하지 않는다 */}
                   {count > 0 && <>{topics.length}개 주제 · </>}
-                  {practicalCount > 0 && <><span class="ac-pa">실기 {practicalCount}문항</span> · </>}
+                  {practicalKinds.length > 0 && (
+                    <><span class="ac-pa">실기 {practicalKinds.join("·")}</span> · </>
+                  )}
                   {sAreas.join(" · ")}
                 </p>
               </a>
@@ -123,12 +132,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
           <h2 class="group-title">영역</h2>
           <div class="area-cards">
-            {areas.map(({ area, slug, count, practicalCount, topicCount, preview }) => (
+            {areas.map(({ area, slug, count, practicalKinds, topicCount, preview }) => (
               <a class="area-card" href={`${base}${px}/notes/${slug}/`}>
                 <h2>{area} <em>{count > 0 ? `${count}문항` : `${topicCount}주제`}</em></h2>
                 <p class="ac-meta">
                   {count > 0 && <>{topicCount}개 주제</>}
-                  {practicalCount > 0 && <> · <span class="ac-pa">실기 {practicalCount}문항</span></>}
+                  {practicalKinds.length > 0 && (
+                    <> · <span class="ac-pa">실기 {practicalKinds.join("·")}</span></>
+                  )}
                   {preview.length > 0 &&
                     `${count > 0 ? " — " : ""}${preview.join(" · ")}${topicCount > preview.length ? " …" : ""}`}
                 </p>

@@ -3816,7 +3816,7 @@ select.sort {
   display: block;
   margin: 0 0 0.2rem;
 }
-/* 목차 카드의 실기 문항 수 — 색 대신 굵기로만 눈에 걸리게 한다 */
+/* 목차 카드의 실기 간판 유형 — 색 대신 굵기로만 눈에 걸리게 한다 */
 .ac-pa {
   color: var(--text);
   font-weight: 600;

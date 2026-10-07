@@ -1,6 +1,7 @@
 import { getCollection } from "astro:content";
 import {
   AREAS_BY_EXAM,
+  PRACTICAL_KINDS,
   SUBJECTS_BY_EXAM,
   DEFAULT_EXAM,
   TOPICS,
@@ -26,7 +27,7 @@ export async function loadBank() {
 }
 
 /**
- * 실기 문항 로더 — 필기와 같은 91주제를 공유하므로 area·subject는 주제에서 풀어 얹는다.
+ * 실기 문항 로더 — 필기와 같은 주제를 공유하므로 area·subject는 주제에서 풀어 얹는다.
  * 덕분에 실기 문항 JSON은 area를 중복해 적지 않아도 되고, 어긋날 여지도 없다.
  */
 export async function loadPractical() {
@@ -86,4 +87,44 @@ export function subjectsOf(exam: Exam = DEFAULT_EXAM) {
 /** 한 시험의 영역 목록 — subjectsOf와 짝을 이룬다 */
 export function areasOf(exam: Exam = DEFAULT_EXAM) {
   return AREAS_BY_EXAM[exam] as readonly Area[];
+}
+
+/**
+ * 실기 간판 유형 — 목차 카드가 "이 묶음은 실기에서 무엇으로 나오나"를 한 마디로 말하는 값.
+ *
+ * 문항 수는 쓰지 않는다. 실기 문항은 모든 주제에 하나씩 붙어 있어(영역별 주제당 1.0~1.3개)
+ * "실기 19문항"은 주제 수를 다르게 적은 것일 뿐이기 때문이다. 실기가 필기와 갈리는 지점은
+ * 범위가 아니라 꺼내는 방식이고, 그 차이는 수가 아니라 유형 분포에 있다.
+ *
+ * 단답형은 어느 영역에나 깔린 바탕이라 간판이 못 된다 — 걷어내고 남은 유형 중 눈에 띄는
+ * 것만 올린다. 남는 게 없으면 그 영역의 실기는 정말 단답형이다(최다 유형으로 되돌아간다).
+ */
+const SIGNATURE_MIN_COUNT = 2; // 한 문항은 우연이다 — 7문항 중 1개를 간판으로 걸면 거짓말이 된다
+const SIGNATURE_MIN_SHARE = 0.2; // 묶음의 1/5 이상
+const SIGNATURE_MAX = 2; // 셋을 늘어놓으면 다시 안 읽힌다
+
+export function practicalSignature(
+  questions: readonly { kind: (typeof PRACTICAL_KINDS)[number] }[],
+): (typeof PRACTICAL_KINDS)[number][] {
+  if (questions.length === 0) return [];
+
+  const count = new Map<(typeof PRACTICAL_KINDS)[number], number>();
+  for (const q of questions) count.set(q.kind, (count.get(q.kind) ?? 0) + 1);
+
+  // 동수일 때는 PRACTICAL_KINDS의 정의 순서로 가른다 — 빌드마다 간판이 바뀌면 안 된다
+  const byRank = [...count].sort(
+    (a, b) => b[1] - a[1] || PRACTICAL_KINDS.indexOf(a[0]) - PRACTICAL_KINDS.indexOf(b[0]),
+  );
+
+  const signature = byRank
+    .filter(
+      ([kind, n]) =>
+        kind !== "단답형" && n >= SIGNATURE_MIN_COUNT && n / questions.length >= SIGNATURE_MIN_SHARE,
+    )
+    .slice(0, SIGNATURE_MAX)
+    .map(([kind]) => kind);
+
+  // 간판이 될 유형이 없으면 최다 유형 하나. 보통 단답형이지만 단답형이 아예 없는 묶음도 있어
+  // "단답형"을 못 박아 두면 없는 유형을 적게 된다.
+  return signature.length > 0 ? signature : [byRank[0][0]];
 }
