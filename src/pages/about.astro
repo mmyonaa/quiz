@@ -11,6 +11,7 @@ import {
 import { loadBank, loadPractical } from "../lib/bank";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
+import { AUTHOR } from "../lib/author";
 import { version } from "../../package.json";
 import "../styles/global.css";
 
@@ -51,10 +52,7 @@ const FIRST_RELEASE = "2026-08-24";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const BLOG = "https://mmyonaa.github.io/blog/";
 const REPO = "https://github.com/mmyonaa/quiz";
-const GITHUB = "https://github.com/mmyonaa";
-const LINKEDIN = "https://www.linkedin.com/in/hyona-lim-a3a626319/";
-const PORTFOLIO = "https://mmyonaa.github.io";
-const AUTHOR = "Hyona Lim";
+
 /** 한 시험의 실기 형식을 한 줄로 — 두 시험이 다르다(정처기 20문항 균일 / 정보보안기사 유형별 배점).
     값은 채점기(PRACTICAL_FORMAT)가 단일 정의를 갖고 여기서는 읽기만 한다. */
 const practicalLine = (f: (typeof stats)[number]["format"]["practical"]) =>
@@ -110,25 +108,28 @@ const rows = ROWS.map((r) => ({ ...r, same: new Set(stats.map((s) => cellText(r,
             현황 한 문장. "소개" 같은 제목은 두지 않는다(블로그도 바로 내용으로 들어간다).
             거기는 사람의 블로그라 저자 이름과 프로필 사진이 서고, 여기는 사이트라 사이트명과
             파비콘이 그 자리에 선다. */}
-        <div class="about-hero">
-          {/* 머리는 좌우로 갈린다 — 왼쪽은 정체(아이콘·이름·만든 이), 오른쪽은 바깥으로
-              나가는 링크. daily.mcp 블로그의 /about/과 같은 배치다. */}
-          <div class="about-id">
-            <img class="about-logo" src={`${base}/favicon.svg`} alt="" width="52" height="52" />
-            <div>
-              <h1>daily.quiz</h1>
-              <p class="about-by">
-                <a href={PORTFOLIO} target="_blank" rel="noopener">{AUTHOR}</a>
-                <span>mmyonaa.github.io/quiz</span>
-              </p>
-            </div>
+        {/* 머리 — daily.mcp 블로그의 /about/과 같은 구조다(site/src/pages/about/index.astro).
+            아바타 · 이름과 주소 · 아이콘 링크 셋이 한 줄에 서고 링크는 오른쪽 끝에 붙는다.
+            저자 정보는 lib/author.ts 가 단일 출처이고, 이메일은 봇을 피해 쪼개 두었다가
+            클라이언트가 mailto로 조립한다 — 블로그와 같은 수법이다. */}
+        <header class="about-hero">
+          <img class="ab-avatar" src={AUTHOR.avatar} alt="" width="72" height="72" loading="eager" decoding="async" />
+          <div class="ab-id">
+            <h1 class="ab-name">{AUTHOR.name}</h1>
+            <a class="ab-portfolio" href={AUTHOR.portfolio} target="_blank" rel="noopener">{AUTHOR.portfolioLabel}</a>
           </div>
-          <p class="about-links">
-            <a href={GITHUB} target="_blank" rel="noopener">GitHub</a>
-            <a href={LINKEDIN} target="_blank" rel="noopener">LinkedIn</a>
-            <a href={BLOG} target="_blank" rel="noopener">daily.mcp</a>
-          </p>
-        </div>
+          <div class="ab-social">
+            <a href={AUTHOR.github} target="_blank" rel="noopener" aria-label="GitHub">
+              <svg viewBox="0 0 16 16" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"></path></svg>
+            </a>
+            <a href={AUTHOR.linkedin} target="_blank" rel="noopener" aria-label="LinkedIn">
+              <svg viewBox="0 0 16 16" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M13.632 13.635h-2.37V9.922c0-.886-.018-2.025-1.234-2.025-1.235 0-1.424.964-1.424 1.96v3.778h-2.37V6H8.51v1.04h.032c.317-.6 1.09-1.233 2.244-1.233 2.4 0 2.845 1.58 2.845 3.637v4.19zM3.558 4.955a1.376 1.376 0 1 1 .002-2.752 1.376 1.376 0 0 1-.002 2.752zm1.188 8.68H2.368V6h2.378v7.635zM14.816 0H1.18C.528 0 0 .516 0 1.153v13.694C0 15.484.528 16 1.18 16h13.635c.652 0 1.185-.516 1.185-1.153V1.153C16 .516 15.467 0 14.815 0z"></path></svg>
+            </a>
+            <a class="about-mail" href="#" data-mail-user={AUTHOR.mailUser} data-mail-domain={AUTHOR.mailDomain} aria-label="이메일 보내기">
+              <svg viewBox="0 0 16 16" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M2 3h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm0 1v.4l6 3.6 6-3.6V4H2Zm12 1.567-5.74 3.444a.5.5 0 0 1-.52 0L2 5.567V12h12V5.567Z"></path></svg>
+            </a>
+          </div>
+        </header>
 
         <div class="about-body">
           <p class="lead">
@@ -266,6 +267,18 @@ const rows = ROWS.map((r) => ({ ...r, same: new Set(stats.map((s) => cellText(r,
         </div>
       </section>
     </main>
+
+    {/* 이메일 조립 — 평문으로 두면 봇이 긁어 간다. user/domain 을 합쳐 mailto 를 만든다.
+        아이콘 링크라 텍스트는 덮어쓰지 않는다(svg 보존). 블로그 Footer.astro 와 같은 수법. */}
+    <script>
+      document.querySelectorAll<HTMLAnchorElement>(".about-mail:not([data-bound])").forEach((el) => {
+        const { mailUser: user, mailDomain: domain } = el.dataset;
+        if (!user || !domain) return;
+        el.setAttribute("href", `mailto:${user}@${domain}`);
+        if (!el.querySelector("*")) el.textContent = `${user}@${domain}`;
+        el.setAttribute("data-bound", "");
+      });
+    </script>
 
     <SiteFooter />
   </body>
