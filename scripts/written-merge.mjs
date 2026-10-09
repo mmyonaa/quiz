@@ -215,8 +215,31 @@ const conceptLeaks = (pool) =>
     if (!q.concept) return false;
     const a = leakOverlap(q.concept, q.choices[q.answer]);
     const o = Math.max(...q.choices.map((c, i) => (i === q.answer ? 0 : leakOverlap(q.concept, c))));
-    return a >= 0.75 && a - o >= 0.4;
+    return a >= 0.7 && a - o >= 0.35;
   });
+
+/**
+ * 같은 주제의 옆 포스트잇이 정답과만 겹치는 쌍. 게이트는 정답 선지가 **통째로** 든 것만
+ * 막으므로, 글자를 조금 바꿔 쓴 것(`"위장하되"` vs `"위장하지만"`)은 그 자를 빠져나간다 —
+ * 그렇게 샌 것이 다섯 있었고 셋은 자기 카드까지 흘렸다(#114).
+ *
+ * 오탐이 섞인다. 짧은 정답(`IP`)은 그 주제 글에 안 나올 수가 없고, 괄호가 많은 값(`O(n)`)은
+ * 토큰이 잘려 겹침이 과장된다. 세기만 하고 판정은 사람이 한다.
+ */
+const crossConceptLeaks = (pool) => {
+  const byTopic = {};
+  for (const q of pool) (byTopic[q.topic] ??= []).push(q);
+  const out = [];
+  for (const qs of Object.values(byTopic))
+    for (const q of qs)
+      for (const other of qs) {
+        if (other.id === q.id || !other.concept) continue;
+        const a = leakOverlap(other.concept, q.choices[q.answer]);
+        const o = Math.max(...q.choices.map((c, i) => (i === q.answer ? 0 : leakOverlap(other.concept, c))));
+        if (a >= 0.7 && a - o >= 0.35) out.push(`${q.id}←${other.id}`);
+      }
+  return out;
+};
 
 /** 현황 리포트 — "다음에 어느 주제를 낼까"를 고르기 위한 것 */
 const report = () => {
@@ -271,6 +294,10 @@ const report = () => {
         `  개념 포스트잇 ${withConcept.length}/${pool.length}` +
           ` · 정답에만 쏠린 것 ${leaks.length}${leaks.length ? ` ← ${leaks.slice(0, 5).map((q) => q.id).join(" · ")}${leaks.length > 5 ? " …" : ""}` : ""}`,
       );
+      const cross = crossConceptLeaks(pool);
+      if (cross.length)
+        console.log(`  옆 포스트잇이 정답과만 겹치는 쌍 ${cross.length}: ${cross.slice(0, 6).join(" · ")}${cross.length > 6 ? " …" : ""}  ← 눈으로 확인`);
+
       // 순서 열거 + 극단 발문 — 게이트가 못 보는 자리라 눈으로 보라고 짚어만 준다(오탐 섞임)
       const ordered = orderedPairs(pool);
       if (ordered.length)
