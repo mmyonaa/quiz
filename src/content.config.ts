@@ -198,6 +198,34 @@ export const overlongHighlight = (s: string) => {
 };
 
 /**
+ * 개념 포스트잇(concept)이 정답을 흘리는지 본다.
+ *
+ * 포스트잇은 문제 바로 위에 선다. 그 자리에 정답 용어가 적혀 있으면 확인 문제가
+ * 확인을 못 한다 — 떠올리는 대신 위를 보고 옮겨 적게 된다. 실제로 그렇게 됐다:
+ * concept을 가진 813문항 중 98개에서 포스트잇이 정답 선지의 정의문이었고,
+ * 발문은 그 정의를 되물었다(#112). 해설을 가렸던 것과 같은 결함이 한 칸 위에 있었다.
+ *
+ * 그래서 포스트잇은 **정답 낱말을 비우고 축을 세운다** — 무엇으로 갈리는 문제인지만
+ * 말하고, 갈래의 이름은 읽는 쪽이 채운다. 기계는 그 축이 좋은지는 못 보지만,
+ * 정답 선지가 그대로 들어 있는지는 본다.
+ */
+const normalizeForLeak = (s: string) =>
+  s
+    .replace(/[=*`]/g, "")
+    .replace(/[()\[\]{}·,.\/\-—–'"]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+/** 정답 선지가 포스트잇에 통째로 들어 있으면 그 선지를 돌려준다(없으면 undefined) */
+export const leakedAnswer = (concept: string | undefined, choices: string[], answer: number) => {
+  if (!concept) return undefined;
+  const ans = normalizeForLeak(choices[answer] ?? "");
+  // 짧은 정답("A"·"MX"·"21번")은 축을 설명하는 문장에 우연히 섞일 수 있어 자를 대지 않는다 —
+  // 그런 문항은 리포트(written-merge.mjs --report)의 겹침 쪽에서 걸러 본다.
+  if (ans.length < 4) return undefined;
+  return normalizeForLeak(concept).includes(ans) ? choices[answer] : undefined;
+};
+
+/**
  * 칸이 있는 블록은 칸 수가 줄마다 같아야 한다 — 어긋나면 표가 조용히 어긋난 채로 그려진다(도입부·암기 카드 공용).
  * 대조표("| ")와 계층 스택("# "/"#= ")은 모든 줄의 칸 수가 같아야 하고, 타일("* ")은 "이름 | 설명" 두 칸이다.
  * 한 블록 안에서 줄머리가 섞이면(목록 줄 사이에 타일 줄) 그 줄은 다른 종류로 그려지므로 그것도 막는다.
@@ -410,10 +438,16 @@ const quiz = defineCollection({
       message: "문항의 area가 topic의 area와 다릅니다",
       path: ["topic"],
     })
-    // 발문·해설도 md()를 거치므로 백틱이 홀수면 백틱 글자가 화면에 그대로 나온다
-    .refine((q) => !unpairedBacktick(q.question + q.explanation), {
-      message: "발문이나 해설의 백틱 짝이 맞지 않습니다",
+    // 발문·해설·포스트잇 모두 md()를 거치므로 백틱이 홀수면 백틱 글자가 화면에 그대로 나온다
+    .refine((q) => !unpairedBacktick(q.question + q.explanation + (q.concept ?? "")), {
+      message: "발문·해설·개념의 백틱 짝이 맞지 않습니다",
       path: ["explanation"],
+    })
+    // 포스트잇이 정답 선지를 그대로 품으면 확인 문제가 확인을 못 한다
+    .refine((q) => !leakedAnswer(q.concept, q.choices, q.answer), {
+      message:
+        "개념 포스트잇이 정답 선지를 그대로 품고 있습니다 — 정답 낱말을 비우고 '무엇으로 갈리는 문제인지'만 세웁니다",
+      path: ["concept"],
     })
     // 해설의 형광펜도 도입부와 같은 상한을 쓴다 — 길면 표시가 아니라 문단이 된다
     .refine((q) => !overlongHighlight(q.question + "\n" + q.explanation), {
