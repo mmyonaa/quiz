@@ -166,6 +166,36 @@ const hlDensity = (pool, areaOf) => {
   return m;
 };
 
+/**
+ * 개념 포스트잇이 정답을 비추는 정도. 게이트(content.config.ts)는 정답 선지가 포스트잇에
+ * **통째로** 들어간 것만 막는다 — 글자를 조금 바꿔 쓰면 빠져나가고, 짧은 정답("MX"·"21번")은
+ * 자를 아예 대지 않는다. 그 몫을 여기서 숫자로 본다.
+ *
+ * 재는 것은 "포스트잇의 낱말이 정답 선지에만 몰려 있는가"다. 오답에도 고르게 걸치면
+ * 그 포스트잇은 축을 세운 것이고, 정답에만 걸리면 답을 가리킨 것이다(#112).
+ */
+const leakToks = (s) =>
+  new Set(
+    (s ?? "")
+      .replace(/[=*`]/g, "")
+      .replace(/[()\[\]{}·,.\/\-—–'"]/g, " ")
+      .split(/\s+/)
+      .filter((t) => t.length >= 2),
+  );
+const leakOverlap = (concept, choice) => {
+  const A = leakToks(concept);
+  const B = [...leakToks(choice)];
+  return B.length ? B.filter((t) => A.has(t)).length / B.length : 0;
+};
+/** 정답에만 쏠린 포스트잇을 센다 — 정답 겹침이 높고 오답 겹침과 벌어진 것 */
+const conceptLeaks = (pool) =>
+  pool.filter((q) => {
+    if (!q.concept) return false;
+    const a = leakOverlap(q.concept, q.choices[q.answer]);
+    const o = Math.max(...q.choices.map((c, i) => (i === q.answer ? 0 : leakOverlap(q.concept, c))));
+    return a >= 0.75 && a - o >= 0.4;
+  });
+
 /** 현황 리포트 — "다음에 어느 주제를 낼까"를 고르기 위한 것 */
 const report = () => {
   const bank = read(BANK);
@@ -210,6 +240,14 @@ const report = () => {
       console.log(
         `  부정형 발문 ${d.neg}/${pool.length} (${Math.round((d.neg / pool.length) * 100)}%, 기출 참고치 약 50%)` +
           ` · 그중 정답지에 절대어 ${d.negAbsolute}`,
+      );
+
+      // 포스트잇이 답을 비추는지 — 게이트가 통째 포함만 막으므로 쏠림은 여기서 본다
+      const withConcept = pool.filter((q) => q.concept);
+      const leaks = conceptLeaks(pool);
+      console.log(
+        `  개념 포스트잇 ${withConcept.length}/${pool.length}` +
+          ` · 정답에만 쏠린 것 ${leaks.length}${leaks.length ? ` ← ${leaks.slice(0, 5).map((q) => q.id).join(" · ")}${leaks.length > 5 ? " …" : ""}` : ""}`,
       );
     }
 
