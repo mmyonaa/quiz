@@ -81,11 +81,10 @@
   --r-sm: 8px;
   --r-pill: 999px;
   --radius: 10px;
-  /* ── 읽기 폭 ── 한글 본문은 한 줄 40~45자에서 가장 덜 지친다(16px 기준 ≈ 42rem).
-     이 값이 없어 해설·개념 본문·4지선다가 셸 전폭(1140px, 65자+)으로 흘렀다.
-     문장으로만 된 것은 --measure, 막대·표가 섞인 성적표는 --measure-wide를 쓴다. */
-  --measure: 42rem;
-  --measure-wide: 52rem;
+  /* 읽기 폭 토큰(--measure·--measure-wide)은 걷었다. 산문 블록마다 손으로 걸다 보니
+     글만 672px에서 꺾이고 옆의 표·격자·괘선은 판 끝까지 가서, 오른쪽이 300~530px 빈 채로
+     줄이 바뀌었다. **폭은 판(열)이 정하고 글이 정하지 않는다** — 줄이 길면 측정값을 거는 게
+     아니라 문단을 짧게 끊거나 판을 좁힌다. scripts/style-guard.mjs가 되살아나는 것을 막는다. */
   /* 페이지 셸 폭 — daily.mcp(--shell-width: 1240px)와 동일 */
   --shell: 77.5rem;
   /* 고정 헤더 높이 — SiteHeader가 실측값으로 덮어쓴다(로그인 여부·줄바꿈으로 달라진다).
@@ -4253,7 +4252,7 @@ select.sort {
 /* ── 개념 그림 ──
    2D가 아니면 안 되는 관계(고리·비트 자리·사슬·중첩·트리)를 글 옆에 겹쳐 둔다. 색은 전부
    토큰이라 다크에서 따로 둘 그림이 없고, 선 색은 wrapper의 color를 타고 들어간다(currentColor).
-   도입부 폭(--measure)을 다 쓰면 그림이 본문보다 커져 주인공이 바뀌므로 폭을 묶어 가운데 세운다.
+   도입부 폭을 다 쓰면 그림이 본문보다 커져 주인공이 바뀌므로 폭을 px로 묶어 가운데 세운다.
    어휘는 그림들이 나눠 쓴다 — dg-node(주체) · dg-box(거쳐 가는 것) · dg-chip(외울 값) ·
    dg-line(선) · dg-tick(눈금). 교착상태 전용 이름(dg-wait·dg-hold)으로 시작했다가, 그림이
    둘째·셋째가 되자 같은 모양을 다른 이름으로 다시 칠하게 되어 공용으로 바꿨다. */
@@ -4665,16 +4664,11 @@ select.sort {
    읽는 글이라 카드가 아니라 괘선으로 끊는다(화면 규약 2). 다만 "무엇이 있나"처럼 들어갈
    곳을 고르는 자리는 격자로 세운다 — 고를 수 있는 것이므로 카드가 맞다.
 
-   폭은 화면 규약 1을 따른다 — 산문은 --measure, 표와 격자는 --measure-wide. 셸 전폭으로
-   흘리면 한 줄이 65자를 넘어 눈이 다음 줄 머리를 못 찾는다(실제로 처음에 그랬다). */
-/* 산문만 읽기 폭을 지킨다 — 괘선·표·격자 같은 블록 경계는 헤더와 같은 끝까지 간다.
-   경계가 헤더보다 안쪽에서 끊기면 바디가 따로 노는 판으로 보인다. */
-.about-body > p:not(.about-foot),
-.about-note,
-.about-caution,
-.about-principles {
-  max-width: var(--measure);
-}
+   폭은 판이 정한다. 산문 블록마다 읽기 폭(42rem)을 걸어 두었더니 글은 672px에서 줄을
+   바꾸는데 절 제목의 경계선·표·격자·궤도는 판 끝(968~1200px)까지 가서, 오른쪽이 300~530px
+   빈 채로 글이 꺾였다 — "굳이 안 잘려도 될 것이 페이지 중간에서 잘린" 것으로 읽힌다(#118).
+   소개는 블록과 산문이 번갈아 서는 판이라 둘의 오른쪽 끝이 맞아야 한다. 줄이 길면 상한을
+   거는 게 아니라 문단을 짧게 끊는다. 되살아나지 않게 scripts/style-guard.mjs가 본다. */
 .about-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
@@ -4842,7 +4836,6 @@ select.sort {
 }
 /* 현황 — 큰 숫자 타일로 세우면 자랑이 되고, 문장에 담으면 사실로 읽힌다(블로그와 같은 선택) */
 .about-count {
-  max-width: var(--measure);
   margin: 0 0 1.6rem;
   font-size: var(--t-sm);
   line-height: 1.8;
@@ -5101,7 +5094,6 @@ select.sort {
   letter-spacing: -0.01em;
 }
 .orbit-cap-text {
-  max-width: var(--measure);
   font-size: var(--t-sm);
   line-height: 1.75;
   color: var(--muted);
