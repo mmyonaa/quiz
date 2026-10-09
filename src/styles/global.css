@@ -4672,7 +4672,7 @@ select.sort {
 .about-body > p:not(.about-foot),
 .about-note,
 .about-caution,
-.about-principles dd {
+.about-principles {
   max-width: var(--measure);
 }
 .about-grid {
@@ -4704,7 +4704,12 @@ select.sort {
   line-height: 1.7;
   color: var(--muted);
 }
-/* 원칙 — 이름과 설명이 한 쌍이라 정의 목록이 맞다. 괘선만 두르고 면은 걷는다 */
+/* 원칙 — 이름과 설명이 한 쌍이라 정의 목록이 맞다. 괘선만 두르고 면은 걷는다.
+
+   폭은 **목록째로** 읽기 폭에 묶는다(위 규칙). 산문만 묶었더니 설명은 42rem에서 줄을 바꾸는데
+   항목을 가르는 괘선은 셸 끝까지 가서, 오른쪽 `296px`가 빈 채로 글이 꺾였다. 셸 끝까지 가야 하는
+   것은 표·격자·궤도처럼 실제로 넓은 블록과 절 제목의 경계선이지, 산문 사이를 가르는 줄이 아니다 —
+   이 괘선은 절 경계가 아니라 항목 구분자라서 제가 가르는 글을 따라간다. */
 .about-principles {
   margin: 0 0 1.4rem;
 }
