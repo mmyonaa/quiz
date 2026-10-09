@@ -187,6 +187,28 @@ const leakOverlap = (concept, choice) => {
   const B = [...leakToks(choice)];
   return B.length ? B.filter((t) => A.has(t)).length / B.length : 0;
 };
+/**
+ * 순서가 매겨진 열거는 게이트 양쪽을 다 빠져나간다.
+ *
+ * `"결합도는 자료<스탬프<제어<외부<공통<내용 순으로 강해지며"`는 같은 페이지의
+ * `"가장 높고 나쁜 결합도는?"`에 사다리의 맨 끝을 그대로 답한다. 그런데 게이트는 못 본다 —
+ * 선지는 `"내용 결합도"`인데 포스트잇에는 `"내용"`만 있어 통째 포함이 아니고, 선지를
+ * 여럿 품으므로 열거형 참고 목록으로 통과한다. **순서가 뜻을 묶는다**는 것을 기계가 모른다.
+ *
+ * 그래서 세지 말고 **짚어만 준다** — 순서 표지(`<`·`→`·`순으로`·사다리)를 든 포스트잇과
+ * '가장 ~한 것'을 묻는 발문이 한 주제에 함께 있으면 눈으로 보라고 올린다. 오탐이 섞인다
+ * (응집도 사다리와 결합도 발문처럼 축이 다른 짝). 판정은 사람이 한다(#114).
+ */
+const ORDER_MARK = /<|→|순으로|순서대로|사다리|층을 이룬/;
+const EXTREME_ASK = /가장 (높|낮|좋|나쁜|강|약|먼저|적게|오랜)|맨 (위|앞)|최상위|최하위|제일/;
+const orderedPairs = (pool) => {
+  const byTopic = {};
+  for (const q of pool) (byTopic[q.topic] ??= []).push(q);
+  return Object.entries(byTopic).filter(([, qs]) => {
+    return qs.some((q) => q.concept && ORDER_MARK.test(q.concept)) && qs.some((q) => EXTREME_ASK.test(q.question));
+  });
+};
+
 /** 정답에만 쏠린 포스트잇을 센다 — 정답 겹침이 높고 오답 겹침과 벌어진 것 */
 const conceptLeaks = (pool) =>
   pool.filter((q) => {
@@ -249,6 +271,10 @@ const report = () => {
         `  개념 포스트잇 ${withConcept.length}/${pool.length}` +
           ` · 정답에만 쏠린 것 ${leaks.length}${leaks.length ? ` ← ${leaks.slice(0, 5).map((q) => q.id).join(" · ")}${leaks.length > 5 ? " …" : ""}` : ""}`,
       );
+      // 순서 열거 + 극단 발문 — 게이트가 못 보는 자리라 눈으로 보라고 짚어만 준다(오탐 섞임)
+      const ordered = orderedPairs(pool);
+      if (ordered.length)
+        console.log(`  순서 열거와 '가장 ~한 것' 발문이 한 주제에 함께: ${ordered.map(([t]) => t).join(" · ")}  ← 눈으로 확인`);
     }
 
     // 형광펜 밀도 — 상한을 넘으면 그 영역 페이지가 통째로 노랗게 읽힌다
