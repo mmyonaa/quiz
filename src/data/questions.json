@@ -433,7 +433,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "cpu-scheduling",
-    "concept": "FCFS는 도착 순서대로 처리해, 긴 작업이 앞서면 뒤 작업의 대기가 길어진다.",
+    "concept": "대기 시간은 제 앞에 선 작업들의 실행 시간을 더한 값이다 — 긴 작업이 앞서면 뒤가 길게 기다린다.",
     "question": "실행 시간이 P1=24ms, P2=3ms, P3=3ms인 프로세스가 이 순서로 동시에 도착했다. FCFS 스케줄링의 평균 대기 시간은?",
     "choices": [
       "10ms",
@@ -573,7 +573,7 @@
     "area": "운영체제",
     "difficulty": "상",
     "topic": "page-replacement",
-    "concept": "FIFO 페이지 교체는 먼저 들어온 페이지를 먼저 내보낸다.",
+    "concept": "페이지 교체는 내보낼 페이지를 고르는 기준이 알고리즘마다 다르다 — 들어온 순서, 안 쓰인 기간, 앞으로의 쓰임.",
     "question": "페이지 참조열이 1, 2, 3, 1, 2, 4이고 프레임이 3개일 때, FIFO 교체에서 발생하는 페이지 폴트 횟수는? (초기 프레임은 비어 있음)",
     "choices": [
       "3회",
@@ -1592,7 +1592,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "sql-command-types",
-    "concept": "TRUNCATE는 DDL이라 롤백되지 않고, DELETE는 DML이라 롤백된다.",
+    "concept": "행을 지우는 명령은 어느 갈래에 속하는지에 따라 되돌릴 수 있는지가 갈린다.",
     "question": "행을 지우는 명령들에 대한 설명으로 틀린 것은?",
     "choices": [
       "TRUNCATE는 DML이므로 COMMIT 전이라면 ROLLBACK으로 되돌릴 수 있다",
@@ -1672,7 +1672,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "sql-command-types",
-    "concept": "ALTER는 구조를 바꾸는 DDL, UPDATE는 값을 바꾸는 DML이다.",
+    "concept": "같은 테이블을 건드려도 구조를 바꾸는 명령과 값을 바꾸는 명령은 다른 갈래다.",
     "question": "student 테이블에 email 열을 추가하는 'ALTER TABLE student ADD email VARCHAR(50)'과, 행의 이름 값을 바꾸는 'UPDATE student SET name=...'의 분류로 옳은 것은?",
     "choices": [
       "둘 다 DML이다",
@@ -1895,7 +1895,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "dev-methodology",
-    "concept": "나선형 모델은 계획→위험 분석→개발→평가를 반복하며 위험을 줄여 간다.",
+    "concept": "나선형의 네 활동은 계획→위험 분석→개발→평가이고, 한 바퀴가 곧 한 번의 반복이다.",
     "question": "나선형(Spiral) 모델이 반복하는 네 활동에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "한 주기는 계획 수립 → 위험 분석 → 개발 → 고객 평가 순으로 진행된다",
@@ -1927,7 +1927,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "dev-methodology",
-    "concept": "위험 분석은 나선형 모델의 요소이지 XP의 것이 아니다.",
+    "concept": "애자일 방법론마다 고유한 실천이 있고, 반복 개발 모델의 활동이 섞여 들어오면 틀린 연결이 된다.",
     "question": "애자일 방법론의 요소와 소속 연결이 틀린 것은?",
     "choices": [
       "스프린트 — Scrum",
@@ -3394,7 +3394,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "framework-build-batch",
-    "concept": "배치 프로그램은 대량 일괄 처리라 실시간 응답이 요건이 아니다(대용량·자동화·견고성이 요건).",
+    "concept": "일괄 처리의 요건은 대용량·자동화·견고성이다 — 대화형 프로그램의 요건과 섞이기 쉽다.",
     "question": "배치 프로그램의 필수 요건에 해당하지 않는 것은?",
     "choices": [
       "대용량 데이터를 처리할 수 있어야 한다",
@@ -3441,7 +3441,7 @@
     "area": "데이터베이스",
     "difficulty": "중",
     "topic": "procedural-sql",
-    "concept": "저장 프로시저는 값 반환이 필수가 아니고, 사용자 정의 함수는 값을 반환한다.",
+    "concept": "절차형 SQL 객체는 값을 반환해야 하는지, 무엇이 실행을 촉발하는지로 갈린다.",
     "question": "절차형 SQL에 대한 설명으로 틀린 것은?",
     "choices": [
       "저장 프로시저는 CALL 문으로 명시적으로 호출해 실행한다",
@@ -5707,7 +5707,7 @@
     "area": "운영체제",
     "difficulty": "중",
     "topic": "linux-admin",
-    "concept": "로그인 실패는 btmp(lastb), 이력은 wtmp(last), 마지막 로그인은 lastlog다.",
+    "concept": "접속 로그는 파일과 확인 명령이 짝으로 묶이고, 이름이 비슷해 짝을 바꿔 놓은 선지가 나온다.",
     "question": "리눅스의 접속 관련 로그 파일과 그 내용을 확인하는 명령의 연결이 옳지 않은 것은?",
     "choices": [
       "wtmp — 로그인·로그아웃과 부팅·종료 이력 — last",
@@ -6331,7 +6331,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "interface-design",
-    "concept": "인터페이스 데이터는 XML·JSON·YAML로 명세하며 YAML은 들여쓰기로 구조를 나타낸다.",
+    "concept": "인터페이스 데이터 명세화 형식은 구조를 무엇으로 나타내는지가 다르다 — 태그, 중괄호, 들여쓰기.",
     "question": "인터페이스 데이터 명세화에 쓰이는 표기 형식에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "JSON(JavaScript Object Notation)은 속성-값 쌍을 중괄호로 묶어 표현하는 경량 데이터 교환 형식이다",
@@ -6444,7 +6444,7 @@
     "area": "소프트웨어공학",
     "difficulty": "중",
     "topic": "interface-implementation",
-    "concept": "인터페이스 보안은 계층별로 IPSec(네트워크)·SSL/TLS(전송)·S-HTTP(응용)를 쓴다.",
+    "concept": "인터페이스 보안 수단은 어느 계층에서 동작하는지로 갈리고, 계층을 바꿔 놓은 짝이 오답으로 나온다.",
     "question": "인터페이스 보안 수단을 동작 계층과 짝지은 것으로 틀린 것은?",
     "choices": [
       "응용 계층 — IPSec(IP Security)이 HTTP 메시지를 메시지 단위로 암호화한다",
@@ -10696,7 +10696,7 @@
     "area": "시스템 보안",
     "difficulty": "중",
     "topic": "sec-system-logs",
-    "concept": "현재 접속자는 utmp(who), 로그인 이력은 wtmp(last), 실패는 btmp(lastb), 마지막 로그인은 lastlog다.",
+    "concept": "접속 관련 로그는 파일마다 담는 사건이 다르고 읽는 전용 명령이 따로 있다 — 명령 이름이 파일 이름을 그대로 따라가지 않는 짝이 함정이다.",
     "question": "리눅스 로그 파일과 그 내용을 짝지은 것으로 옳지 않은 것은?",
     "choices": [
       "`/var/log/secure` — 원격 로그인과 인증 관련 기록",
@@ -11224,7 +11224,7 @@
     "area": "네트워크 보안",
     "difficulty": "중",
     "topic": "sec-scanning-sniffing",
-    "concept": "허브는 그대로 스니핑되고, 스위치는 ARP 스푸핑·MAC 플러딩을 거쳐야 스니핑된다.",
+    "concept": "허브는 그대로 스니핑되고, 스위치는 한 번 더 손을 써야 스니핑된다.",
     "question": "네트워크 장비와 스니핑의 관계에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "허브는 받은 신호를 모든 포트로 흘리므로 같은 세그먼트의 트래픽이 그대로 노출된다",
@@ -11657,7 +11657,7 @@
     "area": "네트워크 보안",
     "difficulty": "하",
     "topic": "sec-wireless-security",
-    "concept": "비인가 AP(Rogue AP)는 통제되지 않은 무선 통로를 열어 사내망을 노출한다.",
+    "concept": "승인 없이 꽂힌 무선 장비는 유선 경계를 통째로 건너뛰는 통로가 된다.",
     "question": "직원이 편의를 위해 사내망 포트에 개인용 무선 공유기를 몰래 연결했다. 이런 장비를 가리키는 말과 그 위험으로 알맞은 것은?",
     "choices": [
       "이블 트윈 — 조직이 정책에 따라 설치한 보조 AP라 통제 범위 안에 있다",
@@ -12554,7 +12554,7 @@
     "area": "보안관리·법규",
     "difficulty": "상",
     "topic": "sec-isms-p",
-    "concept": "ISO/IEC 27001과 ISMS-P는 별개 인증이라 하나로 다른 것이 자동 부여되지 않는다.",
+    "concept": "국제 표준 인증과 국내 인증은 별개라, 하나를 받아도 다른 것이 자동 부여되지 않는다.",
     "question": "ISO/IEC 27001과 ISMS-P의 관계에 대한 설명으로 옳지 않은 것은?",
     "choices": [
       "ISO/IEC 27001은 정보보호 관리체계에 관한 국제 표준이다",
@@ -12746,7 +12746,7 @@
     "area": "보안관리·법규",
     "difficulty": "중",
     "topic": "sec-incident-response",
-    "concept": "디지털 포렌식 원칙은 정당성·재현성·신속성·연계 보관성·무결성이다.",
+    "concept": "디지털 포렌식 원칙은 다섯이다 — 정당성의 원칙, 재현의 원칙, 신속성의 원칙, 연계 보관성, 무결성.",
     "question": "디지털 포렌식의 기본 원칙에 해당하지 않는 것은?",
     "choices": [
       "정당성의 원칙 — 증거는 적법한 절차를 거쳐 수집되어야 한다",
@@ -15150,7 +15150,7 @@
     "area": "시스템 보안",
     "difficulty": "하",
     "topic": "sec-analysis-tools",
-    "concept": "파일 무결성 점검 도구는 기준 해시를 미리 떠 두고 현재 값과 대조한다 — Tripwire·AIDE·Fcheck·Samhain이 대표다.",
+    "concept": "파일 무결성 점검 도구는 기준 해시를 미리 떠 두고 현재 값과 대조한다 — 도구 이름을 네댓 개는 알아 둬야 '아닌 것'을 고를 수 있다.",
     "question": "다음 중 파일 무결성 점검 도구에 해당하지 않는 것은?",
     "choices": [
       "Tripwire",

@@ -3,6 +3,9 @@ import { file } from "astro/loaders";
 import topicNotes from "./data/topic-notes.json";
 import memoNotes from "./data/memo-notes.json";
 import blogSeeds from "./data/blog-seeds.json";
+// 문항은 loader(file())로도 읽히지만, 아래 주제 단위 교차 검사는 한 주제의 문항을
+// 한꺼번에 봐야 하므로(zod의 항목별 refine으로는 옆 카드가 보이지 않는다) 여기서 직접 읽는다.
+import questions from "./data/questions.json";
 import { PRACTICAL_FORMAT, SELF_GRADED, isSelfGraded } from "./lib/practical-grade";
 import { DIAGRAMS } from "./lib/diagrams";
 
@@ -402,6 +405,50 @@ for (const [key, m] of Object.entries(MEMOS)) {
     throw new Error(`암기 카드 ${key}의 형광펜이 ${hl}개(상한 ${HIGHLIGHT_PER_INTRO}) — 함정 짝 하나만 남긴다`);
   checkTables(`암기 카드 ${key}`, m.body);
   checkDiagrams(`암기 카드 ${key}`, m.body);
+}
+
+/**
+ * 주제 단위 포스트잇 교차 검사 — **옆 카드**가 정답을 말하는지 본다.
+ *
+ * 개념 노트는 한 주제의 문항을 한 페이지에 모아 세운다. 그래서 포스트잇이 답을 흘리는
+ * 경로가 둘이다: 자기 카드(위의 leakedAnswer)와 **같은 페이지의 다른 카드**. 뒤엣것을
+ * 놓쳤다 — 자기 포스트잇에서 답을 지운 카드의 답을 옆 카드가 그대로 말하고 있어,
+ * 고친 효과가 그 페이지에서는 없었다(#114).
+ *
+ * 가르는 자는 "옆 포스트잇이 그 문항의 선지를 몇 개 품는가"다.
+ *
+ *   하나뿐(정답만) → 유출이다. 읽는 쪽은 "위에 적힌 그것"을 고르면 된다.
+ *   둘 이상        → 열거형 참고 목록이다. 이름을 늘어놓을 뿐 뜻을 묶지 않아,
+ *                    의미에서 이름으로 가는 길은 여전히 읽는 쪽이 걸어야 한다.
+ *                    `디지털 포렌식 원칙은 다섯이다 — …`처럼 그 자체로 외울 목록인
+ *                    포스트잇이 여기 속하고, 이것까지 막으면 쓸 수 있는 말이 없어진다.
+ *
+ * 기계가 "단서를 정답에 묶었는가"는 못 본다. 선지 몇 개를 품는지만 본다 — 형광펜을
+ * 개수로만 좁히는 것과 같은 방식이고, 좁으면 고를 수밖에 없다는 점도 같다.
+ */
+{
+  const byTopic: Record<string, typeof questions> = {};
+  for (const q of questions) (byTopic[q.topic] ??= []).push(q);
+  for (const [topic, qs] of Object.entries(byTopic)) {
+    for (const q of qs) {
+      const ans = normalizeForLeak(q.choices[q.answer] ?? "");
+      if (ans.length < 4) continue;
+      for (const other of qs) {
+        if (other.id === q.id || !other.concept) continue;
+        const c = normalizeForLeak(other.concept);
+        if (!c.includes(ans)) continue;
+        const covered = q.choices.filter((ch) => {
+          const n = normalizeForLeak(ch);
+          return n.length >= 2 && c.includes(n);
+        }).length;
+        if (covered > 1) continue; // 열거형 참고 목록 — 위 주석 참고
+        throw new Error(
+          `주제 ${topic}: ${other.id}의 포스트잇이 같은 페이지 ${q.id}의 정답("${q.choices[q.answer]}")만 집어 말한다 — ` +
+            `정답 용어를 비우거나, 열거라면 다른 선지도 함께 담아 목록이 되게 한다`,
+        );
+      }
+    }
+  }
 }
 
 const quiz = defineCollection({
