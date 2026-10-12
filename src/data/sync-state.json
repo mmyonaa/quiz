@@ -370,8 +370,7 @@
     },
     "2026-08-29-binary-tree-traversal": {
       "sha": "3b17b89c19360c46a2762bbd1ed23930a97d2deb",
-      "section": "jeongcheogi",
-      "gapReported": true
+      "section": "jeongcheogi"
     },
     "2026-08-30-arp-spoofing": {
       "sha": "ddfee64616f23843a532f7896c3be95351d7b5ca",
@@ -415,8 +414,7 @@
     },
     "2026-09-08-process-synchronization": {
       "sha": "e207e677ead8c46f91e91422da41d94d3673ba80",
-      "section": "jeongcheogi",
-      "gapReported": true
+      "section": "jeongcheogi"
     },
     "2026-09-09-vscode-github-dev-oauth-token-theft": {
       "sha": "d8b6d9d4994edf31b684c639417c8164fe832c51",
@@ -436,8 +434,7 @@
     },
     "2026-09-13-uml-diagrams": {
       "sha": "c6d6b9b22778da78546530a515188a0d7fd08032",
-      "section": "jeongcheogi",
-      "gapReported": true
+      "section": "jeongcheogi"
     },
     "2026-09-14-patch-tuesday-september-2026-zero-days": {
       "sha": "2cbf6f5a8a987e5a9dc809203f40ae230d2ba430",
@@ -485,8 +482,7 @@
     },
     "2026-09-28-software-cost-estimation-cocomo": {
       "sha": "bbd4e312bf05fbceccbbbcd1be191b04735322ac",
-      "section": "jeongcheogi",
-      "gapReported": true
+      "section": "jeongcheogi"
     },
     "2026-09-29-protobufjs-schema-code-execution": {
       "sha": "fc3f8e6edd55f88a927004ac51d4e1f69bad501d",
@@ -506,12 +502,41 @@
     },
     "2026-10-03-test-levels-integration-stub-driver": {
       "sha": "f70d6627402758e6eca6b467941d8f5523563287",
-      "section": "jeongcheogi",
-      "gapReported": true
+      "section": "jeongcheogi"
     },
     "2026-10-04-tanstack-npm-pwn-request-cache-poisoning": {
       "sha": "cc66c816eee8ebdf5b0ec4b5412a56fbe45bf944",
       "section": "security"
+    },
+    "2026-10-05-uber-mcp-gateway-registry-discovery": {
+      "sha": "c9f2c34dbbd440f44a93838a8f80d06c1094e68c",
+      "section": "mcp"
+    },
+    "2026-10-06-buffer-overflow": {
+      "sha": "e89b58ac26639a933aa11320d2cf7d0dc85f930e",
+      "section": "boangisa"
+    },
+    "2026-10-07-mcp-progress-and-cancellation": {
+      "sha": "c758759fd99b86ef3d747081fa283f7198dda19d",
+      "section": "mcp"
+    },
+    "2026-10-08-disk-scheduling": {
+      "sha": "321ab97ad391b36a50b8f00ce75349b72eefc7fb",
+      "section": "jeongcheogi",
+      "gapReported": true
+    },
+    "2026-10-09-atlassian-cve-2026-21589-webresource-path-traversal": {
+      "sha": "d53381a853f918d680be62d2e787b91a3d0416e9",
+      "section": "security"
+    },
+    "2026-10-10-mcp-clean-scan-cosai-assurance-levels": {
+      "sha": "fad9e34acb179a24a1c3babc5867b195669aa1fc",
+      "section": "mcp"
+    },
+    "2026-10-11-firewall-ids-ips-waf": {
+      "sha": "70e886950a3ad7e995e9aac17541a347d0ba2147",
+      "section": "boangisa",
+      "gapReported": true
     }
   }
 }
