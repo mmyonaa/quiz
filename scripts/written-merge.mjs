@@ -58,6 +58,14 @@ const check = (q, seenIds, seenStems, topics) => {
     if (q.choices.some((c) => typeof c !== "string" || !c.trim())) e.push("빈 보기가 있음");
     const dup = q.choices.filter((c, i) => q.choices.indexOf(c) !== i);
     if (dup.length) e.push(`보기 중복 ${JSON.stringify([...new Set(dup)])}`);
+    // 한 문항 안에서 약어 표기를 섞지 않는다 — 풀어 쓴 보기 옆에 약어만 선 보기가 있으면
+    // 그 보기가 모양으로 도드라진다. 정답이 거기 걸리면 뜻이 아니라 생김새로 골라진다.
+    // (보기 사이의 문제라 zod가 못 본다. 한글(원어) 표기도 "풀어 쓴" 쪽으로 센다.)
+    const EXPANDED = /\([A-Za-z][^)]*\)$/;
+    const BARE = /^[A-Z]{2,}$/;
+    const bare = q.choices.filter((c) => BARE.test(c));
+    if (bare.length && q.choices.some((c) => EXPANDED.test(c)))
+      e.push(`약어 표기가 섞임 — 풀이 괄호를 붙이거나 모두 떼라: ${bare.join(", ")}`);
   }
   if (!Number.isInteger(q.answer) || q.answer < 0 || q.answer > 3) e.push(`answer 범위 밖 ${q.answer}`);
   return e;

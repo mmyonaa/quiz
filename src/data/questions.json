@@ -5809,7 +5809,7 @@
       "HACMP(High Availability Cluster Multi Processing)",
       "HDFS(Hadoop Distributed File System)",
       "HSRP(Hot Standby Router Protocol)",
-      "HAProxy"
+      "HAProxy(High Availability Proxy)"
     ],
     "answer": 0,
     "explanation": "공유 디스크 기반 클러스터로 노드 장애 시 자원을 인수(failover)하는 IBM 계열 고가용성 솔루션이 HACMP(High Availability Cluster Multi Processing)다. HDFS는 하둡의 분산 파일 시스템, HSRP는 라우터를 이중화하는 시스코의 네트워크 프로토콜, HAProxy는 소프트웨어 로드 밸런서로 셋 다 계층과 목적이 다르다."
@@ -7640,7 +7640,7 @@
       "NAS(Network Attached Storage)",
       "RAID 5",
       "SDS(Software Defined Storage)",
-      "HACMP"
+      "HACMP(High Availability Cluster Multi Processing)"
     ],
     "answer": 2,
     "explanation": "하드웨어에 묶여 있던 저장 장치의 제어를 소프트웨어로 떼어내 중앙에서 관리·할당하는 것이 소프트웨어 정의 스토리지(SDS, Software Defined Storage)다. NAS는 이더넷에 붙여 파일 단위로 공유하는 저장 장치, RAID 5는 패리티를 분산 저장해 성능과 내결함성을 절충한 디스크 구성, HACMP는 노드 장애 시 자원을 넘겨받는 고가용성 클러스터 솔루션이다."
@@ -8111,9 +8111,9 @@
     "question": "자원이 빈약한 사물인터넷 기기에서도 가볍게 동작하도록 발행-구독(Publish-Subscribe) 구조로 메시지를 주고받게 설계된 프로토콜은?",
     "choices": [
       "지그비(Zigbee)",
-      "MQTT",
+      "MQTT(Message Queuing Telemetry Transport)",
       "BLE(Bluetooth Low Energy)",
-      "SBAS"
+      "SBAS(Satellite Based Augmentation System)"
     ],
     "answer": 1,
     "explanation": "MQTT는 메시지를 주제별로 발행하고 구독하는 구조라 헤더가 가볍고 연결 유지 비용이 작아 사물인터넷 기기에 적합하다. 지그비와 BLE는 ==저전력 근거리 무선 통신 규격으로 메시지 교환 구조가 아니라 무선 링크 계층을 규정하며==, SBAS는 위성 항법의 오차를 보정하는 기술이라 성격이 다르다."
