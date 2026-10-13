@@ -6851,7 +6851,7 @@
     "code": "- 소프트웨어 보안의 모범 사례를 소프트웨어 개발 생명주기에 통합한 방법론이다\n- 요구·설계·코드·테스트 계획 같은 개발 산출물에 보안 활동을 직접 결합한다\n- 코드 검토, 아키텍처 위험 분석, 침투 테스트, 위험 기반 보안 테스트 등 일곱 개 활동으로 이뤄진다",
     "choices": [
       "Seven Touchpoints",
-      "CLASP(Comprehensive Lightweight Application Security Process)",
+      "CLASP(Comprehensive, Lightweight Application Security Process)",
       "SDL(Security Development Lifecycle)",
       "CWE(Common Weakness Enumeration)"
     ],
