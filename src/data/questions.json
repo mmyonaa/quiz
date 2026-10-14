@@ -2550,7 +2550,7 @@
     "choices": [
       "기능의 개수와 복잡도를 세어 규모를 재므로 구현 언어와 무관하게 적용할 수 있다",
       "Organic·Semi-detached·Embedded의 세 프로젝트 유형으로 나눠 계수를 다르게 적용한다",
-      "전체 규모를 먼저 잡고 세부로 내려가며 계산하는 하향식 수학적 산정 모형이다",
+      "보헴(Boehm)이 제안했으며 같은 규모라도 프로젝트의 성격에 따라 산정 결과가 달라진다",
       "예측된 원시 코드 라인 수(LOC)를 기준으로 노력(man-month)과 개발 기간을 산정한다"
     ],
     "answer": 0,
@@ -15845,5 +15845,435 @@
     ],
     "answer": 3,
     "explanation": "공용 계정은 누가 무엇을 바꿨는지 가릴 수 없어 책임추적성이 무너지며, 비밀번호가 새면 그대로 장비 전체가 열린다. 장비 계정도 사용자마다 따로 두고 인증하는 것이 원칙이다. 텔넷은 계정과 비밀번호가 평문으로 흐르므로 SSH로 바꾸는 것이 기본 통제다."
+  },
+  {
+    "id": "prog-java-string-equals",
+    "area": "프로그래밍",
+    "difficulty": "중",
+    "topic": "java-basics",
+    "concept": "문자열 비교는 무엇을 견주느냐로 갈린다 — 객체가 놓인 자리인가, 담긴 글자인가.",
+    "question": "다음 Java 코드의 출력은? (네 줄을 차례로 적은 것)",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        String str1 = \"Programming\";\n        String str2 = \"Programming\";\n        String str3 = new String(\"Programming\");\n\n        System.out.println(str1 == str2);\n        System.out.println(str1 == str3);\n        System.out.println(str1.equals(str3));\n        System.out.println(str2.equals(str3));\n    }\n}",
+    "choices": [
+      "true · false · true · true",
+      "true · true · true · true",
+      "false · false · true · true",
+      "true · false · false · false"
+    ],
+    "answer": 0,
+    "explanation": "같은 문자열 리터럴은 상수 풀에 있는 한 객체를 함께 쓰므로 str1과 str2는 같은 객체이고 참조 비교가 참이다. 반면 `new String()`은 값이 같아도 별도 객체를 만들어 str3의 참조만 다르다. 참조를 보는 쪽과 값을 보는 쪽을 맞바꿔 2행을 true로 만든 선지가 함정이다. `equals()`는 담긴 글자만 보므로 3·4행은 모두 참이다."
+  },
+  {
+    "id": "prog-java-abstract-overload",
+    "area": "프로그래밍",
+    "difficulty": "상",
+    "topic": "java-inheritance",
+    "concept": "추상 클래스도 구현된 메서드를 함께 가질 수 있다 — 자식이 덮지 않은 호출은 어디로 가는가.",
+    "question": "다음 Java 코드의 출력은?",
+    "code": "abstract class Vehicle {\n    private String name;\n    abstract public String getName(String val);\n\n    public String getName() {\n        return \"Vehicle name: \" + name;\n    }\n    public void setName(String val) {\n        name = val;\n    }\n}\n\nclass Car extends Vehicle {\n    public Car(String val) {\n        setName(val);\n    }\n    public String getName(String val) {\n        return \"Car name: \" + val;\n    }\n    public String getName(byte[] val) {\n        return \"Car name: \" + val;\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Vehicle obj = new Car(\"Spark\");\n        System.out.print(obj.getName());\n    }\n}",
+    "choices": [
+      "Vehicle name: Spark",
+      "Car name: Spark",
+      "Vehicle name: null",
+      "컴파일 오류가 나서 실행되지 않는다"
+    ],
+    "answer": 0,
+    "explanation": "호출한 것은 매개변수가 없는 getName()이고, Car가 가진 것은 매개변수를 받는 getName(String)과 getName(byte[])이다. 이름만 같고 매개변수가 다르면 재정의가 아니라 오버로딩이라 서로 다른 메서드다. 따라서 덮이지 않은 부모 쪽 구현이 불리고, 생성자가 setName으로 넣어 둔 이름이 그대로 붙어 나온다."
+  },
+  {
+    "id": "prog-java-override-recursive",
+    "area": "프로그래밍",
+    "difficulty": "상",
+    "topic": "java-inheritance",
+    "concept": "부모 타입 참조가 자식 객체를 가리킬 때, 재귀 호출 안에서 불리는 것은 어느 쪽 메서드인가.",
+    "question": "다음 Java 코드의 출력은?",
+    "code": "class Parent {\n    int compute(int num) {\n        if (num <= 1) return num;\n        return compute(num - 1) + compute(num - 2);\n    }\n}\n\nclass Child extends Parent {\n    int compute(int num) {\n        if (num <= 1) return num;\n        return compute(num - 1) + compute(num - 3);\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Parent obj = new Child();\n        System.out.print(obj.compute(7));\n    }\n}",
+    "choices": [
+      "2",
+      "13",
+      "1",
+      "3"
+    ],
+    "answer": 0,
+    "explanation": "선언 타입이 Parent여도 실제 객체가 Child이므로 재정의된 Child의 compute가 돌고, 그 안의 재귀 호출도 같은 Child 메서드로 들어간다. 여기서 부모 쪽 식을 따라 계산하면 13이 나오는데, 그 선지가 함정이다. 종료 조건이 num이 1 이하일 때 num을 돌려주므로 compute(1)은 1, compute(0)은 0, compute(-1)은 -1이고, 이를 거꾸로 쌓으면 compute(7)은 2가 된다."
+  },
+  {
+    "id": "prog-java-super-constructor",
+    "area": "프로그래밍",
+    "difficulty": "중",
+    "topic": "java-inheritance",
+    "concept": "부모의 private 필드는 자식이 직접 못 본다 — 그럼 값은 누구를 거쳐 들어가는가.",
+    "question": "다음 Java 코드의 출력은?",
+    "code": "class A {\n    private int a;\n\n    public A(int a) {\n        this.a = a;\n    }\n    public void display() {\n        System.out.println(\"a=\" + a);\n    }\n}\n\nclass B extends A {\n    public B(int a) {\n        super(a);\n        super.display();\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        B obj = new B(10);\n    }\n}",
+    "choices": [
+      "a=10",
+      "a=0",
+      "아무것도 출력되지 않는다",
+      "private 필드에 접근할 수 없어 컴파일 오류가 난다"
+    ],
+    "answer": 0,
+    "explanation": "자식 생성자의 super(a)가 부모 생성자를 먼저 불러 전달받은 10을 부모의 필드에 넣고, 이어 super.display()가 부모 메서드를 호출해 그 값을 찍는다. 필드가 private이라 자식이 직접 읽지 못할 뿐, 부모의 생성자와 메서드를 거치는 길은 막히지 않는다."
+  },
+  {
+    "id": "prog-c-struct-pointer-step",
+    "area": "프로그래밍",
+    "difficulty": "중",
+    "topic": "c-pointer-array",
+    "concept": "구조체 배열을 가리키는 포인터에 1을 더하면 몇 바이트가 아니라 무엇 하나만큼 움직인다.",
+    "question": "다음 C 코드의 출력은? (두 줄을 차례로 적은 것)",
+    "code": "#include <stdio.h>\n\nstruct good {\n    char name[10];\n    int age;\n};\n\nvoid main() {\n    struct good s[] = { {\"Kim\", 28}, {\"Lee\", 38}, {\"Seo\", 50}, {\"Park\", 35} };\n    struct good *p;\n\n    p = s;\n    p++;\n\n    printf(\"%s\\n\", p->name);\n    printf(\"%d\\n\", p->age);\n}",
+    "choices": [
+      "Lee · 38",
+      "Kim · 28",
+      "Seo · 50",
+      "Lee · 28"
+    ],
+    "answer": 0,
+    "explanation": "배열 이름 s는 첫 원소의 주소라 p는 처음에 s[0]을 가리키고, p++는 1바이트가 아니라 구조체 하나 크기만큼 건너뛰어 s[1]로 옮겨간다. 자료형 크기만큼 움직인다는 규칙은 구조체에도 그대로 적용된다. 포인터로 멤버에 닿을 때는 화살표를 쓰므로 p->name은 Lee, p->age는 38이다."
+  },
+  {
+    "id": "prog-c-struct-arrow-sum",
+    "area": "프로그래밍",
+    "difficulty": "상",
+    "topic": "c-pointer-array",
+    "concept": "포인터에 더한 수가 가리키는 칸을 바꾼다 — 어느 원소의 멤버를 읽고 있는지 짚어 가며 센다.",
+    "question": "다음 C 코드의 출력은?",
+    "code": "#include <stdio.h>\n\nstruct jsu {\n    char name[12];\n    int os, db, hab, hhab;\n};\n\nint main() {\n    struct jsu st[3] = { {\"data1\", 95, 88}, {\"data2\", 84, 91}, {\"data3\", 86, 75} };\n    struct jsu *p;\n\n    p = &st[0];\n    (p + 1)->hab = (p + 1)->os + (p + 2)->db;\n    (p + 1)->hhab = (p + 1)->hab + p->os + p->db;\n\n    printf(\"%d\", (p + 1)->hab + (p + 1)->hhab);\n    return 0;\n}",
+    "choices": [
+      "501",
+      "342",
+      "183",
+      "159"
+    ],
+    "answer": 0,
+    "explanation": "초기화에서 값을 둘만 주었으므로 각 원소의 hab·hhab는 0으로 시작한다. p는 st[0]을 가리키니 (p+1)은 st[1], (p+2)는 st[2]다. hab는 84와 75를 더한 159, hhab는 그 159에 st[0]의 95와 88을 더한 342이고, 둘을 더한 501이 답인데 중간값인 159나 342를 그대로 고르게 하는 것이 이 유형의 함정이다."
+  },
+  {
+    "id": "prog-c-recursion-factorial",
+    "area": "프로그래밍",
+    "difficulty": "중",
+    "topic": "c-operators",
+    "concept": "자기를 다시 부르는 함수는 종료 조건에서 멈춘 뒤 거꾸로 값을 쌓아 올린다.",
+    "question": "다음 C 코드의 출력은?",
+    "code": "#include <stdio.h>\n\nint f(int n) {\n    if (n <= 1) return 1;\n    else return n * f(n - 1);\n}\n\nint main() {\n    printf(\"%d\", f(7));\n    return 0;\n}",
+    "choices": [
+      "5040",
+      "720",
+      "40320",
+      "28"
+    ],
+    "answer": 0,
+    "explanation": "f는 n이 1 이하가 될 때까지 자신을 부르며 내려갔다가, 거기서부터 거꾸로 곱을 쌓아 올리는 팩토리얼이다. 종료 조건을 n이 1일 때로 두었으므로 1까지 곱하고 멈춘다 — 7×6×5×4×3×2×1이라 5040이고, 한 칸 더 내려간 8!이나 한 칸 덜 올라간 6!을 고르게 하는 선지가 함께 선다."
+  },
+  {
+    "id": "prog-c-perfect-number-sum",
+    "area": "프로그래밍",
+    "difficulty": "상",
+    "topic": "c-operators",
+    "concept": "나머지가 0인 수만 더하는 루프가 무엇을 세고 있는지 읽어내면 손으로 다 돌리지 않아도 된다.",
+    "question": "다음 C 코드의 출력은?",
+    "code": "#include <stdio.h>\n\nint test(int n) {\n    int i, sum = 0;\n    for (i = 1; i <= n / 2; i++) {\n        if (n % i == 0)\n            sum += i;\n    }\n    if (n == sum) return 1;\n    return 0;\n}\n\nint main() {\n    int i, sum = 0;\n    for (i = 2; i <= 100; i++) {\n        if (test(i)) sum += i;\n    }\n    printf(\"%d\", sum);\n    return 0;\n}",
+    "choices": [
+      "34",
+      "28",
+      "6",
+      "496"
+    ],
+    "answer": 0,
+    "explanation": "test는 자기 자신을 뺀 약수의 합이 자기와 같은지 보는 함수이므로 완전수를 판정한다. 약수는 그 수의 절반을 넘을 수 없어 n/2까지만 돌면 충분하다. 100 이하의 완전수는 6과 28뿐이라 둘을 더한 34가 출력되며, 그다음 완전수인 496은 범위 밖이다."
+  },
+  {
+    "id": "prog-c-2d-array-diagonal",
+    "area": "프로그래밍",
+    "difficulty": "중",
+    "topic": "c-pointer-array",
+    "concept": "2차원 배열은 행을 고르고 그 안에서 열을 고르는 두 단계다 — 두 첨자가 함께 움직이면 어디를 훑는지 본다.",
+    "question": "다음 C 코드의 출력은?",
+    "code": "#include <stdio.h>\n\nint main() {\n    int a[3][3];\n    int i, j, sum = 0;\n\n    for (i = 0; i < 3; i++)\n        for (j = 0; j < 3; j++)\n            a[i][j] = (i + 1) * (j + 2);\n\n    for (i = 0; i < 3; i++)\n        sum += a[i][2 - i];\n\n    printf(\"%d\", sum);\n    return 0;\n}",
+    "choices": [
+      "16",
+      "20",
+      "18",
+      "12"
+    ],
+    "answer": 0,
+    "explanation": "첫 이중 루프가 채운 값은 행별로 2·3·4 / 4·6·8 / 6·9·12다. 둘째 루프의 첨자는 행이 늘수록 열이 줄어 오른쪽 위에서 왼쪽 아래로 내려가는 역대각선을 훑으므로 4와 6과 6을 더한 16이다. 같은 자리를 왼쪽 위에서 내려오는 주대각선으로 잘못 읽으면 2·6·12의 20이 나온다."
+  },
+  {
+    "id": "prog-python-split-basic",
+    "area": "프로그래밍",
+    "difficulty": "하",
+    "topic": "python-slicing",
+    "concept": "문자열을 자르는 메서드는 구분자를 주느냐 마느냐로 자르는 기준이 달라진다.",
+    "question": "다음 Python 코드의 출력은?",
+    "code": "s = \"10 20 30\"\na = s.split()\nb = \"2026-10-14\".split(\"-\")\nprint(len(a), b[1])",
+    "choices": [
+      "3 10",
+      "3 14",
+      "1 10",
+      "8 2026"
+    ],
+    "answer": 0,
+    "explanation": "split은 구분자를 주지 않으면 공백을 기준으로 잘라 세 조각짜리 리스트를 만들고, 구분자를 주면 그 문자를 기준으로 자른다. 자른 결과는 문자열이 아니라 리스트이므로 len은 글자 수가 아니라 조각 수를 센다. 뒤쪽은 연·월·일 세 조각 중 인덱스 1이라 월에 해당하는 10이다."
+  },
+  {
+    "id": "prog-python-set-operations",
+    "area": "프로그래밍",
+    "difficulty": "중",
+    "topic": "python-slicing",
+    "concept": "중복을 허용하지 않는 자료형에서는 이미 있는 값을 다시 넣어도 크기가 변하지 않는다.",
+    "question": "다음 Python 코드의 출력은?",
+    "code": "a = {'일본', '중국', '한국'}\na.add('베트남')\na.add('중국')\na.remove('일본')\na.update({'홍콩', '한국', '태국'})\nprint(len(a))",
+    "choices": [
+      "5",
+      "6",
+      "4",
+      "7"
+    ],
+    "answer": 0,
+    "explanation": "세트는 중복을 허용하지 않으므로 이미 있는 중국을 다시 더해도 그대로이고, update로 넣은 한국도 마찬가지다. 일본을 빼고 베트남·홍콩·태국이 들어와 중국·한국·베트남·홍콩·태국 다섯이 남는다. 더하고 뺀 횟수를 그대로 세면 하나가 더 많아진다."
+  },
+  {
+    "id": "se-cost-estimation-direction",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "cost-estimation",
+    "concept": "산정 기법은 먼저 방향으로 갈린다 — 전체에서 내려오는가, 세부에서 쌓아 올리는가.",
+    "question": "소프트웨어 비용 산정 기법의 분류에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "COCOMO와 Putnam 같은 수학적 산정 기법은 전체 규모를 먼저 잡고 내려오는 하향식에 속한다",
+      "전문가 감정 기법과 델파이 기법은 하향식 산정 기법이다",
+      "LOC 기법과 개발 단계별 인월수는 세부 작업 단위의 비용을 더해 올리는 상향식 산정 기법이다",
+      "델파이 기법은 여러 전문가의 의견을 조정자가 익명으로 모아 반복 조율해 합의에 이른다"
+    ],
+    "answer": 0,
+    "explanation": "수학적 산정 기법은 코드 라인 수나 기능 점수처럼 센 규모를 식에 넣어 쌓아 올리므로 상향식 계열로 분류한다. ==전체 규모를 먼저 잡고 내려오는 하향식은 전문가 감정과 델파이 쪽이다==. 두 방향을 맞바꿔 적은 선지가 틀렸고, 나머지 셋은 각 기법의 자리를 바르게 적었다."
+  },
+  {
+    "id": "se-brooks-law",
+    "area": "소프트웨어공학",
+    "difficulty": "하",
+    "topic": "project-management",
+    "concept": "늦어진 일정을 사람으로 메우려 할 때 무엇이 함께 늘어나는지를 짚는 경험칙이 있다.",
+    "question": "다음 설명에 해당하는 법칙은?",
+    "code": "이미 일정이 지연된 소프트웨어 프로젝트에 개발 인력을 더 투입하면,\n의사소통 경로와 신규 인력 교육 부담이 함께 늘어나\n오히려 일정이 더 지연된다.",
+    "choices": [
+      "브룩스의 법칙(Brooks' Law)",
+      "파레토의 법칙(Pareto's Law)",
+      "무어의 법칙(Moore's Law)",
+      "메트칼프의 법칙(Metcalfe's Law)"
+    ],
+    "answer": 0,
+    "explanation": "인원이 늘면 서로 맞춰야 할 의사소통 경로가 제곱에 가깝게 불어나고 기존 인력이 교육에 시간을 쓰게 되어, 추가 투입이 곧 속도가 되지 않는다는 것이 브룩스의 법칙이다. 결함의 80%가 모듈의 20%에서 나온다는 쪽은 파레토 법칙으로, 테스트 원리에서 따로 나온다."
+  },
+  {
+    "id": "se-requirements-analysis-case",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "requirements-engineering",
+    "concept": "요구사항 분석을 돕는 자동화 도구는 저마다 겨냥한 쓰임이 달라 이름으로 갈라 묻는다.",
+    "question": "요구사항 분석용 자동화 도구에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "TAGS는 문제 기술 언어로 요구사항을 적고 분석기가 보고서를 출력하는 도구다",
+      "SADT는 구조적 분석과 설계를 도표 중심으로 다루는 도구다",
+      "SREM은 실시간 처리 시스템의 요구사항을 명확히 기술하려는 목적으로 만들어졌다",
+      "PSL/PSA는 문제 기술 언어(PSL)와 그 분석기(PSA)를 짝지은 도구다"
+    ],
+    "answer": 0,
+    "explanation": "문제 기술 언어와 분석기를 짝지은 쪽은 PSL/PSA이고, TAGS는 시스템 공학에 자동 접근 방법을 적용한 도구다. 두 도구의 설명을 맞바꾼 선지가 틀렸다. 네 이름은 요구사항 분석 CASE 도구로 함께 묶여 출제된다."
+  },
+  {
+    "id": "se-dynamic-analysis-tool",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "test-tools",
+    "concept": "분석 도구는 프로그램을 돌려 보느냐 아니냐로 갈리고, 이름만 바꿔 섞어 내는 유형이 단골이다.",
+    "question": "다음 중 프로그램을 실행하면서 메모리 누수와 스레드 결함을 찾아내는 동적 분석 도구는?",
+    "choices": [
+      "Valgrind",
+      "PMD",
+      "Checkstyle",
+      "SonarQube"
+    ],
+    "answer": 0,
+    "explanation": "Valgrind는 프로그램을 실제로 돌리며 메모리 누수와 잘못된 접근을 잡아내는 동적 분석 도구이고, Avalanche도 같은 갈래다. 나머지 셋은 소스를 읽기만 하고 실행하지 않는 정적 분석 도구다 — 코딩 표준 위반이나 결함 패턴을 찾는다."
+  },
+  {
+    "id": "se-web-service-components",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "interface-design",
+    "concept": "웹 서비스는 부르는 규약·설명하는 명세·찾아가는 저장소 셋으로 선다 — 각자 맡는 일이 다르다.",
+    "question": "웹 서비스(Web Service)의 구성 요소에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "SOAP는 서비스의 위치와 메시지 형식, 프로토콜을 XML로 기술해 둔 명세다",
+      "WSDL은 웹 서비스가 제공하는 기능과 호출 방법을 XML로 기술한 언어다",
+      "UDDI는 서비스를 등록해 두고 이용자가 찾아갈 수 있게 하는 공개 저장소다",
+      "SOAP는 XML 메시지를 HTTP 등에 실어 다른 컴퓨터의 서비스를 호출하는 프로토콜이다"
+    ],
+    "answer": 0,
+    "explanation": "서비스의 위치·메시지 형식·프로토콜을 적어 둔 명세는 WSDL이고, SOAP는 그 명세대로 XML 메시지를 실어 나르는 호출 프로토콜이다. 명세와 호출 규약을 맞바꾼 선지가 틀렸다. 셋의 관계는 등록(UDDI) · 설명(WSDL) · 호출(SOAP)로 묶어 외운다."
+  },
+  {
+    "id": "se-architecture-blackboard",
+    "area": "소프트웨어공학",
+    "difficulty": "중",
+    "topic": "architecture-patterns",
+    "concept": "정해진 풀이 순서가 없는 문제에서, 중간 결과를 한곳에 쌓아 두고 여럿이 번갈아 들여다보는 골격이 있다.",
+    "question": "다음 설명에 해당하는 아키텍처 패턴은?",
+    "code": "확정된 해결 전략이 없는 문제를 다루기 위해, 공유 저장소에 중간 결과를\n쌓아 두고 여러 컴포넌트가 그 저장소를 훑어 가며 자신이 기여할 수 있는\n부분을 찾아 답에 다가간다. 음성 인식과 패턴 인식에 쓰인다.",
+    "choices": [
+      "블랙보드(Blackboard) 패턴",
+      "파이프-필터(Pipe-Filter) 패턴",
+      "계층화(Layered) 패턴",
+      "마스터-슬레이브(Master-Slave) 패턴"
+    ],
+    "answer": 0,
+    "explanation": "공유 저장소를 가운데 두고 여러 컴포넌트가 비결정적으로 접근하는 것이 블랙보드 패턴의 특징이다. 풀이 순서가 미리 정해진 파이프-필터와 가르는 지점이 바로 이 '정해진 순서가 없다'는 점이다. 모든 노드가 클라이언트이자 서버가 되는 피어 투 피어, 프로그램 코드를 해석해 실행하는 인터프리터도 같은 목록에 든다."
+  },
+  {
+    "id": "os-sddc-def",
+    "area": "운영체제",
+    "difficulty": "중",
+    "topic": "virtualization-cloud",
+    "concept": "소프트웨어 정의 기술은 무엇을 가상화하느냐로 이름이 갈린다 — 망인가, 저장장치인가, 센터 전체인가.",
+    "question": "데이터센터의 모든 자원을 가상화하여 사람의 개입 없이 소프트웨어만으로 관리·제어하는 기술은?",
+    "choices": [
+      "SDDC",
+      "SDN",
+      "SDS",
+      "SDP"
+    ],
+    "answer": 0,
+    "explanation": "SDDC는 서버·네트워크·스토리지를 아우르는 데이터센터 전체를 소프트웨어로 정의해 운영한다. SDN은 네트워크의 제어부와 전달부를 가르는 것, SDS는 여러 스토리지를 하나처럼 묶는 것으로 범위가 좁다. SDP는 자원을 숨겨 인가된 사용자에게만 연결을 허용하는 보안 모델이라 갈래가 다르다."
+  },
+  {
+    "id": "net-transmission-direction-mode",
+    "area": "네트워크",
+    "difficulty": "하",
+    "topic": "network-topology",
+    "concept": "회선을 쓰는 방향은 셋으로 갈리고, 보기로는 생활 속 기기가 함께 나온다.",
+    "question": "정보 전송 방식과 그 예를 짝지은 것으로 옳지 않은 것은?",
+    "choices": [
+      "반이중(Half Duplex) 방식 — 전화기",
+      "단방향(Simplex) 방식 — 라디오",
+      "전이중(Full Duplex) 방식 — 전화기",
+      "반이중(Half Duplex) 방식 — 무전기"
+    ],
+    "answer": 0,
+    "explanation": "전화기는 양쪽이 동시에 말하고 들을 수 있으므로 전이중이다. 반이중은 한쪽이 보내는 동안 다른 쪽은 받기만 하는 무전기 쪽이다. 단방향은 되돌려 보낼 길이 아예 없는 라디오·TV 방송에 해당한다."
+  },
+  {
+    "id": "net-ieee802-series",
+    "area": "네트워크",
+    "difficulty": "중",
+    "topic": "network-topology",
+    "concept": "LAN 표준은 위원회 번호로 갈라 외우고, 번호와 기술을 어긋나게 짝지은 선지가 함께 선다.",
+    "question": "IEEE 802 표준 규격과 그 내용을 짝지은 것으로 옳지 않은 것은?",
+    "choices": [
+      "802.5 — CSMA/CD 방식의 이더넷",
+      "802.2 — 논리 링크 제어(LLC)",
+      "802.4 — 토큰 버스(Token Bus)",
+      "802.11 — 무선 LAN"
+    ],
+    "answer": 0,
+    "explanation": "CSMA/CD 이더넷은 802.3이고, ==802.5는 토큰을 돌려 전송 권한을 주는 토큰 링이다==. 두 번호를 맞바꾼 선지가 틀렸다. 802.2는 논리 링크 제어, 802.4는 토큰 버스, 802.6은 도시권 통신망(MAN), 802.11은 무선 LAN으로 묶어 외운다."
+  },
+  {
+    "id": "net-packet-switching-modes",
+    "area": "네트워크",
+    "difficulty": "중",
+    "topic": "ip-protocol",
+    "concept": "패킷 교환은 길을 미리 잡아 두느냐 아니냐로 갈리고, 도착 순서가 그 결과로 달라진다.",
+    "question": "패킷 교환 방식에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "데이터그램 방식은 전송에 앞서 논리적 경로를 미리 설정해 두고 모든 패킷을 그 경로로 보낸다",
+      "가상 회선 방식은 패킷들이 설정된 같은 경로를 따르므로 보낸 순서대로 도착한다",
+      "데이터그램 방식은 패킷마다 독립적으로 경로를 정하므로 순서가 바뀌어 도착할 수 있다",
+      "IP는 데이터그램 방식이며, 뒤바뀐 순서를 바로잡는 일은 상위 계층의 TCP가 맡는다"
+    ],
+    "answer": 0,
+    "explanation": "경로를 미리 설정해 두는 쪽은 가상 회선 방식이고, 데이터그램은 경로를 미리 잡지 않아 패킷마다 길이 달라질 수 있는 방식이다. 두 방식의 정의를 맞바꾼 선지가 틀렸다. 순서 보장 여부가 둘을 가르는 결과다."
+  },
+  {
+    "id": "os-process-state-transition-names",
+    "area": "운영체제",
+    "difficulty": "중",
+    "topic": "process-vs-thread",
+    "concept": "프로세스가 상태 사이를 옮겨 다니는 길마다 이름이 따로 붙어 있다.",
+    "question": "프로세스 상태 전이에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "웨이크업(Wake Up)은 준비 상태의 프로세스가 CPU를 할당받아 실행 상태로 바뀌는 것이다",
+      "디스패치(Dispatch)는 준비 상태의 프로세스가 CPU를 할당받아 실행 상태로 바뀌는 것이다",
+      "타이머 종료(Timer Run Out)는 시간 할당량을 다 쓴 프로세스가 실행에서 준비로 되돌아가는 것이다",
+      "블록(Block)은 실행 중인 프로세스가 입출력을 기다리러 대기 상태로 내려가는 것이다"
+    ],
+    "answer": 0,
+    "explanation": "준비에서 실행으로 올라가는 전이의 이름은 디스패치다. 웨이크업은 입출력이 끝난 프로세스가 대기에서 준비로 올라오는 전이라 출발점부터 다르다. 둘을 맞바꿔 적은 선지가 틀렸고, 실행 중이던 상태를 PCB에 넣어 두고 다음 것을 불러오는 일이 문맥 교환이다."
+  },
+  {
+    "id": "os-memory-management-strategies",
+    "area": "운영체제",
+    "difficulty": "중",
+    "topic": "memory-allocation",
+    "concept": "기억장치 관리 전략은 언제·어디에·무엇을 뺄지로 세 갈래가 되고, 각 갈래에 속한 기법이 따로 있다.",
+    "question": "기억장치 관리 전략에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "최초 적합·최적 적합·최악 적합은 무엇을 내보낼지 정하는 교체(Replacement) 전략에 속한다",
+      "반입(Fetch) 전략은 데이터를 언제 주기억장치로 올릴지 정하며 요구 반입과 예상 반입으로 나뉜다",
+      "배치(Placement) 전략은 들어온 데이터를 주기억장치의 어느 자리에 넣을지 정한다",
+      "FIFO·LRU·LFU·OPT는 자리가 없을 때 무엇을 내보낼지 정하는 교체 전략에 속한다"
+    ],
+    "answer": 0,
+    "explanation": "최초·최적·최악 적합은 빈 자리 중 어디에 넣을지 고르는 배치 전략이다. 내보낼 것을 고르는 교체 전략은 FIFO·LRU·LFU·OPT 쪽이다. 세 전략은 언제 올릴지(반입) · 어디에 넣을지(배치) · 무엇을 뺄지(교체)로 갈라 묶어 외운다."
+  },
+  {
+    "id": "os-memory-hierarchy-cache",
+    "area": "운영체제",
+    "difficulty": "중",
+    "topic": "virtual-memory",
+    "concept": "기억장치는 빠르고 작은 것에서 느리고 큰 것으로 층을 이루고, 층 사이의 속도 차를 메우는 장치가 따로 있다.",
+    "question": "기억장치 계층에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "연관(연상) 메모리는 저장된 주소를 순서대로 훑어 원하는 자리를 찾아낸다",
+      "레지스터는 CPU 안에 있어 기억장치 가운데 접근 속도가 가장 빠르다",
+      "캐시 메모리는 CPU와 주기억장치의 속도 차를 줄이며, 적중률이 높을수록 평균 접근 시간이 짧아진다",
+      "버퍼 메모리는 속도가 다른 두 장치 사이에 데이터를 잠시 담아 전송 속도 차를 흡수한다"
+    ],
+    "answer": 0,
+    "explanation": "연관 메모리는 주소가 아니라 저장된 내용의 일부로 찾아가는 기억장치여서, 주소를 훑는다고 적은 선지가 틀렸다. 계층은 레지스터 → 캐시 → 주기억장치 → 보조기억장치 순으로 아래로 갈수록 느리고 싸고 커진다."
+  },
+  {
+    "id": "os-scheduling-srt-arrival",
+    "area": "운영체제",
+    "difficulty": "상",
+    "topic": "cpu-scheduling",
+    "concept": "도착 시각이 서로 다르면, 실행 도중에 더 짧은 작업이 와도 비켜 주지 않는 쪽과 비켜 주는 쪽이 갈린다.",
+    "question": "다음 네 프로세스를 SRT(Shortest Remaining Time) 스케줄링으로 처리할 때 평균 반환시간은? (반환시간 = 완료 시각 − 도착 시각)",
+    "code": "프로세스   도착시간   실행시간\n   A          0         30\n   B          5         10\n   C         10         15\n   D         15         10",
+    "choices": [
+      "28.75",
+      "38.75",
+      "40",
+      "25"
+    ],
+    "answer": 0,
+    "explanation": "A가 0에 시작했다가 5에 B가 오면 남은 25보다 B의 10이 짧아 선점당한다. B는 15에 끝나고, 그때 대기 중인 C(15)와 D(10) 중 짧은 D가 25까지, 이어 C가 40까지 돌며, 남은 A가 65에 끝난다. 반환시간은 A 65 · B 10 · C 30 · D 10이고 평균은 28.75다. ==비선점인 SJF로 풀면 A가 끝까지 돌아 38.75가 나오는데, 그 값이 함께 선지로 선다==."
+  },
+  {
+    "id": "prog-hash-function-kinds",
+    "area": "프로그래밍",
+    "difficulty": "중",
+    "topic": "hashing",
+    "concept": "해시 함수는 키에서 주소를 뽑아내는 방식으로 갈리고, 이름만 바꿔 섞어 내는 유형이 단골이다.",
+    "question": "해싱 함수의 종류에 대한 설명으로 옳지 않은 것은?",
+    "choices": [
+      "폴딩법(중첩법)은 키를 제곱한 뒤 그 가운데 자리를 주소로 삼는다",
+      "제산법(나눗셈법)은 키를 테이블 크기로 나눈 나머지를 주소로 삼는다",
+      "기수 변환법은 키의 진수를 다른 진수로 바꾼 뒤 주소 범위에 맞게 조정한다",
+      "숫자 분석법은 키를 이루는 자릿수별 숫자 분포를 살펴 고른 자리만 뽑아 쓴다"
+    ],
+    "answer": 0,
+    "explanation": "키를 제곱해 가운데 자리를 취하는 것은 중간 제곱법이고, 폴딩법은 키를 몇 조각으로 쪼갠 뒤 더하거나 XOR해 주소로 삼는 방식이다. 두 기법의 설명을 맞바꾼 선지가 틀렸으며, 무작위법까지 더해 여섯 가지가 함께 묶여 출제된다."
   }
 ]

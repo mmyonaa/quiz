@@ -3820,5 +3820,168 @@
       "패치"
     ],
     "explanation": "=='공격 자체가 아니라 공격을 준비하는 정찰 단계'라는 성격을 짚는 것이 이 문항의 출발점==이다. 알아내려는 것을 '살아 있는 호스트 → 열린 포트 → 서비스와 버전 → 운영체제'의 층으로 적고, 대책을 탐지·차단(임계값·IPS·SIEM)과 노출 축소(불필요 서비스 중단·관리 포트 차단·배너 제거)로 나눠 써야 문항이 요구하는 양쪽이 채워진다."
+  },
+  {
+    "id": "p-scheduling-arrival-sjf-srt",
+    "topic": "cpu-scheduling",
+    "difficulty": "상",
+    "kind": "계산형",
+    "question": "도착시각이 서로 다른 네 프로세스를 비선점 SJF(①)와 선점형 SRT(②)로 처리할 때, 각각의 평균 반환시간을 구하시오. (반환시간 = 완료시각 − 도착시각)",
+    "code": "프로세스   도착시각   실행시간\n   A          0         30\n   B          5         10\n   C         10         15\n   D         15         10",
+    "answers": [
+      [
+        "38.75"
+      ],
+      [
+        "28.75"
+      ]
+    ],
+    "labels": [
+      "SJF 평균 반환시간",
+      "SRT 평균 반환시간"
+    ],
+    "explanation": "SJF는 비선점이라 A가 30까지 끝까지 돈 뒤 남은 셋 중 짧은 것부터 B(40) → D(50) → C(65) 순으로 처리된다. 반환시간은 `30`·`35`·`55`·`35`로 평균 `38.75`다. SRT는 5에 도착한 B의 10이 A의 남은 25보다 짧아 선점하고, 이어 D(25) → C(40) → 남은 A(65) 순이 되어 반환시간이 `65`·`10`·`30`·`10`, 평균 `28.75`다. 도착시각이 모두 같으면 두 값이 같아지므로, 선점 여부가 갈리는 것은 실행 도중에 더 짧은 작업이 올 때뿐이다."
+  },
+  {
+    "id": "p-java-string-equals-ref",
+    "topic": "java-basics",
+    "difficulty": "중",
+    "kind": "코드형",
+    "question": "다음 Java 프로그램의 실행 결과를 쓰시오.",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        String s1 = \"Programming\";\n        String s2 = \"Programming\";\n        String s3 = new String(\"Programming\");\n\n        System.out.print((s1 == s2) + \" \" + (s1 == s3) + \" \" + s1.equals(s3));\n    }\n}",
+    "answers": [
+      [
+        "true false true"
+      ]
+    ],
+    "explanation": "같은 문자열 리터럴은 상수 풀에 있는 한 객체를 함께 쓰므로 s1과 s2의 참조 비교는 참이다. `new String()`은 값이 같아도 새 객체를 만들어 s3의 참조만 다르므로 둘째는 거짓이고, 값을 보는 equals는 담긴 글자만 견주므로 셋째는 다시 참이 된다."
+  },
+  {
+    "id": "p-java-abstract-parent-impl",
+    "topic": "java-inheritance",
+    "difficulty": "상",
+    "kind": "코드형",
+    "question": "다음 Java 프로그램의 실행 결과를 쓰시오.",
+    "code": "abstract class Vehicle {\n    private String name;\n    abstract public String getName(String val);\n\n    public String getName() {\n        return \"Vehicle name: \" + name;\n    }\n    public void setName(String val) {\n        name = val;\n    }\n}\n\nclass Car extends Vehicle {\n    public Car(String val) {\n        setName(val);\n    }\n    public String getName(String val) {\n        return \"Car name: \" + val;\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Vehicle obj = new Car(\"Spark\");\n        System.out.print(obj.getName());\n    }\n}",
+    "answers": [
+      [
+        "Vehicle name: Spark"
+      ]
+    ],
+    "explanation": "부른 것은 매개변수가 없는 getName()인데 Car가 가진 것은 매개변수를 받는 getName(String)이다. 이름이 같아도 매개변수가 다르면 재정의가 아니라 오버로딩이라, 부모 쪽 구현이 그대로 불린다. 생성자가 setName으로 넣어 둔 이름이 부모 메서드의 문자열에 붙어 나온다."
+  },
+  {
+    "id": "p-c-struct-pointer-member",
+    "topic": "c-pointer-array",
+    "difficulty": "중",
+    "kind": "코드형",
+    "question": "다음 C 프로그램의 실행 결과를 쓰시오.",
+    "code": "#include <stdio.h>\n\nstruct insa {\n    char name[10];\n    int age;\n};\n\nint main() {\n    struct insa p[3] = { {\"Kim\", 28}, {\"Lee\", 36}, {\"Park\", 41} };\n    struct insa *q = p + 2;\n\n    printf(\"%s %d\", q->name, q->age - p->age);\n    return 0;\n}",
+    "answers": [
+      [
+        "Park 13"
+      ]
+    ],
+    "explanation": "p는 첫 원소의 주소이므로 p + 2는 세 번째 원소를 가리킨다 — 포인터에 더한 수는 바이트가 아니라 구조체 하나 단위로 움직인다. q->age는 41이고 p->age는 첫 원소의 28이라 차는 13이다. 포인터로 멤버에 닿을 때는 화살표를, 일반 구조체 변수에는 점을 쓴다."
+  },
+  {
+    "id": "p-c-recursion-factorial-call",
+    "topic": "c-operators",
+    "difficulty": "중",
+    "kind": "코드형",
+    "question": "다음 C 프로그램에서 5를 입력했을 때의 실행 결과를 쓰시오.",
+    "code": "#include <stdio.h>\n\nint func(int a) {\n    if (a <= 1) return 1;\n    return a * func(a - 1);\n}\n\nint main() {\n    int a;\n    scanf(\"%d\", &a);\n    printf(\"%d\", func(a));\n    return 0;\n}",
+    "answers": [
+      [
+        "120"
+      ]
+    ],
+    "explanation": "func은 자기 자신을 부르며 내려가다 a가 1 이하가 되면 1을 돌려주고, 거기서부터 거꾸로 곱을 쌓아 올린다. 종료 조건이 없으면 끝없이 내려가므로, 재귀 문제는 멈추는 자리부터 찾는다. 5 × 4 × 3 × 2 × 1이라 120이다."
+  },
+  {
+    "id": "p-c-perfect-number-count",
+    "topic": "c-operators",
+    "difficulty": "상",
+    "kind": "코드형",
+    "question": "다음 C 프로그램의 실행 결과를 쓰시오.",
+    "code": "#include <stdio.h>\n\nvoid main() {\n    int n, k, s, el = 0;\n\n    for (n = 6; n <= 30; n++) {\n        s = 0;\n        k = n / 2;\n        for (int j = 1; j <= k; j++) {\n            if (n % j == 0)\n                s = s + j;\n        }\n        if (s == n)\n            el++;\n    }\n    printf(\"%d\", el);\n}",
+    "answers": [
+      [
+        "2"
+      ]
+    ],
+    "explanation": "안쪽 루프가 n의 약수를 자기 자신만 빼고 모두 더하므로, 그 합이 n과 같은지 보는 것은 완전수 판정이다. 약수는 그 수의 절반을 넘을 수 없어 n/2까지만 돌면 충분하다. 6부터 30 사이의 완전수는 6과 28 둘뿐이라 el은 2가 된다."
+  },
+  {
+    "id": "p-c-2d-array-trace",
+    "topic": "c-pointer-array",
+    "difficulty": "중",
+    "kind": "코드형",
+    "question": "다음 C 프로그램의 실행 결과를 쓰시오.",
+    "code": "#include <stdio.h>\n\nint main() {\n    int a[3][3];\n    int i, j, sum = 0;\n\n    for (i = 0; i < 3; i++)\n        for (j = 0; j < 3; j++)\n            a[i][j] = (i + 1) * (j + 2);\n\n    for (i = 0; i < 3; i++)\n        sum += a[i][2 - i];\n\n    printf(\"%d\", sum);\n    return 0;\n}",
+    "answers": [
+      [
+        "16"
+      ]
+    ],
+    "explanation": "채워진 값은 행별로 2·3·4 / 4·6·8 / 6·9·12다. 둘째 루프는 행이 늘수록 열이 줄어 오른쪽 위에서 왼쪽 아래로 내려가는 역대각선을 훑으므로 4 + 6 + 6 = 16이다. 같은 자리를 주대각선으로 잘못 읽으면 2 + 6 + 12의 20이 나온다."
+  },
+  {
+    "id": "p-python-split-list",
+    "topic": "python-slicing",
+    "difficulty": "중",
+    "kind": "코드형",
+    "question": "다음 Python 프로그램의 실행 결과를 쓰시오.",
+    "code": "s = \"apple,banana,cherry\"\nt = s.split(\",\")\nprint(len(t), t[-1])",
+    "answers": [
+      [
+        "3 cherry"
+      ]
+    ],
+    "explanation": "split은 구분자를 기준으로 문자열을 잘라 리스트로 돌려주므로 t는 세 조각이 된다. 결과가 문자열이 아니라 리스트이므로 len은 글자 수가 아니라 조각 수를 센다. 음수 인덱스는 뒤에서 세므로 t[-1]은 마지막 조각인 cherry다."
+  },
+  {
+    "id": "p-process-state-transition",
+    "topic": "process-vs-thread",
+    "difficulty": "중",
+    "kind": "단답형",
+    "question": "프로세스 상태 전이에서, 준비(Ready) 상태의 프로세스가 CPU를 할당받아 실행(Run) 상태로 바뀌는 과정(①)과, 입출력이 끝난 프로세스가 대기(Block) 상태에서 준비 상태로 바뀌는 과정(②)을 각각 무엇이라 하는지 쓰시오.",
+    "answers": [
+      [
+        "디스패치",
+        "Dispatch",
+        "디스패치(Dispatch)"
+      ],
+      [
+        "웨이크업",
+        "Wake Up",
+        "웨이크업(Wake Up)"
+      ]
+    ],
+    "labels": [
+      "①",
+      "②"
+    ],
+    "explanation": "준비에서 실행으로 올라가는 전이가 디스패치이고, 대기에서 준비로 올라오는 전이가 웨이크업이다. 시간 할당량을 다 써 실행에서 준비로 되돌아가는 타이머 종료와 방향을 헷갈리지 않는 것이 요령이다. 실행에서 대기로 내려가는 것은 블록이다."
+  },
+  {
+    "id": "p-web-service-wsdl-uddi",
+    "topic": "interface-design",
+    "difficulty": "중",
+    "kind": "단답형",
+    "question": "웹 서비스 구성 요소 중, 서비스의 위치·메시지 형식·프로토콜을 XML로 기술해 둔 명세 언어(①)와, 서비스 제공자가 자신의 서비스를 등록해 두고 이용자가 찾아갈 수 있게 하는 공개 저장소(②)를 각각 영문 약어로 쓰시오.",
+    "answers": [
+      [
+        "WSDL"
+      ],
+      [
+        "UDDI"
+      ]
+    ],
+    "labels": [
+      "①",
+      "②"
+    ],
+    "explanation": "웹 서비스는 등록(UDDI) · 설명(WSDL) · 호출(SOAP) 셋으로 묶어 외운다. 명세를 적어 두는 쪽이 WSDL이고 메시지를 실어 나르는 쪽이 SOAP라, 둘을 맞바꾸는 것이 단골 함정이다."
   }
 ]
