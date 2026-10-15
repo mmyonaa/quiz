@@ -345,14 +345,29 @@ const mnemonicSegs = (mn: string): MnSeg[] => {
         /* ignore */
       }
 
-      // ── 사이드 목차 — 지금 읽는 영역과 카드를 표시한다 ──
-      // 표시만 하고 판은 열지 않는다. 한때 읽는 자리를 따라 판까지 옮겨 열었는데,
-      // 목차에서 카드를 고르면 그 자리까지 부드럽게 스크롤하는 동안 지나치는 영역마다
-      // 판이 차례로 열렸다 닫혀 목차가 요동쳤다. 어느 판을 펼칠지는 사용자가 정한다
-      // (개념 노트 목차와 같다 — 거기서도 판은 화살표로만 열린다).
+      // ── 사이드 목차 ──
+      // 판을 여는 길은 둘이고, 둘 다 사용자가 누른 결과다 — 개념 노트와 같은 약속이다.
+      //   화살표  그 자리에서 펼친다(옮겨 가지 않고 다른 영역을 들춰 본다)
+      //   영역 줄  그 영역으로 가면서 그 영역의 카드 목록을 연다
+      // 뒤엣것이 개념 노트에선 '다른 페이지로 이동 → 그 영역의 판이 열린 채로 뜸'으로 이뤄진다.
+      // 여기선 한 페이지라 이동이 앵커 점프가 되는데, 그러면서 '열린 채로'가 빠져 있었다.
+      //
+      // 스크롤로는 열지 않는다. 한때 읽는 자리를 따라 판까지 옮겨 열었더니, 목차에서 카드를
+      // 고르면 그 자리까지 부드럽게 스크롤하는 동안 지나치는 영역마다 판이 차례로 열렸다 닫혀
+      // 목차가 요동쳤다 — 목차가 스스로 일으킨 스크롤에 목차가 반응한 꼴이다.
       const rows = [...document.querySelectorAll<HTMLElement>(".side-toc .side-row")];
+      const caretBtns = [...document.querySelectorAll<HTMLButtonElement>(".side-toc .side-caret")];
+      const wraps = [...document.querySelectorAll<HTMLElement>(".side-toc .side-sub-wrap")];
+      // 공통 스크립트(SiteHeader)의 openPane과 같은 일 — 상태는 DOM에만 있어 서로 어긋나지 않는다
+      const openArea = (i: number) => {
+        caretBtns.forEach((c, k) => c.setAttribute("aria-expanded", String(k === i)));
+        wraps.forEach((w, k) => w.classList.toggle("open", k === i));
+      };
       const links = [...document.querySelectorAll<HTMLAnchorElement>(".memo-side")];
       const sections = links.map((a) => document.getElementById(a.dataset.area!)!);
+      // 영역 줄을 누르면 그 영역의 카드 목록이 열린 채로 남는다(개념 노트에서 그 영역 페이지로
+      // 건너갔을 때와 같은 자리). 이동 자체는 앵커가 맡으므로 여기서는 펼치기만 한다.
+      links.forEach((a, i) => a.addEventListener("click", () => openArea(i)));
       const subLinks = [...document.querySelectorAll<HTMLAnchorElement>(".side-sublink")];
       // 카드 목록은 위 블록(외운 카드 기록) 안에 갇혀 있어 여기서 다시 집는다
       const memoCards = [...document.querySelectorAll<HTMLElement>(".memo")];
