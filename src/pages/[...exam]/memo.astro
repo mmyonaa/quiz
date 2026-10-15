@@ -129,7 +129,7 @@ const mnemonicSegs = (mn: string): MnSeg[] => {
                 <span class="side-label">{area}</span> <em>{cs.length}</em>
               </a>
             </div>
-            <div class={`side-sub-wrap${k === 0 ? " open" : ""}`} id={`sub-${slug}`} data-current={k === 0 ? "" : undefined}>
+            <div class={`side-sub-wrap${k === 0 ? " open" : ""}`} id={`sub-${slug}`}>
               {/* 드로어 2단에서만 보이는 뒤로가기 — 넓은 화면에선 display:none이라 아코디언 격자에서 빠진다 */}
               <button class="side-back" type="button">← {area}</button>
               <nav class="side-sub" aria-label={`${area} 카드`}>
@@ -346,35 +346,34 @@ const mnemonicSegs = (mn: string): MnSeg[] => {
       }
 
       // ── 사이드 목차 — 지금 읽는 영역과 카드를 표시한다 ──
-      // 개념 노트와 다른 점 하나: 거기선 한 영역이 한 페이지라 열린 판이 고정이지만,
-      // 여기선 모든 영역이 한 페이지에 서 있다. 그래서 판도 읽는 자리를 따라 옮겨 연다 —
-      // 다른 영역의 카드 목록이 열린 채로 남으면 목차가 본문과 어긋난 것을 가리킨다.
-      const sideTocEl = document.querySelector<HTMLElement>(".side-toc");
+      // 표시만 하고 판은 열지 않는다. 한때 읽는 자리를 따라 판까지 옮겨 열었는데,
+      // 목차에서 카드를 고르면 그 자리까지 부드럽게 스크롤하는 동안 지나치는 영역마다
+      // 판이 차례로 열렸다 닫혀 목차가 요동쳤다. 어느 판을 펼칠지는 사용자가 정한다
+      // (개념 노트 목차와 같다 — 거기서도 판은 화살표로만 열린다).
       const rows = [...document.querySelectorAll<HTMLElement>(".side-toc .side-row")];
       const links = [...document.querySelectorAll<HTMLAnchorElement>(".memo-side")];
       const sections = links.map((a) => document.getElementById(a.dataset.area!)!);
-      const caretBtns = [...document.querySelectorAll<HTMLButtonElement>(".side-toc .side-caret")];
-      const wraps = [...document.querySelectorAll<HTMLElement>(".side-toc .side-sub-wrap")];
-      // 카드 id("m-<key>") → 그 카드를 가리키는 목차 줄
-      const subByCard = new Map(
-        [...document.querySelectorAll<HTMLAnchorElement>(".side-sublink")].map((a) => [
-          a.getAttribute("href")!.slice(1),
-          a,
-        ]),
-      );
-      const subLinks = [...subByCard.values()];
+      const subLinks = [...document.querySelectorAll<HTMLAnchorElement>(".side-sublink")];
       // 카드 목록은 위 블록(외운 카드 기록) 안에 갇혀 있어 여기서 다시 집는다
       const memoCards = [...document.querySelectorAll<HTMLElement>(".memo")];
-      // 공통 스크립트(SiteHeader)의 openPane과 같은 일을 한다 — 상태는 DOM에만 있어 서로 어긋나지 않는다
-      const openArea = (i: number) => {
-        caretBtns.forEach((c, k) => c.setAttribute("aria-expanded", String(k === i)));
-        wraps.forEach((w, k) => w.classList.toggle("open", k === i));
-      };
+      // 여기엔 '되돌릴 판'(data-current)을 두지 않는다. 개념 노트에선 페이지가 곧 영역이라
+      // 되돌릴 자리가 분명하지만, 한 페이지에 모든 영역이 선 여기서는 그런 자리가 없다 —
+      // 처음 영역에 붙박으면 드로어에서 카드를 고를 때마다 그 판이 열렸고, 읽는 자리를 따라
+      // 옮기면 부드럽게 스크롤하는 도중의 영역을 집었다. 드로어는 열 때 어차피 판을 다 닫으므로,
+      // 닫을 때도 다 닫힌 채로 두는 것이 앞뒤가 맞는다.
+
+      // 기준선 — 앵커로 뛰었을 때 카드가 실제로 내려앉는 높이다.
+      // 브라우저는 html의 scroll-padding-top과 대상의 scroll-margin-top을 더한 만큼 띄우므로,
+      // 그 합보다 선이 위에 있으면 방금 뛴 카드가 선을 못 넘어 바로 앞 카드가 '지금 읽는 것'이 된다.
+      const px = (v: string) => parseFloat(v) || 0;
+      const line =
+        px(getComputedStyle(document.documentElement).scrollPaddingTop) +
+        px(getComputedStyle(memoCards[0]).scrollMarginTop) +
+        8;
 
       let at = -1;
       let cardAt: string | null = null;
       const spy = () => {
-        const line = 140; // 화면 위쪽 이 선을 지난 마지막 것이 '지금 읽는 것'
         let cur = 0;
         sections.forEach((s, i) => {
           if (!s.hidden && s.getBoundingClientRect().top <= line) cur = i;
@@ -383,15 +382,16 @@ const mnemonicSegs = (mn: string): MnSeg[] => {
           at = cur;
           rows.forEach((r, i) => r.classList.toggle("on", i === cur));
           links.forEach((a, i) => a.classList.toggle("on", i === cur));
-          // 드로어가 열려 있는 동안은 건드리지 않는다 — 거기선 영역 목록이 1단이고,
-          // 판을 여는 것은 사용자가 고른 결과여야 한다
-          if (!sideTocEl?.classList.contains("open")) openArea(cur);
         }
-        // 카드 단위 — 열린 판 안에서 지금 읽는 카드를 짚는다
-        let id: string | null = null;
-        for (const card of memoCards) {
-          if (!card.hidden && card.getBoundingClientRect().top <= line) id = card.id;
+        // 카드 단위 — 지금 영역 **안에서** 짚는다. 전체에서 고르면 영역 어귀에 섰을 때
+        // 아직 이 영역의 첫 카드가 선을 넘기 전이라 앞 영역의 마지막 카드가 잡히는데,
+        // 줄에는 이미 이 영역이 켜져 있어 둘이 서로 어긋나 보인다.
+        const inArea = [...sections[cur].querySelectorAll<HTMLElement>(".memo")].filter((c) => !c.hidden);
+        let el: HTMLElement | null = inArea[0] ?? null;
+        for (const card of inArea) {
+          if (card.getBoundingClientRect().top <= line) el = card;
         }
+        const id = el?.id ?? null;
         if (id === cardAt) return;
         cardAt = id;
         subLinks.forEach((a) => a.classList.toggle("on", a.getAttribute("href")!.slice(1) === id));
