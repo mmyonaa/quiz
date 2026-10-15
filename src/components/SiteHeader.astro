@@ -222,7 +222,9 @@ const examTabs = EXAMS.map((e) => ({
   const sideTocEl = document.querySelector<HTMLElement>(".side-toc");
   if (search && sideTocEl) {
     const empty = sideTocEl.querySelector<HTMLElement>(".side-empty");
-    const allRow = sideTocEl.querySelector<HTMLElement>(".side-row"); // '전체' 줄 — 검색 중엔 군더더기
+    // '전체' 줄 — 검색 중엔 군더더기라 접는다. 표식(.side-all)으로 집는다:
+    // 첫 줄로 집으면 '전체'가 없는 목차(암기 노트)에서 첫 영역이 대신 사라진다.
+    const allRow = sideTocEl.querySelector<HTMLElement>(".side-link.side-all")?.closest<HTMLElement>(".side-row");
     const groups = [...sideTocEl.querySelectorAll<HTMLElement>(".side-sub-wrap")].map((wrap) => ({
       wrap,
       row: wrap.previousElementSibling as HTMLElement,

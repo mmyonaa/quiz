@@ -53,22 +53,42 @@ export function topicsOf(area: Area, exam: Exam = DEFAULT_EXAM) {
 }
 
 /**
- * 목차 검색이 훑을 텍스트 — 제목·별칭·도입부를 소문자로 이어 붙이고 강조 표기(==·**·` )를 걷어낸다.
- * 본문(도입부)까지 검색되게 하되, 사이드 목차는 모든 노트 페이지에 실리므로 해설은 넣지 않는다(무게).
+ * 목차 검색이 훑을 텍스트로 다듬는다 — 소문자로 이어 붙이고 강조·블록 표기를 걷어낸다.
+ *
+ * 개념 그림 블록("^ 이름")은 글이 아니라 그림 참조다 — 슬러그가 검색어로 잡히면
+ * "cycle"을 친 사람에게 글자 어디에도 없는 항목이 걸린다.
  */
-export function topicSearchText(t: { title: string; intro: string; aliases?: string }) {
-  // 개념 그림 블록("^ 이름")은 글이 아니라 그림 참조다 — 슬러그가 검색어로 잡히면
-  // "cycle"을 친 사람에게 글자 어디에도 없는 주제가 걸린다.
-  const intro = t.intro
+const searchable = (parts: (string | undefined)[], body: string) => {
+  const text = body
     .split("\n\n")
     .filter((b) => !b.startsWith("^ "))
     .join(" ");
-  return [t.title, t.aliases ?? "", intro]
+  return [...parts, text]
+    .filter(Boolean)
     .join(" ")
     .replace(/[=*`>|#]/g, " ")
     .replace(/\s+/g, " ")
     .toLowerCase()
     .trim();
+};
+
+/**
+ * 개념 노트 목차 검색이 훑을 텍스트 — 제목·별칭·도입부.
+ * 본문(도입부)까지 검색되게 하되, 사이드 목차는 모든 노트 페이지에 실리므로 해설은 넣지 않는다(무게).
+ */
+export function topicSearchText(t: { title: string; intro: string; aliases?: string }) {
+  return searchable([t.title, t.aliases], t.intro);
+}
+
+/**
+ * 암기 노트 목차 검색이 훑을 텍스트 — 제목·두문자·카드 본문.
+ *
+ * 두문자는 가운뎃점을 뺀 꼴도 함께 넣는다. 카드에는 "물·데·네·전·세·표·응"으로 적혀 있지만
+ * 외우는 사람은 "물데네전세표응"으로 읊어서, 적힌 그대로만 담아 두면 정작 두문자로는 못 찾는다.
+ */
+export function memoSearchText(m: { title: string; mnemonic?: string; body: string }) {
+  const mn = m.mnemonic ?? "";
+  return searchable([m.title, mn, mn.replace(/[\s·]+/g, "")], m.body);
 }
 
 /** 한 과목의 주제 목록 — 과목 안에서도 정의 순서를 유지한다. */

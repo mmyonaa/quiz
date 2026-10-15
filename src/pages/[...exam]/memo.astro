@@ -10,7 +10,7 @@ import {
   type Area,
   type Exam,
 } from "../../content.config";
-import { topicsOf } from "../../lib/bank";
+import { memoSearchText, topicsOf } from "../../lib/bank";
 import MdBlocks from "../../components/MdBlocks.astro";
 import SiteHeader from "../../components/SiteHeader.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
@@ -33,6 +33,9 @@ const areas = (AREAS_BY_EXAM[exam] as readonly Area[])
   .map((area) => ({ area, slug: AREA_SLUGS[area], cards: cards.filter((c) => c.area === area) }))
   .filter((a) => a.cards.length > 0);
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+/** 목차 펼침 화살표 — 열리면 90도 돈다(회전은 CSS가 맡는다). 개념 노트 목차와 같은 모양 */
+const CARET =
+  '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>';
 
 // 카드 → 그 카드가 요약하는 개념 노트 주제로 가는 길. "외우다 막히면 왜인지 읽으러" 가는
 // 통로이고, 지금껏 페이지 맨 아래 링크 하나뿐이었다. 개념 노트의 주제 앵커는 영역 안에서의
@@ -89,15 +92,55 @@ const mnemonicSegs = (mn: string): MnSeg[] => {
     <SiteHeader current="memo" exam={exam} toc="영역" />
 
     <main class="side-layout memo-main">
-      {/* 좌측 영역 목차 — 넓은 화면은 본문 옆에 고정, 좁은 화면은 헤더의 '영역' 버튼으로 여는 드로어 */}
+      {/* 좌측 영역 목차 — 넓은 화면은 본문 옆에 고정, 좁은 화면은 헤더의 '영역' 버튼으로 여는 드로어.
+          구조는 개념 노트의 목차와 같다(영역 줄 + 펼침 화살표 + 하위 목록) — 넓은 화면에선 제자리
+          아코디언, 드로어에선 2단 판이 되고, 동작은 SiteHeader의 공통 스크립트가 맡는다. */}
       <aside id="side-toc" class="side-toc as-drawer" aria-label="영역 바로가기">
         <button id="toc-close" class="toc-close" type="button" aria-label="목차 닫기">×</button>
+        {/* 카드 검색 — 한 시험의 카드가 마흔 장 넘게 한 페이지에 늘어서 있어,
+            어느 영역에 있는지 모르는 카드는 눈으로 찾기 어렵다(제목·두문자·본문을 훑는다) */}
+        <div class="side-search">
+          <input
+            id="toc-search"
+            type="search"
+            placeholder="카드 검색"
+            aria-label="카드 검색"
+            autocomplete="off"
+          />
+          <button id="toc-search-clear" class="side-search-clear" type="button" aria-label="검색어 지우기" hidden>×</button>
+        </div>
         <span class="side-toc-title">영역</span>
-        {areas.map(({ area, slug, cards: cs }) => (
-          <a class="side-link memo-side" href={`#${slug}`} data-area={slug}>
-            <span class="side-label">{area}</span> <em>{cs.length}</em>
-          </a>
+        {/* 영역 줄은 목차 안에서 위아래로 붙어 고정된다 — 카드를 아무리 스크롤해도 영역 전환은
+            항상 한 번에 닿는다(--i/--j는 그 줄이 쌓일 위·아래 칸 수). 여기엔 '전체' 줄이 없다 —
+            모든 영역이 이 한 페이지에 서 있어 따로 갈 곳이 아니다. */}
+        {areas.map(({ area, slug, cards: cs }, k) => (
+          <Fragment>
+            <div class="side-row" data-row={slug} style={`--i: ${k}; --j: ${areas.length - 1 - k}`}>
+              <button
+                class="side-caret"
+                type="button"
+                aria-expanded={k === 0 ? "true" : "false"}
+                aria-controls={`sub-${slug}`}
+                aria-label={`${area} 카드 목록`}
+              >
+                <Fragment set:html={CARET} />
+              </button>
+              <a class="side-link memo-side" href={`#${slug}`} data-area={slug}>
+                <span class="side-label">{area}</span> <em>{cs.length}</em>
+              </a>
+            </div>
+            <div class={`side-sub-wrap${k === 0 ? " open" : ""}`} id={`sub-${slug}`} data-current={k === 0 ? "" : undefined}>
+              {/* 드로어 2단에서만 보이는 뒤로가기 — 넓은 화면에선 display:none이라 아코디언 격자에서 빠진다 */}
+              <button class="side-back" type="button">← {area}</button>
+              <nav class="side-sub" aria-label={`${area} 카드`}>
+                {cs.map((c) => (
+                  <a class="side-sublink" href={`#m-${c.key}`} title={c.title} data-search={memoSearchText(c)}>{c.title}</a>
+                ))}
+              </nav>
+            </div>
+          </Fragment>
         ))}
+        <p class="side-empty" hidden>찾는 카드가 없습니다</p>
       </aside>
 
       <div class="side-body reading">
@@ -199,12 +242,22 @@ const mnemonicSegs = (mn: string): MnSeg[] => {
             b?.setAttribute("aria-pressed", String(on));
             if (b) b.querySelector<HTMLElement>(".mdb-text")!.textContent = on ? "외움" : "외웠다";
           });
+          // 목차도 함께 접는다 — 숨긴 카드를 목차가 계속 가리키면 눌러도 아무 데도 가지 않는다
+          cards.forEach((card) => {
+            const a = document.querySelector<HTMLElement>(`.side-sublink[href="#${card.id}"]`);
+            if (a) a.hidden = card.hidden;
+          });
           // 영역별 진행 — 그 영역에서 외운 수
           document.querySelectorAll<HTMLElement>(".memo-area").forEach((sec) => {
             const n = [...sec.querySelectorAll<HTMLElement>(".memo")].filter((c) => done.has(c.id)).length;
             sec.querySelector<HTMLElement>(".area-prog b")!.textContent = String(n);
             // 한 영역을 다 외우면 영역 자체도 접힌다 — 숨기기를 켠 뜻이 "남은 것만 보자"이므로
             sec.hidden = hiding && ![...sec.querySelectorAll<HTMLElement>(".memo")].some((c) => !c.hidden);
+            // 통째로 접힌 영역은 목차에서도 줄과 판을 함께 뺀다
+            const row = document.querySelector<HTMLElement>(`.side-row[data-row="${sec.id}"]`);
+            if (row) row.hidden = sec.hidden;
+            const wrap = document.getElementById(`sub-${sec.id}`);
+            if (wrap) wrap.hidden = sec.hidden;
           });
           const n = cards.filter((c) => done.has(c.id)).length;
           fill.style.width = `${Math.round((n / cards.length) * 100)}%`;
@@ -292,18 +345,56 @@ const mnemonicSegs = (mn: string): MnSeg[] => {
         /* ignore */
       }
 
-      // ── 사이드 목차 — 지금 읽는 영역을 표시 ──
+      // ── 사이드 목차 — 지금 읽는 영역과 카드를 표시한다 ──
+      // 개념 노트와 다른 점 하나: 거기선 한 영역이 한 페이지라 열린 판이 고정이지만,
+      // 여기선 모든 영역이 한 페이지에 서 있다. 그래서 판도 읽는 자리를 따라 옮겨 연다 —
+      // 다른 영역의 카드 목록이 열린 채로 남으면 목차가 본문과 어긋난 것을 가리킨다.
+      const sideTocEl = document.querySelector<HTMLElement>(".side-toc");
+      const rows = [...document.querySelectorAll<HTMLElement>(".side-toc .side-row")];
       const links = [...document.querySelectorAll<HTMLAnchorElement>(".memo-side")];
       const sections = links.map((a) => document.getElementById(a.dataset.area!)!);
+      const caretBtns = [...document.querySelectorAll<HTMLButtonElement>(".side-toc .side-caret")];
+      const wraps = [...document.querySelectorAll<HTMLElement>(".side-toc .side-sub-wrap")];
+      // 카드 id("m-<key>") → 그 카드를 가리키는 목차 줄
+      const subByCard = new Map(
+        [...document.querySelectorAll<HTMLAnchorElement>(".side-sublink")].map((a) => [
+          a.getAttribute("href")!.slice(1),
+          a,
+        ]),
+      );
+      const subLinks = [...subByCard.values()];
+      // 카드 목록은 위 블록(외운 카드 기록) 안에 갇혀 있어 여기서 다시 집는다
+      const memoCards = [...document.querySelectorAll<HTMLElement>(".memo")];
+      // 공통 스크립트(SiteHeader)의 openPane과 같은 일을 한다 — 상태는 DOM에만 있어 서로 어긋나지 않는다
+      const openArea = (i: number) => {
+        caretBtns.forEach((c, k) => c.setAttribute("aria-expanded", String(k === i)));
+        wraps.forEach((w, k) => w.classList.toggle("open", k === i));
+      };
+
       let at = -1;
+      let cardAt: string | null = null;
       const spy = () => {
+        const line = 140; // 화면 위쪽 이 선을 지난 마지막 것이 '지금 읽는 것'
         let cur = 0;
         sections.forEach((s, i) => {
-          if (s.getBoundingClientRect().top <= 140) cur = i;
+          if (!s.hidden && s.getBoundingClientRect().top <= line) cur = i;
         });
-        if (cur === at) return;
-        at = cur;
-        links.forEach((a, i) => a.classList.toggle("on", i === cur));
+        if (cur !== at) {
+          at = cur;
+          rows.forEach((r, i) => r.classList.toggle("on", i === cur));
+          links.forEach((a, i) => a.classList.toggle("on", i === cur));
+          // 드로어가 열려 있는 동안은 건드리지 않는다 — 거기선 영역 목록이 1단이고,
+          // 판을 여는 것은 사용자가 고른 결과여야 한다
+          if (!sideTocEl?.classList.contains("open")) openArea(cur);
+        }
+        // 카드 단위 — 열린 판 안에서 지금 읽는 카드를 짚는다
+        let id: string | null = null;
+        for (const card of memoCards) {
+          if (!card.hidden && card.getBoundingClientRect().top <= line) id = card.id;
+        }
+        if (id === cardAt) return;
+        cardAt = id;
+        subLinks.forEach((a) => a.classList.toggle("on", a.getAttribute("href")!.slice(1) === id));
       };
       let ticking = false;
       document.addEventListener(
