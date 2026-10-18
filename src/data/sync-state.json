@@ -522,8 +522,7 @@
     },
     "2026-10-08-disk-scheduling": {
       "sha": "321ab97ad391b36a50b8f00ce75349b72eefc7fb",
-      "section": "jeongcheogi",
-      "gapReported": true
+      "section": "jeongcheogi"
     },
     "2026-10-09-atlassian-cve-2026-21589-webresource-path-traversal": {
       "sha": "d53381a853f918d680be62d2e787b91a3d0416e9",
@@ -535,7 +534,37 @@
     },
     "2026-10-11-firewall-ids-ips-waf": {
       "sha": "70e886950a3ad7e995e9aac17541a347d0ba2147",
+      "section": "boangisa"
+    },
+    "2026-10-12-mcp-resource-templates": {
+      "sha": "095c0db03ab48103b089b7e1660cfb3a7e50ab49",
+      "section": "mcp"
+    },
+    "2026-10-13-concurrency-control": {
+      "sha": "e5646e1f3905cf3ae24cea038d1b0bea41c68330",
+      "section": "jeongcheogi",
+      "gapReported": true
+    },
+    "2026-10-14-fortimail-cve-2026-104286-null-byte-file-write": {
+      "sha": "5007f1c2aa72745cf13340f36467bfd38a58b233",
+      "section": "security"
+    },
+    "2026-10-15-mcp-protocol-revision-fragmentation": {
+      "sha": "64a0eb2864050816dae34ab107bd4e01f891be91",
+      "section": "mcp"
+    },
+    "2026-10-16-pki-certificate": {
+      "sha": "47a267e56c6cd42daf3575896003bff2b3225ec4",
       "section": "boangisa",
+      "gapReported": true
+    },
+    "2026-10-17-mcp-authorization-oauth": {
+      "sha": "c15ea3a88d228478921a2b92eb3067740738f452",
+      "section": "mcp"
+    },
+    "2026-10-18-network-devices": {
+      "sha": "a2d6a9243398da7aa768a42b27e972a660429a59",
+      "section": "jeongcheogi",
       "gapReported": true
     }
   }
