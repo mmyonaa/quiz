@@ -1,5 +1,6 @@
 ---
 import type { DIFFICULTIES } from "../content.config";
+import { codeHtml } from "../lib/code-block";
 import { md } from "../lib/md";
 import MdBlocks from "./MdBlocks.astro";
 
@@ -90,7 +91,7 @@ const blankLabel = (q: PQ, i: number) =>
             <span class="badge diff cn-diff cn-diff-narrow" data-level={q.difficulty}>{q.difficulty}</span>
             <p class="cn-question" set:html={md(q.question)} />
           </div>
-          {q.code && <pre class="q-code mono">{q.code}</pre>}
+          {q.code && <div class="q-code-set" set:html={codeHtml(q.code)} />}
           {/* 정답은 가려져 있다 — 선지를 골라 자기 점검하거나 '해설 보기'로 편다 */}
           <ol class="cn-choices" data-answer={q.answer}>
             {q.choices.map((c) => (
@@ -114,7 +115,7 @@ const blankLabel = (q: PQ, i: number) =>
               <span class="badge diff" data-level={p.difficulty}>{p.difficulty}</span>
             </summary>
             <p class="cn-question" set:html={md(p.question)} />
-            {p.code && <pre class="q-code mono">{p.code}</pre>}
+            {p.code && <div class="q-code-set" set:html={codeHtml(p.code)} />}
             <button type="button" class="linklike cn-pa-reveal" aria-expanded="false">정답 보기</button>
             <div class="cn-pa-ans" hidden>
               {p.kind === "약술형" ? (

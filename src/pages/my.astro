@@ -107,6 +107,7 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
 
     <script>
       import { supabase } from "../lib/supabase";
+      import { codeHtml } from "../lib/code-block";
       import { md } from "../lib/md";
       import { onAuth, authSession, loginWithGoogle, errorText } from "../lib/auth";
       import { dueIds, loadNote, noteKey } from "../lib/wrong-note";
@@ -144,10 +145,9 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
       const card = (q: Q, metaHTML: string) => {
         const el = document.createElement("article");
         el.className = "rv wrong";
-        const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         el.innerHTML = `
           <p class="rv-q"><span class="badge">${q.area}</span> <span class="badge diff" data-level="${q.difficulty}">${q.difficulty}</span> ${md(q.question)}</p>
-          ${q.code ? `<pre class="q-code mono">${esc(q.code)}</pre>` : ""}
+          ${q.code ? codeHtml(q.code) : ""}
           ${metaHTML}
           <p class="rv-a">정답: <b>${q.choices[q.answer]}</b></p>
           <p class="rv-x">${md(q.explanation)}</p>

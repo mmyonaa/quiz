@@ -1551,6 +1551,23 @@ button.linklike:hover {
   margin: 0.2rem 0 0.7rem;
   background: var(--bg);
 }
+/* 코드 블록 한 덩어리는 표와 코드가 섞여 올 수 있다(릴레이션 표 + SQL문) — 묶는 상자는
+   자리를 차지하지 않는다. display:contents 라 안의 블록들이 예전처럼 카드의 자식으로 선다
+   (한 덩어리뿐인 블록 138개가 그대로인 이유). 숨길 때는 상자가 다시 상자가 되어야 한다. */
+.q-code-set {
+  display: contents;
+}
+.q-code-set[hidden] {
+  display: none;
+}
+/* 고정폭 글꼴에는 한글이 없어 한글만 다른 글꼴로 떨어진다 — 폭이 영문의 1.437배라
+   공백으로 맞춘 줄이 어긋난다. 영문 두 칸(2ch)에 넣어 세운다(1ch = 고정폭 한 글자 폭).
+   표는 표가 받으므로(.q-cmp) 여기 남는 것은 SQL문·수식·값 목록이다. */
+.q-code .kr {
+  display: inline-block;
+  width: 2ch;
+  text-align: center;
+}
 
 /* 난이도 — 정답의 초록도 브랜드의 액센트도 빌리지 않는다. 초록은 주석이 밝혀 둔 대로
    정답·합격 전용이고, '상'은 틀렸다는 뜻이 아니다. 중립으로 두고 '상'만 글자를 세운다. */
@@ -2976,6 +2993,31 @@ button.toc-chip {
 .cmp tbody tr:last-child th,
 .cmp tbody tr:last-child td {
   border-bottom: 0;
+}
+
+/* 문항의 릴레이션 표 — 대조표(.cmp)의 괘선과 좁은 화면 세로 펴기를 그대로 쓰되,
+   첫 열의 톤만 되돌린다. 대조표의 첫 열은 견주는 축이라 낮춰 두는데, 릴레이션에서는
+   그 자리가 속성 하나(학번)여서 나머지 속성과 같은 층이다. */
+.q-cmp {
+  /* 릴레이션은 짧은 값이 모인 표다 — 판을 다 쓰면(.cmp의 width:100%) `2101` 한 칸이
+     200px을 차지해 가로로 멀어진 값끼리 견주게 된다. 내용만큼만 서고 넘칠 때만 판에서 멈춘다. */
+  width: max-content;
+  max-width: 100%;
+  min-width: 0;
+}
+.q-cmp thead th:first-child {
+  color: var(--text);
+  font-weight: 600;
+}
+.q-cmp tbody th {
+  color: var(--text);
+  font-weight: 400;
+}
+.q-cmp caption {
+  margin-bottom: 0.3em;
+  color: var(--muted);
+  font-size: var(--t-xs);
+  text-align: left;
 }
 
 /* 시험 포인트 — "무엇이 출제 핵심이다"라고 짚는 문장이 산문 마지막 줄에 묻혀 있었다.

@@ -188,7 +188,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
             </div>
             <div id="q-body">
               <h2 id="q-text" tabindex="-1"></h2>
-              <pre id="q-code" class="q-code mono" hidden></pre>
+              <div id="q-code" class="q-code-set" hidden></div>
               <div id="q-answer" class="pa-answer"></div>
             </div>
             <div class="exam-nav">
@@ -245,6 +245,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
         PRACTICAL_FORMAT,
       } from "../../lib/practical-grade";
       import { toast } from "../../lib/toast";
+      import { codeHtml } from "../../lib/code-block";
       import { md } from "../../lib/md";
       import { paintHistory, recordDay } from "../../lib/history";
 
@@ -491,7 +492,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
           `<span class="q-no mono" aria-hidden="true">${cur + 1}</span>${md(q.question)}`;
         const codeEl = $("#q-code");
         codeEl.hidden = !q.code;
-        codeEl.textContent = q.code ?? "";
+        codeEl.innerHTML = q.code ? codeHtml(q.code) : "";
 
         const box = $("#q-answer");
         box.innerHTML = "";
@@ -765,7 +766,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
               <span class="pa-topic">${esc(q.topicTitle)}</span>
             </header>
             <p class="pa-q">${md(q.question)}</p>
-            ${q.code ? `<pre class="q-code mono">${esc(q.code)}</pre>` : ""}
+            ${q.code ? codeHtml(q.code) : ""}
             ${blanksHtml}
             <p class="pa-exp">${md(q.explanation)}</p>
           `;

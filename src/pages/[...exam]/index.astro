@@ -224,7 +224,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
             </div>
             <div id="q-body">
               <h2 id="q-text" tabindex="-1"></h2>
-              <pre id="q-code" class="q-code mono" hidden></pre>
+              <div id="q-code" class="q-code-set" hidden></div>
               <ol id="q-choices" class="choices"></ol>
               <div id="q-feedback" class="q-feedback" hidden></div>
             </div>
@@ -293,6 +293,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
       };
 
       import { toast } from "../../lib/toast";
+      import { codeHtml } from "../../lib/code-block";
       import { md } from "../../lib/md";
       import { paintHistory, recordDay } from "../../lib/history";
       import {
@@ -331,8 +332,6 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
       // 것이다(개념 노트도 같은 모양이었다). 동적으로 들이고, 실패하면 저장 별만 걷는다.
       let supabase: (typeof import("../../lib/supabase"))["supabase"] | null = null;
       let auth: typeof import("../../lib/auth") | null = null;
-      // innerHTML 템플릿에 끼워 넣는 코드 블록용 — C 코드의 <, & 등이 태그로 해석되지 않게
-      const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
       const setup = $("#setup"), exam = $("#exam"), result = $("#result");
 
       let session: Q[] = [];
@@ -866,7 +865,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
           `<span class="q-no mono" aria-hidden="true">${cur + 1}</span>${md(q.question)}`;
         const codeEl = $("#q-code");
         codeEl.hidden = !q.code;
-        codeEl.textContent = q.code ?? "";
+        codeEl.innerHTML = q.code ? codeHtml(q.code) : "";
         const ol = $("#q-choices");
         ol.innerHTML = "";
         q.choices.forEach((c, i) => {
@@ -1085,7 +1084,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
           card.className = wrong ? "rv wrong" : "rv";
           card.innerHTML = `
             <p class="rv-q"><span class="rv-mark mono" aria-hidden="true">${wrong ? "✕" : "○"}</span> <span class="badge">${q.area}</span> <span class="badge diff" data-level="${q.difficulty}">${q.difficulty}</span> <span class="rv-qt">${md(q.question)}</span></p>
-            ${q.code ? `<pre class="q-code mono">${esc(q.code)}</pre>` : ""}
+            ${q.code ? codeHtml(q.code) : ""}
             <p class="rv-a">${wrong ? `내 답: ${unanswered ? "무응답" : q.choices[picked[i]]}<br/>` : ""}정답: <b>${q.choices[q.answer]}</b></p>
             <p class="rv-x">${md(q.explanation)}</p>
             ${q.relatedPost ? `<p class="rv-link"><a href="${blogPostBase}${q.relatedPost}/" target="_blank" rel="noopener">개념 글 다시 읽기 →</a></p>` : ""}
