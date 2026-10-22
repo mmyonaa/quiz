@@ -140,5 +140,7 @@
   "2026-10-16-pki-certificate": "PKI와 인증서 — CA가 보증하고 CRL·OCSP가 취소한다",
   "2026-10-17-mcp-authorization-oauth": "MCP 서버에 인증 붙이기 — 401 한 번에서 토큰까지 가는 길",
   "2026-10-18-network-devices": "네트워크 장비 — 리피터·허브·브리지·스위치·라우터·게이트웨이",
-  "2026-10-19-gitlab-ai-gateway-template-sandbox-escape": "GitLab AI Gateway CVE-2026-90970 — 프롬프트 템플릿 샌드박스가 뚫리면 게이트웨이 호스트가 열린다"
+  "2026-10-19-gitlab-ai-gateway-template-sandbox-escape": "GitLab AI Gateway CVE-2026-90970 — 프롬프트 템플릿 샌드박스가 뚫리면 게이트웨이 호스트가 열린다",
+  "2026-10-20-rea-reverse-engineering-mcp-server": "REA: 바이너리를 읽는 MCP 서버가 GitHub 트렌딩 1위가 된 이유",
+  "2026-10-21-malware-types": "악성코드 분류 — 바이러스·웜·트로이목마·루트킷은 무엇이 다른가"
 }
