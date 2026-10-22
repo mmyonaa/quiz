@@ -3838,6 +3838,11 @@ select.sort {
 .cn-pa .cn-q {
   margin-top: 0;
 }
+/* 실기 카드의 저장 별 — 손잡이 줄 오른쪽 끝에 세운다(필기 카드의 별과 같은 자리).
+   summary가 flex라 auto 마진이 남는 폭을 다 먹고 별을 끝으로 민다. */
+.cn-pa-save {
+  margin-left: auto;
+}
 /* 필기 카드에서 .cn-q[open]의 점선은 위쪽 해설과 문제를 가르는 선이다.
    실기 카드는 <details>가 유일한 자식이라 위에 아무것도 없어 점선만 떠 있었다. */
 .cn-pa .cn-q[open] {

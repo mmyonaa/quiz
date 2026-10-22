@@ -180,6 +180,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
                 <span id="progress" class="mono"></span>
                 <span id="timer" class="mono timer" hidden></span>
                 <span class="exam-tools">
+                  <button id="save-q" class="save-star" type="button" title="이 문제 저장" aria-label="이 문제 저장">☆</button>
                   <span id="exam-kind" class="badge"></span>
                   <span id="exam-diff" class="badge diff"></span>
                 </span>
@@ -477,6 +478,71 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
         if (!exam.hidden) ($("#omr") as HTMLDetailsElement).open = e.matches;
       });
 
+      // ── Supabase 연동 — 로그인하면 이 문항을 계정에 담는다(필기 런너와 같은 통: saved_questions) ──
+      // 실기 문항 id는 필기와 겹치지 않으므로 한 테이블에 같이 산다. 마이페이지가 두 은행에서 찾는다.
+      // 모듈 로딩이 한 번 실패해도(광고 차단·프록시·오프라인) 풀이는 그대로 돌아가야 하므로
+      // 동적으로 들이고, 실패하면 별만 걷는다.
+      let supabase: typeof import("../../lib/supabase").supabase | null = null;
+      let auth: typeof import("../../lib/auth") | null = null;
+      let savedIds = new Set<string>();
+
+      const updateSaveStar = () => {
+        const btn = $("#save-q");
+        if (exam.hidden || session.length === 0) return;
+        const on = savedIds.has(session[cur].id);
+        btn.textContent = on ? "★" : "☆";
+        btn.classList.toggle("on", on);
+      };
+
+      // 저장 토글 — 성공을 낙관하고 즉시 반영, 실패하면 되돌린다
+      const toggleSave = async () => {
+        if (!auth?.requireLogin()) return;
+        const qid = session[cur].id;
+        const uid = auth.authSession()!.user.id;
+        const wasSaved = savedIds.has(qid);
+        if (wasSaved) savedIds.delete(qid);
+        else savedIds.add(qid);
+        updateSaveStar();
+        const { error } = wasSaved
+          ? await supabase!.from("saved_questions").delete().eq("user_id", uid).eq("question_id", qid)
+          : await supabase!.from("saved_questions").upsert({ user_id: uid, question_id: qid });
+        if (error) {
+          if (wasSaved) savedIds.add(qid);
+          else savedIds.delete(qid);
+          updateSaveStar();
+          alert(auth.errorText("저장에 실패했습니다", error));
+          return;
+        }
+        toast(wasSaved ? "저장을 해제했습니다" : "저장했습니다 · 마이페이지에 모아둡니다");
+      };
+
+      $("#save-q").addEventListener("click", () => void toggleSave());
+
+      void (async () => {
+        try {
+          supabase = (await import("../../lib/supabase")).supabase;
+          auth = await import("../../lib/auth");
+        } catch (e) {
+          console.error("인증 모듈을 불러오지 못했습니다 — 저장만 비활성화합니다:", e);
+          $("#save-q").hidden = true;
+          return;
+        }
+        auth.onAuth(async (session) => {
+          if (!session) {
+            savedIds = new Set();
+            updateSaveStar();
+            return;
+          }
+          const { data, error } = await supabase!.from("saved_questions").select("question_id");
+          if (error) {
+            console.error("저장 목록 조회 실패:", error.message);
+            return;
+          }
+          savedIds = new Set((data ?? []).map((r: { question_id: string }) => r.question_id));
+          updateSaveStar();
+        });
+      })();
+
       // ── 문항 렌더 ──
       const renderQuestion = () => {
         const q = session[cur];
@@ -487,6 +553,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
         $("#exam-kind").textContent = q.kind;
         $("#exam-diff").textContent = q.difficulty;
         $("#exam-diff").dataset.level = q.difficulty;
+        updateSaveStar();
         // 문항 번호는 왼쪽 여백에 거는 표식이라 화면 낭독에서는 뺀다(진행률이 이미 읽어 준다)
         $("#q-text").innerHTML =
           `<span class="q-no mono" aria-hidden="true">${cur + 1}</span>${md(q.question)}`;
