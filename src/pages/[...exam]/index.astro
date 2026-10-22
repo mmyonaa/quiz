@@ -286,6 +286,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
         difficulty: string;
         question: string;
         code?: string; // 코드 해석 문항의 코드 블록
+        lang?: string; // 제시문의 언어 — 라벨과 복사 버튼의 자격
         choices: string[];
         answer: number;
         explanation: string;
@@ -293,7 +294,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
       };
 
       import { toast } from "../../lib/toast";
-      import { codeHtml } from "../../lib/code-block";
+      import { codeHtml, mountCodeCopy } from "../../lib/code-block";
       import { md } from "../../lib/md";
       import { paintHistory, recordDay } from "../../lib/history";
       import {
@@ -865,7 +866,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
           `<span class="q-no mono" aria-hidden="true">${cur + 1}</span>${md(q.question)}`;
         const codeEl = $("#q-code");
         codeEl.hidden = !q.code;
-        codeEl.innerHTML = q.code ? codeHtml(q.code) : "";
+        codeEl.innerHTML = q.code ? codeHtml(q.code, q.lang) : "";
         const ol = $("#q-choices");
         ol.innerHTML = "";
         q.choices.forEach((c, i) => {
@@ -1084,7 +1085,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
           card.className = wrong ? "rv wrong" : "rv";
           card.innerHTML = `
             <p class="rv-q"><span class="rv-mark mono" aria-hidden="true">${wrong ? "✕" : "○"}</span> <span class="badge">${q.area}</span> <span class="badge diff" data-level="${q.difficulty}">${q.difficulty}</span> <span class="rv-qt">${md(q.question)}</span></p>
-            ${q.code ? codeHtml(q.code) : ""}
+            ${q.code ? codeHtml(q.code, q.lang) : ""}
             <p class="rv-a">${wrong ? `내 답: ${unanswered ? "무응답" : q.choices[picked[i]]}<br/>` : ""}정답: <b>${q.choices[q.answer]}</b></p>
             <p class="rv-x">${md(q.explanation)}</p>
             ${q.relatedPost ? `<p class="rv-link"><a href="${blogPostBase}${q.relatedPost}/" target="_blank" rel="noopener">개념 글 다시 읽기 →</a></p>` : ""}
@@ -1253,6 +1254,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
       refreshResumeUI();
       refreshHistory();
       paintQuickSummary();
+      mountCodeCopy();
     </script>
   </body>
 </html>

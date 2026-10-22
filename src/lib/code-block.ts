@@ -14,8 +14,13 @@
     놓은 블록**(자산 가치/노출 계수/연간 발생률)만 한글을 영문 두 칸(`2ch`) 폭에 세워 칸을 맞춘다 —
     맞출 것이 없는 줄까지 칸에 넣으면 글자 사이만 벌어진다.
 
+    코드 블록에는 언어 라벨과 복사 버튼이 선다 — 단, 문항이 `lang`을 적어 둔 블록에만이다.
+    제시문의 다수는 언어가 없다(정의 불릿·㉠㉡ 짝·트리 그림·패킷 덤프·수식), 그 자리에
+    "SHELL" 같은 라벨이 서면 없는 것보다 나쁘고 복사할 것도 없다.
+
     빌드 타임(개념 노트)과 브라우저(문제 풀이·리뷰·마이페이지)가 같은 화면을 그려야 하므로
-    md()와 같은 이유로 여기 하나에 둔다. */
+    md()와 같은 이유로 여기 하나에 둔다. 버튼을 누른 뒤의 일도 같은 이유로 여기 있다
+    (`mountCodeCopy`). */
 
 const ESC: Record<string, string> = { "&": "&amp;", "<": "&lt;", ">": "&gt;" };
 const esc = (s: string) => s.replace(/[&<>]/g, (c) => ESC[c]);
@@ -62,7 +67,7 @@ const shiftsColumns = (line: string) => {
   return last >= 0 && /[가-힣]/.test(line.slice(0, last));
 };
 
-const codeChunk = (text: string) => {
+const codeChunk = (text: string, lang?: string) => {
   const lines = text.split("\n");
   const padded = lines.map((l) => PADDED.test(l));
   const out = lines
@@ -76,7 +81,21 @@ const codeChunk = (text: string) => {
       return prose ? `<span class="tx">${body}</span>` : body;
     })
     .join("\n");
-  return `<pre class="q-code mono">${out}</pre>`;
+  // 언어가 적힌 블록만 머리줄(라벨·복사 버튼)을 받는다 — 트리 그림·조건 불릿·패킷 덤프에는
+  // 복사할 것이 없고, 라벨은 틀리면 없는 것보다 나쁘다(`lang`은 추정하지 않고 적어 둔 값이다).
+  //
+  // 머리줄은 코드 **위에 겹치지 않고 한 줄을 차지한다.** 코드 블록은 긴 줄을 접지 않고
+  // 가로로 굴리는데(`overflow-x: auto`), 그 안에 띄워 둔 것은 스크롤을 따라 함께 움직여
+  // 코드 위로 올라온다 — 390px에서 블록 셋 중 둘이 가로로 구르고 버튼이 184px까지 밀렸다.
+  // 제자리에 남는 것은 흐름 안에 선 블록의 `sticky`뿐이다(CSS의 `.code-head`).
+  //
+  // 본문은 <code>가 받는다 — 복사할 때 pre의 글자를 통째로 읽으면 머리줄의 "SQL"과 "복사"가
+  // 코드 앞에 섞인다.
+  const head = lang
+    ? `<span class="code-head"><span class="code-lang">${lang}</span>` +
+      `<button type="button" class="code-copy" data-copy-code aria-label="코드 복사"><span class="code-copy-label">복사</span></button></span>`
+    : "";
+  return `<pre class="q-code mono"${lang ? ` data-lang="${lang}"` : ""}>${head}<code>${out}</code></pre>`;
 };
 
 /** 표 덩어리를 세운다 — 구분선 바로 윗줄이 머리글, 그 위는 캡션(`[학생]`), 아래는 값이다.
@@ -124,14 +143,14 @@ const asTable = (chunk: string) => {
 
     표가 있을 때만 빈 줄이 경계가 된다(릴레이션 표 + SQL문이 한 블록에 온다). 그때도 표가
     아닌 이웃끼리는 다시 빈 줄로 이어 붙여 한 판에 담는다. */
-export const codeHtml = (code: string) => {
+export const codeHtml = (code: string, lang?: string) => {
   const chunks = code.split("\n\n").map((c) => ({ text: c, table: asTable(c) }));
-  if (!chunks.some((c) => c.table)) return codeChunk(code);
+  if (!chunks.some((c) => c.table)) return codeChunk(code, lang);
 
   const out: string[] = [];
   let buf: string[] = [];
   const flush = () => {
-    if (buf.length) out.push(codeChunk(buf.join("\n\n")));
+    if (buf.length) out.push(codeChunk(buf.join("\n\n"), lang));
     buf = [];
   };
   for (const c of chunks) {
@@ -142,4 +161,36 @@ export const codeHtml = (code: string) => {
   }
   flush();
   return out.join("");
+};
+
+/** 복사 버튼을 살린다 — 코드 블록이 서는 화면마다 한 번 부른다.
+
+    버튼마다 리스너를 달지 않고 문서가 위임으로 받는다. 런너·리뷰·마이페이지는 문항이
+    바뀔 때마다 블록을 다시 그리므로(innerHTML), 버튼에 직접 단 리스너라면 그릴 때마다
+    다시 달아야 한다 — 한 자리만 빠뜨려도 그 화면의 버튼이 조용히 죽는다.
+
+    클립보드는 거절될 수 있다(보안 컨텍스트가 아닌 주소, 권한 차단). 실패를 성공처럼
+    보이면 복사된 줄 알고 붙여 넣게 되므로 버튼이 실패했다고 말한다. */
+export const mountCodeCopy = () => {
+  let revert = 0;
+  document.addEventListener("click", async (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-copy-code]");
+    const label = btn?.querySelector(".code-copy-label");
+    if (!btn || !label) return;
+    const code = btn.closest("pre")?.querySelector("code")?.textContent ?? "";
+    let ok = true;
+    try {
+      await navigator.clipboard.writeText(code);
+    } catch {
+      ok = false;
+    }
+    label.textContent = ok ? "복사됨" : "복사 실패";
+    btn.classList.toggle("copied", ok);
+    btn.classList.toggle("failed", !ok);
+    clearTimeout(revert);
+    revert = window.setTimeout(() => {
+      label.textContent = "복사";
+      btn.classList.remove("copied", "failed");
+    }, 1400);
+  });
 };

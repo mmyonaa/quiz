@@ -40,6 +40,7 @@
     "kind": "코드형",
     "question": "다음 C 프로그램의 실행 결과를 쓰시오.",
     "code": "#include <stdio.h>\n\nint main() {\n    int a[5] = {2, 4, 6, 8, 10};\n    int *p = a;\n    int s = 0;\n    for (int i = 0; i < 5; i += 2)\n        s += *(p + i);\n    printf(\"%d\", s);\n    return 0;\n}",
+    "lang": "c",
     "answers": [
       [
         "18"
@@ -54,6 +55,7 @@
     "kind": "SQL형",
     "question": "[학생] 테이블에서 학과별 학생 수가 3명 이상인 학과와 그 인원수를 구하려고 한다. 다음 SQL문의 빈칸 ①, ②에 들어갈 알맞은 키워드를 쓰시오.",
     "code": "SELECT 학과, COUNT(*) AS 인원\n  FROM 학생\n ( ① ) 학과\n ( ② ) COUNT(*) >= 3;",
+    "lang": "sql",
     "answers": [
       [
         "GROUP BY"
@@ -94,6 +96,7 @@
     "kind": "코드형",
     "question": "다음 Java 프로그램의 실행 결과를 쓰시오.",
     "code": "class A {\n    int calc(int x) { return x + 5; }\n    int run(int x) { return calc(x) * 2; }\n}\n\nclass B extends A {\n    int calc(int x) { return x * 3; }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        A obj = new B();\n        System.out.print(obj.run(4));\n    }\n}",
+    "lang": "java",
     "answers": [
       [
         "24"
@@ -148,6 +151,7 @@
     "kind": "코드형",
     "question": "다음 Python 프로그램의 실행 결과를 쓰시오.",
     "code": "a = [3, 1, 4, 1, 5, 9, 2, 6]\nprint(sum(a[1:6:2]) * len(set(a)))",
+    "lang": "python",
     "answers": [
       [
         "77"
@@ -162,6 +166,7 @@
     "kind": "SQL형",
     "question": "[사원] 테이블의 '사번' 속성에 PK_사원이라는 이름의 기본키 제약조건을 추가하려고 한다. 다음 SQL문의 빈칸 ①, ②에 들어갈 알맞은 키워드를 쓰시오.",
     "code": "( ① ) TABLE 사원\n( ② ) CONSTRAINT PK_사원 PRIMARY KEY(사번);",
+    "lang": "sql",
     "answers": [
       [
         "ALTER"
@@ -216,6 +221,7 @@
     "kind": "코드형",
     "question": "다음 C 프로그램의 실행 결과를 쓰시오.",
     "code": "#include <stdio.h>\n\nint f(int n) {\n    if (n < 3) return n;\n    return f(n - 1) + f(n - 3);\n}\n\nint main() {\n    printf(\"%d\", f(8));\n    return 0;\n}",
+    "lang": "c",
     "answers": [
       [
         "15"
@@ -269,6 +275,7 @@
     "kind": "코드형",
     "question": "다음 Java 프로그램의 실행 결과를 쓰시오.",
     "code": "public class Main {\n    public static void main(String[] args) {\n        String s = \"INFORMATION\";\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < s.length(); i += 3)\n            sb.append(s.charAt(i));\n        System.out.print(sb.reverse());\n    }\n}",
+    "lang": "java",
     "answers": [
       [
         "OAOI"
@@ -283,6 +290,7 @@
     "kind": "SQL형",
     "question": "[성적] 테이블에 대한 SELECT 권한을 사용자 PARK에게 주면서, PARK이 그 권한을 다시 다른 사용자에게 넘길 수 있도록 하려고 한다. 다음 SQL문의 빈칸 ①, ②를 채우시오.",
     "code": "( ① ) SELECT ON 성적 TO PARK ( ② );",
+    "lang": "sql",
     "answers": [
       [
         "GRANT"
@@ -839,6 +847,7 @@
     "kind": "코드형",
     "question": "다음 C 프로그램의 실행 결과를 쓰시오.",
     "code": "#include <stdio.h>\n\nint main() {\n    int a[5] = {5, 2, 9, 1, 7};\n    int t;\n    for (int j = 0; j < 4; j++) {\n        if (a[j] > a[j + 1]) {\n            t = a[j];\n            a[j] = a[j + 1];\n            a[j + 1] = t;\n        }\n    }\n    for (int i = 0; i < 5; i++)\n        printf(\"%d \", a[i]);\n    return 0;\n}",
+    "lang": "c",
     "answers": [
       [
         "2 5 1 7 9"
@@ -853,6 +862,7 @@
     "kind": "코드형",
     "question": "다음 Python 프로그램의 실행 결과를 쓰시오.",
     "code": "from collections import deque\n\nstack, queue = [], deque()\nfor x in \"ABCD\":\n    stack.append(x)\n    queue.append(x)\n\nout = \"\"\nfor _ in range(2):\n    out += stack.pop() + queue.popleft()\nprint(out)",
+    "lang": "python",
     "answers": [
       [
         "DACB"
@@ -867,6 +877,7 @@
     "kind": "코드형",
     "question": "다음 Java 프로그램의 실행 결과를 쓰시오.",
     "code": "class Util {\n    static int sum(int a, int b) {\n        return a + b;\n    }\n    static int sum(int a, int b, int c) {\n        return a + b + c;\n    }\n    static int sum(int[] a) {\n        int s = 0;\n        for (int x : a)\n            s += x;\n        return s;\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        System.out.print(Util.sum(1, 2));\n        System.out.print(\",\");\n        System.out.print(Util.sum(1, 2, 3));\n        System.out.print(\",\");\n        System.out.print(Util.sum(new int[] {1, 2, 3, 4}));\n    }\n}",
+    "lang": "java",
     "answers": [
       [
         "3,6,10"
@@ -881,6 +892,7 @@
     "kind": "SQL형",
     "question": "[사원] 테이블에서 부서별로 급여가 높은 순서대로 순위를 매기되, 급여가 같으면 같은 순위를 주고 그다음 순위를 건너뛰지 않도록 하려 한다. 다음 SQL문의 빈칸 ①, ②에 들어갈 알맞은 키워드를 쓰시오.",
     "code": "SELECT 부서, 사원명, 급여,\n       ( ① ) () OVER ( ( ② ) 부서 ORDER BY 급여 DESC) AS 순위\n  FROM 사원;",
+    "lang": "sql",
     "answers": [
       [
         "DENSE_RANK",
@@ -903,6 +915,7 @@
     "kind": "SQL형",
     "question": "[판매] 테이블에서 부서별·분기별 매출 합계와 함께, 부서별 소계와 전체 총계까지 한 번에 구하려 한다. 다음 SQL문의 빈칸에 들어갈 알맞은 키워드를 쓰시오.",
     "code": "SELECT 부서, 분기, SUM(매출)\n  FROM 판매\n GROUP BY (      ) (부서, 분기);",
+    "lang": "sql",
     "answers": [
       [
         "ROLLUP",
@@ -1447,6 +1460,7 @@
     "kind": "단답형",
     "question": "다음 환경에서 새로 만들어지는 일반 파일의 권한(①)과 디렉터리의 권한(②)을 각각 8진수 세 자리로 쓰시오.",
     "code": "$ umask\n0002\n\n$ touch report.txt\n$ mkdir backup",
+    "lang": "shell",
     "answers": [
       [
         "664"
@@ -1946,6 +1960,7 @@
     "kind": "계산형",
     "question": "어떤 사용자가 파일과 디렉터리를 새로 만든 결과가 아래와 같다. 이 결과를 만든 umask 값을 8진수 세 자리로 쓰시오.",
     "code": "$ touch app.log\n$ mkdir logs\n$ ls -l\n-rw-r-----  1 dev dev    0  app.log\ndrwxr-x---  2 dev dev 4096  logs",
+    "lang": "shell",
     "answers": [
       [
         "027",
@@ -1961,6 +1976,7 @@
     "kind": "단답형",
     "question": "다음 `ls -l` 결과에서 소유자 실행 자리에 `x` 대신 `s`가 보인다. 이 파일에 걸려 있는 특수 권한의 이름(①)과, 이 파일의 권한을 `chmod`에 넘길 때 쓰는 8진수 네 자리(②)를 쓰시오.",
     "code": "$ ls -l /usr/bin/passwd\n-rwsr-xr-x  1 root root 68208  /usr/bin/passwd",
+    "lang": "shell",
     "answers": [
       [
         "SetUID",
@@ -2007,6 +2023,7 @@
     "kind": "단답형",
     "question": "다음은 두 트랜잭션이 실행된 순서다. T1이 같은 조건으로 두 번 조회했는데 결과가 달라졌다. 이 동시성 이상현상의 이름(①)과, 이 현상을 막아 주는 가장 낮은 격리 수준(②)을 쓰시오.",
     "code": "T1: SELECT 잔액 FROM 계좌 WHERE id = 1;   -- 10000 조회\nT2: UPDATE 계좌 SET 잔액 = 50000 WHERE id = 1;\nT2: COMMIT;\nT1: SELECT 잔액 FROM 계좌 WHERE id = 1;   -- 50000 조회\nT1: COMMIT;",
+    "lang": "sql",
     "answers": [
       [
         "반복 불가능 읽기",
@@ -2082,6 +2099,7 @@
     "kind": "단답형",
     "question": "다음 Java 코드에서 발생할 수 있는 취약점의 이름(①)과, 질의의 구조와 값을 분리해 이 취약점을 근본적으로 막기 위해 `Statement` 대신 사용해야 하는 JDBC 인터페이스의 이름(②)을 쓰시오.",
     "code": "String userId = request.getParameter(\"id\");\nString sql = \"SELECT * FROM member WHERE id = '\" + userId + \"'\";\n\nStatement st = conn.createStatement();\nResultSet rs = st.executeQuery(sql);",
+    "lang": "java",
     "answers": [
       [
         "SQL 삽입",
@@ -2107,6 +2125,7 @@
     "kind": "단답형",
     "question": "다음 Java 코드에서 발생하는 예외 클래스의 이름(①)과, 예외가 발생하든 하지 않든 반드시 실행되어 자원 반납 등에 쓰이는 블록의 키워드(②)를 쓰시오.",
     "code": "int[] a = new int[2];\ntry {\n    a[3] = 1;\n    System.out.print(\"A\");\n} catch (Exception e) {\n    System.out.print(\"B\");\n} ( ② ) {\n    System.out.print(\"C\");\n}",
+    "lang": "java",
     "answers": [
       [
         "ArrayIndexOutOfBoundsException",
@@ -2400,6 +2419,7 @@
     "kind": "단답형",
     "question": "침해가 의심되는 리눅스 서버를 점검한 결과가 다음과 같다. 프로세스 목록에는 아무것도 보이지 않는데 시스템 명령 자체가 변조된 것으로 확인됐다. 이런 악성코드의 유형(①)과, 제시문의 `rpm -V`처럼 기준 값과 현재 값을 견주어 변조를 찾아내는 점검의 이름(②)을 쓰시오.",
     "code": "$ ps -ef | grep suspicious\n(출력 없음)\n\n$ netstat -antp | grep ESTABLISHED\n(출력 없음)\n\n$ rpm -V procps-ng net-tools\nS.5....T.    /usr/bin/ps\nS.5....T.    /usr/bin/netstat",
+    "lang": "shell",
     "answers": [
       [
         "루트킷",
@@ -2459,6 +2479,7 @@
     "kind": "코드형",
     "question": "다음 C 프로그램의 실행 결과를 쓰시오.",
     "code": "#include <stdio.h>\n\nint main() {\n    int a[9] = {1, 3, 5, 7, 9, 11, 13, 15, 17};\n    int lo = 0, hi = 8, cnt = 0, key = 17;\n    while (lo <= hi) {\n        int mid = (lo + hi) / 2;\n        cnt++;\n        if (a[mid] == key) break;\n        if (a[mid] < key) lo = mid + 1;\n        else hi = mid - 1;\n    }\n    printf(\"%d\", cnt);\n    return 0;\n}",
+    "lang": "c",
     "answers": [
       [
         "4"
@@ -2473,6 +2494,7 @@
     "kind": "코드형",
     "question": "다음 Python 프로그램의 실행 결과를 쓰시오.",
     "code": "from collections import deque\n\ng = {1: [4, 3], 2: [], 3: [2, 5], 4: [6], 5: [6], 6: []}\n\ndef bfs(s):\n    seen, q, out = {s}, deque([s]), []\n    while q:\n        v = q.popleft()\n        out.append(v)\n        for w in g[v]:\n            if w not in seen:\n                seen.add(w)\n                q.append(w)\n    return out\n\nprint(*bfs(1))",
+    "lang": "python",
     "answers": [
       [
         "1 4 3 6 2 5"
@@ -2487,6 +2509,7 @@
     "kind": "코드형",
     "question": "다음 Python 프로그램의 실행 결과를 쓰시오.",
     "code": "def ways(n):\n    d = [0] * (n + 1)\n    d[0] = 1\n    d[1] = 1\n    for i in range(2, n + 1):\n        d[i] = d[i - 1] + d[i - 2]\n    return d[n]\n\nprint(ways(8))",
+    "lang": "python",
     "answers": [
       [
         "34"
@@ -2549,6 +2572,7 @@
     "kind": "단답형",
     "question": "다음은 서버가 내려 준 응답 본문이다. 이 데이터 교환 형식의 이름(①)과, 자바스크립트에서 이 문자열을 객체로 바꿀 때 쓰는 표준 메서드의 이름(②)을 쓰시오.",
     "code": "{\n  \"id\": \"u-1001\",\n  \"name\": \"김민수\",\n  \"roles\": [\"admin\", \"dev\"],\n  \"profile\": { \"dept\": \"개발\", \"year\": 3 }\n}",
+    "lang": "json",
     "answers": [
       [
         "JSON",
@@ -2598,6 +2622,7 @@
     "kind": "단답형",
     "question": "다음은 UNIX 계열 시스템에서 파일 정보를 확인한 결과다. `ls -i`가 보여 주는 번호가 가리키는, 파일의 소유자·권한·크기·데이터 블록 위치를 담은 자료구조의 이름(①)과, 그 자료구조에 들어 있지 않아 디렉터리 파일이 따로 갖고 있는 정보(②)를 쓰시오.",
     "code": "$ ls -i report.txt\n131073 report.txt\n\n$ stat report.txt\n  Size: 1024      Blocks: 8        IO Block: 4096\nAccess: (0644/-rw-r--r--)  Uid: ( 1000/ dev)  Gid: ( 1000/ dev)",
+    "lang": "shell",
     "answers": [
       [
         "inode",
@@ -2624,6 +2649,7 @@
     "kind": "단답형",
     "question": "다음과 같이 셸 스크립트를 만들어 실행하려 했으나 오류가 났다. 첫 줄의 `#!`로 시작해 이 스크립트를 해석할 프로그램을 지정하는 표기의 이름(①)과, 이 오류를 없애기 위해 실행해야 할 명령(②)을 쓰시오.",
     "code": "$ cat run.sh\n#!/bin/bash\necho \"HOME=$HOME\"\n\n$ ./run.sh\nbash: ./run.sh: Permission denied",
+    "lang": "shell",
     "answers": [
       [
         "셔뱅",
@@ -2681,6 +2707,7 @@
     "kind": "단답형",
     "question": "어떤 호스트의 라우팅 테이블이 다음과 같다. 목적지가 `10.1.2.3`인 패킷이 전달될 다음 홉(Next Hop) 주소(①)와, 어느 항목에도 맞지 않는 목적지가 쓰게 되는 맨 윗줄 항목의 이름(②)을 쓰시오.",
     "code": "$ ip route\ndefault        via 192.168.0.1    dev eth0\n10.0.0.0/8     via 192.168.0.254  dev eth0\n192.168.0.0/24                    dev eth0  scope link",
+    "lang": "shell",
     "answers": [
       [
         "192.168.0.254"
@@ -2733,6 +2760,7 @@
     "kind": "단답형",
     "question": "같은 질의에 대해 옵티마이저가 고를 수 있는 실행 계획이 다음과 같다. 계획 A처럼 인덱스를 거치지 않고 테이블의 모든 블록을 읽는 접근 방식의 이름(①)과, 관계형 DBMS의 인덱스가 범위 검색을 지원하기 위해 주로 사용하는 자료구조의 이름(②)을 쓰시오.",
     "code": "SELECT * FROM 사원 WHERE 부서 = '개발';\n\n-- 계획 A\nTABLE ACCESS FULL   사원\n\n-- 계획 B\nINDEX RANGE SCAN            IX_사원_부서\nTABLE ACCESS BY INDEX ROWID 사원",
+    "lang": "sql",
     "answers": [
       [
         "전체 테이블 스캔",
@@ -2993,6 +3021,7 @@
     "kind": "단답형",
     "question": "다음은 어떤 빌드 자동화 도구의 설정 파일(`pom.xml`)이다. 이 도구의 이름(①)과, 같은 일을 XML 대신 Groovy·Kotlin 스크립트로 적으며 증분 빌드로 더 빠른 도구의 이름(②)을 쓰시오.",
     "code": "<project>\n  <groupId>com.example</groupId>\n  <artifactId>demo</artifactId>\n  <dependencies>\n    <dependency>\n      <groupId>org.springframework</groupId>\n      <artifactId>spring-core</artifactId>\n    </dependency>\n  </dependencies>\n</project>",
+    "lang": "xml",
     "answers": [
       [
         "Maven",
@@ -3151,6 +3180,7 @@
     "kind": "단답형",
     "question": "다음 Java 코드에서 `SimplePrinter`는 쓰지도 않는 메서드를 억지로 구현하며 예외를 던지고 있다. 이 코드가 어기고 있는 SOLID 원칙의 이름(①)과 그 약어(②)를 쓰시오.",
     "code": "interface Machine {\n    void print();\n    void scan();\n    void fax();\n}\n\nclass SimplePrinter implements Machine {\n    public void print() { /* 정상 구현 */ }\n    public void scan()  { throw new UnsupportedOperationException(); }\n    public void fax()   { throw new UnsupportedOperationException(); }\n}",
+    "lang": "java",
     "answers": [
       [
         "인터페이스 분리 원칙",
@@ -3372,6 +3402,7 @@
     "kind": "단답형",
     "question": "리눅스 서버를 점검한 결과가 다음과 같다. 즉시 백도어로 의심해야 할 계정의 이름(①)과, 그렇게 판단한 근거가 되는 세 번째 필드의 이름(②)을 쓰시오.",
     "code": "$ awk -F: '$3 == 0 {print}' /etc/passwd\nroot:x:0:0:root:/root:/bin/bash\nbackup:x:0:0::/home/backup:/bin/bash",
+    "lang": "shell",
     "answers": [
       [
         "backup"
@@ -3396,6 +3427,7 @@
     "kind": "단답형",
     "question": "침해가 의심되는 윈도우 PC에서 다음을 확인했다. 악성코드가 재부팅 뒤에도 다시 실행되도록 이런 자리를 심어 두는 목적을 가리키는 말(①)과, 윈도우가 계정 이름이 아니라 내부적으로 주체를 구별하는 데 쓰는 고유 식별자의 약어(②)를 쓰시오.",
     "code": "> reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\"\n\n    SecurityUpdater    REG_SZ    C:\\Users\\Public\\svchost.exe",
+    "lang": "shell",
     "answers": [
       [
         "지속성",
@@ -3451,6 +3483,7 @@
     "kind": "단답형",
     "question": "다음은 Nmap으로 대상을 점검한 결과다. `-O` 옵션이 수행하는, 패킷에 대한 응답 특성이 운영체제마다 다른 점을 대조해 종류를 추정하는 기법의 이름(①)과, `-sV`처럼 서비스가 접속 시 내보이는 문자열을 읽어 제품과 버전을 알아내는 기법의 이름(②)을 쓰시오.",
     "code": "$ nmap -O -sV 192.168.1.50\n\nPORT     STATE  SERVICE  VERSION\n22/tcp   open   ssh      OpenSSH 7.4 (protocol 2.0)\n80/tcp   open   http     Apache httpd 2.4.6\n\nRunning: Linux 3.X|4.X",
+    "lang": "shell",
     "answers": [
       [
         "OS 핑거프린팅",
@@ -3509,6 +3542,7 @@
     "kind": "단답형",
     "question": "침해가 의심되는 서버에서 다음을 확인했다. 외부로 나가는 수상한 연결의 목적지 포트 번호(①)와, 이처럼 감염 단말에 명령을 내리고 결과를 받기 위해 공격자가 운영하는 서버를 가리키는 말(②)을 쓰시오.",
     "code": "$ netstat -antp\n\nProto Local Address        Foreign Address        State        PID/Program\ntcp   0.0.0.0:22           0.0.0.0:*              LISTEN       1120/sshd\ntcp   10.0.0.5:51234       203.0.113.99:4444      ESTABLISHED  8891/.hidden",
+    "lang": "shell",
     "answers": [
       [
         "4444",
@@ -3619,6 +3653,7 @@
     "kind": "단답형",
     "question": "상담원에게 급여 열을 숨기고 나머지 열만 보여 주려고 다음과 같이 처리했다. 빈칸 ①에 들어갈 객체의 종류(SQL 키워드)와, 상담 화면에 주민등록번호를 `900101-1******`처럼 일부만 가려 표시하는 기법의 이름(②)을 쓰시오.",
     "code": "CREATE ( ① ) 사원_공개 AS\n    SELECT 사번, 이름, 부서\n      FROM 사원;\n\nGRANT SELECT ON 사원_공개 TO 상담원;",
+    "lang": "sql",
     "answers": [
       [
         "VIEW",
@@ -3849,6 +3884,7 @@
     "kind": "코드형",
     "question": "다음 Java 프로그램의 실행 결과를 쓰시오.",
     "code": "public class Main {\n    public static void main(String[] args) {\n        String s1 = \"Programming\";\n        String s2 = \"Programming\";\n        String s3 = new String(\"Programming\");\n\n        System.out.print((s1 == s2) + \" \" + (s1 == s3) + \" \" + s1.equals(s3));\n    }\n}",
+    "lang": "java",
     "answers": [
       [
         "true false true"
@@ -3863,6 +3899,7 @@
     "kind": "코드형",
     "question": "다음 Java 프로그램의 실행 결과를 쓰시오.",
     "code": "abstract class Vehicle {\n    private String name;\n    abstract public String getName(String val);\n\n    public String getName() {\n        return \"Vehicle name: \" + name;\n    }\n    public void setName(String val) {\n        name = val;\n    }\n}\n\nclass Car extends Vehicle {\n    public Car(String val) {\n        setName(val);\n    }\n    public String getName(String val) {\n        return \"Car name: \" + val;\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Vehicle obj = new Car(\"Spark\");\n        System.out.print(obj.getName());\n    }\n}",
+    "lang": "java",
     "answers": [
       [
         "Vehicle name: Spark"
@@ -3877,6 +3914,7 @@
     "kind": "코드형",
     "question": "다음 C 프로그램의 실행 결과를 쓰시오.",
     "code": "#include <stdio.h>\n\nstruct insa {\n    char name[10];\n    int age;\n};\n\nint main() {\n    struct insa p[3] = { {\"Kim\", 28}, {\"Lee\", 36}, {\"Park\", 41} };\n    struct insa *q = p + 2;\n\n    printf(\"%s %d\", q->name, q->age - p->age);\n    return 0;\n}",
+    "lang": "c",
     "answers": [
       [
         "Park 13"
@@ -3891,6 +3929,7 @@
     "kind": "코드형",
     "question": "다음 C 프로그램에서 5를 입력했을 때의 실행 결과를 쓰시오.",
     "code": "#include <stdio.h>\n\nint func(int a) {\n    if (a <= 1) return 1;\n    return a * func(a - 1);\n}\n\nint main() {\n    int a;\n    scanf(\"%d\", &a);\n    printf(\"%d\", func(a));\n    return 0;\n}",
+    "lang": "c",
     "answers": [
       [
         "120"
@@ -3905,6 +3944,7 @@
     "kind": "코드형",
     "question": "다음 C 프로그램의 실행 결과를 쓰시오.",
     "code": "#include <stdio.h>\n\nvoid main() {\n    int n, k, s, el = 0;\n\n    for (n = 6; n <= 30; n++) {\n        s = 0;\n        k = n / 2;\n        for (int j = 1; j <= k; j++) {\n            if (n % j == 0)\n                s = s + j;\n        }\n        if (s == n)\n            el++;\n    }\n    printf(\"%d\", el);\n}",
+    "lang": "c",
     "answers": [
       [
         "2"
@@ -3919,6 +3959,7 @@
     "kind": "코드형",
     "question": "다음 C 프로그램의 실행 결과를 쓰시오.",
     "code": "#include <stdio.h>\n\nint main() {\n    int a[3][3];\n    int i, j, sum = 0;\n\n    for (i = 0; i < 3; i++)\n        for (j = 0; j < 3; j++)\n            a[i][j] = (i + 1) * (j + 2);\n\n    for (i = 0; i < 3; i++)\n        sum += a[i][2 - i];\n\n    printf(\"%d\", sum);\n    return 0;\n}",
+    "lang": "c",
     "answers": [
       [
         "16"
@@ -3933,6 +3974,7 @@
     "kind": "코드형",
     "question": "다음 Python 프로그램의 실행 결과를 쓰시오.",
     "code": "s = \"apple,banana,cherry\"\nt = s.split(\",\")\nprint(len(t), t[-1])",
+    "lang": "python",
     "answers": [
       [
         "3 cherry"

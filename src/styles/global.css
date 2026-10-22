@@ -1580,6 +1580,55 @@ button.linklike:hover {
   width: 2ch;
   text-align: center;
 }
+/* 본문을 감싼 <code> — 브라우저 기본 글꼴이 monospace라, 그대로 두면 .mono가 정한 글꼴을
+   덮어 한글이 다시 다른 글꼴로 떨어진다(.val과 같은 이유). 칩이 아니므로 면도 없다. */
+.q-code code {
+  font: inherit;
+  background: none;
+  padding: 0;
+}
+/* 언어 라벨과 복사 버튼의 머리줄 — `lang`이 적힌 블록에만 선다(코드 아닌 제시문에는 없다).
+   코드 위에 띄우지 않고 한 줄을 차지한다. 이 블록은 긴 줄을 접지 않고 가로로 구르는데,
+   띄워 둔 것은 스크롤을 따라 움직여 코드 위로 올라온다(390px 실측: 버튼이 184px까지 밀렸다).
+   흐름 안에 선 블록이라야 sticky가 먹고, 그제야 가로로 굴러도 제자리에 남는다. */
+.code-head {
+  position: sticky;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  margin-bottom: 0.3rem;
+}
+.code-lang {
+  font-size: var(--t-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+/* 복사 버튼 — 머리줄의 오른쪽 끝. 색을 빌리지 않는다(정답의 초록도 브랜드 액센트도 아니다 —
+   복사는 채점이 아니고, 여기서 색을 쓰면 코드 블록이 화면의 주인공이 된다).
+   결과는 글자가 말한다: `복사됨` 또는 `복사 실패`. 클립보드는 보안 컨텍스트가 아닌
+   주소나 권한 차단에서 거절되므로, 실패를 성공처럼 보이게 두지 않는다. */
+.code-copy {
+  padding: 0.15em 0.5em;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: var(--t-xs);
+  font-weight: 600;
+  line-height: 1.6;
+  cursor: pointer;
+}
+.code-copy:hover,
+.code-copy:focus-visible,
+.code-copy.copied,
+.code-copy.failed {
+  color: var(--text);
+  border-color: var(--muted);
+}
 
 /* 난이도 — 정답의 초록도 브랜드의 액센트도 빌리지 않는다. 초록은 주석이 밝혀 둔 대로
    정답·합격 전용이고, '상'은 틀렸다는 뜻이 아니다. 중립으로 두고 '상'만 글자를 세운다. */

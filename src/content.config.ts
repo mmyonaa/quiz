@@ -129,6 +129,18 @@ export const EXAM_FORMAT = {
 export const DIFFICULTIES = ["하", "중", "상"] as const;
 
 /**
+ * 제시문 블록의 언어 — 화면에 라벨로 서고, 그 블록에만 복사 버튼이 붙는다.
+ *
+ * 추정하지 않고 적어 둔다. 제시문의 다수는 언어가 **없다** — 정의 불릿, ㉠㉡ 짝 맞추기,
+ * 트리 그림, 패킷 덤프, 접근 로그, 수식, 표. 틀린 라벨은 없는 것보다 나쁘므로
+ * 비워 두는 것이 기본값이고, 비면 라벨도 복사 버튼도 달지 않는다.
+ *
+ * 값을 늘릴 때는 "복사해 돌려볼 수 있는가"를 자로 쓴다 — 로그와 덤프는 읽는 자료이고
+ * 코드가 아니다. 명령 프롬프트 블록(`$`·`>`)은 셸이 받는다.
+ */
+export const CODE_LANGS = ["c", "java", "python", "sql", "shell", "json", "xml"] as const;
+
+/**
  * 기본 시험의 영역·과목 — 라우트가 아직 시험을 모르므로(#27이 맡는다) 여기서 풀어 둔다.
  * 시험을 가려 써야 하는 자리는 AREAS_BY_EXAM·SUBJECTS_BY_EXAM을 직접 본다.
  */
@@ -473,6 +485,8 @@ const quiz = defineCollection({
        * 코드와 [실행결과], [조건]·[SQL문], 표 형태 데이터, 용어를 고르게 하는 특징 불릿 등.
        */
       code: z.string().optional(),
+      /** 제시문의 언어(선택) — 라벨과 복사 버튼의 자격이다. 언어가 없는 제시문은 비운다 */
+      lang: z.enum(CODE_LANGS).optional(),
       /** 4지선다 고정 — 정처기 필기 형식 */
       choices: z.array(z.string().min(1)).length(4),
       /** 정답 선지 인덱스(0~3) */
@@ -480,6 +494,8 @@ const quiz = defineCollection({
       explanation: z.string().min(20, "해설은 오답 학습의 핵심 — 20자 이상"),
     })
     .strict()
+    // lang은 제시문에 붙는 라벨이다 — 제시문 없이 홀로 남으면 지워진 code의 흔적이다
+    .refine((q) => !q.lang || !!q.code, { message: "lang은 제시문(code)이 있을 때만 씁니다", path: ["lang"] })
     // 문항의 영역과 주제의 영역이 어긋나면(주제 재배치 실수) 빌드에서 잡는다
     .refine((q) => TOPICS[q.topic].area === q.area, {
       message: "문항의 area가 topic의 area와 다릅니다",
@@ -531,6 +547,8 @@ const practical = defineCollection({
       question: z.string().min(10),
       /** 제시문 — 코드형·SQL형·계산형의 코드/조건 블록(고정폭 렌더) */
       code: z.string().optional(),
+      /** 제시문의 언어(선택) — 라벨과 복사 버튼의 자격이다. 언어가 없는 제시문은 비운다 */
+      lang: z.enum(CODE_LANGS).optional(),
       /**
        * 답란별 허용 표기 — 바깥 배열이 답란(①②③ 다답형), 안쪽이 그 답란의 정답 표기 목록.
        * 예: [["교착상태", "데드락", "deadlock"]]. 표기 흔들림은 정규화 + 이 목록으로 흡수한다.
@@ -562,6 +580,8 @@ const practical = defineCollection({
       message: "코드형·SQL형은 제시문(code)이 필요합니다",
       path: ["code"],
     })
+    // lang은 제시문에 붙는 라벨이다 — 제시문 없이 홀로 남으면 지워진 code의 흔적이다
+    .refine((q) => !q.lang || !!q.code, { message: "lang은 제시문(code)이 있을 때만 씁니다", path: ["lang"] })
     // 발문·해설·모범답안도 md()를 거친다 — 백틱이 홀수면 백틱 글자가 화면에 그대로 나온다
     .refine((q) => !unpairedBacktick(q.question + q.explanation + (q.modelAnswer ?? "")), {
       message: "발문·해설·모범답안의 백틱 짝이 맞지 않습니다",

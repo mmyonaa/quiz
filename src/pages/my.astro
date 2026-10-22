@@ -111,7 +111,7 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
 
     <script>
       import { supabase } from "../lib/supabase";
-      import { codeHtml } from "../lib/code-block";
+      import { codeHtml, mountCodeCopy } from "../lib/code-block";
       import { md } from "../lib/md";
       import { onAuth, authSession, loginWithGoogle, errorText } from "../lib/auth";
       import { isSelfGraded } from "../lib/practical-grade";
@@ -123,6 +123,7 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
         difficulty: string;
         question: string;
         code?: string;
+        lang?: string; // 제시문의 언어 — 라벨과 복사 버튼의 자격
         choices: string[];
         answer: number;
         explanation: string;
@@ -136,6 +137,7 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
         kind: string;
         question: string;
         code?: string;
+        lang?: string;
         answers: string[][]; // 답란마다 [정답, 인정 표기…]
         labels?: string[];
         modelAnswer?: string;
@@ -174,7 +176,7 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
         el.className = "rv wrong";
         el.innerHTML = `
           <p class="rv-q"><span class="badge">${q.area}</span> <span class="badge diff" data-level="${q.difficulty}">${q.difficulty}</span> ${md(q.question)}</p>
-          ${q.code ? codeHtml(q.code) : ""}
+          ${q.code ? codeHtml(q.code, q.lang) : ""}
           ${metaHTML}
           <p class="rv-a">정답: <b>${q.choices[q.answer]}</b></p>
           <p class="rv-x">${md(q.explanation)}</p>
@@ -199,7 +201,7 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
                 : "");
         el.innerHTML = `
           <p class="rv-q"><span class="pa-tag">실기</span> <span class="badge">${p.kind}</span> <span class="badge diff" data-level="${p.difficulty}">${p.difficulty}</span> ${md(p.question)}</p>
-          ${p.code ? codeHtml(p.code) : ""}
+          ${p.code ? codeHtml(p.code, p.lang) : ""}
           <div class="cn-pa-ans">${answer}<p class="cn-x cn-pa-exp">${md(p.explanation)}</p></div>
           ${p.relatedPost ? `<p class="rv-link"><a href="${blogPostBase}${p.relatedPost}/" target="_blank" rel="noopener">개념 글 다시 읽기 →</a></p>` : ""}
         `;
@@ -375,6 +377,8 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
         });
         $("#local-note").hidden = !any;
       };
+
+      mountCodeCopy();
 
       onAuth((s) => {
         $("#gate").hidden = !!s;

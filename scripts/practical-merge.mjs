@@ -20,7 +20,7 @@ const WRITTEN = join(root, "src/data/questions.json");
 
 const DIFFS = new Set(["하", "중", "상"]);
 const KINDS = new Set(["단답형", "계산형", "코드형", "SQL형", "약술형", "서술형", "실무형"]);
-const ORDER = ["id", "topic", "difficulty", "kind", "question", "code", "answers", "labels", "modelAnswer", "keywords", "explanation"];
+const ORDER = ["id", "topic", "difficulty", "kind", "question", "code", "lang", "answers", "labels", "modelAnswer", "keywords", "explanation"];
 const FIELDS = new Set(ORDER);
 const REQUIRED = ["id", "topic", "difficulty", "kind", "question", "answers", "explanation"];
 

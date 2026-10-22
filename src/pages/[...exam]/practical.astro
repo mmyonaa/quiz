@@ -246,7 +246,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
         PRACTICAL_FORMAT,
       } from "../../lib/practical-grade";
       import { toast } from "../../lib/toast";
-      import { codeHtml } from "../../lib/code-block";
+      import { codeHtml, mountCodeCopy } from "../../lib/code-block";
       import { md } from "../../lib/md";
       import { paintHistory, recordDay } from "../../lib/history";
 
@@ -260,6 +260,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
         kind: string;
         question: string;
         code?: string;
+        lang?: string; // 제시문의 언어 — 라벨과 복사 버튼의 자격
         answers: string[][];
         labels?: string[];
         modelAnswer?: string;
@@ -559,7 +560,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
           `<span class="q-no mono" aria-hidden="true">${cur + 1}</span>${md(q.question)}`;
         const codeEl = $("#q-code");
         codeEl.hidden = !q.code;
-        codeEl.innerHTML = q.code ? codeHtml(q.code) : "";
+        codeEl.innerHTML = q.code ? codeHtml(q.code, q.lang) : "";
 
         const box = $("#q-answer");
         box.innerHTML = "";
@@ -833,7 +834,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
               <span class="pa-topic">${esc(q.topicTitle)}</span>
             </header>
             <p class="pa-q">${md(q.question)}</p>
-            ${q.code ? codeHtml(q.code) : ""}
+            ${q.code ? codeHtml(q.code, q.lang) : ""}
             ${blanksHtml}
             <p class="pa-exp">${md(q.explanation)}</p>
           `;
@@ -1009,6 +1010,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
       paintPool();
       paintResume();
       paintHistory(HISTORY_KEY, document.getElementById("history"));
+      mountCodeCopy();
     </script>
   </body>
 </html>

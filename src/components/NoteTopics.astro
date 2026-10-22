@@ -14,6 +14,8 @@ type Q = {
   concept?: string;
   question: string;
   code?: string;
+  /** 제시문의 언어 — 라벨과 복사 버튼의 자격 */
+  lang?: string;
   choices: string[];
   answer: number;
   explanation: string;
@@ -25,6 +27,7 @@ type PQ = {
   kind: string;
   question: string;
   code?: string;
+  lang?: string;
   answers: string[][];
   labels?: string[];
   modelAnswer?: string;
@@ -92,7 +95,7 @@ const blankLabel = (q: PQ, i: number) =>
             <span class="badge diff cn-diff cn-diff-narrow" data-level={q.difficulty}>{q.difficulty}</span>
             <p class="cn-question" set:html={md(q.question)} />
           </div>
-          {q.code && <div class="q-code-set" set:html={codeHtml(q.code)} />}
+          {q.code && <div class="q-code-set" set:html={codeHtml(q.code, q.lang)} />}
           {/* 정답은 가려져 있다 — 선지를 골라 자기 점검하거나 '해설 보기'로 편다 */}
           <ol class="cn-choices" data-answer={q.answer}>
             {q.choices.map((c) => (
@@ -119,7 +122,7 @@ const blankLabel = (q: PQ, i: number) =>
               <button class="save-star cn-save cn-pa-save" type="button" title="이 문제 저장" aria-label="이 실기 문제 저장">☆</button>
             </summary>
             <p class="cn-question" set:html={md(p.question)} />
-            {p.code && <div class="q-code-set" set:html={codeHtml(p.code)} />}
+            {p.code && <div class="q-code-set" set:html={codeHtml(p.code, p.lang)} />}
             <button type="button" class="linklike cn-pa-reveal" aria-expanded="false">정답 보기</button>
             <div class="cn-pa-ans" hidden>
               {/* 자가 채점 유형(약술형·서술형·실무형)은 답란 대신 모범답안을 편다.
@@ -160,7 +163,10 @@ const blankLabel = (q: PQ, i: number) =>
 
     <script>
       import { toast } from "../lib/toast";
+      import { mountCodeCopy } from "../lib/code-block";
       import { loadNote, markRight, markWrong, noteKey, saveNote } from "../lib/wrong-note";
+
+      mountCodeCopy();
 
       const $ = <T extends HTMLElement>(sel: string) => document.querySelector(sel) as T;
 
