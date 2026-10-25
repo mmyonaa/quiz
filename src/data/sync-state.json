@@ -555,8 +555,7 @@
     },
     "2026-10-16-pki-certificate": {
       "sha": "47a267e56c6cd42daf3575896003bff2b3225ec4",
-      "section": "boangisa",
-      "gapReported": true
+      "section": "boangisa"
     },
     "2026-10-17-mcp-authorization-oauth": {
       "sha": "c15ea3a88d228478921a2b92eb3067740738f452",
@@ -565,6 +564,36 @@
     "2026-10-18-network-devices": {
       "sha": "a2d6a9243398da7aa768a42b27e972a660429a59",
       "section": "jeongcheogi",
+      "gapReported": true
+    },
+    "2026-10-19-gitlab-ai-gateway-template-sandbox-escape": {
+      "sha": "28aebe37fffde2995489246a5b445bd63fd119b2",
+      "section": "security"
+    },
+    "2026-10-20-rea-reverse-engineering-mcp-server": {
+      "sha": "2e57ac5e269e153d19fd58f6effd240050a42bec",
+      "section": "mcp"
+    },
+    "2026-10-21-malware-types": {
+      "sha": "f7a24391e13046bb3adb72009355a986846815fc",
+      "section": "boangisa",
+      "gapReported": true
+    },
+    "2026-10-22-bigdata-3v-data-types": {
+      "sha": "ec97d723993e1b7842c85c737a38718144fb5e4f",
+      "section": "bigdata"
+    },
+    "2026-10-23-php2shell-php-core-rce-cve-2026-109618": {
+      "sha": "46bf080270763e2503e719a28bece5289b67421b",
+      "section": "security"
+    },
+    "2026-10-24-azure-mcp-server-3-0-upgrade-checklist": {
+      "sha": "f702a380296b6c334d6f974012f6a60d393d7a9e",
+      "section": "mcp"
+    },
+    "2026-10-25-isms-p": {
+      "sha": "fdc0ed145ec77b07176f3bb8be3f8621d259537e",
+      "section": "boangisa",
       "gapReported": true
     }
   }
