@@ -34,8 +34,10 @@ type PQ = {
   keywords?: string[];
   explanation: string;
 };
-const { topics, blogPostBase } = Astro.props as {
+const { topics, blogPostBase, mdBase } = Astro.props as {
   topics: {
+    /** 주제 키 — 마크다운 엔드포인트 주소가 이걸로 난다 */
+    key: string;
     post?: string;
     title: string;
     intro: string;
@@ -43,6 +45,8 @@ const { topics, blogPostBase } = Astro.props as {
     practical?: PQ[];
   }[];
   blogPostBase: string;
+  /** 마크다운 엔드포인트의 주소 앞머리 — 시험에 따라 갈리므로 페이지가 넘겨준다 */
+  mdBase: string;
 };
 
 /** 답란 이름 — 다답형은 ①② 같은 라벨이 있고, 단일 답란은 그냥 "정답" */
@@ -50,7 +54,7 @@ const blankLabel = (q: PQ, i: number) =>
   q.labels?.[i] ?? (q.answers.length > 1 ? `${i + 1}번 답란` : "정답");
 ---
 
-{topics.map(({ post, title, intro, questions, practical = [] }, i) => (
+{topics.map(({ key: topicKey, post, title, intro, questions, practical = [] }, i) => (
     <div class="topic" id={`t${i}`}>
       <h3 class="topic-title">
         <span class="topic-name">{title}</span>
@@ -59,6 +63,17 @@ const blankLabel = (q: PQ, i: number) =>
         {[...new Set(practical.map((p) => p.kind))].map((k) => (
           <span class="topic-pa-badge">실기 {k}</span>
         ))}
+        {/* 도입부를 원본 마크다운으로 — 화면에서 긁으면 형광펜·값칩·대조표가 렌더된 꼴로
+            섞여 나와 표기가 깨진다. md()에 들어간 그 문자열이 필요한 자리(LLM에 물리기,
+            다른 노트로 옮기기)를 위해 엔드포인트를 눌러 집어 온다(#145). */}
+        <button
+          type="button"
+          class="linklike topic-copy"
+          data-copy-md={`${mdBase}${topicKey}.md`}
+          aria-label={`${title} 도입부를 마크다운으로 복사`}
+        >
+          <span class="topic-copy-label">마크다운 복사</span>
+        </button>
         {post && (
           <a class="topic-link" href={`${blogPostBase}${post}/`} target="_blank" rel="noopener">개념 글 →</a>
         )}
@@ -308,6 +323,35 @@ const blankLabel = (q: PQ, i: number) =>
           btn.textContent = ans.hidden ? "정답 보기" : "정답 닫기";
           btn.setAttribute("aria-expanded", String(!ans.hidden));
         });
+      });
+
+      // ── 도입부 마크다운 복사 — 주소를 눌러 받아 클립보드에 넣는다 ──
+      // 미리 싣지 않고 누를 때 받는다. 영역 페이지는 주제 수십 개를 한 화면에 세우므로
+      // 본문을 data 속성으로 한 벌 더 실으면 그만큼이 모든 방문에 얹힌다(실측 gzip +14%).
+      // 클립보드는 거절될 수 있고(보안 컨텍스트가 아닌 주소, 권한 차단, 사파리의 제스처
+      // 창 만료) 받아 오는 것도 실패할 수 있다 — 성공처럼 보이면 복사된 줄 알고 붙여
+      // 넣게 되므로 버튼이 실패했다고 말한다. 코드 블록의 복사 버튼과 같은 규칙이다.
+      let mdRevert = 0;
+      document.addEventListener("click", async (e) => {
+        const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-copy-md]");
+        const label = btn?.querySelector(".topic-copy-label");
+        if (!btn || !label) return;
+        let ok = true;
+        try {
+          const res = await fetch(btn.dataset.copyMd!);
+          if (!res.ok) throw new Error(String(res.status));
+          await navigator.clipboard.writeText(await res.text());
+        } catch {
+          ok = false;
+        }
+        label.textContent = ok ? "복사됨" : "복사 실패";
+        btn.classList.toggle("copied", ok);
+        btn.classList.toggle("failed", !ok);
+        clearTimeout(mdRevert);
+        mdRevert = window.setTimeout(() => {
+          label.textContent = "마크다운 복사";
+          btn.classList.remove("copied", "failed");
+        }, 1400);
       });
 
       // ── 난이도 필터 — 카드 숨김, 빈 주제는 통째로 숨김 ──
