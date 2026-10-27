@@ -223,7 +223,7 @@
     ],
     "title": "블록 암호 운영 모드",
     "mnemonic": "ECB 독립 · CBC 체인 · CTR 병렬",
-    "body": "| 모드 | IV | 블록 간 연결 | 오류 전파 | 메모\n| ECB(Electronic CodeBook) | 없음 | 독립 | 그 블록만 | 같은 평문 → 같은 암호문 · 패턴 노출\n| CBC(Cipher Block Chaining) | 있음 | 이전 암호문과 XOR 후 암호화 | 다음 블록까지 | 가장 흔함 · 패딩 필요 · 병렬 암호화 불가\n| CFB(Cipher FeedBack) | 있음 | 이전 암호문을 암호화해 평문과 XOR | 다음 블록까지 | 스트림처럼 · 패딩 불필요\n| OFB(Output FeedBack) | 있음 | 암호화 출력끼리 체인(키스트림) | 그 블록만 | 키스트림 미리 계산 · 오류 전파 없음\n| CTR(CounTeR) | 카운터 | 카운터를 암호화해 XOR | 그 블록만 | 병렬 · 임의 접근 · GCM(Galois/Counter Mode)의 바탕\n\n- ==ECB는 블록마다 독립이라 패턴이 남고, CBC는 앞 블록 오류가 다음 블록까지 번진다==\n- **패딩 필요** ECB · CBC / **불필요(스트림형)** CFB · OFB · CTR\n- **Feistel 구조** DES(Data Encryption Standard) · SEED · Blowfish(암·복호화 같은 구조) / **SPN 구조** AES(Advanced Encryption Standard) · ARIA\n- **AES 라운드** 키 128 → `10` · 192 → `12` · 256 → `14` · DES `16`라운드"
+    "body": "| 모드 | IV | 블록 간 연결 | 오류 전파 | 메모\n| ECB(Electronic CodeBook) | 없음 | 독립 | 그 블록만 | 같은 평문 → 같은 암호문 · 패턴 노출\n| CBC(Cipher Block Chaining) | 있음 | 이전 암호문과 XOR 후 암호화 | 다음 블록까지 | 가장 흔함 · 패딩 필요 · 병렬 암호화 불가\n| CFB(Cipher FeedBack) | 있음 | 이전 암호문을 암호화해 평문과 XOR | 다음 블록까지 | 스트림처럼 · 패딩 불필요\n| OFB(Output FeedBack) | 있음 | 암호화 출력끼리 체인(키스트림) | 그 블록만 | 키스트림 미리 계산 · 오류 전파 없음\n| CTR(Counter) | 카운터 | 카운터를 암호화해 XOR | 그 블록만 | 병렬 · 임의 접근 · GCM(Galois/Counter Mode)의 바탕\n\n- ==ECB는 블록마다 독립이라 패턴이 남고, CBC는 앞 블록 오류가 다음 블록까지 번진다==\n- **패딩 필요** ECB · CBC / **불필요(스트림형)** CFB · OFB · CTR\n- **Feistel 구조** DES(Data Encryption Standard) · SEED · Blowfish(암·복호화 같은 구조) / **SPN 구조** AES(Advanced Encryption Standard) · ARIA\n- **AES 라운드** 키 128 → `10` · 192 → `12` · 256 → `14` · DES `16`라운드"
   },
   "sec-hash-mac-sign": {
     "topics": [
@@ -239,7 +239,7 @@
     ],
     "title": "PKI · 인증서",
     "mnemonic": "CA 발급 · RA 확인 · CRL 목록 · OCSP 실시간",
-    "body": "- **구성** CA(Certification Authority, 인증서 발급 · 서명) · RA(Registration Authority, 신원 확인 대행) · 디렉터리(LDAP, 인증서·CRL 저장) · 사용자\n- **X.509 v3 인증서** 버전 · 일련번호 · 서명 알고리즘 · 발급자 · 유효 기간 · 주체 · 주체 공개키 · 확장 · CA 서명 — ==개인키는 인증서에 없다==\n- **폐지 확인** CRL(Certificate Revocation List, 목록, 주기 배포 · 지연) / OCSP(실시간 질의 — good · revoked · unknown)\n- **인증서 체인** Root CA(자체 서명) → 중간 CA → 최종 사용자 · 신뢰 모델 계층형 · 네트워크(상호 인증) · 웹 오브 트러스트(PGP)\n- **키 관리 수명** 생성 → 분배 → 저장 → 사용 → 갱신 → 폐기 · HSM(Hardware Security Module, 키 보관 하드웨어, FIPS 140-2)\n- **Diffie-Hellman** 키 교환 · 이산대수 · ==중간자 공격에 취약(인증이 없다)== → 인증서·서명과 결합"
+    "body": "- **구성** CA(Certification Authority, 인증서 발급 · 서명) · RA(Registration Authority, 신원 확인 대행) · 디렉터리(LDAP, 인증서·CRL 저장) · 사용자\n- **X.509 v3 인증서** 버전 · 일련번호 · 서명 알고리즘 · 발급자 · 유효 기간 · 주체 · 주체 공개키 · 확장 · CA 서명 — ==개인키는 인증서에 없다==\n- **폐지 확인** CRL(Certificate Revocation List, 목록, 주기 배포 · 지연) / OCSP(실시간 질의 — good · revoked · unknown)\n- **인증서 체인** Root CA(자체 서명) → 중간 CA → 최종 사용자 · 신뢰 모델 계층형 · 네트워크(상호 인증) · 웹 오브 트러스트(PGP)\n- **키 관리 수명** 생성 → 분배 → 저장 → 사용 → 갱신 → 폐기 · HSM(Hardware Security Module) 키 보관 전용 하드웨어 · `FIPS 140-2`\n- **Diffie-Hellman** 키 교환 · 이산대수 · ==중간자 공격에 취약(인증이 없다)== → 인증서·서명과 결합"
   },
   "sec-linux-logs": {
     "topics": [
@@ -334,7 +334,7 @@
     ],
     "title": "평가 기준 · 표준",
     "mnemonic": "TCSEC D~A1 · ITSEC E0~E6 · CC EAL1~7",
-    "body": "#= 기준 | 나라 | 등급 | 메모\n# TCSEC(오렌지북) | 미국 | D < C1 < C2 < B1 < B2 < B3 < A1 | 기밀성 중심 · 기능과 보증을 함께 · C2 통제된 접근 · B1 레이블\n# ITSEC | 유럽 | E0 ~ E6 | 기능(F)과 보증(E) 분리 · 무결성·가용성도\n# CC(Common Criteria, ISO 15408) | 국제 | EAL1 ~ EAL7 | PP(소비자 요구) · ST(개발자 명세) · TOE(평가 대상)\n\n- ==TCSEC은 기능과 보증을 묶고, ITSEC·CC는 가른다== · EAL4가 상용 제품의 일반 상한\n- **ISO 27001** ISMS(Information Security Management System) 요구사항(인증) · **27002** 통제 지침 · **27005** 위험 관리 · **27014** 정보보호 거버넌스 · **27701** 개인정보(PIMS, Privacy Information Management System) · **27017/27018** 클라우드\n\n~ PDCA · Plan 수립\n~ Do 구현\n~ Check 점검\n~ Act 개선\n\n- **COBIT** IT 거버넌스 · **ITIL** IT 서비스 관리 · **NIST CSF** 식별 · 보호 · 탐지 · 대응 · 복구\n- **CVE** 취약점 번호 · **CVSS** 심각도 점수(`0~10`) · **CWE** 약점 유형 · **CPE** 플랫폼\n- **보안 등급(국내)** CC 인증 · 보안 적합성 검증(국정원) · 암호 모듈 검증 KCMVP"
+    "body": "#= 기준 | 나라 | 등급 | 메모\n# TCSEC(오렌지북) | 미국 | D < C1 < C2 < B1 < B2 < B3 < A1 | 기밀성 중심 · 기능과 보증을 함께 · C2 통제된 접근 · B1 레이블\n# ITSEC | 유럽 | E0 ~ E6 | 기능(F)과 보증(E) 분리 · 무결성·가용성도\n# CC(Common Criteria, ISO/IEC 15408) | 국제 | EAL1 ~ EAL7 | PP(소비자 요구) · ST(개발자 명세) · TOE(평가 대상)\n\n- ==TCSEC은 기능과 보증을 묶고, ITSEC·CC는 가른다== · EAL4가 상용 제품의 일반 상한\n- **ISO 27001** ISMS(Information Security Management System) 요구사항(인증) · **27002** 통제 지침 · **27005** 위험 관리 · **27014** 정보보호 거버넌스 · **27701** 개인정보(PIMS, Privacy Information Management System) · **27017/27018** 클라우드\n\n~ PDCA · Plan 수립\n~ Do 구현\n~ Check 점검\n~ Act 개선\n\n- **COBIT** IT 거버넌스 · **ITIL** IT 서비스 관리 · **NIST CSF** 식별 · 보호 · 탐지 · 대응 · 복구\n- **CVE** 취약점 번호 · **CVSS** 심각도 점수(`0~10`) · **CWE** 약점 유형 · **CPE** 플랫폼\n- **보안 등급(국내)** CC 인증 · 보안 적합성 검증(국정원) · 암호 모듈 검증 KCMVP"
   },
   "sec-law-numbers": {
     "topics": [
