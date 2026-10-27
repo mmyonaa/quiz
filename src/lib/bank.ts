@@ -105,8 +105,24 @@ export function topicNoteHref(topicKey: string) {
  * 표기 기호가 발췌에 글자로 실린다 — 접두어가 늘면 여기도 같이 늘린다.
  */
 const INTRO_BLOCK = /^(?:[>|~^*-] |#=? )/;
-/** md()의 형광펜 — 여기서는 펴지 않고 짝이 갈렸는지 재는 데만 쓴다 */
-const HL_PAIR = /==(?=\S)[^=\n]+(?<=\S)==/g;
+/**
+ * md()가 펴는 짝 — 여기서는 펴지 않고 "자르는 자리에 짝이 걸쳐 있는가"를 재는 데만 쓴다.
+ * 형광펜과 값 칩 둘 다 본다. 굵게(`**`)는 포인터 `*p`처럼 홑으로 쓰이는 자리가 있어 빼 둔다.
+ */
+const MD_PAIRS = [/==(?=\S)[^=\n]+(?<=\S)==/g, /`[^`\n]+`/g];
+
+/**
+ * 그 자리에서 자르면 짝이 갈리는가 — 완성된 짝 하나가 자를 지점을 가로지르면 참이다.
+ *
+ * "남은 기호를 센다"가 아니라 "걸친 짝이 있나"로 재는 이유 — 본문에는 짝이 아닌 기호가
+ * 정상적으로 들어 있다. `c-operators` 도입부의 `관계 연산자(>, <, ==, !=)`가 그렇고,
+ * md()도 이것을 형광펜으로 펴지 않는다(여는 쪽만 있고 닫는 쪽이 없다). 남은 개수로 재면
+ * 그런 문단은 **어디서 잘라도 조건이 성립하지 않아** 끊을 자리를 영영 못 찾는다.
+ */
+const splitsPair = (text: string, at: number) =>
+  MD_PAIRS.some((re) =>
+    [...text.matchAll(re)].some((m) => m.index < at && m.index + m[0].length > at),
+  );
 
 /**
  * 도입부 한 입 — '저장한 개념' 카드가 "어느 주제의 개념인가"를 보여 주는 두어 문장.
@@ -125,15 +141,15 @@ export function introLead(intro: string, min = 120) {
     .map((x) => x.trim())
     .find((x) => x && !INTRO_BLOCK.test(x));
   if (!prose) return "";
-  const paired = (x: string) =>
-    (x.match(/`/g)?.length ?? 0) % 2 === 0 && !x.replace(HL_PAIR, "").includes("==");
-  // 마침표 뒤 공백에서만 끊는다 — 소수점(0.45)은 뒤에 공백이 없어 문장으로 갈리지 않는다
-  let lead = "";
-  for (const sentence of prose.split(/(?<=\.)\s+/)) {
-    lead = lead ? `${lead} ${sentence}` : sentence;
-    if (lead.length >= min && paired(lead)) break;
-  }
-  return lead.length < prose.length ? `${lead} …` : lead;
+  // 마침표 뒤 공백에서만 끊는다 — 소수점(0.45)은 뒤에 공백이 없어 문장으로 갈리지 않는다.
+  // 자를 지점을 원문의 인덱스로 들고 간다(문장을 다시 이어 붙이면 원문의 공백이 한 칸으로
+  // 뭉개져 인덱스가 어긋난다 — 걸친 짝을 찾으려면 원문 자리를 그대로 알아야 한다).
+  const cut =
+    [...prose.matchAll(/(?<=\.)\s+/g)]
+      .map((m) => m.index)
+      .find((at) => at >= min && !splitsPair(prose, at)) ?? prose.length;
+  const lead = prose.slice(0, cut).trimEnd();
+  return cut < prose.length ? `${lead} …` : lead;
 }
 
 /**
