@@ -3213,13 +3213,43 @@ button.toc-chip {
   margin: -0.5rem -0.6rem 0 0.35rem;
   font-size: var(--t-lg);
 }
-/* 마이페이지 '저장한 개념' 카드 — 해설이 본문이므로 강조 보더 없이 */
+/* 마이페이지 '저장한 개념' 카드 — 오답 색을 쓰지 않으므로 강조 보더 없이 */
 .rv.note {
   border-color: var(--border);
 }
-.rv.note .rv-x {
+/* 카드의 머리 — 영역 배지와 주제 제목. 어느 주제의 개념인지가 카드의 첫 줄이다.
+   제목은 그 주제의 개념 노트로 가는 링크를 겸한다(블로그 글이 없는 주제도 돌아갈 길이 있다). */
+.note-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0 0 0.6rem;
+}
+.note-topic {
+  flex: 1 1 12rem; /* 좁아지면 배지 아래로 통째로 내려간다 */
+  font-weight: 600;
+  color: var(--text);
+}
+a.note-topic {
+  color: var(--accent-strong);
+  text-decoration: none;
+}
+a.note-topic:hover {
+  text-decoration: underline;
+}
+/* 도입부 발췌 — 탭 이름이 가리키는 '개념'이 이 글이다. 전문은 제목 링크 끝에 있다. */
+.note-lead {
+  margin: 0 0 0.55rem;
   color: var(--text);
   font-size: var(--t-base);
+  line-height: 1.75;
+}
+/* 이 탭에서는 도입부가 본문이고, 문항 해설은 그 아래를 받치는 줄이다 —
+   오답 복기(.rv)와 뒤집힌 관계라 여기서만 낮춘다. */
+.rv.note .rv-x {
+  color: var(--muted);
+  font-size: var(--t-sm);
 }
 .cn-x {
   margin: 0;

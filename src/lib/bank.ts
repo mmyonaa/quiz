@@ -1,10 +1,12 @@
 import { getCollection } from "astro:content";
 import {
+  AREA_SLUGS,
   AREAS_BY_EXAM,
   PRACTICAL_KINDS,
   SUBJECTS_BY_EXAM,
   DEFAULT_EXAM,
   TOPICS,
+  examPath,
   type Area,
   type Exam,
   type Subject,
@@ -78,6 +80,60 @@ const searchable = (parts: (string | undefined)[], body: string) => {
  */
 export function topicSearchText(t: { title: string; intro: string; aliases?: string }) {
   return searchable([t.title, t.aliases], t.intro);
+}
+
+/**
+ * 한 주제의 개념 노트 주소 — 영역 페이지의 그 주제 자리까지.
+ *
+ * 주제 앵커는 영역 안에서의 순번(#t<i>)이라 번호를 여기서 찾는다. 암기 카드와
+ * 마이페이지가 같은 길을 쓰므로 여기 둔다 — 두 곳에 각자 두면 앵커 방식이 바뀔 때
+ * 한쪽만 고쳐져 한 화면의 링크만 조용히 빗나간다.
+ */
+export function topicNoteHref(topicKey: string) {
+  const t = TOPICS[topicKey];
+  if (!t) return undefined;
+  const i = topicsOf(t.area, t.exam).findIndex((x) => x.key === topicKey);
+  if (i < 0) return undefined;
+  const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+  return `${base}${examPath(t.exam)}/notes/${AREA_SLUGS[t.area]}/#t${i}`;
+}
+
+/**
+ * 산문이 아닌 문단의 줄머리 — MdBlocks.astro가 펴는 블록 표기 전부다.
+ * 콜아웃(`> `) · 대조표(`| `) · 흐름(`~ `) · 스택(`# `와 머리글을 단 `#= `) ·
+ * 타일(`* `) · 그림(`^ `) · 목록(`- `). 하나라도 빠뜨리면 그 블록이 산문으로 집혀
+ * 표기 기호가 발췌에 글자로 실린다 — 접두어가 늘면 여기도 같이 늘린다.
+ */
+const INTRO_BLOCK = /^(?:[>|~^*-] |#=? )/;
+/** md()의 형광펜 — 여기서는 펴지 않고 짝이 갈렸는지 재는 데만 쓴다 */
+const HL_PAIR = /==(?=\S)[^=\n]+(?<=\S)==/g;
+
+/**
+ * 도입부 한 입 — '저장한 개념' 카드가 "어느 주제의 개념인가"를 보여 주는 두어 문장.
+ *
+ * 블록 표기 문단은 건너뛰고 첫 산문 문단을 집는다. 카드는 md()로 인라인 강조만 펴므로,
+ * 콜아웃·대조표·그림 참조가 걸리면 표기 기호가 그대로 글자로 드러난다.
+ *
+ * 문단을 통째로 들이지는 않는다 — 첫 산문 문단은 중앙값 `237`자에 최대 `916`자라
+ * 긴 쪽이 걸리면 카드가 아니라 벽이 된다(2026-10-27, 주제 138개 실측). 문장 끝에서 자르고,
+ * 자른 자리에서 형광펜이나 값 칩의 짝이 갈리면 다음 문장까지 더 집는다 — 짝이 깨지면
+ * ==와 백틱이 화면에 글자로 나온다.
+ */
+export function introLead(intro: string, min = 120) {
+  const prose = intro
+    .split(/\n\n+/)
+    .map((x) => x.trim())
+    .find((x) => x && !INTRO_BLOCK.test(x));
+  if (!prose) return "";
+  const paired = (x: string) =>
+    (x.match(/`/g)?.length ?? 0) % 2 === 0 && !x.replace(HL_PAIR, "").includes("==");
+  // 마침표 뒤 공백에서만 끊는다 — 소수점(0.45)은 뒤에 공백이 없어 문장으로 갈리지 않는다
+  let lead = "";
+  for (const sentence of prose.split(/(?<=\.)\s+/)) {
+    lead = lead ? `${lead} ${sentence}` : sentence;
+    if (lead.length >= min && paired(lead)) break;
+  }
+  return lead.length < prose.length ? `${lead} …` : lead;
 }
 
 /**
