@@ -140,6 +140,7 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, label: EXAM_FORMAT[e].label, slug
       type Q = {
         id: string;
         exam: string; // 보관함은 두 시험이 섞여 쌓이므로 항목마다 어느 시험인지 들고 있어야 한다
+        concept?: string; // 문제 위에 붙는 '외울 한 줄' — 순수 정의형 문항에는 없다
         area: string;
         difficulty: string;
         question: string;
@@ -328,9 +329,15 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, label: EXAM_FORMAT[e].label, slug
           const el = isPractical(q) ? paCard(q) : document.createElement("article");
           if (!isPractical(q)) {
             el.className = "rv note";
+            // 개념 메모지를 해설 위에 세운다 — 개념 노트에서 저장 버튼이 붙어 있던 바로 그 줄이다.
+            // 누를 때 옆에 있던 것이 돌아오면 사라져 있으면 무엇을 담았는지 알 수 없다.
+            // 발문·선지는 일부러 넣지 않는다 — 그걸 넣으면 '저장한 문제' 탭과 같아져
+            // 탭을 나눈 뜻이 없어진다. 여기는 "이 개념을 다시 읽을래"로 담는 자리다.
+            // 순수 정의형(concept 없음)은 해설만으로 서므로 그대로 둔다.
             el.innerHTML = `
+              ${q.concept ? `<p class="cn-concept">${md(q.concept)}</p>` : ""}
               <p class="rv-x"><span class="badge">${q.area}</span> ${md(q.explanation)}</p>
-              <p class="rv-link"><a href="${blogPostBase}${q.relatedPost}/" target="_blank" rel="noopener">개념 글 다시 읽기 →</a></p>
+              ${q.relatedPost ? `<p class="rv-link"><a href="${blogPostBase}${q.relatedPost}/" target="_blank" rel="noopener">개념 글 다시 읽기 →</a></p>` : ""}
             `;
           }
           const del = document.createElement("button");

@@ -3349,7 +3349,8 @@ button.toc-chip {
    한 화면에 노란 띠가 대여섯 줄씩 깔려 "이 문제에서 들고 갈 한 줄"이라는 신호가 도로 묻혔다.
    메모지는 같은 노랑을 쓰되 종이 한 장으로 끊겨 있어 낱개로 읽힌다. 형광펜과 같은 '면' 축이라
    안쪽에 <mark>를 겹쳐 두지 않는다 — 노랑 위의 노랑은 강조가 아니다. */
-.cn-crow .cn-concept {
+.cn-crow .cn-concept,
+.rv.note .cn-concept {
   /* 글자만큼만 넓어진다 — 읽기 폭 전체로 늘어난 종이는 메모지가 아니라 띠로 보인다.
      min-width:0은 그 대가다 — flex 항목의 기본 최소 폭은 auto(=min-content)이고,
      word-break:keep-all 아래에서 "규모(Volume)·속도(Velocity)·다양성(Variety)이다."처럼
@@ -3371,8 +3372,16 @@ button.toc-chip {
     0 4px 10px -8px rgba(0, 0, 0, 0.22);
   transform: rotate(-0.25deg);
 }
+/* 보관함의 '저장한 개념' 카드 — 개념 노트에서 저장 버튼이 붙어 있던 바로 그 메모지를
+   여기서도 세운다. 누를 때 옆에 있던 것이 돌아오면 사라져 있으면 무엇을 담았는지 모른다.
+   개념 노트와 달리 flex 자식이 아니라 제 줄을 차지하므로 여백만 따로 준다. */
+.rv.note .cn-concept {
+  display: inline-block;
+  margin: 0 0 0.9rem;
+}
 /* 마스킹 테이프 — 종이 윗변에 걸쳐 "붙여 둔 것"으로 읽히게 하는 유일한 장치 */
-.cn-crow .cn-concept::before {
+.cn-crow .cn-concept::before,
+.rv.note .cn-concept::before {
   content: "";
   position: absolute;
   top: -8px;
