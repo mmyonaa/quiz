@@ -3564,6 +3564,26 @@ a.brand {
   right: 0.75rem;
 }
 
+/* 마이페이지의 시험 전환 — 머리의 것과 같은 모양을 쓰되 제 줄을 차지한다.
+   탭(오답노트·저장한 문제·저장한 개념) 위에 서서 "무엇을 보는가" 앞에 "어느 시험인가"를
+   먼저 고르게 한다. 칩 안의 건수는 고르기 전에 어느 쪽이 밀렸는지 보이라고 둔다. */
+.my-exam {
+  margin: 0 0 0.8rem;
+}
+.my-exam .exam-tab {
+  border: 0;
+  background: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+.my-exam em {
+  margin-left: 0.3rem;
+  font-style: normal;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.75;
+}
+
 /* 마이페이지 탭·목록 */
 .tabs {
   display: flex;
