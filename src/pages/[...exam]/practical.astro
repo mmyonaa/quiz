@@ -233,7 +233,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
     <SiteFooter />
 
     <script is:inline type="application/json" id="bank" set:html={JSON.stringify(bank)} />
-    <script is:inline type="application/json" id="config" set:html={JSON.stringify({ areas: AREAS, kinds: KINDS_IN_BANK, areaSlugs: AREA_SLUG_MAP, notesBase: NOTES_BASE })} />
+    <script is:inline type="application/json" id="config" set:html={JSON.stringify({ areas: AREAS, kinds: KINDS_IN_BANK, areaSlugs: AREA_SLUG_MAP, notesBase: NOTES_BASE, examLabel })} />
     <span id="exam-name" hidden data-slug={EXAM_SLUGS[exam] ?? ""}>{exam}</span>
 
     <script>
@@ -248,6 +248,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
       import { toast } from "../../lib/toast";
       import { codeHtml, mountCodeCopy } from "../../lib/code-block";
       import { md } from "../../lib/md";
+      import { reportUrl } from "../../lib/report-issue";
       import { paintHistory, recordDay } from "../../lib/history";
 
       type P = {
@@ -269,13 +270,14 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
       };
 
       const bank: P[] = JSON.parse(document.getElementById("bank")!.textContent!);
-      const { areas: AREA_LIST, kinds: KIND_LIST, areaSlugs, notesBase } = JSON.parse(
+      const { areas: AREA_LIST, kinds: KIND_LIST, areaSlugs, notesBase, examLabel } = JSON.parse(
         document.getElementById("config")!.textContent!,
       ) as {
         areas: string[];
         kinds: string[];
         areaSlugs: Record<string, string>; // 영역 → 개념 노트 URL 슬러그
         notesBase: string;
+        examLabel: string; // 제보 이슈 본문이 어느 시험인지 밝힌다
       };
       // 시험 형식(문항 수·시간·합격선·배점)은 서버가 정해 심어 준다 — 시험마다 다르다
       const examEl = document.getElementById("exam-name")!;
@@ -837,6 +839,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
             ${q.code ? codeHtml(q.code, q.lang) : ""}
             ${blanksHtml}
             <p class="pa-exp">${md(q.explanation)}</p>
+            <p class="rv-link"><a class="rv-report" href="${reportUrl(q, examLabel)}" target="_blank" rel="noopener">문항 제보 →</a></p>
           `;
           review.appendChild(card);
         });
