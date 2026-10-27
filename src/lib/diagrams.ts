@@ -1084,23 +1084,24 @@ export const DIAGRAMS: Record<string, Diagram> = {
     </marker>
   </defs>
   <g class="dg-box">
-    <rect x="18" y="34" width="52" height="76" /><rect x="118" y="34" width="52" height="76" />
-    <rect x="194" y="34" width="52" height="76" /><rect x="294" y="34" width="52" height="76" />
+    <rect x="6" y="34" width="46" height="76" /><rect x="118" y="34" width="46" height="76" />
+    <rect x="196" y="34" width="46" height="76" /><rect x="308" y="34" width="46" height="76" />
   </g>
-  <text class="dg-2xs" x="44" y="46">클라이언트</text>
-  <text class="dg-2xs" x="144" y="46">서버</text>
-  <text class="dg-2xs" x="220" y="46">클라이언트</text>
-  <text class="dg-2xs" x="320" y="46">서버</text>
+  <path class="dg-tick" d="M180 30 V118" />
+  <text class="dg-2xs" x="29" y="46">클라이언트</text>
+  <text class="dg-2xs" x="141" y="46">서버</text>
+  <text class="dg-2xs" x="219" y="46">클라이언트</text>
+  <text class="dg-2xs" x="331" y="46">서버</text>
   <g class="dg-line" marker-end="url(#ftp-ah)">
-    <path d="M72 76 H116" /><path d="M248 76 H292" />
-    <path d="M168 102 H74" /><path d="M248 102 H292" />
+    <path d="M54 76 H116" /><path d="M244 76 H306" />
+    <path d="M116 102 H54" /><path d="M244 102 H306" />
   </g>
-  <text class="dg-2xs" x="94" y="66">제어 21</text>
-  <text class="dg-2xs" x="270" y="66">제어 21</text>
-  <text class="dg-2xs" x="94" y="92">데이터 20</text>
-  <text class="dg-2xs" x="270" y="92">데이터 임의</text>
-  <text class="dg-sub" x="94" y="132">능동 — 서버가 건다</text>
-  <text class="dg-sub" x="270" y="132">수동 — 클라이언트가 건다</text>
+  <text class="dg-2xs" x="85" y="66">제어 21</text>
+  <text class="dg-2xs" x="275" y="66">제어 21</text>
+  <text class="dg-2xs" x="85" y="92">데이터 20</text>
+  <text class="dg-2xs" x="275" y="92">데이터 임의</text>
+  <text class="dg-sub" x="85" y="132">능동 — 서버가 건다</text>
+  <text class="dg-sub" x="275" y="132">수동 — 클라이언트가 건다</text>
 </svg>`,
   },
 
@@ -1171,8 +1172,8 @@ export const DIAGRAMS: Record<string, Diagram> = {
     <path d="M110 76 L164 90" /><path d="M250 76 L196 90" />
     <path d="M180 118 V128" />
   </g>
-  <text class="dg-sub" x="90" y="178">상점엔 주문 정보 + 지불 해시</text>
-  <text class="dg-sub" x="270" y="178">은행엔 지불 정보 + 주문 해시</text>
+  <text class="dg-sub" x="85" y="178">상점 ← 주문 원문 + 지불 해시</text>
+  <text class="dg-sub" x="275" y="178">은행 ← 지불 원문 + 주문 해시</text>
 </svg>`,
   },
 
@@ -1245,19 +1246,20 @@ export const DIAGRAMS: Record<string, Diagram> = {
   "defense-layers": {
     alt: "다섯 겹으로 포개진 네모. 가장 바깥이 부지 경계의 울타리와 조명, 그 안이 건물 출입구, 그 안이 사무 구역, 그 안이 전산실, 가장 안쪽이 서버 랙이다.",
     caption: "순서가 아니라 포개진 것이다 — 가장 안쪽에 닿으려면 모든 겹을 지나야 한다.",
-    svg: `<svg viewBox="0 0 360 192" class="dg-svg" focusable="false">
+    svg: `<svg viewBox="0 0 360 164" class="dg-svg" focusable="false">
   <g class="dg-box">
-    <rect x="14" y="14" width="332" height="146" rx="4" />
-    <rect x="46" y="34" width="268" height="106" rx="4" />
-    <rect x="78" y="54" width="204" height="66" rx="4" />
-    <rect x="110" y="74" width="140" height="26" rx="4" />
+    <rect x="14" y="12" width="332" height="120" rx="4" />
+    <rect x="44" y="30" width="272" height="92" rx="4" />
+    <rect x="74" y="48" width="212" height="64" rx="4" />
+    <rect x="104" y="66" width="152" height="36" rx="4" />
   </g>
-  <rect class="dg-chip" x="146" y="79" width="68" height="16" rx="3" />
-  <text class="dg-2xs" x="180" y="26">부지 경계 — 울타리 · 조명</text>
-  <text class="dg-2xs" x="180" y="46">건물 출입구</text>
-  <text class="dg-2xs" x="180" y="66">사무 구역</text>
-  <text class="dg-2xs" x="180" y="87">전산실 · 랙</text>
-  <text class="dg-sub" x="180" y="180">한 겹이 뚫려도 다음 겹이 남는다</text>
+  <rect class="dg-chip" x="140" y="84" width="80" height="14" rx="3" />
+  <text class="dg-2xs" x="180" y="24">부지 경계 — 울타리 · 조명</text>
+  <text class="dg-2xs" x="180" y="42">건물 출입구</text>
+  <text class="dg-2xs" x="180" y="60">사무 구역</text>
+  <text class="dg-2xs" x="180" y="78">전산실</text>
+  <text class="dg-2xs" x="180" y="91">랙</text>
+  <text class="dg-sub" x="180" y="152">한 겹이 뚫려도 다음 겹이 남는다</text>
 </svg>`,
   },
 
@@ -1276,19 +1278,19 @@ export const DIAGRAMS: Record<string, Diagram> = {
     <rect x="252" y="18" width="84" height="26" /><rect x="252" y="84" width="84" height="26" /><rect x="252" y="150" width="84" height="26" />
   </g>
   <g class="dg-node">
-    <rect x="14" y="84" width="62" height="26" rx="4" /><rect x="104" y="84" width="74" height="26" rx="4" />
+    <rect x="8" y="84" width="58" height="26" rx="4" /><rect x="112" y="84" width="70" height="26" rx="4" />
   </g>
-  <text class="dg-2xs" x="45" y="98">클라이언트</text>
-  <text class="dg-2xs" x="141" y="98">재귀 서버</text>
+  <text class="dg-2xs" x="37" y="98">클라이언트</text>
+  <text class="dg-2xs" x="147" y="98">재귀 서버</text>
   <text class="dg-2xs" x="294" y="32">루트</text>
   <text class="dg-2xs" x="294" y="98">TLD</text>
   <text class="dg-2xs" x="294" y="164">책임 서버</text>
-  <path class="dg-line" d="M79 97 H101" marker-start="url(#dr-ah)" marker-end="url(#dr-ah)" />
+  <path class="dg-line" d="M69 97 H109" marker-start="url(#dr-ah)" marker-end="url(#dr-ah)" />
   <g class="dg-line dg-thin" marker-end="url(#dr-ah)">
-    <path d="M180 90 L250 33" /><path d="M180 97 H250" /><path d="M180 104 L250 161" />
+    <path d="M184 90 L250 33" /><path d="M184 97 H250" /><path d="M184 104 L250 161" />
   </g>
-  <text class="dg-2xs" x="90" y="78">재귀</text>
-  <text class="dg-2xs" x="215" y="86">반복</text>
+  <text class="dg-2xs" x="89" y="78">재귀</text>
+  <text class="dg-2xs" x="217" y="86">반복</text>
   <text class="dg-sub" x="180" y="186">루트는 TLD를, TLD는 책임 서버를 알려 준다</text>
 </svg>`,
   },
@@ -1365,7 +1367,7 @@ export const DIAGRAMS: Record<string, Diagram> = {
     <path d="M180 40 L80 70" /><path d="M180 40 V70" /><path d="M180 40 L280 70" />
     <path d="M80 96 L45 130" /><path d="M80 96 L101 130" />
     <path d="M180 96 L157 130" /><path d="M180 96 L213 130" />
-    <path d="M280 96 L257 130" /><path d="M280 96 L313 130" />
+    <path d="M280 96 L269 130" /><path d="M280 96 L325 130" />
   </g>
   <rect class="dg-node" x="140" y="14" width="80" height="26" rx="4" />
   <text class="dg-2xs" x="180" y="27">내 앱</text>
@@ -1373,14 +1375,14 @@ export const DIAGRAMS: Record<string, Diagram> = {
     <rect x="44" y="70" width="72" height="26" /><rect x="144" y="70" width="72" height="26" /><rect x="244" y="70" width="72" height="26" />
     <rect x="22" y="130" width="46" height="22" /><rect x="78" y="130" width="46" height="22" />
     <rect x="134" y="130" width="46" height="22" />
-    <rect x="234" y="130" width="46" height="22" /><rect x="290" y="130" width="46" height="22" />
+    <rect x="246" y="130" width="46" height="22" /><rect x="302" y="130" width="46" height="22" />
   </g>
   <rect class="dg-chip" x="190" y="130" width="46" height="22" />
   <g class="dg-2xs">
     <text x="80" y="84">A</text><text x="180" y="84">B</text><text x="280" y="84">C</text>
     <text x="45" y="141">a1</text><text x="101" y="141">a2</text>
     <text x="157" y="141">b1</text><text x="213" y="141">악성</text>
-    <text x="257" y="141">c1</text><text x="313" y="141">c2</text>
+    <text x="269" y="141">c1</text><text x="325" y="141">c2</text>
   </g>
   <text class="dg-sub" x="180" y="168">가운데 줄만 내가 골랐다 — 아래 줄은 따라온다</text>
 </svg>`,
