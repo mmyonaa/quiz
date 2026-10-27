@@ -1071,4 +1071,318 @@ export const DIAGRAMS: Record<string, Diagram> = {
   <text class="dg-sub" x="270" y="172">No Read Down · No Write Up</text>
 </svg>`,
   },
+
+  /** 능동과 수동의 갈림은 "데이터 연결을 누가 거는가" 하나다 — 방향이 뜻이므로 화살표가 글보다 빠르다.
+      제어 연결은 두 모드에서 똑같이 클라이언트가 21번으로 걸고, 갈리는 것은 아래 화살표뿐이다. */
+  "ftp-modes": {
+    alt: "능동 모드와 수동 모드를 나란히 둔 그림. 두 모드 모두 제어 연결은 클라이언트가 서버의 21번 포트로 건다. 데이터 연결은 능동 모드에서 서버가 20번 포트에서 클라이언트로 걸고, 수동 모드에서는 서버가 알려 준 임의 포트로 클라이언트가 건다.",
+    caption: "제어 연결은 둘이 같다 — 갈리는 것은 아래 화살표의 방향뿐이다. 클라이언트 쪽 방화벽에 막히는 쪽이 능동이다.",
+    svg: `<svg viewBox="0 0 360 152" class="dg-svg" focusable="false">
+  <defs>
+    <marker id="ftp-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="currentColor" />
+    </marker>
+  </defs>
+  <g class="dg-box">
+    <rect x="18" y="34" width="52" height="76" /><rect x="118" y="34" width="52" height="76" />
+    <rect x="194" y="34" width="52" height="76" /><rect x="294" y="34" width="52" height="76" />
+  </g>
+  <text class="dg-2xs" x="44" y="46">클라이언트</text>
+  <text class="dg-2xs" x="144" y="46">서버</text>
+  <text class="dg-2xs" x="220" y="46">클라이언트</text>
+  <text class="dg-2xs" x="320" y="46">서버</text>
+  <g class="dg-line" marker-end="url(#ftp-ah)">
+    <path d="M72 76 H116" /><path d="M248 76 H292" />
+    <path d="M168 102 H74" /><path d="M248 102 H292" />
+  </g>
+  <text class="dg-2xs" x="94" y="66">제어 21</text>
+  <text class="dg-2xs" x="270" y="66">제어 21</text>
+  <text class="dg-2xs" x="94" y="92">데이터 20</text>
+  <text class="dg-2xs" x="270" y="92">데이터 임의</text>
+  <text class="dg-sub" x="94" y="132">능동 — 서버가 건다</text>
+  <text class="dg-sub" x="270" y="132">수동 — 클라이언트가 건다</text>
+</svg>`,
+  },
+
+  /** 접근통제 행렬을 어느 방향으로 자르느냐가 이름을 가른다 — 자르는 것은 글로 쓰면
+      "세로"와 "가로"라는 낱말만 남지만, 띠를 칠해 두면 어느 쪽이 무엇인지 한눈에 선다. */
+  "acl-capability-cut": {
+    alt: "주체 셋과 객체 셋으로 짜인 접근통제 행렬을 두 벌 나란히 둔 그림. 왼쪽은 가운데 열(객체 하나)을 칠해 그 객체에 누가 무엇을 할 수 있는지를 모은 접근 통제 목록이고, 오른쪽은 가운데 행(주체 하나)을 칠해 그 주체가 무엇을 할 수 있는지를 모은 자격 목록이다.",
+    caption: "같은 행렬을 세로로 자르면 객체마다의 목록, 가로로 자르면 주체마다의 목록이 된다.",
+    svg: `<svg viewBox="0 0 360 178" class="dg-svg" focusable="false">
+  <text class="dg-sub" x="93" y="16">객체 →</text>
+  <text class="dg-sub" x="273" y="16">객체 →</text>
+  <g class="dg-box">
+    <rect x="36" y="34" width="38" height="26" /><rect x="74" y="34" width="38" height="26" /><rect x="112" y="34" width="38" height="26" />
+    <rect x="36" y="60" width="38" height="26" /><rect x="74" y="60" width="38" height="26" /><rect x="112" y="60" width="38" height="26" />
+    <rect x="36" y="86" width="38" height="26" /><rect x="74" y="86" width="38" height="26" /><rect x="112" y="86" width="38" height="26" />
+    <rect x="216" y="34" width="38" height="26" /><rect x="254" y="34" width="38" height="26" /><rect x="292" y="34" width="38" height="26" />
+    <rect x="216" y="60" width="38" height="26" /><rect x="254" y="60" width="38" height="26" /><rect x="292" y="60" width="38" height="26" />
+    <rect x="216" y="86" width="38" height="26" /><rect x="254" y="86" width="38" height="26" /><rect x="292" y="86" width="38" height="26" />
+  </g>
+  <g class="dg-box dg-on">
+    <rect x="74" y="34" width="38" height="26" /><rect x="74" y="60" width="38" height="26" /><rect x="74" y="86" width="38" height="26" />
+    <rect x="216" y="60" width="38" height="26" /><rect x="254" y="60" width="38" height="26" /><rect x="292" y="60" width="38" height="26" />
+  </g>
+  <g class="dg-2xs">
+    <text x="55" y="47">rw</text><text x="93" y="47">r</text><text x="131" y="47">-</text>
+    <text x="55" y="73">r</text><text x="93" y="73">rw</text><text x="131" y="73">r</text>
+    <text x="55" y="99">-</text><text x="93" y="99">r</text><text x="131" y="99">rw</text>
+    <text x="235" y="47">rw</text><text x="273" y="47">r</text><text x="311" y="47">-</text>
+    <text x="235" y="73">r</text><text x="273" y="73">rw</text><text x="311" y="73">r</text>
+    <text x="235" y="99">-</text><text x="273" y="99">r</text><text x="311" y="99">rw</text>
+  </g>
+  <text class="dg-sub dg-end" x="30" y="73">주체 ↓</text>
+  <text class="dg-sub dg-end" x="210" y="73">주체 ↓</text>
+  <text class="dg-sub" x="93" y="132">객체 기준 — 세로로 자른다</text>
+  <text class="dg-sub" x="273" y="132">주체 기준 — 가로로 자른다</text>
+  <text class="dg-sub" x="93" y="154">접근 통제 목록</text>
+  <text class="dg-sub" x="273" y="154">자격 목록</text>
+</svg>`,
+  },
+
+  /** 이중서명의 사슬 — 해시 둘을 이어 붙여 다시 해시하고 그 값에 서명한다.
+      서명 하나가 둘을 묶는다는 것이 요점이라, 묶이는 자리가 보여야 한다. */
+  "dual-signature": {
+    alt: "주문 정보와 지불 정보를 각각 해시해 두 해시를 얻고, 그 둘을 이어 붙여 다시 해시한 값에 고객의 개인키로 한 번 서명하는 사슬. 상점에는 주문 정보 원문과 지불 정보의 해시만 가고, 지불 게이트웨이에는 지불 정보 원문과 주문 정보의 해시만 간다.",
+    caption: "서명은 하나인데 묶이는 것은 둘이다 — 상점은 주문만, 은행은 지불만 보면서도 같은 거래임을 둘 다 검증한다.",
+    svg: `<svg viewBox="0 0 360 198" class="dg-svg" focusable="false">
+  <defs>
+    <marker id="ds-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="currentColor" />
+    </marker>
+  </defs>
+  <g class="dg-box">
+    <rect x="36" y="12" width="96" height="26" /><rect x="228" y="12" width="96" height="26" />
+    <rect x="124" y="92" width="112" height="26" />
+  </g>
+  <g class="dg-chip">
+    <rect x="46" y="52" width="76" height="24" rx="4" /><rect x="238" y="52" width="76" height="24" rx="4" />
+    <rect x="118" y="130" width="124" height="24" rx="4" />
+  </g>
+  <text class="dg-2xs" x="84" y="25">주문 정보</text>
+  <text class="dg-2xs" x="276" y="25">지불 정보</text>
+  <text class="dg-2xs" x="84" y="64">주문 해시</text>
+  <text class="dg-2xs" x="276" y="64">지불 해시</text>
+  <text class="dg-2xs" x="180" y="105">두 해시를 이어 붙여</text>
+  <text class="dg-2xs" x="180" y="142">다시 해시 · 개인키로 서명</text>
+  <g class="dg-line" marker-end="url(#ds-ah)">
+    <path d="M84 38 V50" /><path d="M276 38 V50" />
+    <path d="M110 76 L164 90" /><path d="M250 76 L196 90" />
+    <path d="M180 118 V128" />
+  </g>
+  <text class="dg-sub" x="90" y="178">상점엔 주문 정보 + 지불 해시</text>
+  <text class="dg-sub" x="270" y="178">은행엔 지불 정보 + 주문 해시</text>
+</svg>`,
+  },
+
+  /** 연간예상손실의 계산 사슬 — 수식에 "="가 들어가 형광펜을 칠할 수 없는 자리라,
+      외울 한 줄을 그림이 대신 든다. 계산 유형이므로 예제 수치를 그림이 들여온다. */
+  "ale-chain": {
+    alt: "두 단계의 곱셈 사슬. 자산 가치 2억 원에 노출 계수 0.2를 곱해 단일예상손실 4천만 원을 얻고, 그 값에 연간 발생률 0.5를 곱해 연간예상손실 2천만 원을 얻는다.",
+    caption: "곱셈 두 번이 전부다 — 자산 가치에 노출 계수를 곱해 `SLE`, 거기에 연간 발생률을 곱해 `ALE`.",
+    svg: `<svg viewBox="0 0 360 152" class="dg-svg" focusable="false">
+  <text class="dg-sub" x="58" y="18">자산 가치</text>
+  <text class="dg-sub" x="145" y="18">노출 계수</text>
+  <text class="dg-sub" x="240" y="18">SLE</text>
+  <rect class="dg-box" x="20" y="30" width="76" height="26" /><text class="dg-xs" x="58" y="43">2억 원</text>
+  <text class="dg-lg" x="104" y="43">×</text>
+  <rect class="dg-box" x="112" y="30" width="66" height="26" /><text class="dg-xs" x="145" y="43">0.2</text>
+  <text class="dg-lg" x="187" y="43">=</text>
+  <rect class="dg-chip" x="196" y="30" width="88" height="26" rx="4" /><text class="dg-xs" x="240" y="43">4천만 원</text>
+  <text class="dg-sub" x="64" y="88">SLE</text>
+  <text class="dg-sub" x="157" y="88">ARO</text>
+  <text class="dg-sub" x="252" y="88">ALE</text>
+  <rect class="dg-box" x="20" y="100" width="88" height="26" /><text class="dg-xs" x="64" y="113">4천만 원</text>
+  <text class="dg-lg" x="116" y="113">×</text>
+  <rect class="dg-box" x="124" y="100" width="66" height="26" /><text class="dg-xs" x="157" y="113">0.5</text>
+  <text class="dg-lg" x="199" y="113">=</text>
+  <rect class="dg-chip" x="208" y="100" width="88" height="26" rx="4" /><text class="dg-xs" x="252" y="113">2천만 원</text>
+  <text class="dg-sub" x="180" y="144">연간 발생률 0.5 — 2년에 한 번 일어난다는 뜻</text>
+</svg>`,
+  },
+
+  /** 칸의 자리 — passwd 일곱 칸과 shadow 아홉 칸을 포개 두면 "몇째 칸이 무엇인가"를
+      세지 않고 본다. 둘째 칸만 칠해 해시가 옮겨 간 자리를 짚는다. */
+  "passwd-shadow-fields": {
+    alt: "두 줄로 포갠 칸 그림. 위는 /etc/passwd의 일곱 칸으로 계정·x·UID·GID·설명·홈·셸이고, 아래는 /etc/shadow의 아홉 칸으로 계정·해시·변경일·최소·최대·경고·비활성·만료·예약이다. 두 줄의 둘째 칸이 칠해져 있고 위의 x에서 아래의 해시로 화살표가 간다.",
+    caption: "둘째 칸만 바꿔치기한 것이다 — `passwd`의 `x`가 해시는 `/etc/shadow`에 있다는 표시다.",
+    svg: `<svg viewBox="0 0 360 148" class="dg-svg" focusable="false">
+  <defs>
+    <marker id="ps-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="currentColor" />
+    </marker>
+  </defs>
+  <text class="dg-sub" x="180" y="16">/etc/passwd — 일곱 칸</text>
+  <g class="dg-box">
+    <rect x="26" y="26" width="44" height="26" /><rect x="114" y="26" width="44" height="26" /><rect x="158" y="26" width="44" height="26" />
+    <rect x="202" y="26" width="44" height="26" /><rect x="246" y="26" width="44" height="26" /><rect x="290" y="26" width="44" height="26" />
+  </g>
+  <rect class="dg-box dg-on" x="70" y="26" width="44" height="26" />
+  <g class="dg-2xs">
+    <text x="48" y="39">계정</text><text x="92" y="39">x</text><text x="136" y="39">UID</text>
+    <text x="180" y="39">GID</text><text x="224" y="39">설명</text><text x="268" y="39">홈</text><text x="312" y="39">셸</text>
+  </g>
+  <text class="dg-sub" x="180" y="74">/etc/shadow — 아홉 칸</text>
+  <g class="dg-box">
+    <rect x="28" y="84" width="34" height="26" /><rect x="96" y="84" width="34" height="26" /><rect x="130" y="84" width="34" height="26" />
+    <rect x="164" y="84" width="34" height="26" /><rect x="198" y="84" width="34" height="26" /><rect x="232" y="84" width="34" height="26" />
+    <rect x="266" y="84" width="34" height="26" /><rect x="300" y="84" width="34" height="26" />
+  </g>
+  <rect class="dg-box dg-on" x="62" y="84" width="34" height="26" />
+  <g class="dg-2xs">
+    <text x="45" y="97">계정</text><text x="79" y="97">해시</text><text x="113" y="97">변경일</text>
+    <text x="147" y="97">최소</text><text x="181" y="97">최대</text><text x="215" y="97">경고</text>
+    <text x="249" y="97">비활성</text><text x="283" y="97">만료</text><text x="317" y="97">예약</text>
+  </g>
+  <path class="dg-line" d="M92 54 L79 80" marker-end="url(#ps-ah)" />
+  <text class="dg-sub" x="180" y="134">날짜 칸은 1970년 1월 1일부터 센 일수다</text>
+</svg>`,
+  },
+
+  /** 심층 방어의 중첩 — 겹을 글로 적으면 "울타리 → 건물 → 사무실"이라는 화살표가
+      되는데, 실제로는 순서가 아니라 포개진 것이다. 한 겹이 뚫려도 다음 겹이 남는다. */
+  "defense-layers": {
+    alt: "다섯 겹으로 포개진 네모. 가장 바깥이 부지 경계의 울타리와 조명, 그 안이 건물 출입구, 그 안이 사무 구역, 그 안이 전산실, 가장 안쪽이 서버 랙이다.",
+    caption: "순서가 아니라 포개진 것이다 — 가장 안쪽에 닿으려면 모든 겹을 지나야 한다.",
+    svg: `<svg viewBox="0 0 360 192" class="dg-svg" focusable="false">
+  <g class="dg-box">
+    <rect x="14" y="14" width="332" height="146" rx="4" />
+    <rect x="46" y="34" width="268" height="106" rx="4" />
+    <rect x="78" y="54" width="204" height="66" rx="4" />
+    <rect x="110" y="74" width="140" height="26" rx="4" />
+  </g>
+  <rect class="dg-chip" x="146" y="79" width="68" height="16" rx="3" />
+  <text class="dg-2xs" x="180" y="26">부지 경계 — 울타리 · 조명</text>
+  <text class="dg-2xs" x="180" y="46">건물 출입구</text>
+  <text class="dg-2xs" x="180" y="66">사무 구역</text>
+  <text class="dg-2xs" x="180" y="87">전산실 · 랙</text>
+  <text class="dg-sub" x="180" y="180">한 겹이 뚫려도 다음 겹이 남는다</text>
+</svg>`,
+  },
+
+  /** 재귀와 반복의 갈림은 "누가 여러 번 묻는가"다 — 클라이언트는 한 번 묻고 최종 답을
+      받지만 재귀 서버는 루트부터 차례로 묻는다. 두 질의가 같은 그림에 서야 대비가 선다. */
+  "dns-resolution": {
+    alt: "왼쪽의 클라이언트가 재귀 서버에 한 번 묻고 최종 답을 받는 양방향 화살표, 그리고 재귀 서버에서 루트·최상위 도메인·책임 네임서버 셋으로 각각 뻗는 가는 화살표. 클라이언트는 한 번만 묻고 재귀 서버가 여러 번 묻는다.",
+    caption: "클라이언트는 한 번 묻고 최종 답을 받는다 — 여러 번 묻는 쪽은 재귀 서버다.",
+    svg: `<svg viewBox="0 0 360 190" class="dg-svg" focusable="false">
+  <defs>
+    <marker id="dr-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="currentColor" />
+    </marker>
+  </defs>
+  <g class="dg-box">
+    <rect x="252" y="18" width="84" height="26" /><rect x="252" y="84" width="84" height="26" /><rect x="252" y="150" width="84" height="26" />
+  </g>
+  <g class="dg-node">
+    <rect x="14" y="84" width="62" height="26" rx="4" /><rect x="104" y="84" width="74" height="26" rx="4" />
+  </g>
+  <text class="dg-2xs" x="45" y="98">클라이언트</text>
+  <text class="dg-2xs" x="141" y="98">재귀 서버</text>
+  <text class="dg-2xs" x="294" y="32">루트</text>
+  <text class="dg-2xs" x="294" y="98">TLD</text>
+  <text class="dg-2xs" x="294" y="164">책임 서버</text>
+  <path class="dg-line" d="M79 97 H101" marker-start="url(#dr-ah)" marker-end="url(#dr-ah)" />
+  <g class="dg-line dg-thin" marker-end="url(#dr-ah)">
+    <path d="M180 90 L250 33" /><path d="M180 97 H250" /><path d="M180 104 L250 161" />
+  </g>
+  <text class="dg-2xs" x="90" y="78">재귀</text>
+  <text class="dg-2xs" x="215" y="86">반복</text>
+  <text class="dg-sub" x="180" y="186">루트는 TLD를, TLD는 책임 서버를 알려 준다</text>
+</svg>`,
+  },
+
+  /** 캡슐화의 중첩 — 계층마다 제 헤더를 덧씌운다. 글로 쓰면 "덧씌운다"는 낱말만 남지만,
+      같은 짐이 그대로 있고 앞쪽만 길어지는 것을 보면 "벗기면 원래가 나온다"가 함께 읽힌다. */
+  "encapsulation": {
+    alt: "네 줄로 자라나는 띠. 맨 위는 응용 계층의 데이터뿐이고, 아래로 내려갈수록 왼쪽에 전송 계층 헤더, 네트워크 계층 헤더, 데이터링크 계층 헤더가 차례로 덧붙어 띠가 왼쪽으로 길어진다. 오른쪽의 데이터는 네 줄에서 그대로다.",
+    caption: "짐은 그대로고 앞머리만 길어진다 — 받는 쪽은 역순으로 벗기면 같은 데이터가 나온다.",
+    svg: `<svg viewBox="0 0 360 166" class="dg-svg" focusable="false">
+  <g class="dg-box">
+    <rect x="162" y="56" width="52" height="26" />
+    <rect x="118" y="90" width="44" height="26" /><rect x="162" y="90" width="52" height="26" />
+    <rect x="62" y="124" width="56" height="26" /><rect x="118" y="124" width="44" height="26" /><rect x="162" y="124" width="52" height="26" />
+  </g>
+  <g class="dg-box dg-on">
+    <rect x="214" y="22" width="132" height="26" /><rect x="214" y="56" width="132" height="26" />
+    <rect x="214" y="90" width="132" height="26" /><rect x="214" y="124" width="132" height="26" />
+  </g>
+  <g class="dg-2xs">
+    <text x="280" y="35">데이터</text><text x="280" y="69">데이터</text><text x="280" y="103">데이터</text><text x="280" y="137">데이터</text>
+    <text x="188" y="69">TCP</text>
+    <text x="140" y="103">IP</text><text x="188" y="103">TCP</text>
+    <text x="90" y="137">이더넷</text><text x="140" y="137">IP</text><text x="188" y="137">TCP</text>
+  </g>
+  <text class="dg-sub" x="90" y="160">데이터링크</text>
+  <text class="dg-sub" x="140" y="160">네트워크</text>
+  <text class="dg-sub" x="188" y="160">전송</text>
+  <text class="dg-sub" x="280" y="160">응용</text>
+</svg>`,
+  },
+
+  /** 치환과 전치 — 글자가 바뀌는가, 자리가 바뀌는가. 두 낱말이 서로 비슷해 뒤집히는데
+      화살표를 보면 뒤집히지 않는다(수직이면 치환, 엇갈리면 전치). */
+  "substitution-transposition": {
+    alt: "두 벌로 나란히 둔 네 칸 그림. 왼쪽은 치환으로 S·E·C·U가 제자리에서 V·H·F·X로 바뀌며 화살표가 모두 수직이고, 오른쪽은 전치로 글자는 그대로인 채 두 글자씩 자리를 바꿔 E·S·U·C가 되며 화살표가 엇갈린다.",
+    caption: "화살표가 수직이면 치환, 엇갈리면 전치다 — 현대 블록 암호는 이 둘을 여러 겹 겹쳐 쓴다.",
+    svg: `<svg viewBox="0 0 360 148" class="dg-svg" focusable="false">
+  <defs>
+    <marker id="st-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="currentColor" />
+    </marker>
+  </defs>
+  <g class="dg-box">
+    <rect x="22" y="34" width="36" height="26" /><rect x="58" y="34" width="36" height="26" /><rect x="94" y="34" width="36" height="26" /><rect x="130" y="34" width="36" height="26" />
+    <rect x="22" y="86" width="36" height="26" /><rect x="58" y="86" width="36" height="26" /><rect x="94" y="86" width="36" height="26" /><rect x="130" y="86" width="36" height="26" />
+    <rect x="194" y="34" width="36" height="26" /><rect x="230" y="34" width="36" height="26" /><rect x="266" y="34" width="36" height="26" /><rect x="302" y="34" width="36" height="26" />
+    <rect x="194" y="86" width="36" height="26" /><rect x="230" y="86" width="36" height="26" /><rect x="266" y="86" width="36" height="26" /><rect x="302" y="86" width="36" height="26" />
+  </g>
+  <g class="dg-xs">
+    <text x="40" y="47">S</text><text x="76" y="47">E</text><text x="112" y="47">C</text><text x="148" y="47">U</text>
+    <text x="40" y="99">V</text><text x="76" y="99">H</text><text x="112" y="99">F</text><text x="148" y="99">X</text>
+    <text x="212" y="47">S</text><text x="248" y="47">E</text><text x="284" y="47">C</text><text x="320" y="47">U</text>
+    <text x="212" y="99">E</text><text x="248" y="99">S</text><text x="284" y="99">U</text><text x="320" y="99">C</text>
+  </g>
+  <g class="dg-line dg-thin" marker-end="url(#st-ah)">
+    <path d="M40 62 V84" /><path d="M76 62 V84" /><path d="M112 62 V84" /><path d="M148 62 V84" />
+    <path d="M212 62 L248 84" /><path d="M248 62 L212 84" /><path d="M284 62 L320 84" /><path d="M320 62 L284 84" />
+  </g>
+  <text class="dg-sub" x="94" y="22">치환 — 글자가 바뀐다</text>
+  <text class="dg-sub" x="266" y="22">전치 — 자리가 바뀐다</text>
+  <text class="dg-sub" x="94" y="132">자리는 그대로</text>
+  <text class="dg-sub" x="266" y="132">글자는 그대로</text>
+</svg>`,
+  },
+
+  /** 의존성의 트리 — 내가 고른 것은 가운데 줄뿐이고 아래 줄은 그것이 끌고 온다.
+      "전이 의존"이라는 낱말보다 한 칸 아래에 붙은 네모가 빠르다. */
+  "dependency-tree": {
+    alt: "내 앱 아래로 직접 고른 라이브러리 셋이 달리고, 그 아래로 각 라이브러리가 끌어온 의존성 여섯이 달린 트리. 아래 줄의 하나가 악성으로 칠해져 있다.",
+    caption: "내가 고른 것은 가운데 줄뿐이다 — 아래 줄은 끌려온 것이고, 오염은 거기서 들어온다.",
+    svg: `<svg viewBox="0 0 360 176" class="dg-svg" focusable="false">
+  <g class="dg-line dg-thin">
+    <path d="M180 40 L80 70" /><path d="M180 40 V70" /><path d="M180 40 L280 70" />
+    <path d="M80 96 L45 130" /><path d="M80 96 L101 130" />
+    <path d="M180 96 L157 130" /><path d="M180 96 L213 130" />
+    <path d="M280 96 L257 130" /><path d="M280 96 L313 130" />
+  </g>
+  <rect class="dg-node" x="140" y="14" width="80" height="26" rx="4" />
+  <text class="dg-2xs" x="180" y="27">내 앱</text>
+  <g class="dg-box">
+    <rect x="44" y="70" width="72" height="26" /><rect x="144" y="70" width="72" height="26" /><rect x="244" y="70" width="72" height="26" />
+    <rect x="22" y="130" width="46" height="22" /><rect x="78" y="130" width="46" height="22" />
+    <rect x="134" y="130" width="46" height="22" />
+    <rect x="234" y="130" width="46" height="22" /><rect x="290" y="130" width="46" height="22" />
+  </g>
+  <rect class="dg-chip" x="190" y="130" width="46" height="22" />
+  <g class="dg-2xs">
+    <text x="80" y="84">A</text><text x="180" y="84">B</text><text x="280" y="84">C</text>
+    <text x="45" y="141">a1</text><text x="101" y="141">a2</text>
+    <text x="157" y="141">b1</text><text x="213" y="141">악성</text>
+    <text x="257" y="141">c1</text><text x="313" y="141">c2</text>
+  </g>
+  <text class="dg-sub" x="180" y="168">가운데 줄만 내가 골랐다 — 아래 줄은 따라온다</text>
+</svg>`,
+  },
 };
