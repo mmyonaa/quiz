@@ -1,5 +1,5 @@
 ---
-import { EXAMS, EXAM_SLUGS } from "../content.config";
+import { EXAMS, EXAM_FORMAT, EXAM_SLUGS } from "../content.config";
 import { loadBank, loadPractical } from "../lib/bank";
 import SiteHeader from "../components/SiteHeader.astro";
 import "../styles/global.css";
@@ -14,7 +14,8 @@ const practical = await loadPractical();
 const BLOG_POST_BASE = "https://mmyonaa.github.io/blog/blog/";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 // 비로그인 관문이 "이 기기에 이미 쌓인 것"을 말하려면 시험별 저장 키를 알아야 한다
-const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: EXAM_SLUGS[e] ? `/${EXAM_SLUGS[e]}` : "" }));
+// label 은 머리의 시험 전환과 같은 이름이어야 한다 — 한 화면에서 같은 시험을 달리 부르면 둘로 보인다
+const EXAM_LIST = EXAMS.map((e) => ({ exam: e, label: EXAM_FORMAT[e].label, slug: EXAM_SLUGS[e] ?? "", path: EXAM_SLUGS[e] ? `/${EXAM_SLUGS[e]}` : "" }));
 ---
 
 <!doctype html>
@@ -68,6 +69,15 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
 
       <section id="my" class="panel flat" hidden>
         <h1>마이페이지</h1>
+        {/* 시험 전환 — 보관함은 두 시험이 한 통에 쌓이는 유일한 화면이다. 머리의 전환과 같은
+            모양을 쓰되 '전체'가 하나 더 있다; 여기는 두 시험을 함께 보는 것도 뜻이 있는 자리다.
+            칩마다 그 시험에 몇 개가 쌓였는지를 달아, 고르기 전에 어느 쪽이 밀렸는지 보이게 한다. */}
+        <span id="exam-filter" class="exam-switch my-exam" role="group" aria-label="시험 선택">
+          <button class="exam-tab on" type="button" data-exam="">전체 <em data-ecount=""></em></button>
+          {EXAM_LIST.map(({ exam, label }) => (
+            <button class="exam-tab" type="button" data-exam={exam}>{label} <em data-ecount={exam}></em></button>
+          ))}
+        </span>
         <div class="tabs" role="tablist">
           <button id="tab-wrong" class="tab on" type="button" role="tab">오답노트 <em data-count="wrong"></em></button>
           <button id="tab-saved" class="tab" type="button" role="tab">저장한 문제 <em data-count="saved"></em></button>
@@ -107,7 +117,7 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
 
     <script is:inline type="application/json" id="bank" set:html={JSON.stringify(bank)} />
     <script is:inline type="application/json" id="practical" set:html={JSON.stringify(practical)} />
-    <script is:inline type="application/json" id="config" set:html={JSON.stringify({ blogPostBase: BLOG_POST_BASE })} />
+    <script is:inline type="application/json" id="config" set:html={JSON.stringify({ blogPostBase: BLOG_POST_BASE, examLabels: Object.fromEntries(EXAM_LIST.map((e) => [e.exam, e.label])) })} />
 
     <script>
       import { supabase } from "../lib/supabase";
@@ -119,6 +129,7 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
 
       type Q = {
         id: string;
+        exam: string; // 보관함은 두 시험이 섞여 쌓이므로 항목마다 어느 시험인지 들고 있어야 한다
         area: string;
         difficulty: string;
         question: string;
@@ -132,6 +143,7 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
       /** 실기 문항 — 보기가 없고 답란이 여럿이라 필기와 카드 모양이 다르다 */
       type PQ = {
         id: string;
+        exam: string;
         area: string;
         difficulty: string;
         kind: string;
@@ -154,7 +166,10 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
 
       const bank: Q[] = JSON.parse(document.getElementById("bank")!.textContent!);
       const practical: PQ[] = JSON.parse(document.getElementById("practical")!.textContent!);
-      const { blogPostBase } = JSON.parse(document.getElementById("config")!.textContent!) as { blogPostBase: string };
+      const { blogPostBase, examLabels: EXAM_LABEL } = JSON.parse(document.getElementById("config")!.textContent!) as {
+        blogPostBase: string;
+        examLabels: Record<string, string>;
+      };
       // 저장·오답 기록은 id만 들고 온다 — 두 은행을 한 자로 찾는다(id는 겹치지 않는다)
       const itemById = new Map<string, Item>([...bank, ...practical].map((q) => [q.id, q]));
       const bankById = new Map(bank.map((q) => [q.id, q]));
@@ -167,6 +182,18 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
       let wrongs: WrongItem[] = [];
       let saved: Item[] = [];
       let notes: Item[] = [];
+
+      // ── 시험 거르개 ──
+      // 세 탭이 모두 같은 거르개를 받는다. 고른 것은 기기에 남는다 — 한 시험만 보는 사람이
+      // 올 때마다 '전체'로 되돌아가면 매번 같은 손질을 되풀이하게 된다.
+      const EXAM_KEY = "daily.quiz.my-exam";
+      let examFilter = "";
+      try {
+        examFilter = localStorage.getItem(EXAM_KEY) ?? "";
+      } catch {
+        /* 시크릿 모드 — 전체로 둔다 */
+      }
+      const inExam = (q: Item) => !examFilter || q.exam === examFilter;
 
       const fmtDate = (iso: string) =>
         new Date(iso).toLocaleDateString("ko-KR", { year: "numeric", month: "long", day: "numeric" });
@@ -210,11 +237,12 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
 
       const renderWrongs = () => {
         const sort = ($("#wrong-sort") as HTMLSelectElement).value;
-        const items = [...wrongs].sort((a, b) =>
+        const items = wrongs.filter((w) => inExam(w.q)).sort((a, b) =>
           sort === "count" ? b.count - a.count || b.lastAt.localeCompare(a.lastAt) : b.lastAt.localeCompare(a.lastAt),
         );
         setCount("wrong", items.length);
-        $("#wrong-empty").hidden = items.length > 0;
+        paintEmpty("#wrong-empty", items.length, wrongs.length,
+          "아직 오답 기록이 없습니다. 문제를 풀면 틀린 문제가 여기에 쌓여요.");
         const list = $("#wrong-list");
         list.innerHTML = "";
         items.forEach((it) => {
@@ -238,7 +266,7 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
               return;
             }
             wrongs = wrongs.filter((w) => w.q.id !== it.q.id);
-            renderWrongs();
+            renderAll();
           });
           el.appendChild(del);
           list.appendChild(el);
@@ -246,11 +274,13 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
       };
 
       const renderSaved = () => {
-        setCount("saved", saved.length);
-        $("#saved-empty").hidden = saved.length > 0;
+        const items = saved.filter(inExam);
+        setCount("saved", items.length);
+        paintEmpty("#saved-empty", items.length, saved.length,
+          "저장한 문제가 없습니다. 풀이 중 북마크 버튼으로 담아두세요.");
         const list = $("#saved-list");
         list.innerHTML = "";
-        saved.forEach((q) => {
+        items.forEach((q) => {
           const el = isPractical(q) ? paCard(q) : card(q, "");
           el.className = "rv"; // 저장 목록은 오답 색을 쓰지 않는다
           const del = document.createElement("button");
@@ -268,7 +298,7 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
               return;
             }
             saved = saved.filter((s) => s.id !== q.id);
-            renderSaved();
+            renderAll();
           });
           el.appendChild(del);
           list.appendChild(el);
@@ -277,11 +307,13 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
 
       // 저장한 개념 — 개념 노트처럼 해설을 앞세워 렌더
       const renderNotes = () => {
-        setCount("notes", notes.length);
-        $("#notes-empty").hidden = notes.length > 0;
+        const items = notes.filter(inExam);
+        setCount("notes", items.length);
+        paintEmpty("#notes-empty", items.length, notes.length,
+          "저장한 개념이 없습니다. 개념 노트에서 북마크 버튼으로 담아두세요.");
         const list = $("#notes-list");
         list.innerHTML = "";
-        notes.forEach((q) => {
+        items.forEach((q) => {
           // 실기는 해설만으로 서지 않는다 — 보기가 없어 "무엇을 묻는 문제였나"가 발문에만 있다
           const el = isPractical(q) ? paCard(q) : document.createElement("article");
           if (!isPractical(q)) {
@@ -306,7 +338,7 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
               return;
             }
             notes = notes.filter((x) => x.id !== q.id);
-            renderNotes();
+            renderAll();
           });
           el.appendChild(del);
           list.appendChild(el);
@@ -328,7 +360,6 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
         notes = n.error
           ? []
           : (n.data as { question_id: string }[]).map((r) => itemById.get(r.question_id)).filter((q): q is Item => !!q);
-        renderNotes();
         // question_id로 묶기 — 내림차순이라 첫 등장이 최신 기록
         const byId = new Map<string, WrongItem>();
         (w.data as WrongRow[]).forEach((r) => {
@@ -340,9 +371,61 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, slug: EXAM_SLUGS[e] ?? "", path: 
         });
         wrongs = [...byId.values()];
         saved = (s.data as { question_id: string }[]).map((r) => itemById.get(r.question_id)).filter((q): q is Item => !!q);
+        renderAll();
+      };
+
+      /**
+       * 빈 자리 문구 — 거르개를 켜 둔 채 비었을 때 "아직 기록이 없습니다"는 거짓말이다.
+       * 다른 시험에는 쌓여 있는데 그 말을 보면 기록이 사라진 줄 안다.
+       */
+      const paintEmpty = (sel: string, shown: number, total: number, base: string) => {
+        const el = $(sel);
+        el.hidden = shown > 0;
+        el.textContent = shown === 0 && examFilter && total > 0
+          ? `${EXAM_LABEL[examFilter] ?? examFilter}에는 없습니다 — 다른 시험에 ${total}개가 있습니다.`
+          : base;
+      };
+
+      /** 거르개 칩의 건수 — 세 통을 합쳐 시험별로 센다. 거르개와 무관하게 '전부'를 센다 */
+      const paintExamCounts = () => {
+        const all: Item[] = [...wrongs.map((w) => w.q), ...saved, ...notes];
+        document.querySelectorAll<HTMLElement>("[data-ecount]").forEach((el) => {
+          const want = el.dataset.ecount ?? "";
+          const n = want ? all.filter((q) => q.exam === want).length : all.length;
+          el.textContent = String(n);
+        });
+      };
+
+      const renderAll = () => {
         renderWrongs();
         renderSaved();
+        renderNotes();
+        paintExamCounts();
       };
+
+      $("#exam-filter").addEventListener("click", (e) => {
+        const btn = (e.target as HTMLElement).closest<HTMLButtonElement>(".exam-tab");
+        if (!btn) return;
+        examFilter = btn.dataset.exam ?? "";
+        try {
+          localStorage.setItem(EXAM_KEY, examFilter);
+        } catch {
+          /* 저장 못 해도 이 화면에서는 걸린다 */
+        }
+        document.querySelectorAll("#exam-filter .exam-tab").forEach((b) => {
+          const on = (b as HTMLElement).dataset.exam === examFilter;
+          b.classList.toggle("on", on);
+          b.setAttribute("aria-pressed", String(on));
+        });
+        renderAll();
+      });
+
+      // 기기에 남은 선택을 첫 그리기 전에 칩에 반영한다
+      document.querySelectorAll("#exam-filter .exam-tab").forEach((b) => {
+        const on = (b as HTMLElement).dataset.exam === examFilter;
+        b.classList.toggle("on", on);
+        b.setAttribute("aria-pressed", String(on));
+      });
 
       // 탭 전환 — 상단 탭과 좌측 사이드 메뉴가 같은 상태를 공유한다
       const TABS = ["wrong", "saved", "notes"] as const;
