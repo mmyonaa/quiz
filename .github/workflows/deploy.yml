@@ -20,7 +20,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # 전체 이력을 받는다 — 개념 노트의 최종 수정일을 topic-notes.json 의 커밋에서 뽑는데,
+      # 기본값(깊이 1)이면 커밋이 하나만 보여 주제 전부가 '배포한 날'을 달게 된다.
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v7
         with:
           node-version: 22
