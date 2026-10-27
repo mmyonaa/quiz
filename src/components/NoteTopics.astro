@@ -4,6 +4,7 @@ import { codeHtml } from "../lib/code-block";
 import { md } from "../lib/md";
 import { isSelfGraded } from "../lib/practical-grade";
 import MdBlocks from "./MdBlocks.astro";
+import SaveMark from "./SaveMark.astro";
 
 // 개념 노트 본문 — 주제 카드 목록과 그 상호작용(개념 저장·확인 문제·난이도 필터·
 // 모두 펼치기·읽기 진행률). 영역 페이지와 과목 페이지가 같은 화면을 쓰므로 여기로 모았다.
@@ -41,6 +42,8 @@ const { topics, blogPostBase, mdBase } = Astro.props as {
     post?: string;
     title: string;
     intro: string;
+    /** 이 주제의 도입부가 마지막으로 바뀐 날 — git 이력에서 뽑는다(없으면 줄을 내지 않는다) */
+    updated?: string;
     questions: Q[];
     practical?: PQ[];
   }[];
@@ -54,7 +57,7 @@ const blankLabel = (q: PQ, i: number) =>
   q.labels?.[i] ?? (q.answers.length > 1 ? `${i + 1}번 답란` : "정답");
 ---
 
-{topics.map(({ key: topicKey, post, title, intro, questions, practical = [] }, i) => (
+{topics.map(({ key: topicKey, post, title, intro, updated, questions, practical = [] }, i) => (
     <div class="topic" id={`t${i}`}>
       <h3 class="topic-title">
         <span class="topic-name">{title}</span>
@@ -82,6 +85,13 @@ const blankLabel = (q: PQ, i: number) =>
           블록 표기(콜아웃·대조표·목록)는 MdBlocks가 편다 — 암기 노트와 같은 렌더러다. */}
       <div class="topic-intro">
         <MdBlocks text={intro} />
+        {/* 언제 손본 글인지 — 날짜를 데이터에 적어 두면 고칠 때 같이 고치는 사람이 없어
+            가장 먼저 낡는다. git 이력에서 뽑고, 못 뽑으면 줄째로 빠진다(틀린 날짜보다 없는 쪽이 낫다).
+            도입부 **안**에 둔다 — 밖에 두면 도입부의 닫는 괘선과 첫 카드의 위 괘선 사이에 끼어
+            제 띠처럼 보인다. 이 줄은 도입부의 꼬리지 따로 선 블록이 아니다. */}
+        {updated && (
+          <p class="topic-updated">마지막 수정 <time datetime={updated}>{updated}</time></p>
+        )}
       </div>
       {/* 카드 = 개념(있으면) → 문제 → 상세 해설(가림). 문제를 먼저 풀고 해설은 선지를 고르거나
           '해설 보기'를 눌러 그 자리서 편다 — 해설이 답을 흘리던 '해설 먼저' 구조를 뒤집었다. */}
@@ -98,11 +108,11 @@ const blankLabel = (q: PQ, i: number) =>
             <div class="cn-crow">
               <p class="cn-concept" set:html={md(q.concept)} />
               <span class="badge diff cn-diff cn-diff-wide" data-level={q.difficulty}>{q.difficulty}</span>
-              <button class="save-star cn-save" type="button" title="이 개념 저장" aria-label="이 개념 저장">☆</button>
+              <SaveMark class="cn-save" label="이 개념 저장" />
             </div>
           ) : (
             <>
-              <button class="save-star cn-save" type="button" title="이 개념 저장" aria-label="이 개념 저장">☆</button>
+              <SaveMark class="cn-save" label="이 개념 저장" />
               <span class="badge diff cn-diff cn-diff-wide" data-level={q.difficulty}>{q.difficulty}</span>
             </>
           )}
@@ -134,7 +144,7 @@ const blankLabel = (q: PQ, i: number) =>
               <span class="badge diff" data-level={p.difficulty}>{p.difficulty}</span>
               {/* 손잡이 줄에 다는 별 — 접힌 채로도 담을 수 있어야 한다. summary 안의 버튼은
                   누르면 details가 함께 열리므로 스크립트가 그 기본 동작을 막는다. */}
-              <button class="save-star cn-save cn-pa-save" type="button" title="이 문제 저장" aria-label="이 실기 문제 저장">☆</button>
+              <SaveMark class="cn-save cn-pa-save" label="이 실기 문제 저장" />
             </summary>
             <p class="cn-question" set:html={md(p.question)} />
             {p.code && <div class="q-code-set" set:html={codeHtml(p.code, p.lang)} />}
@@ -203,7 +213,7 @@ const blankLabel = (q: PQ, i: number) =>
           const paintStars = () => {
             stars.forEach((b) => {
               const on = savedNotes.has(idOf(b));
-              b.textContent = on ? "★" : "☆";
+              b.setAttribute("aria-pressed", String(on));
               b.classList.toggle("on", on);
             });
           };

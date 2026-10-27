@@ -12,6 +12,7 @@ import {
 } from "../../../content.config";
 import { loadBank, loadPractical, topicsOf, topicSearchText } from "../../../lib/bank";
 import NoteTopics from "../../../components/NoteTopics.astro";
+import { topicUpdatedMap } from "../../../lib/topic-updated.mjs";
 import SiteHeader from "../../../components/SiteHeader.astro";
 import SiteFooter from "../../../components/SiteFooter.astro";
 import "../../../styles/global.css";
@@ -41,8 +42,10 @@ const pbank = (await loadPractical()).filter((q) => q.exam === exam);
 const qs = bank.filter((q) => q.area === area);
 const ps = pbank.filter((q) => q.area === area);
 // 주제 순서는 topic-notes.json의 정의 순서(기초 → 심화)를 따른다.
+const UPDATED = topicUpdatedMap();
 const topics = topicsOf(area, exam).map((t) => ({
   ...t,
+  updated: UPDATED[t.key],
   questions: qs.filter((q) => q.topic === t.key),
   practical: ps.filter((q) => q.topic === t.key),
 }));

@@ -4,6 +4,7 @@ import { memosOf } from "../../content.config";
 import { areasOf, loadBank, subjectsOf } from "../../lib/bank";
 import SiteHeader from "../../components/SiteHeader.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
+import SaveMark from "../../components/SaveMark.astro";
 import "../../styles/global.css";
 
 // 한 벌의 파일이 시험 수만큼 라우트를 낸다 — 정처기는 `/`, 정보보안기사는 `/sec/`.
@@ -228,7 +229,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
                 <span id="progress" class="mono"></span>
                 <span id="timer" class="mono timer" hidden></span>
                 <span class="exam-tools">
-                  <button id="save-q" class="save-star" type="button" title="이 문제 저장" aria-label="이 문제 저장">☆</button>
+                  <SaveMark id="save-q" label="이 문제 저장" />
                   <span id="exam-diff" class="badge diff"></span>
                   <span id="exam-area" class="badge"></span>
                 </span>
@@ -433,7 +434,7 @@ const AREA_SLUG_MAP = Object.fromEntries(AREAS.map((a) => [a, AREA_SLUGS[a]]));
       };
 
       const paintStar = (btn: HTMLElement, on: boolean) => {
-        btn.textContent = on ? "★" : "☆";
+        btn.setAttribute("aria-pressed", String(on));
         btn.classList.toggle("on", on);
       };
 

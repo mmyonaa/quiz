@@ -1116,16 +1116,15 @@ button.linklike:hover {
 
 /* ── 시험일과 하루 몫 ──
    한 줄이 주인공이고 날짜 입력은 그 줄을 만든 손잡이다 — 그래서 입력을 작게 두고
-   오른쪽으로 민다. 기록이 없어도 접지 않는 유일한 블록이라(빈 상태가 곧 "정하라"는 말이다)
-   테두리로 위와 가른다. */
+   오른쪽으로 민다. 기록이 없어도 접지 않는 유일한 블록이다(빈 상태가 곧 "정하라"는 말이다).
+   **괘선을 긋지 않는다** — 바로 위 모드 카드 목록이 마지막 카드의 아래 테두리로 이미 닫혀
+   있어, 여기에 위 테두리를 더하면 24px 사이를 두고 같은 선이 둘 그어진다. */
 .pace {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
   gap: 0.6rem;
-  margin-top: var(--s-5);
-  padding-top: var(--s-4);
-  border-top: 1px solid var(--border);
+  margin-top: var(--s-4);
 }
 .pace-line {
   margin: 0;
@@ -2982,6 +2981,18 @@ button.toc-chip {
 }
 /* 마크다운 복사 — 제목 줄 오른쪽 묶음의 첫 자리. 뒤의 '개념 글 →'이 자기 margin-left: auto를
    그대로 쓰면 둘이 양 끝으로 벌어지므로, 미는 것은 여기 한 번만 한다. */
+/* 주제 도입부 아래 한 줄 — 언제 손본 글인지. 본문이 주인공이라 작고 흐리게 두고,
+   날짜를 못 뽑으면 이 줄은 아예 렌더되지 않는다(빈 자리가 남지 않는다). */
+.topic-updated {
+  margin: var(--s-3) 0 0;
+  color: var(--muted);
+  font-size: var(--t-xs);
+}
+.topic-updated time {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
 .topic-copy {
   flex: none;
   margin-left: auto;
@@ -3515,20 +3526,34 @@ a.brand {
   align-items: center;
   gap: 0.5rem;
 }
+/* 저장 표시 — 북마크 리본(SaveMark.astro). 별이 아닌 것은 뜻이 '별점'이 아니라
+   '담아 둔다'이기 때문이다. 비었을 때 윤곽선, 담았을 때 채움 — 폭이 변하지 않아
+   눌러도 옆이 밀리지 않는다(글리프 ★/☆를 갈아 끼우던 때의 문제다). */
 .save-star {
   appearance: none;
   border: 0;
   background: none;
-  font: inherit;
-  font-size: var(--t-lg);
-  line-height: 1;
+  display: inline-flex;
+  align-items: center;
   padding: 0 0.15em;
   color: var(--muted);
   cursor: pointer;
 }
+.save-star svg {
+  width: 1.05em;
+  height: 1.05em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linejoin: round;
+}
 .save-star:hover,
 .save-star.on {
   color: var(--accent-strong);
+}
+/* 담은 것은 안을 채운다 — 윤곽선만으로는 켜짐·꺼짐이 색 하나에만 걸린다 */
+.save-star.on svg {
+  fill: currentColor;
 }
 .rv {
   position: relative;

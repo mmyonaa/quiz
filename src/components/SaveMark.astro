@@ -1,0 +1,22 @@
+---
+/**
+ * 저장 표시 — 개념 노트·필기·실기가 같은 버튼을 쓰므로 모양을 한 벌만 둔다.
+ *
+ * 별이 아니라 **북마크 리본**이다. 별은 "별점"이나 "즐겨찾기"로 읽히는데 이 버튼의 뜻은
+ * 그게 아니라 "담아 뒀다가 마이페이지에서 다시 본다"다. 리본은 책갈피의 그림이라
+ * 설명 없이 그 뜻으로 읽힌다.
+ *
+ * 켜고 끄는 것은 `.on` 클래스가 한다(세 화면이 이미 그렇게 토글하고 있다) — 채움은 CSS가
+ * 주므로 스크립트가 글자를 갈아 끼울 일이 없다. 글리프를 바꿔 끼우던 때는 `★`과 `☆`의
+ * 폭이 달라 눌릴 때마다 옆 요소가 미세하게 밀렸다.
+ */
+type Props = { id?: string; label: string; class?: string };
+const { id, label, class: cls = "" } = Astro.props;
+---
+
+<button id={id} class:list={["save-star", cls]} type="button" title={label} aria-label={label} aria-pressed="false">
+  {/* 리본 하나 — 비었을 때는 윤곽선, 담았을 때는 CSS가 안을 채운다 */}
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M6 3h12a1 1 0 0 1 1 1v16l-7-4-7 4V4a1 1 0 0 1 1-1z" />
+  </svg>
+</button>

@@ -12,6 +12,7 @@ import {
 import { areasOf, loadPractical } from "../../lib/bank";
 import SiteHeader from "../../components/SiteHeader.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
+import SaveMark from "../../components/SaveMark.astro";
 import { PRACTICAL_FORMAT, maxPoints } from "../../lib/practical-grade";
 import "../../styles/global.css";
 
@@ -180,7 +181,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
                 <span id="progress" class="mono"></span>
                 <span id="timer" class="mono timer" hidden></span>
                 <span class="exam-tools">
-                  <button id="save-q" class="save-star" type="button" title="이 문제 저장" aria-label="이 문제 저장">☆</button>
+                  <SaveMark id="save-q" label="이 문제 저장" />
                   <span id="exam-kind" class="badge"></span>
                   <span id="exam-diff" class="badge diff"></span>
                 </span>
@@ -493,7 +494,7 @@ const KINDS_IN_BANK = PRACTICAL_KINDS.filter((k) => countByKind[k] > 0);
         const btn = $("#save-q");
         if (exam.hidden || session.length === 0) return;
         const on = savedIds.has(session[cur].id);
-        btn.textContent = on ? "★" : "☆";
+        btn.setAttribute("aria-pressed", String(on));
         btn.classList.toggle("on", on);
       };
 
