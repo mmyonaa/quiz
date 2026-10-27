@@ -26,6 +26,16 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, label: EXAM_FORMAT[e].label, slug
     <title>daily.quiz — 마이페이지</title>
     <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
     <meta name="description" content="내 오답노트와 저장한 문제 — 계정에 영구 보관됩니다." />
+    {/* 고른 시험의 액센트를 첫 페인트 전에 건다 — 스크립트가 돌 때 걸면 코랄로 한 번 그렸다가
+        블루로 바뀌어 번쩍인다. 머리의 테마 선점과 같은 수법이다.
+        시험 축이 있는 페이지는 라우트가 <html>에 심지만, 보관함은 공용이라 고른 값이 정한다. */}
+    <script is:inline define:vars={{ slugs: Object.fromEntries(EXAM_LIST.map((e) => [e.exam, e.slug])) }}>
+      try {
+        var picked = localStorage.getItem("daily.quiz.my-exam");
+        var slug = picked ? slugs[picked] : "";
+        if (slug) document.documentElement.dataset.exam = slug;
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <SiteHeader current="my" shared />
@@ -73,9 +83,9 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, label: EXAM_FORMAT[e].label, slug
             모양을 쓰되 '전체'가 하나 더 있다; 여기는 두 시험을 함께 보는 것도 뜻이 있는 자리다.
             칩마다 그 시험에 몇 개가 쌓였는지를 달아, 고르기 전에 어느 쪽이 밀렸는지 보이게 한다. */}
         <span id="exam-filter" class="exam-switch my-exam" role="group" aria-label="시험 선택">
-          <button class="exam-tab on" type="button" data-exam="">전체 <em data-ecount=""></em></button>
-          {EXAM_LIST.map(({ exam, label }) => (
-            <button class="exam-tab" type="button" data-exam={exam}>{label} <em data-ecount={exam}></em></button>
+          <button class="exam-tab on" type="button" data-exam="" data-slug="">전체 <em data-ecount=""></em></button>
+          {EXAM_LIST.map(({ exam, label, slug }) => (
+            <button class="exam-tab" type="button" data-exam={exam} data-slug={slug}>{label} <em data-ecount={exam}></em></button>
           ))}
         </span>
         <div class="tabs" role="tablist">
@@ -412,20 +422,32 @@ const EXAM_LIST = EXAMS.map((e) => ({ exam: e, label: EXAM_FORMAT[e].label, slug
         } catch {
           /* 저장 못 해도 이 화면에서는 걸린다 */
         }
-        document.querySelectorAll("#exam-filter .exam-tab").forEach((b) => {
-          const on = (b as HTMLElement).dataset.exam === examFilter;
-          b.classList.toggle("on", on);
-          b.setAttribute("aria-pressed", String(on));
-        });
+        paintExamPick();
         renderAll();
       });
 
-      // 기기에 남은 선택을 첫 그리기 전에 칩에 반영한다
-      document.querySelectorAll("#exam-filter .exam-tab").forEach((b) => {
-        const on = (b as HTMLElement).dataset.exam === examFilter;
-        b.classList.toggle("on", on);
-        b.setAttribute("aria-pressed", String(on));
-      });
+      /**
+       * 고른 시험을 칩과 **페이지 액센트**에 함께 반영한다.
+       *
+       * 액센트를 `<html>`의 `data-exam`으로 거는 것은 다른 화면과 같은 방법이다 — 시험 축이 있는
+       * 페이지는 라우트가 심고, 공용인 보관함은 고른 값이 심는다. 정처기는 코랄이 기본값이라
+       * 지우는 것으로 돌아간다(`전체`도 같다 — 두 시험을 함께 보는 자리에 한쪽 색을 칠할 수 없다).
+       */
+      const paintExamPick = () => {
+        document.querySelectorAll<HTMLElement>("#exam-filter .exam-tab").forEach((b) => {
+          const on = b.dataset.exam === examFilter;
+          b.classList.toggle("on", on);
+          b.setAttribute("aria-pressed", String(on));
+          if (on) {
+            const slug = b.dataset.slug ?? "";
+            if (slug) document.documentElement.dataset.exam = slug;
+            else delete document.documentElement.dataset.exam;
+          }
+        });
+      };
+
+      // 기기에 남은 선택을 첫 그리기 전에 반영한다
+      paintExamPick();
 
       // 탭 전환 — 상단 탭과 좌측 사이드 메뉴가 같은 상태를 공유한다
       const TABS = ["wrong", "saved", "notes"] as const;
