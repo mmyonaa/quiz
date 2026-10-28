@@ -2995,13 +2995,38 @@ button.toc-chip {
 
 .topic-copy {
   flex: none;
+  display: inline-flex;
+  align-items: center;
   margin-left: auto;
   color: var(--accent-strong);
+  text-decoration: none;
 }
 .topic-copy ~ .topic-link {
   margin-left: 0.6rem;
 }
-/* 복사됨·복사 실패는 글자가 바뀌어 이미 말하고 있다 — 색은 강조를 거두기만 한다 */
+.topic-copy-ico {
+  display: block;
+  width: 1.05em;
+  height: 1.05em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* 상태는 모양이 말한다 — 겹친 두 장이 체크나 가위표로 바뀐다. 셋을 함께 그려 두고
+   보일 것만 고르므로 아이콘 상자 크기가 상태마다 달라지지 않는다(옆의 '개념 글'이 안 밀린다) */
+.topic-copy .i-ok,
+.topic-copy .i-no,
+.topic-copy.copied .i-copy,
+.topic-copy.failed .i-copy {
+  display: none;
+}
+.topic-copy.copied .i-ok,
+.topic-copy.failed .i-no {
+  display: block;
+}
+/* 모양이 이미 말하고 있다 — 색은 강조를 거두기만 한다 */
 .topic-copy.copied,
 .topic-copy.failed {
   color: var(--text);
@@ -4398,15 +4423,14 @@ select.sort {
   margin-right: 1.35rem;
 }
 .flow li:not(:last-child)::after {
-  content: "";
+  content: "\2192";
   position: absolute;
-  right: -1rem;
+  right: -1.07rem;
   top: 50%;
-  width: 0.45rem;
-  height: 0.45rem;
-  border-top: 2px solid var(--muted);
-  border-right: 2px solid var(--muted);
-  transform: translateY(-50%) rotate(45deg);
+  color: var(--muted);
+  font-size: 0.95em;
+  line-height: 1;
+  transform: translateY(-50%);
 }
 /* 좁은 화면에서는 칩 하나가 한 줄을 다 먹어 가로 흐름이 성립하지 않는다 — 세로 사다리로
    세운다. 번호 구슬이 레일 위에 꿰이고 글은 그 오른쪽으로 흐른다. */
@@ -4431,6 +4455,7 @@ select.sort {
     margin-right: 0;
   }
   .flow li:not(:last-child)::after {
+    content: "";
     top: 1.75em;
     bottom: -0.15em;
     left: 0.555em;

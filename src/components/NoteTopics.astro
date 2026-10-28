@@ -73,9 +73,21 @@ const blankLabel = (q: PQ, i: number) =>
           type="button"
           class="linklike topic-copy"
           data-copy-md={`${mdBase}${topicKey}.md`}
+          title="마크다운 복사"
           aria-label={`${title} 도입부를 마크다운으로 복사`}
         >
-          <span class="topic-copy-label">마크다운 복사</span>
+          {/* 겹친 두 장(복사) · 체크(복사됨) · 가위표(실패) 한 벌을 함께 두고 CSS가 고른다 —
+              글자가 아니라 모양이 상태를 말하므로 스크립트가 글리프를 갈아 끼우지 않는다.
+              화면에서 사라진 글자는 .topic-copy-label이 스크린리더에만 그대로 읽어 준다. */}
+          <svg class="topic-copy-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <g class="i-copy">
+              <path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4" />
+              <rect x="9" y="9" width="12" height="12" rx="2" />
+            </g>
+            <path class="i-ok" d="M5 12.5 9.5 17 19 7.5" />
+            <path class="i-no" d="M6.5 6.5l11 11M17.5 6.5l-11 11" />
+          </svg>
+          <span class="topic-copy-label sr-only">마크다운 복사</span>
         </button>
         {post && (
           <a class="topic-link" href={`${blogPostBase}${post}/`} target="_blank" rel="noopener">개념 글 →</a>
@@ -355,11 +367,13 @@ const blankLabel = (q: PQ, i: number) =>
           ok = false;
         }
         label.textContent = ok ? "복사됨" : "복사 실패";
+        btn.title = ok ? "복사됨" : "복사 실패";
         btn.classList.toggle("copied", ok);
         btn.classList.toggle("failed", !ok);
         clearTimeout(mdRevert);
         mdRevert = window.setTimeout(() => {
           label.textContent = "마크다운 복사";
+          btn.title = "마크다운 복사";
           btn.classList.remove("copied", "failed");
         }, 1400);
       });
