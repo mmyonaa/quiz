@@ -576,8 +576,7 @@
     },
     "2026-10-21-malware-types": {
       "sha": "f7a24391e13046bb3adb72009355a986846815fc",
-      "section": "boangisa",
-      "gapReported": true
+      "section": "boangisa"
     },
     "2026-10-22-bigdata-3v-data-types": {
       "sha": "ec97d723993e1b7842c85c737a38718144fb5e4f",
@@ -593,8 +592,37 @@
     },
     "2026-10-25-isms-p": {
       "sha": "fdc0ed145ec77b07176f3bb8be3f8621d259537e",
+      "section": "boangisa"
+    },
+    "2026-10-26-confusion-matrix-metrics": {
+      "sha": "dfb5097cb252c91367450b7cef8a5404141c855c",
+      "section": "bigdata"
+    },
+    "2026-10-27-mcp-inspector-debugging": {
+      "sha": "e56196f6f6dbe7f15965db5c9950212c1213bd1d",
+      "section": "mcp"
+    },
+    "2026-10-28-sql-join-types": {
+      "sha": "96f3a735b38a479aba9362f5b8a0c6a3892ce08b",
+      "section": "jeongcheogi",
+      "gapReported": true
+    },
+    "2026-10-29-php2shell-php-rce-embargo": {
+      "sha": "bee77238d3551929b7a1d75efa22499a7d663df8",
+      "section": "security"
+    },
+    "2026-10-30-github-verified-mcp-copilot-connectors": {
+      "sha": "002882c1a2d0ff5f88c4c3460682c7cb3ea11e9d",
+      "section": "mcp"
+    },
+    "2026-10-31-vpn-ipsec-ssl": {
+      "sha": "ada04eb634b0b03289ae853b8da0abf8a0ede9e5",
       "section": "boangisa",
       "gapReported": true
+    },
+    "2026-11-01-missing-value-handling": {
+      "sha": "e1112536b9c0978af422bbaef654f8f82e37c911",
+      "section": "bigdata"
     }
   }
 }
