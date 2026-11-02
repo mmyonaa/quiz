@@ -802,6 +802,7 @@
     "subject": "네트워크 보안",
     "area": "네트워크 보안",
     "title": "VPN과 IPSec",
+    "post": "2026-10-31-vpn-ipsec-ssl",
     "intro": "VPN(가상 사설망)은 공중망인 인터넷 위에 암호화된 터널을 만들어 사설망처럼 안전하게 통신하게 하는 기술이다. 전용선을 깔지 않고도 본사와 지사, 재택 근무자와 사내망을 잇는다. 터널을 어디에 걸치느냐로 게이트웨이끼리 잇는 사이트 대 사이트 VPN과 개인 단말이 접속하는 원격 접속 VPN으로 나뉜다.\n\nIPSec은 네트워크 계층에서 IP(Internet Protocol) 패킷 자체를 보호하는 표준이다. 두 개의 보안 프로토콜을 갖는데 — AH(Authentication Header)는 무결성과 인증만 제공하고 ==기밀성(암호화)은 제공하지 않으며==, ESP(Encapsulating Security Payload)는 암호화까지 제공한다. 이 차이가 단골 문제다. 동작 모드는 둘로, 원래 IP 헤더를 그대로 두고 데이터만 보호하는 전송(Transport) 모드는 종단 호스트 사이에, 패킷 전체를 새 IP 헤더로 감싸는 터널(Tunnel) 모드는 게이트웨이 사이의 VPN에 쓴다. 두 지점이 쓸 알고리즘과 키를 안전하게 협상하는 절차가 IKE(Internet Key Exchange)이며, 협상 결과로 만들어지는 단방향 보안 연결이 SA(Security Association)다 — 단방향이라 양쪽으로 주고받으려면 SA가 둘 필요하고, 각 SA는 SPI(Security Parameter Index)로 구별한다.\n\n^ ipsec-modes\n\n다른 계층의 VPN도 함께 나온다 — 전송 계층의 SSL/TLS VPN은 브라우저만으로 접속할 수 있어 별도 클라이언트가 필요 없고, 데이터링크 계층에는 PPTP(Point-to-Point Tunneling Protocol)·L2TP가 있다(L2TP는 자체 암호화가 없어 보통 IPSec과 함께 쓴다). 최근에는 '내부망이면 신뢰한다'는 경계 모델을 버리고 매 요청마다 사용자와 단말을 검증하며 최소 권한을 적용하는 제로 트러스트(Zero Trust)가 VPN을 대체·보완하는 흐름으로 출제된다 — 기존 VPN과 경계 방화벽을 먼저 걷어내야 하는 것이 아니라, 그 위에 단계적으로 얹어 가는 것이 실제 도입 방식이다.",
     "aliases": "vpn ipsec ah esp ike ssl tls 터널"
   },
