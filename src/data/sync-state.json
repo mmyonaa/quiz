@@ -617,12 +617,41 @@
     },
     "2026-10-31-vpn-ipsec-ssl": {
       "sha": "ada04eb634b0b03289ae853b8da0abf8a0ede9e5",
-      "section": "boangisa",
-      "gapReported": true
+      "section": "boangisa"
     },
     "2026-11-01-missing-value-handling": {
       "sha": "e1112536b9c0978af422bbaef654f8f82e37c911",
       "section": "bigdata"
+    },
+    "2026-11-02-mcp-server-unit-testing": {
+      "sha": "6fa758ef7182eaec6cded43bc1d36ae509165eda",
+      "section": "mcp"
+    },
+    "2026-11-03-requirements-engineering": {
+      "sha": "e25ef5183cdc952c7491646cb22d20705e37335d",
+      "section": "jeongcheogi",
+      "gapReported": true
+    },
+    "2026-11-04-node2shell-brotli-rce": {
+      "sha": "3ae00c1e70092da5daeeee9474d370cf10a28ad0",
+      "section": "security"
+    },
+    "2026-11-05-claude-code-dynamic-workflows": {
+      "sha": "23d1cafce57fc4b078bc07ba2c9aef643282eb74",
+      "section": "mcp"
+    },
+    "2026-11-06-file-upload-vuln": {
+      "sha": "ef1df530b634a2846295d7b5f07b66a7c69608dd",
+      "section": "boangisa",
+      "gapReported": true
+    },
+    "2026-11-07-linear-regression-assumptions": {
+      "sha": "b9604837d80e17d3cc67529a63d6be266112116e",
+      "section": "bigdata"
+    },
+    "2026-11-08-mcp-meta-field": {
+      "sha": "2f1c12942d79f06f9963f2bc7f4a94489c9609be",
+      "section": "mcp"
     }
   }
 }
